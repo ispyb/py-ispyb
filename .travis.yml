@@ -25,7 +25,7 @@ before_install:
 - mysql -u root -e "CREATE USER ispyb_api_future@'localhost' IDENTIFIED BY 'password_4321'; GRANT SELECT ON ispybtest.* to ispyb_api_future@'localhost';"
 
 install:
-- pip install requirements.txt
+- pip install -r requirements.txt
 
 script:
 - gunicorn ispyb:server
