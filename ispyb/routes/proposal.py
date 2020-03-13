@@ -11,6 +11,6 @@ def get_all_proposals():
     #resp.status_code = 200
     #return resp
 
-@server.route("/ispyb/api/proposal/get", methods=["GET"])
-def get_proposal_by_code_number(code, number):
+@server.route("/ispyb/api/proposal/get/<code>", methods=["GET"])
+def get_proposal_by_code_number(code):
     return Response("Not found"), 200
