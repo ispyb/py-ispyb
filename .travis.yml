@@ -7,6 +7,9 @@ matrix:
     - python: pypy
       env: OPTIONAL=1
 
+addons:
+  mariadb: 10.3
+
 before_install:
 - sudo apt-get install mysql-server
 - wget https://github.com/DiamondLightSource/ispyb-database/releases/download/v1.10.4/ispyb-database-1.10.4.tar.gz
