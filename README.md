@@ -6,4 +6,4 @@ cd ..
 gunicorn ispyb:server
 ```
 
-Travis CI:
+Travis CI: To be done
