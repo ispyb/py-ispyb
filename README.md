@@ -3,5 +3,5 @@
 ```bash
 sudo pip install flask gunicorn sqlalchemy
 cd ..
-gunicorn ispyb_backend_prototype:app
+gunicorn ispyb:server
 ```
