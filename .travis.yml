@@ -26,8 +26,8 @@ before_install:
 
 install:
 - sudo apt-get install -y python3-mysqldb
-- pip install -r requirements.txt
+- pip install -r requirements.txt pytest==4.0.1 pylint
 
 script:
-- gunicorn ispyb:server
-
+#- gunicorn ispyb:server
+- pylint -E ispyb
