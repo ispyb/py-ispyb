@@ -3,11 +3,11 @@ import sys
 
 import configparser
 import sqlalchemy
-from .database_proposals import DatabaseProposals
+from .proposals import Proposals
 
 
 config = configparser.ConfigParser()
-config_filename = os.path.join(os.path.dirname(__file__), "../config.cfg")
+config_filename = os.path.join(os.path.dirname(__file__), "../../config.cfg")
 config.read(config_filename)
 
 db_engine = sqlalchemy.create_engine(
@@ -23,4 +23,4 @@ db_engine = sqlalchemy.create_engine(
 db_connection = db_engine.connect()
 db_metadata = sqlalchemy.MetaData()
 
-db_proposals = DatabaseProposals(db_engine, db_connection, db_metadata, config)
+db_proposals = Proposals(db_engine, db_connection, db_metadata, config)

@@ -1,7 +1,7 @@
 import sqlalchemy
 
 
-class DatabaseProposals(object):
+class Proposals(object):
     def __init__(self, engine, connection, metadata, config):
         self.engine = engine
         self.connection = connection
