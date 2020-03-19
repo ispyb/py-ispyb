@@ -1,10 +1,7 @@
 from ispyb import db, config
+from .schema import Proposal
 
-
-class Proposals(db.Model):
-    __tablename__ = config["db_table_map"]["proposal"]
-    proposalId = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(32), index=True)
+class Proposals(db.Model, Proposal):
 
     def get_all_proposals(self):
         all_proposals = self.query.all()
@@ -15,7 +12,8 @@ class Proposals(db.Model):
 
     def convert_to_dict(self, proposal):
         result ={'id': proposal.proposalId,
-                 'title': proposal.title}
+                 'title': proposal.title,
+                 'personId': proposal.personId}
         return result
 
     def get_proposal_by_id(self, proposal_id):
