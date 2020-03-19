@@ -1,4 +1,4 @@
-from flask import Response, jsonify
+from flask import jsonify, request
 
 from ispyb import server
 from ispyb.database import db_proposals
@@ -6,11 +6,8 @@ from ispyb.database import db_proposals
 
 @server.route("/ispyb/api/proposal/list", methods=["GET"])
 def get_all_proposals():
-    return Response(str(db_proposals.get_all_proposals())), 200
-    #resp = jsonify({"proposals": db_proposals.get_all_proposals()})
-    #resp.status_code = 200
-    #return resp
+    return jsonify({'data': db_proposals.get_all_proposals()})
 
-@server.route("/ispyb/api/proposal/get/<code>", methods=["GET"])
-def get_proposal_by_code_number(code):
-    return Response("Not found"), 200
+@server.route("/ispyb/api/proposal/<proposalId>/get", methods=["GET"])
+def get_proposal_by_id(proposalId):
+    return jsonify({'data': db_proposals.get_proposal_by_id(proposalId)})

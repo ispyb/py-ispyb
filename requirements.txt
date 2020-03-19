@@ -1,4 +1,7 @@
-mysqlclient
-flask
 gunicorn
-sqlalchemy
+Flask
+Flask-HTTPAuth
+Flask-SQLAlchemy
+itsdangerous
+passlib
+SQLAlchemy
