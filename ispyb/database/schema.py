@@ -1691,8 +1691,8 @@ class IspybReference(Base):
 class LabContact(Base):
     __tablename__ = 'LabContact'
     __table_args__ = (
-        Index('personAndProposal', 'personId', 'proposalId', unique=True),
-        Index('cardNameAndProposal', 'cardName', 'proposalId', unique=True)
+        Index('cardNameAndProposal', 'cardName', 'proposalId', unique=True),
+        Index('personAndProposal', 'personId', 'proposalId', unique=True)
     )
 
     labContactId = Column(INTEGER(10), primary_key=True)
@@ -1736,6 +1736,18 @@ class Log4Stat(Base):
     detail = Column(String(255))
     value = Column(String(255))
     timestamp = Column(DateTime)
+
+
+t_Login = Table(
+    'Login', metadata,
+    Column('loginId', INTEGER(11), nullable=False),
+    Column('token', String(45), nullable=False),
+    Column('username', String(45), nullable=False),
+    Column('roles', String(1024), nullable=False),
+    Column('siteId', String(45)),
+    Column('authorized', String(1024)),
+    Column('expirationTime', DateTime, nullable=False)
+)
 
 
 class MXMRRun(Base):

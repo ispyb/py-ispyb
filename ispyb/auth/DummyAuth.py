@@ -1,0 +1,11 @@
+from ispyb.auth.BaseAuth import BaseAuth
+
+class DummyAuth(BaseAuth):
+
+    def get_roles(self, username):
+        result = []
+        if username.startswith('user'):
+            result.append('user')
+        if username.startswith('manager'):
+            results.append('manager')
+        return result

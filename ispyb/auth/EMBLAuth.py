@@ -1,6 +1,6 @@
-class EMBLAuth(object):
-    def foo(self):
-        pass
+from ispyb.auth.BaseAuth import BaseAuth
+
+class EMBLAuth(BaseAuth):
 
     def get_roles(self, user):
         result = []

@@ -28,9 +28,10 @@ server.config['SQLALCHEMY_DATABASE_URI'] = "%s://%s:%s@%s/%s" %    (
 server.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 db = SQLAlchemy(server)
-auth = HTTPBasicAuth()
+#auth = HTTPBasicAuth()
 
 from ispyb.routes import (proposal)
+from ispyb.auth import auth
 
 
 if __name__ == "__main__":
