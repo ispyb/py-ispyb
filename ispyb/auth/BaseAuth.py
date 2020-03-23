@@ -1,4 +1,6 @@
 import abc
+from itsdangerous import (TimedJSONWebSignatureSerializer
+                          as Serializer, BadSignature, SignatureExpired)
 
 from ispyb import server
 
@@ -8,7 +10,7 @@ class BaseAuth(object):
 
     def generate_auth_token(self, expiration=600):
         s = Serializer(server.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'id': self.id})
+        return s.dumps({'id': 1})
 
     @staticmethod
     def verify_auth_token(token):

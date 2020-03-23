@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
+import logging
 import configparser
 
 from flask import Flask
@@ -10,6 +11,13 @@ from flask_httpauth import HTTPBasicAuth
 
 fname = os.path.dirname(__file__)
 sys.path.insert(0, fname)
+
+
+_logger = logging.getLogger()
+_logger.setLevel(logging.DEBUG)
+_formatter = logging.Formatter('%(asctime)s |%(name)-5s|%(levelname)-7s| %(message)s')
+_logger.debug('Init ispyb server')
+
 
 config = configparser.ConfigParser()
 config_filename = os.path.join(os.path.dirname(__file__), "../config.cfg")
@@ -30,8 +38,7 @@ server.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 db = SQLAlchemy(server)
 #auth = HTTPBasicAuth()
 
-from ispyb.routes import (proposal)
-from ispyb.auth import auth
+from ispyb.routes import (proposal, auth)
 
 
 if __name__ == "__main__":

@@ -2,15 +2,17 @@ import logging
 
 from flask import abort, jsonify, request
 
-from ispyb import server, auth
+from ispyb import server
+from ispyb.auth import auth
 from ispyb.database import db_proposals
 
 
 @server.route("/ispyb/api/<token>/proposal/list", methods=["GET"])
 def get_all_proposals(token):
     logging.getLogger('ispyb.routes').debug('Getting all proposals...')
-    token = request.json.get('token')
-    if auth.verify_auth_token(token):
+    token = request.form.get('token')
+    if True:
+    #if auth.verify_auth_token(token):
         return jsonify({'data': db_proposals.get_all_proposals()})
     else:
         logging.getLogger('ispyb.routes').error('No proposals returned. Invalid token')
