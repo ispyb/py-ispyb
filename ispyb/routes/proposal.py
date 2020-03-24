@@ -1,25 +1,20 @@
-import logging
-
 from flask import abort, jsonify, request
 
-from ispyb import server
-from ispyb.auth import auth
-from ispyb.database import db_proposals
+from ispyb import app
+from ispyb.models.proposal import ProposalModel
+from ispyb.schemas.proposal import ProposalSchema
+
+proposal_schema = ProposalSchema()
+proposals_schema = ProposalSchema(many=True)
+
+@app.route("/proposals/")
+def proposals():
+    all_proposals = ProposalModel.all()
+    return proposal_schema.dump(all_users)
 
 
-@server.route("/ispyb/api/<token>/proposal/list", methods=["GET"])
-def get_all_proposals(token):
-    logging.getLogger('ispyb.routes').debug('Getting all proposals...')
-    token = request.form.get('token')
-    if True:
-    #if auth.verify_auth_token(token):
-        return jsonify({'data': db_proposals.get_all_proposals()})
-    else:
-        logging.getLogger('ispyb.routes').error('No proposals returned. Invalid token')
-        abort(400)
+@app.route("/proposals/<id>")
+def proposal_detail(id):
+    proposal = ProposalModel.get(id)
+    return proposal_schema.dump(proposal)
 
-@server.route("/ispyb/api/<token>/proposal/<proposalId>/get", methods=["GET"])
-def get_proposal_by_id(token, proposalId):
-    token = request.json.get('token')    
-    proposals_id = request.json.get('proposalId')
-    return jsonify({'data': db_proposals.get_proposal_by_id(proposal_id)})

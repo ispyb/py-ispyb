@@ -1,45 +1,49 @@
 #!/usr/bin/env python3
 import os
 import sys
-import logging
 import configparser
 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_httpauth import HTTPBasicAuth
 
+from flask import Flask, Blueprint
+import werkzeug
+if not hasattr(werkzeug, 'cached_property'):
+    werkzeug.cached_property = werkzeug.utils.cached_property
+from flask_restplus import Api, Resource, fields
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
 fname = os.path.dirname(__file__)
 sys.path.insert(0, fname)
-
-
-_logger = logging.getLogger()
-_logger.setLevel(logging.DEBUG)
-_formatter = logging.Formatter('%(asctime)s |%(name)-5s|%(levelname)-7s| %(message)s')
-_logger.debug('Init ispyb server')
 
 
 config = configparser.ConfigParser()
 config_filename = os.path.join(os.path.dirname(__file__), "../config.cfg")
 config.read(config_filename)
 
+app = Flask(__name__)
+app.config['SECRET_KEY'] = config['general'].get('secret_key', 'ispyb_secret_key')
+app.config['SQLALCHEMY_DATABASE_URI'] = config['general']['db_uri']
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SWAGGER_UI_JSONEDITOR'] = True
 
-server = Flask(__name__)
-server.config['SECRET_KEY'] = 'very secret key...'
-server.config['SQLALCHEMY_DATABASE_URI'] = "%s://%s:%s@%s/%s" %    (
-        config["db_connection"]["engine"],
-        config["db_connection"]["usr"],
-        config["db_connection"]["pwd"],
-        config["db_connection"]["host"],
-        config["db_connection"]["db_name"],
-    )
-server.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+api_v1 = Blueprint('api', __name__, url_prefix='/ispyb/api/v1')
+api = Api(api_v1, version='1.0', title='ISPyB API', description='ISPyB Flask restplus API', doc='/doc')
+app.register_blueprint(api_v1)
 
-db = SQLAlchemy(server)
-#auth = HTTPBasicAuth()
-
-from ispyb.routes import (proposal, auth)
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
 
 
-if __name__ == "__main__":
-    server.run(debug=True)
+"""
+authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-API-KEY'
+    }
+}
+"""
+from ispyb.routes import proposal
+
+if __name__ == '__main__':
+    app.run(debug=config['general'].get('debug_mode', False))

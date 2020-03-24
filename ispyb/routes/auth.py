@@ -1,14 +1,14 @@
 import logging
 
 from flask import abort, jsonify, request
+from flask_restplus import Namespace, Resource
 
-from ispyb import server
+from ispyb import api, app
 from ispyb.auth import auth
 
 TOKEN_DURATION = 600
 
-@server.route("/ispyb/api/token", methods=["GET"])
-def get_token():
-    logging.getLogger('ispyb.routes').debug('Getting token')
-    token = auth.generate_auth_token(TOKEN_DURATION)
-    return jsonify({'token': token.decode('ascii'), 'duration': TOKEN_DURATION}) 
+@api.route('/token')
+class Token(Resource):
+    def get(self):
+        return {'hey': 'there'}

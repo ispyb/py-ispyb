@@ -1,7 +1,8 @@
 gunicorn
 Flask
-Flask-HTTPAuth
 Flask-SQLAlchemy
-itsdangerous
+flask-restplus
+flask-marshmallow
 passlib
 SQLAlchemy
+python-jwt

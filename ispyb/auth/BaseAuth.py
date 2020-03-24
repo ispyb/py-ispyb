@@ -2,19 +2,23 @@ import abc
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
-from ispyb import server
+from ispyb import app
 
 class BaseAuth(object):
 
     __metaclass__ = abc.ABCMeta
 
-    def generate_auth_token(self, expiration=600):
-        s = Serializer(server.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'id': 1})
+    def __init__(self):
+        self.token_list = [] 
+
+    def generate_auth_token(self, username, expiration=600):
+        roles = self.get_roles(username)
+        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id': username})
 
     @staticmethod
     def verify_auth_token(token):
-        s = Serializer(server.config['SECRET_KEY'])
+        s = Serializer(app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
         except SignatureExpired:
