@@ -11,12 +11,6 @@ class Proposals(db.Model, Proposal):
             result.append(self.object_as_dict(proposal))
         return result
 
-    def convert_to_dict(self, proposal):
-        result ={'id': proposal.proposalId,
-                 'title': proposal.title,
-                 'personId': proposal.personId}
-        return result
-
     def object_as_dict(self, obj):
         return {c.key: getattr(obj, c.key)
                 for c in inspect(obj).mapper.column_attrs}

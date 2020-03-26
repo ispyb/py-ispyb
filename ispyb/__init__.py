@@ -10,7 +10,7 @@ if not hasattr(werkzeug, 'cached_property'):
     werkzeug.cached_property = werkzeug.utils.cached_property
 from flask_restplus import Api, Resource, fields
 from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
+#from flask_marshmallow import Marshmallow
 
 fname = os.path.dirname(__file__)
 sys.path.insert(0, fname)
@@ -31,7 +31,7 @@ api = Api(api_v1, version='1.0', title='ISPyB API', description='ISPyB Flask res
 app.register_blueprint(api_v1)
 
 db = SQLAlchemy(app)
-ma = Marshmallow(app)
+#ma = Marshmallow(app)
 
 
 """

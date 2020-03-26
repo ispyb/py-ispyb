@@ -1,5 +1,3 @@
-from ispyb import ma, db
-from ispyb.models.proposal import ProposalModel
 from marshmallow import Schema, fields
 
 
