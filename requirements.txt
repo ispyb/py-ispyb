@@ -2,8 +2,6 @@ gunicorn
 Flask
 Flask-SQLAlchemy
 flask-restplus
-flask-marshmallow
 SQLAlchemy
 marshmallow
-marshmallow-sqlalchemy
-python-jwt
+pyjwt

@@ -1,6 +1,6 @@
 from flask_restplus import Resource
 
-from ispyb import api
+from ispyb import api, app
 from ispyb.models import Proposal
 from ispyb.schemas import ProposalSchema
 from ispyb.auth import token_required
@@ -16,6 +16,6 @@ class Proposals(Resource):
     @token_required
     def get(self):
         """Returns all proposal"""
+        #app.logger.info('')
         proposals = Proposal.query.all()
-        result = proposals_schema.dump(proposals)
-        return {"data": result}
+        return proposals_schema.dump(proposals)
