@@ -2,7 +2,7 @@ from flask import abort, jsonify, request
 from flask_restplus import Resource
 
 from ispyb import api, app
-from ispyb.models.proposal import Proposal
+from ispyb.models import Proposal
 from ispyb.schemas.proposal import ProposalSchema
 
 proposal_schema = ProposalSchema()
@@ -26,4 +26,3 @@ class Proposals(Resource):
         proposals = Proposal.query.all()
         result = proposals_schema.dump(proposals)
         return {'data': result}
-
