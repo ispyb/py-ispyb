@@ -8,7 +8,8 @@ from ispyb.auth import auth
 
 TOKEN_DURATION = 600
 
-@api.route('/token')
+
+@api.route("/token")
 class Token(Resource):
     def get(self):
-        return {'hey': 'there'}
+        return {"hey": "there"}
