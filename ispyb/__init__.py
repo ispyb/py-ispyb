@@ -9,9 +9,9 @@ import werkzeug
 if not hasattr(werkzeug, "cached_property"):
     werkzeug.cached_property = werkzeug.utils.cached_property
 
-from flask_sqlalchemy import SQLAlchemy
-from flask_restplus import Api, Resource, fields
 from flask import Flask, Blueprint
+from flask_restplus import Api
+from flask_sqlalchemy import SQLAlchemy
 
 
 fname = os.path.dirname(__file__)
@@ -52,29 +52,34 @@ app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SWAGGER_UI_JSONEDITOR"] = True
 
+db = SQLAlchemy(app)
+#-------------------------------------------------------------------------------------#
+# Define api
+#-------------------------------------------------------------------------------------#
 authorizations = {"apikey": {"type": "apiKey", "in": "header", "name": "token"}}
-
-api_v1 = Blueprint("api", __name__, url_prefix="/ispyb/api/v1")
+blueprint = Blueprint('api', __name__, url_prefix='/ispyb/api/v1')
 api = Api(
-    api_v1,
+    blueprint,
     version="1.0",
     title="ISPyB",
     description="ISPyB Flask restplus server",
     doc="/doc",
     authorizations=authorizations,
     default="Main",
-    default_label="Main namespace",
+    default_label="Main",
 )
-app.register_blueprint(api_v1)
 
-db = SQLAlchemy(app)
 
 #-------------------------------------------------------------------------------------#
-# Import routes
+# Register apis
 #-------------------------------------------------------------------------------------#
+from ispyb.apis.proposals import api as prop_api
+from ispyb.apis.data_collections import api as dc_api
 
-from ispyb.routes import login, proposal
+api.add_namespace(prop_api)
+api.add_namespace(dc_api)
 
+app.register_blueprint(blueprint, url_prefix='/ispyb/api/v1')
 
 if __name__ == "__main__":
     app.run(debug=config["general"].get("debug_mode", False))

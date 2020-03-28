@@ -13,7 +13,7 @@ cls = getattr(importlib.import_module(module_name), class_name)
 
 auth = cls()
 
-
+authorizations = {"apikey": {"type": "apiKey", "in": "header", "name": "token"}}
 TOKEN_EXP_TIME = 60 # in minutes
 
 def generate_token(username):
