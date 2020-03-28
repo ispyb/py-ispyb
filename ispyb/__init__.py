@@ -71,13 +71,22 @@ api = Api(
 
 
 #-------------------------------------------------------------------------------------#
-# Register apis
+# Add apis as namespaces
 #-------------------------------------------------------------------------------------#
-from ispyb.apis.proposals import ns as prop_ns
-from ispyb.apis.data_collections import ns as dc_ns
+from ispyb.apis.autoproc import ns as autoproc_ns
+from ispyb.apis.crystal import ns as crystal_ns
+from ispyb.apis.data_collection import ns as dc_ns
+from ispyb.apis.data_collection_group import ns as dcgr_ns
+from ispyb.apis.proposal import ns as prop_ns
+from ispyb.apis.sample import ns as sample_ns
 
-api.add_namespace(prop_ns)
+api.add_namespace(autoproc_ns)
+api.add_namespace(crystal_ns)
 api.add_namespace(dc_ns)
+api.add_namespace(dcgr_ns)
+api.add_namespace(prop_ns)
+api.add_namespace(sample_ns)
+
 
 app.register_blueprint(blueprint, url_prefix='/ispyb/api/v1')
 

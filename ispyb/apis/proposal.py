@@ -6,10 +6,10 @@ from ispyb.auth import authorizations, token_required
 
 proposal_schema = ProposalSchema()
 proposals_schema = ProposalSchema(many=True)
-ns = Namespace('Proposals', description='Proposals related namespace', path='prop')
+ns = Namespace('Proposal', description='Proposal related namespace', path='prop')
 
 @ns.route("/list")
-class ProposalsList(Resource):
+class ProposalList(Resource):
     """Allows to get all proposals"""
 
     @ns.doc(security="apikey")
