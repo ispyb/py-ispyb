@@ -5,16 +5,16 @@ from ispyb import app
 from ispyb.auth import authorizations, token_required
 
 #proposals_schema = ProposalSchema(many=True)
-api = Namespace('dc', descriptiom='Data collection related namespace')
+ns = Namespace('Data collections', description='Data collection related namespace', path='dc')
 
-@api.route("/list")
+@ns.route("/list")
 class DataCollectionList(Resource):
-    """Proposals resource"""
+    """Data collection resource"""
 
-    @api.doc(security="apikey")
-    @token_required
+    @ns.doc(security="apikey")
+    #@token_required
     def get(self):
-        """Returns all proposal"""
+        """Returns all data collections"""
         return 'TODO'
         #app.logger.info('')
         #proposals = Proposal.query.all()

@@ -73,11 +73,11 @@ api = Api(
 #-------------------------------------------------------------------------------------#
 # Register apis
 #-------------------------------------------------------------------------------------#
-from ispyb.apis.proposals import api as prop_api
-from ispyb.apis.data_collections import api as dc_api
+from ispyb.apis.proposals import ns as prop_ns
+from ispyb.apis.data_collections import ns as dc_ns
 
-api.add_namespace(prop_api)
-api.add_namespace(dc_api)
+api.add_namespace(prop_ns)
+api.add_namespace(dc_ns)
 
 app.register_blueprint(blueprint, url_prefix='/ispyb/api/v1')
 
