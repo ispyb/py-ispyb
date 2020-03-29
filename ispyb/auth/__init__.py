@@ -1,8 +1,5 @@
 import importlib
-import datetime
 from functools import wraps
-
-import jwt
 from flask import request, jsonify
 
 from ispyb import config, app
@@ -12,17 +9,6 @@ class_name = config["auth"]["class"]
 cls = getattr(importlib.import_module(module_name), class_name)
 
 auth = cls()
-
-authorizations = {"apikey": {"type": "apiKey", "in": "header", "name": "token"}}
-TOKEN_EXP_TIME = 60 # in minutes
-
-def generate_token(username):
-    token = jwt.encode({
-        'user': username,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=TOKEN_EXP_TIME)},
-        app.config['SECRET_KEY'])
-    return token.decode('UTF-8')
-
 
 def token_required(f):
     @wraps(f)

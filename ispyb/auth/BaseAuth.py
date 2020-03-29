@@ -1,12 +1,10 @@
 import abc
-from itsdangerous import (
-    TimedJSONWebSignatureSerializer as Serializer,
-    BadSignature,
-    SignatureExpired,
-)
+import jwt
+import datetime
 
 from ispyb import app
 
+TOKEN_EXP_TIME = 60 # in minutes
 
 class BaseAuth(object):
 
@@ -15,24 +13,16 @@ class BaseAuth(object):
     def __init__(self):
         self.token_list = []
 
-    def generate_auth_token(self, username, expiration=600):
-        roles = self.get_roles(username)
-        s = Serializer(app.config["SECRET_KEY"], expires_in=expiration)
-        return s.dumps({"id": username})
-
-    @staticmethod
-    def verify_auth_token(token):
-        s = Serializer(app.config["SECRET_KEY"])
-        try:
-            data = s.loads(token)
-        except SignatureExpired:
-            return None  # valid token, but expired
-        except BadSignature:
-            return None  # invalid token
-        user = User.query.get(data["id"])
-        return user
-
     @abc.abstractmethod
     def get_roles(self, user):
         result = []
         return result
+
+    TOKEN_EXP_TIME = 60 # in minutes
+
+    def generate_token(self, username):
+        token = jwt.encode({
+            'user': username,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=TOKEN_EXP_TIME)},
+        app.config['SECRET_KEY'])
+        return token.decode('UTF-8')

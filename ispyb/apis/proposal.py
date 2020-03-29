@@ -2,7 +2,7 @@ from flask_restplus import Namespace, Resource
 from ispyb import app
 from ispyb.models import Proposal as ProposalModel
 from ispyb.schemas import ProposalSchema
-from ispyb.auth import authorizations, token_required
+from ispyb.auth import token_required
 
 proposal_schema = ProposalSchema()
 proposals_schema = ProposalSchema(many=True)

@@ -2,7 +2,7 @@ from flask_restplus import Namespace, Resource
 from ispyb import app
 #from ispyb.models import Proposal
 #from ispyb.schemas import ProposalSchema
-from ispyb.auth import authorizations, token_required
+from ispyb.auth import token_required
 
 #proposals_schema = ProposalSchema(many=True)
 ns = Namespace('Data collections', description='Data collection related namespace', path='dc')
