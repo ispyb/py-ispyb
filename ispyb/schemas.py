@@ -5,6 +5,7 @@ from ispyb import api
 
 class ProposalSchema(Schema):
     proposalId = ma_fields.Int()
+    personId = ma_fields.Int()
     title = ma_fields.Str()
     proposalCode = ma_fields.Str()
     proposalNumber = ma_fields.Str()
@@ -13,14 +14,17 @@ class ProposalSchema(Schema):
     externalId = ma_fields.Int()
     state = ma_fields.Str()
 
-proposal_schema = api.model('Proposal', {
+ma_proposal_schema = ProposalSchema()
+ma_proposals_schema = ProposalSchema(many=True)
+f_proposal_schema = api.model('Proposal', {
     'proposalId': fields.Integer(required=True, description='Proposal id as integer'),
+    'personId': fields.Integer(required=True, description='Person id as integer'),
     'title': fields.String(),
     'proposalCode': fields.String(description='MX, BX'),
     'proposalNumber': fields.String(),
-    'bltimeStamp': fields.DateTime,
+    'bltimeStamp': fields.DateTime(),
     'proposalType': fields.String(),
     'externalId': fields.Integer(),
-    'state': fields.String(),
+    'state': fields.String(description='Open, Close'),
     }
     )

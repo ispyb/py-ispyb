@@ -17,12 +17,14 @@ from sqlalchemy import (
     Text,
     Time,
 )
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql.types import LONGBLOB
 from flask_sqlalchemy import SQLAlchemy
 
+from datetime import datetime
 
 from ispyb import db
 
@@ -4301,7 +4303,10 @@ class Proposal(db.Model):
     proposalCode = db.Column(db.String(45))
     proposalNumber = db.Column(db.String(45))
     bltimeStamp = db.Column(
-        db.DateTime, nullable=False, server_default=db.FetchedValue()
+        db.DateTime, 
+        nullable=False,
+        server_default=db.FetchedValue(),
+        default=datetime.utcnow
     )
     proposalType = db.Column(db.String(2), info="Proposal type: MX, BX")
     externalId = db.Column(db.BINARY(16))
