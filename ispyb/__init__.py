@@ -81,8 +81,6 @@ from ispyb.apis.data_collection_group import ns as dcgr_ns
 from ispyb.apis.proposal import ns as prop_ns
 from ispyb.apis.sample import ns as sample_ns
 
-
-
 api.add_namespace(login_ns)
 api.add_namespace(autoproc_ns)
 api.add_namespace(crystal_ns)
@@ -90,7 +88,6 @@ api.add_namespace(dc_ns)
 api.add_namespace(dcgr_ns)
 api.add_namespace(prop_ns)
 api.add_namespace(sample_ns)
-
 
 app.register_blueprint(blueprint, url_prefix='/ispyb/api/v1')
 

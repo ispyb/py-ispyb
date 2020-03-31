@@ -6,7 +6,7 @@ ns = Namespace('Login', description='Login namespace', path='login')
 
 @ns.route("/")
 class Login(Resource):
-    """Crystal list resource"""
+    """Login resource"""
 
     def get(self):
         authorization = request.authorization

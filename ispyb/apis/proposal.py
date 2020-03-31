@@ -1,4 +1,3 @@
-from flask import request
 from flask_restplus import Namespace, Resource
 from ispyb import app, api, db
 from ispyb.models import Proposal as ProposalModel
@@ -6,9 +5,6 @@ from ispyb.schemas import f_proposal_schema,  ma_proposal_schema
 from ispyb.auth import token_required
 
 ns = Namespace('Proposal', description='Proposal related namespace', path='prop')
-
-#parser = api.parser()
-#parser.add_argument('task', type=str, required=True, help='The task details', location='form')
 
 @ns.route("/")
 class ProposalList(Resource):
