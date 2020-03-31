@@ -30,4 +30,5 @@ install:
 
 script:
 #- gunicorn ispyb:server
-- pylint -E ispyb
+#- pylint -E ispyb
+- pytest
