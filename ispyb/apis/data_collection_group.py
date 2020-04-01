@@ -5,9 +5,9 @@ from ispyb import app
 from ispyb.auth import token_required
 
 #proposals_schema = ProposalSchema(many=True)
-ns = Namespace('Data collection group', description='Data collection group related namespace', path='dcgr')
+ns = Namespace('Data collection group', description='Data collection group related namespace', path='/dcgr')
 
-@ns.route("/list")
+@ns.route("/")
 class DataCollectionGroupList(Resource):
     """Data collection group resource"""
 

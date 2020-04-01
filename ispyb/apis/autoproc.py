@@ -5,9 +5,9 @@ from ispyb import app
 from ispyb.auth import token_required
 
 #proposals_schema = ProposalSchema(many=True)
-ns = Namespace('Auto processing', description='Auto processing related namespace', path='autoproc')
+ns = Namespace('Auto processing', description='Auto processing related namespace', path='/autoproc')
 
-@ns.route("/list")
+@ns.route("/")
 class AutoProcList(Resource):
     """Auto processing resource"""
 

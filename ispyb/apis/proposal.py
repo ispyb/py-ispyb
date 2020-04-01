@@ -4,7 +4,7 @@ from ispyb.models import Proposal as ProposalModel
 from ispyb.schemas import f_proposal_schema,  ma_proposal_schema
 from ispyb.auth import token_required
 
-ns = Namespace('Proposal', description='Proposal related namespace', path='prop')
+ns = Namespace('Proposal', description='Proposal related namespace', path='/prop')
 
 @ns.route("/")
 class ProposalList(Resource):

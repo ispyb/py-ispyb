@@ -5,9 +5,9 @@ from ispyb import app
 from ispyb.auth import token_required
 
 #proposals_schema = ProposalSchema(many=True)
-ns = Namespace('Sample', description='Sample related namespace', path='sample')
+ns = Namespace('Sample', description='Sample related namespace', path='/sample')
 
-@ns.route("/list")
+@ns.route("/")
 class SampleList(Resource):
     """Sample resource"""
 

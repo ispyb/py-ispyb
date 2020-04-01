@@ -5,9 +5,9 @@ from ispyb import app
 from ispyb.auth import token_required
 
 #proposals_schema = ProposalSchema(many=True)
-ns = Namespace('Crystal', description='Crystal related namespace', path='crystal')
+ns = Namespace('Crystal', description='Crystal related namespace', path='/crystal')
 
-@ns.route("/list")
+@ns.route("/")
 class CrystalList(Resource):
     """Crystal list resource"""
 
