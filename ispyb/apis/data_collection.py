@@ -6,6 +6,13 @@ from ispyb.auth import token_required
 
 ns = Namespace('Data collections', description='Data collection related namespace', path='/dc')
 
+def get_all_data_collections():
+    data_collections = DataCollectionModel.query.all()
+    return ma_data_collection_schema.dump(data_collections, many=True)
+
+#def get_data_collection_by_id():
+
+
 @ns.route("/")
 class DataCollectionList(Resource):
     """Data collection resource"""
@@ -15,8 +22,7 @@ class DataCollectionList(Resource):
     def get(self):
         """Returns all data collections"""
         app.logger.info("Return all data collections")
-        data_collections = DataCollectionModel.query.all()
-        return ma_data_collection_schema.dump(data_collections, many=True)
+        return get_all_data_collections()
 
     @ns.expect(f_data_collection_schema)
     @ns.marshal_with(f_data_collection_schema, code=201)

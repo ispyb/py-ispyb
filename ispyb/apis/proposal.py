@@ -6,7 +6,21 @@ from ispyb.auth import token_required
 
 ns = Namespace('Proposal', description='Proposal related namespace', path='/prop')
 
-@ns.route("/")
+def get_all_proposals():
+    """Returns all proposals"""
+    proposals = ProposalModel.query.all()
+    return ma_proposal_schema.dump(proposals, many=True)
+
+def get_proposal_by_id(proposal_id):
+    """Returns proposal by id"""
+    proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
+    return ma_proposal_schema.dump(proposal)
+
+#def get_propsoal_by_person(person):
+#    person = PersonMode.query.filter_by
+#    proposal = ProposalMode.query.filter()
+
+@ns.route("")
 class ProposalList(Resource):
     """Allows to get all proposals"""
 
@@ -15,8 +29,7 @@ class ProposalList(Resource):
     def get(self):
         """Returns all proposals"""
         app.logger.info("Return all proposals")
-        proposals = ProposalModel.query.all()
-        return ma_proposal_schema.dump(proposals, many=True)
+        return get_all_proposals()
 
     @ns.expect(f_proposal_schema)
     @ns.marshal_with(f_proposal_schema, code=201)
@@ -25,7 +38,6 @@ class ProposalList(Resource):
         app.logger.info("Insert new proposal")
         try:
             proposal = ProposalModel(**api.payload)
-            print(dir(proposal))
             db.session.add(proposal)
             db.session.commit()
         except Exception as ex:
@@ -47,9 +59,7 @@ class Proposal(Resource):
     #@token_required
     def get(self, prop_id):
         """Returns a proposal by proposalId"""
-        proposal= ProposalModel.query.filter_by(proposalId=prop_id).first()
-        return ma_proposal_schema.dump(proposal)
-
+        return get_proposal_by_id(prop_id)
     
     """
     #@ns.doc(parser=parser)

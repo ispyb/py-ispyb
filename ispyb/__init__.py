@@ -28,7 +28,7 @@ config.read(config_filename)
 dictConfig({
     'version': 1,
     'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+        'format': '[%(asctime)s] [%(levelname)s] in %(module)s: %(message)s',
     }},
     'handlers': {'wsgi': {
         'class': 'logging.StreamHandler',
@@ -78,6 +78,7 @@ from ispyb.apis.autoproc import ns as autoproc_ns
 from ispyb.apis.crystal import ns as crystal_ns
 from ispyb.apis.data_collection import ns as dc_ns
 from ispyb.apis.data_collection_group import ns as dcgr_ns
+from ispyb.apis.person import ns as person_ns
 from ispyb.apis.proposal import ns as prop_ns
 from ispyb.apis.sample import ns as sample_ns
 
@@ -86,6 +87,7 @@ api.add_namespace(autoproc_ns)
 api.add_namespace(crystal_ns)
 api.add_namespace(dc_ns)
 api.add_namespace(dcgr_ns)
+api.add_namespace(person_ns)
 api.add_namespace(prop_ns)
 api.add_namespace(sample_ns)
 

@@ -4,7 +4,7 @@ from ispyb import app, auth
 
 ns = Namespace('Login', description='Login namespace', path='/login')
 
-@ns.route("/")
+@ns.route("")
 class Login(Resource):
     """Login resource"""
 
