@@ -25,9 +25,13 @@ def token_required(f):
         if not token:
             return {"message": "Token is missing."}, 401
 
-        try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])
-        except:
-            return {"message": "Invalid token"}, 401
-        return f(*args, **kwargs)
+        if config["general"]["master_token"] == token:
+            app.logger.info("Master token validated")
+            return f(*args, **kwargs)
+        else:
+            try:
+                data = jwt.decode(token, app.config['SECRET_KEY'])
+            except:
+                return {"message": "Invalid token"}, 401
+            return f(*args, **kwargs)
     return decorated

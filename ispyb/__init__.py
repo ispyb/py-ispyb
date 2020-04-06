@@ -56,7 +56,7 @@ db = SQLAlchemy(app)
 #-------------------------------------------------------------------------------------#
 # Define api
 #-------------------------------------------------------------------------------------#
-authorizations = {"apikey": {"type": "apiKey", "in": "header", "name": "token"}}
+authorizations = {"apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}}
 blueprint = Blueprint('api', __name__, url_prefix='/ispyb/api/v1')
 api = Api(
     blueprint,
@@ -92,6 +92,7 @@ api.add_namespace(prop_ns)
 api.add_namespace(sample_ns)
 
 app.register_blueprint(blueprint, url_prefix='/ispyb/api/v1')
+print('Done!')
 
 if __name__ == "__main__":
     app.run(debug=config["general"].get("debug_mode", False))

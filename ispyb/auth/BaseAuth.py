@@ -4,7 +4,7 @@ import datetime
 
 from ispyb import app
 
-TOKEN_EXP_TIME = 1 # in minutes
+TOKEN_EXP_TIME = 10 # in minutes
 
 class BaseAuth(object):
 
