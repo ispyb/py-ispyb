@@ -1,4 +1,7 @@
-mysqlclient
-flask
 gunicorn
-sqlalchemy
+Flask
+Flask-SQLAlchemy
+flask-restplus
+SQLAlchemy
+marshmallow
+pyjwt

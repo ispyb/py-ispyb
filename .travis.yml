@@ -3,7 +3,6 @@ language: python
 matrix:
   include:
     - python: 3.7
-    - python: 3.8
     - python: pypy
       env: OPTIONAL=1
 
@@ -30,4 +29,5 @@ install:
 
 script:
 #- gunicorn ispyb:server
-- pylint -E ispyb
+#- pylint -E ispyb
+- pytest
