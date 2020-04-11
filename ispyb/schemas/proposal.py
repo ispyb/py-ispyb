@@ -1,25 +1,26 @@
+
 from marshmallow import Schema, fields as ma_fields
-from flask_restplus import fields
+from flask_restplus import fields as f_fields
 
 proposal_dict = {
-        'proposalId': fields.Integer(required=True, description='Proposal id as integer'),
-        'personId': fields.Integer(required=True, description='Person id as integer'),
-        'title': fields.String(),
-        'proposalCode': fields.String(description='MX, BX'),
-        'proposalNumber': fields.String(),
-        'bltimeStamp': fields.DateTime(),
-        'proposalType': fields.String(),
-        'externalId': fields.Integer(),
-        'state': fields.String(description='Open, Close'),
+        'proposalId': f_fields.Integer(),
+        'personId': f_fields.Integer(),
+        'title': f_fields.String(),
+        'proposalCode': f_fields.String(),
+        'proposalNumber': f_fields.String(),
+        'bltimeStamp': f_fields.DateTime(),
+        'proposalType': f_fields.String(),
+        'externalId': f_fields.Integer(),
+        'state': f_fields.String(),
         }
 
 class ProposalSchema(Schema):
-    proposalId = ma_fields.Int()
-    personId = ma_fields.Int()
-    title = ma_fields.Str()
-    proposalCode = ma_fields.Str()
-    proposalNumber = ma_fields.Str()
+    proposalId = ma_fields.Integer()
+    personId = ma_fields.Integer()
+    title = ma_fields.String()
+    proposalCode = ma_fields.String()
+    proposalNumber = ma_fields.String()
     bltimeStamp = ma_fields.DateTime()
-    proposalType = ma_fields.Str()
-    externalId = ma_fields.Int()
-    state = ma_fields.Str()
+    proposalType = ma_fields.String()
+    externalId = ma_fields.Integer()
+    state = ma_fields.String()

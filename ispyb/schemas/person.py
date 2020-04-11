@@ -1,24 +1,22 @@
+
 from marshmallow import Schema, fields as ma_fields
-from flask_restplus import fields
+from flask_restplus import fields as f_fields
 
 person_dict = {
-    'personId': fields.Integer(),
-    'laboratoryId': fields.Integer(),
-    'siteId': fields.Integer(),
-    'personUUID': fields.String(),
-    'familyName': fields.String(),
-    'givenName': fields.String(),
-    'title': fields.String(),
-    'emailAddress': fields.String(),
-    'phoneNumber': fields.String(),
-    'login': fields.String(),
-    'faxNumber': fields.String(),
-    'recordTimeStamp': fields.DateTime(),
-    'cache': fields.String(),
-    'externalId': fields.Integer(),
-    'Laboratory': fields.Integer(),
-    'Project': fields.Integer(),
-    'UserGroup': fields.Integer()
+        'personId': f_fields.Integer(),
+        'laboratoryId': f_fields.Integer(),
+        'siteId': f_fields.Integer(),
+        'personUUID': f_fields.String(),
+        'familyName': f_fields.String(),
+        'givenName': f_fields.String(),
+        'title': f_fields.String(),
+        'emailAddress': f_fields.String(),
+        'phoneNumber': f_fields.String(),
+        'login': f_fields.String(),
+        'faxNumber': f_fields.String(),
+        'recordTimeStamp': f_fields.DateTime(),
+        'cache': f_fields.DateTime(),
+        'externalId': f_fields.Integer(),
         }
 
 class PersonSchema(Schema):
@@ -34,8 +32,5 @@ class PersonSchema(Schema):
     login = ma_fields.String()
     faxNumber = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
-    cache = ma_fields.String()
+    cache = ma_fields.DateTime()
     externalId = ma_fields.Integer()
-    Laboratory = ma_fields.Integer()
-    Project = ma_fields.Integer()
-    UserGroup = ma_fields.Integer()

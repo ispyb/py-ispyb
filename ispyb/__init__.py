@@ -92,7 +92,6 @@ api.add_namespace(prop_ns)
 api.add_namespace(sample_ns)
 
 app.register_blueprint(blueprint, url_prefix='/ispyb/api/v1')
-print('Done!')
 
 if __name__ == "__main__":
     app.run(debug=config["general"].get("debug_mode", False))

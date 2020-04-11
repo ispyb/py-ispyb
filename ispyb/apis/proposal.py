@@ -56,7 +56,7 @@ class Proposal(Resource):
 
     @ns.doc(description='prop_id should be an integer ')
     @ns.marshal_with(f_proposal_schema)
-    @token_required
+    #@token_required
     def get(self, prop_id):
         """Returns a proposal by proposalId"""
         return get_proposal_by_id(prop_id)
