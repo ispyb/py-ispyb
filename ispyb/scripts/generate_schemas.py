@@ -31,6 +31,9 @@ init_file_path = "%s/ispyb/schemas/__init__.py" % ispyb_root
 init_file = open(init_file_path, "w")
 init_file.write("from ispyb import api\n\n")
 
+
+
+
 gen_tables = ['BLSample', 'Person', 'Proposal', 'DataCollection']
 
 for table in tables:
@@ -53,10 +56,10 @@ for table in tables:
             description = None
             if dtype.startswith('int') or dtype.startswith('binary'):
                 column_datatype = 'Integer'
-            elif dtype.startswith('varchar'):
+            elif dtype.startswith('varchar') or dtype.startswith('text'):
                 column_datatype = 'String'
                 data_size = dtype.replace('varchar', '')
-            elif dtype.startswith('timestamp'):
+            elif dtype.startswith('timestamp') or dtype.startswith('datetime'):
                 column_datatype = 'DateTime'
             elif dtype.startswith('enum'):
                 column_datatype = 'String'

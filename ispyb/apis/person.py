@@ -1,8 +1,9 @@
 from flask_restplus import Namespace, Resource
+
 from ispyb import app, api, db
+from ispyb.auth import token_required
 from ispyb.models import Person as PersonModel
 from ispyb.schemas import f_person_schema,  ma_person_schema
-from ispyb.auth import token_required
 
 ns = Namespace('Person', description='Person', path='/person')
 
@@ -16,9 +17,10 @@ def get_person_by_id(person_id):
     person = PersonModel.query.filter_by(personId=person_id).first()
     return ma_person_schema.dump(person)
 
-#def get_propsoal_by_person(person):
-#    person = PersonMode.query.filter_by
-#    proposal = ProposalMode.query.filter()
+def get_person_id_by_login(login_name):
+    person = PersonModel.query.filter_by(login=login_name).first()
+    print(person.personId)
+    return person.personId
 
 @ns.route("")
 class PersonList(Resource):
@@ -27,7 +29,7 @@ class PersonList(Resource):
     @ns.doc(security="apikey")
     #@token_required
     def get(self):
-        """Returns all proposals"""
+        """Returns all persons"""
         app.logger.info("Return all person")
         return get_all_persons()
 

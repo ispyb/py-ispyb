@@ -1,8 +1,10 @@
 from flask_restplus import Namespace, Resource
+
 from ispyb import app, api, db
+from ispyb.auth import token_required
+from ispyb.apis import person as person_api
 from ispyb.models import Proposal as ProposalModel
 from ispyb.schemas import f_proposal_schema,  ma_proposal_schema
-from ispyb.auth import token_required
 
 ns = Namespace('Proposal', description='Proposal related namespace', path='/prop')
 
@@ -16,9 +18,11 @@ def get_proposal_by_id(proposal_id):
     proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
     return ma_proposal_schema.dump(proposal)
 
-#def get_propsoal_by_person(person):
-#    person = PersonMode.query.filter_by
-#    proposal = ProposalMode.query.filter()
+def get_proposals_by_login_name(login_name):
+    person_id = person_api.get_person_id_by_login(login_name)
+    #TODO this is not nice...
+    proposal = ProposalModel.query.filter_by(personId=person_id)
+    return ma_proposal_schema.dump(proposal, many=True)
 
 @ns.route("")
 class ProposalList(Resource):
@@ -70,3 +74,15 @@ class Proposal(Resource):
         data = ma_proposal_schema.load(json_data)
 
     """
+@ns.route("/login_name/<string:login_name>")
+#@ns.param("prop_id", "Proposal id")
+class ProposalByLogin(Resource):
+    """Allows to get proposal by person login name"""
+
+    @ns.doc(description='login_name should be a string')
+    @ns.marshal_with(f_proposal_schema)
+    #@token_required
+    def get(self, login_name):
+        """Returns a proposal by login"""
+        app.logger.info("Returns all proposals for user with login name %s" % login_name)
+        return get_proposals_by_login_name(login_name)

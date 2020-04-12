@@ -15,7 +15,7 @@ person_dict = {
         'login': f_fields.String(),
         'faxNumber': f_fields.String(),
         'recordTimeStamp': f_fields.DateTime(),
-        'cache': f_fields.DateTime(),
+        'cache': f_fields.String(),
         'externalId': f_fields.Integer(),
         }
 
@@ -32,5 +32,5 @@ class PersonSchema(Schema):
     login = ma_fields.String()
     faxNumber = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
-    cache = ma_fields.DateTime()
+    cache = ma_fields.String()
     externalId = ma_fields.Integer()

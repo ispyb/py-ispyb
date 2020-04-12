@@ -8,8 +8,8 @@ data_collection_dict = {
         'SESSIONID': f_fields.Integer(),
         'experimenttype': f_fields.String(),
         'dataCollectionNumber': f_fields.Integer(),
-        'startTime': f_fields.Integer(),
-        'endTime': f_fields.Integer(),
+        'startTime': f_fields.DateTime(),
+        'endTime': f_fields.DateTime(),
         'runStatus': f_fields.String(),
         'axisStart': f_fields.String(),
         'axisEnd': f_fields.String(),
@@ -113,8 +113,8 @@ class DataCollectionSchema(Schema):
     SESSIONID = ma_fields.Integer()
     experimenttype = ma_fields.String()
     dataCollectionNumber = ma_fields.Integer()
-    startTime = ma_fields.Integer()
-    endTime = ma_fields.Integer()
+    startTime = ma_fields.DateTime()
+    endTime = ma_fields.DateTime()
     runStatus = ma_fields.String()
     axisStart = ma_fields.String()
     axisEnd = ma_fields.String()
