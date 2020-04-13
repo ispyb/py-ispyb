@@ -3,210 +3,212 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restplus import fields as f_fields
 
 data_collection_dict = {
-        'dataCollectionId': f_fields.Integer(),
-        'BLSAMPLEID': f_fields.Integer(),
-        'SESSIONID': f_fields.Integer(),
-        'experimenttype': f_fields.String(),
-        'dataCollectionNumber': f_fields.Integer(),
-        'startTime': f_fields.DateTime(),
-        'endTime': f_fields.DateTime(),
-        'runStatus': f_fields.String(),
-        'axisStart': f_fields.String(),
-        'axisEnd': f_fields.String(),
-        'axisRange': f_fields.String(),
-        'overlap': f_fields.String(),
-        'numberOfImages': f_fields.Integer(),
-        'startImageNumber': f_fields.Integer(),
-        'numberOfPasses': f_fields.Integer(),
-        'exposureTime': f_fields.Integer(),
-        'imageDirectory': f_fields.String(),
-        'imagePrefix': f_fields.String(),
-        'imageSuffix': f_fields.String(),
-        'imageContainerSubPath': f_fields.String(),
-        'fileTemplate': f_fields.String(),
-        'wavelength': f_fields.String(),
-        'resolution': f_fields.String(),
-        'detectorDistance': f_fields.String(),
-        'xBeam': f_fields.String(),
-        'yBeam': f_fields.String(),
-        'comments': f_fields.String(),
-        'printableForReport': f_fields.String(),
-        'CRYSTALCLASS': f_fields.String(),
-        'slitGapVertical': f_fields.String(),
-        'slitGapHorizontal': f_fields.String(),
-        'transmission': f_fields.String(),
-        'synchrotronMode': f_fields.String(),
-        'xtalSnapshotFullPath1': f_fields.String(),
-        'xtalSnapshotFullPath2': f_fields.String(),
-        'xtalSnapshotFullPath3': f_fields.String(),
-        'xtalSnapshotFullPath4': f_fields.String(),
-        'rotationAxis': f_fields.String(),
-        'phiStart': f_fields.String(),
-        'kappaStart': f_fields.String(),
-        'omegaStart': f_fields.String(),
-        'chiStart': f_fields.String(),
-        'resolutionAtCorner': f_fields.String(),
-        'detector2Theta': f_fields.String(),
-        'DETECTORMODE': f_fields.String(),
-        'undulatorGap1': f_fields.String(),
-        'undulatorGap2': f_fields.String(),
-        'undulatorGap3': f_fields.String(),
-        'beamSizeAtSampleX': f_fields.String(),
-        'beamSizeAtSampleY': f_fields.String(),
-        'centeringMethod': f_fields.String(),
-        'averageTemperature': f_fields.String(),
-        'ACTUALSAMPLEBARCODE': f_fields.String(),
-        'ACTUALSAMPLESLOTINCONTAINER': f_fields.Integer(),
-        'ACTUALCONTAINERBARCODE': f_fields.String(),
-        'ACTUALCONTAINERSLOTINSC': f_fields.Integer(),
-        'actualCenteringPosition': f_fields.String(),
-        'beamShape': f_fields.String(),
-        'dataCollectionGroupId': f_fields.Integer(),
-        'POSITIONID': f_fields.Integer(),
-        'detectorId': f_fields.Integer(),
-        'FOCALSPOTSIZEATSAMPLEX': f_fields.Integer(),
-        'POLARISATION': f_fields.Integer(),
-        'FOCALSPOTSIZEATSAMPLEY': f_fields.Integer(),
-        'APERTUREID': f_fields.Integer(),
-        'screeningOrigId': f_fields.Integer(),
-        'startPositionId': f_fields.Integer(),
-        'endPositionId': f_fields.Integer(),
-        'flux': f_fields.Integer(),
-        'strategySubWedgeOrigId': f_fields.Integer(),
-        'blSubSampleId': f_fields.Integer(),
-        'flux_end': f_fields.Integer(),
-        'bestWilsonPlotPath': f_fields.String(),
-        'processedDataFile': f_fields.String(),
-        'datFullPath': f_fields.String(),
-        'magnification': f_fields.String(),
-        'totalAbsorbedDose': f_fields.String(),
-        'binning': f_fields.String(),
-        'particleDiameter': f_fields.String(),
-        'boxSize_CTF': f_fields.String(),
-        'minResolution': f_fields.String(),
-        'minDefocus': f_fields.String(),
-        'maxDefocus': f_fields.String(),
-        'defocusStepSize': f_fields.String(),
-        'amountAstigmatism': f_fields.String(),
-        'extractSize': f_fields.String(),
-        'bgRadius': f_fields.String(),
-        'voltage': f_fields.String(),
-        'objAperture': f_fields.String(),
-        'c1aperture': f_fields.String(),
-        'c2aperture': f_fields.String(),
-        'c3aperture': f_fields.String(),
-        'c1lens': f_fields.String(),
-        'c2lens': f_fields.String(),
-        'c3lens': f_fields.String(),
-        'totalExposedDose': f_fields.String(),
-        'nominalMagnification': f_fields.String(),
-        'nominalDefocus': f_fields.String(),
-        'imageSizeX': f_fields.String(),
-        'imageSizeY': f_fields.String(),
-        'pixelSizeOnImage': f_fields.String(),
-        'phasePlate': f_fields.String(),
+        'dataCollectionId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
+        'dataCollectionGroupId': f_fields.Integer(required=True, description='references DataCollectionGroup table'),
+        'strategySubWedgeOrigId': f_fields.Integer(required=False, description='references ScreeningStrategySubWedge table'),
+        'detectorId': f_fields.Integer(required=False, description='references Detector table'),
+        'blSubSampleId': f_fields.Integer(required=False, description=''),
+        'dataCollectionNumber': f_fields.Integer(required=False, description=''),
+        'startTime': f_fields.DateTime(required=False, description='Start time of the dataCollection'),
+        'endTime': f_fields.DateTime(required=False, description='end time of the dataCollection'),
+        'runStatus': f_fields.String(required=False, description=''),
+        'axisStart': f_fields.Float(required=False, description=''),
+        'axisEnd': f_fields.Float(required=False, description=''),
+        'axisRange': f_fields.Float(required=False, description=''),
+        'overlap': f_fields.Float(required=False, description=''),
+        'numberOfImages': f_fields.Integer(required=False, description=''),
+        'startImageNumber': f_fields.Integer(required=False, description=''),
+        'numberOfPasses': f_fields.Integer(required=False, description=''),
+        'exposureTime': f_fields.Float(required=False, description=''),
+        'imageDirectory': f_fields.String(required=False, description=''),
+        'imagePrefix': f_fields.String(required=False, description=''),
+        'imageSuffix': f_fields.String(required=False, description=''),
+        'fileTemplate': f_fields.String(required=False, description=''),
+        'wavelength': f_fields.Float(required=False, description=''),
+        'resolution': f_fields.Float(required=False, description=''),
+        'detectorDistance': f_fields.Float(required=False, description=''),
+        'xBeam': f_fields.Float(required=False, description=''),
+        'yBeam': f_fields.Float(required=False, description=''),
+        'xBeamPix': f_fields.Float(required=False, description='Beam size in pixels'),
+        'yBeamPix': f_fields.Float(required=False, description='Beam size in pixels'),
+        'comments': f_fields.String(required=False, description=''),
+        'printableForReport': f_fields.Integer(required=False, description=''),
+        'slitGapVertical': f_fields.Float(required=False, description=''),
+        'slitGapHorizontal': f_fields.Float(required=False, description=''),
+        'transmission': f_fields.Float(required=False, description=''),
+        'synchrotronMode': f_fields.String(required=False, description=''),
+        'xtalSnapshotFullPath1': f_fields.String(required=False, description=''),
+        'xtalSnapshotFullPath2': f_fields.String(required=False, description=''),
+        'xtalSnapshotFullPath3': f_fields.String(required=False, description=''),
+        'xtalSnapshotFullPath4': f_fields.String(required=False, description=''),
+        'rotationAxis': f_fields.String(required=False, description='enum(Omega,Kappa,Phi)'),
+        'phiStart': f_fields.Float(required=False, description=''),
+        'kappaStart': f_fields.Float(required=False, description=''),
+        'omegaStart': f_fields.Float(required=False, description=''),
+        'resolutionAtCorner': f_fields.Float(required=False, description=''),
+        'detector2Theta': f_fields.Float(required=False, description=''),
+        'undulatorGap1': f_fields.Float(required=False, description=''),
+        'undulatorGap2': f_fields.Float(required=False, description=''),
+        'undulatorGap3': f_fields.Float(required=False, description=''),
+        'beamSizeAtSampleX': f_fields.Float(required=False, description=''),
+        'beamSizeAtSampleY': f_fields.Float(required=False, description=''),
+        'centeringMethod': f_fields.String(required=False, description=''),
+        'averageTemperature': f_fields.Float(required=False, description=''),
+        'actualCenteringPosition': f_fields.String(required=False, description=''),
+        'beamShape': f_fields.String(required=False, description=''),
+        'flux': f_fields.String(required=False, description=''),
+        'flux_end': f_fields.String(required=False, description='flux measured after the collect'),
+        'totalAbsorbedDose': f_fields.String(required=False, description='expected dose delivered to the crystal, EDNA'),
+        'bestWilsonPlotPath': f_fields.String(required=False, description=''),
+        'imageQualityIndicatorsPlotPath': f_fields.String(required=False, description=''),
+        'imageQualityIndicatorsCSVPath': f_fields.String(required=False, description=''),
+        'blSampleId': f_fields.Integer(required=False, description=''),
+        'sessionId': f_fields.Integer(required=False, description=''),
+        'experimentType': f_fields.String(required=False, description=''),
+        'crystalClass': f_fields.String(required=False, description=''),
+        'chiStart': f_fields.Float(required=False, description=''),
+        'detectorMode': f_fields.String(required=False, description=''),
+        'actualSampleBarcode': f_fields.String(required=False, description=''),
+        'actualSampleSlotInContainer': f_fields.Integer(required=False, description=''),
+        'actualContainerBarcode': f_fields.String(required=False, description=''),
+        'actualContainerSlotInSC': f_fields.Integer(required=False, description=''),
+        'positionId': f_fields.Integer(required=False, description=''),
+        'focalSpotSizeAtSampleX': f_fields.Float(required=False, description=''),
+        'polarisation': f_fields.Float(required=False, description=''),
+        'focalSpotSizeAtSampleY': f_fields.Float(required=False, description=''),
+        'apertureId': f_fields.Integer(required=False, description=''),
+        'screeningOrigId': f_fields.Integer(required=False, description=''),
+        'processedDataFile': f_fields.String(required=False, description=''),
+        'datFullPath': f_fields.String(required=False, description=''),
+        'magnification': f_fields.Integer(required=False, description='Unit: X'),
+        'binning': f_fields.Integer(required=False, description='1 or 2. Number of pixels to process as 1. (Use mean value.)'),
+        'particleDiameter': f_fields.Float(required=False, description='Unit: nm'),
+        'boxSize_CTF': f_fields.Float(required=False, description='Unit: pixels'),
+        'minResolution': f_fields.Float(required=False, description='Unit: A'),
+        'minDefocus': f_fields.Float(required=False, description='Unit: A'),
+        'maxDefocus': f_fields.Float(required=False, description='Unit: A'),
+        'defocusStepSize': f_fields.Float(required=False, description='Unit: A'),
+        'amountAstigmatism': f_fields.Float(required=False, description='Unit: A'),
+        'extractSize': f_fields.Float(required=False, description='Unit: pixels'),
+        'bgRadius': f_fields.Float(required=False, description='Unit: nm'),
+        'voltage': f_fields.Float(required=False, description='Unit: kV'),
+        'objAperture': f_fields.Float(required=False, description='Unit: um'),
+        'c1aperture': f_fields.Float(required=False, description='Unit: um'),
+        'c2aperture': f_fields.Float(required=False, description='Unit: um'),
+        'c3aperture': f_fields.Float(required=False, description='Unit: um'),
+        'c1lens': f_fields.Float(required=False, description='Unit: %'),
+        'c2lens': f_fields.Float(required=False, description='Unit: %'),
+        'c3lens': f_fields.Float(required=False, description='Unit: %'),
+        'nominalmagnification': f_fields.Float(required=False, description=''),
+        'nominalDefocus': f_fields.Float(required=False, description=''),
+        'imageSizeX': f_fields.Integer(required=False, description=''),
+        'imageSizeY': f_fields.Integer(required=False, description=''),
+        'pixelSizeOnImage': f_fields.Float(required=False, description=''),
+        'phasePlate': f_fields.Integer(required=False, description=''),
+        'totalExposedDose': f_fields.Float(required=False, description='Units: e-/A^2'),
         }
 
 class DataCollectionSchema(Schema):
     dataCollectionId = ma_fields.Integer()
-    BLSAMPLEID = ma_fields.Integer()
-    SESSIONID = ma_fields.Integer()
-    experimenttype = ma_fields.String()
+    dataCollectionGroupId = ma_fields.Integer()
+    strategySubWedgeOrigId = ma_fields.Integer()
+    detectorId = ma_fields.Integer()
+    blSubSampleId = ma_fields.Integer()
     dataCollectionNumber = ma_fields.Integer()
     startTime = ma_fields.DateTime()
     endTime = ma_fields.DateTime()
     runStatus = ma_fields.String()
-    axisStart = ma_fields.String()
-    axisEnd = ma_fields.String()
-    axisRange = ma_fields.String()
-    overlap = ma_fields.String()
+    axisStart = ma_fields.Float()
+    axisEnd = ma_fields.Float()
+    axisRange = ma_fields.Float()
+    overlap = ma_fields.Float()
     numberOfImages = ma_fields.Integer()
     startImageNumber = ma_fields.Integer()
     numberOfPasses = ma_fields.Integer()
-    exposureTime = ma_fields.Integer()
+    exposureTime = ma_fields.Float()
     imageDirectory = ma_fields.String()
     imagePrefix = ma_fields.String()
     imageSuffix = ma_fields.String()
-    imageContainerSubPath = ma_fields.String()
     fileTemplate = ma_fields.String()
-    wavelength = ma_fields.String()
-    resolution = ma_fields.String()
-    detectorDistance = ma_fields.String()
-    xBeam = ma_fields.String()
-    yBeam = ma_fields.String()
+    wavelength = ma_fields.Float()
+    resolution = ma_fields.Float()
+    detectorDistance = ma_fields.Float()
+    xBeam = ma_fields.Float()
+    yBeam = ma_fields.Float()
+    xBeamPix = ma_fields.Float()
+    yBeamPix = ma_fields.Float()
     comments = ma_fields.String()
-    printableForReport = ma_fields.String()
-    CRYSTALCLASS = ma_fields.String()
-    slitGapVertical = ma_fields.String()
-    slitGapHorizontal = ma_fields.String()
-    transmission = ma_fields.String()
+    printableForReport = ma_fields.Integer()
+    slitGapVertical = ma_fields.Float()
+    slitGapHorizontal = ma_fields.Float()
+    transmission = ma_fields.Float()
     synchrotronMode = ma_fields.String()
     xtalSnapshotFullPath1 = ma_fields.String()
     xtalSnapshotFullPath2 = ma_fields.String()
     xtalSnapshotFullPath3 = ma_fields.String()
     xtalSnapshotFullPath4 = ma_fields.String()
     rotationAxis = ma_fields.String()
-    phiStart = ma_fields.String()
-    kappaStart = ma_fields.String()
-    omegaStart = ma_fields.String()
-    chiStart = ma_fields.String()
-    resolutionAtCorner = ma_fields.String()
-    detector2Theta = ma_fields.String()
-    DETECTORMODE = ma_fields.String()
-    undulatorGap1 = ma_fields.String()
-    undulatorGap2 = ma_fields.String()
-    undulatorGap3 = ma_fields.String()
-    beamSizeAtSampleX = ma_fields.String()
-    beamSizeAtSampleY = ma_fields.String()
+    phiStart = ma_fields.Float()
+    kappaStart = ma_fields.Float()
+    omegaStart = ma_fields.Float()
+    resolutionAtCorner = ma_fields.Float()
+    detector2Theta = ma_fields.Float()
+    undulatorGap1 = ma_fields.Float()
+    undulatorGap2 = ma_fields.Float()
+    undulatorGap3 = ma_fields.Float()
+    beamSizeAtSampleX = ma_fields.Float()
+    beamSizeAtSampleY = ma_fields.Float()
     centeringMethod = ma_fields.String()
-    averageTemperature = ma_fields.String()
-    ACTUALSAMPLEBARCODE = ma_fields.String()
-    ACTUALSAMPLESLOTINCONTAINER = ma_fields.Integer()
-    ACTUALCONTAINERBARCODE = ma_fields.String()
-    ACTUALCONTAINERSLOTINSC = ma_fields.Integer()
+    averageTemperature = ma_fields.Float()
     actualCenteringPosition = ma_fields.String()
     beamShape = ma_fields.String()
-    dataCollectionGroupId = ma_fields.Integer()
-    POSITIONID = ma_fields.Integer()
-    detectorId = ma_fields.Integer()
-    FOCALSPOTSIZEATSAMPLEX = ma_fields.Integer()
-    POLARISATION = ma_fields.Integer()
-    FOCALSPOTSIZEATSAMPLEY = ma_fields.Integer()
-    APERTUREID = ma_fields.Integer()
-    screeningOrigId = ma_fields.Integer()
-    startPositionId = ma_fields.Integer()
-    endPositionId = ma_fields.Integer()
-    flux = ma_fields.Integer()
-    strategySubWedgeOrigId = ma_fields.Integer()
-    blSubSampleId = ma_fields.Integer()
-    flux_end = ma_fields.Integer()
+    flux = ma_fields.String()
+    flux_end = ma_fields.String()
+    totalAbsorbedDose = ma_fields.String()
     bestWilsonPlotPath = ma_fields.String()
+    imageQualityIndicatorsPlotPath = ma_fields.String()
+    imageQualityIndicatorsCSVPath = ma_fields.String()
+    blSampleId = ma_fields.Integer()
+    sessionId = ma_fields.Integer()
+    experimentType = ma_fields.String()
+    crystalClass = ma_fields.String()
+    chiStart = ma_fields.Float()
+    detectorMode = ma_fields.String()
+    actualSampleBarcode = ma_fields.String()
+    actualSampleSlotInContainer = ma_fields.Integer()
+    actualContainerBarcode = ma_fields.String()
+    actualContainerSlotInSC = ma_fields.Integer()
+    positionId = ma_fields.Integer()
+    focalSpotSizeAtSampleX = ma_fields.Float()
+    polarisation = ma_fields.Float()
+    focalSpotSizeAtSampleY = ma_fields.Float()
+    apertureId = ma_fields.Integer()
+    screeningOrigId = ma_fields.Integer()
     processedDataFile = ma_fields.String()
     datFullPath = ma_fields.String()
-    magnification = ma_fields.String()
-    totalAbsorbedDose = ma_fields.String()
-    binning = ma_fields.String()
-    particleDiameter = ma_fields.String()
-    boxSize_CTF = ma_fields.String()
-    minResolution = ma_fields.String()
-    minDefocus = ma_fields.String()
-    maxDefocus = ma_fields.String()
-    defocusStepSize = ma_fields.String()
-    amountAstigmatism = ma_fields.String()
-    extractSize = ma_fields.String()
-    bgRadius = ma_fields.String()
-    voltage = ma_fields.String()
-    objAperture = ma_fields.String()
-    c1aperture = ma_fields.String()
-    c2aperture = ma_fields.String()
-    c3aperture = ma_fields.String()
-    c1lens = ma_fields.String()
-    c2lens = ma_fields.String()
-    c3lens = ma_fields.String()
-    totalExposedDose = ma_fields.String()
-    nominalMagnification = ma_fields.String()
-    nominalDefocus = ma_fields.String()
-    imageSizeX = ma_fields.String()
-    imageSizeY = ma_fields.String()
-    pixelSizeOnImage = ma_fields.String()
-    phasePlate = ma_fields.String()
+    magnification = ma_fields.Integer()
+    binning = ma_fields.Integer()
+    particleDiameter = ma_fields.Float()
+    boxSize_CTF = ma_fields.Float()
+    minResolution = ma_fields.Float()
+    minDefocus = ma_fields.Float()
+    maxDefocus = ma_fields.Float()
+    defocusStepSize = ma_fields.Float()
+    amountAstigmatism = ma_fields.Float()
+    extractSize = ma_fields.Float()
+    bgRadius = ma_fields.Float()
+    voltage = ma_fields.Float()
+    objAperture = ma_fields.Float()
+    c1aperture = ma_fields.Float()
+    c2aperture = ma_fields.Float()
+    c3aperture = ma_fields.Float()
+    c1lens = ma_fields.Float()
+    c2lens = ma_fields.Float()
+    c3lens = ma_fields.Float()
+    nominalmagnification = ma_fields.Float()
+    nominalDefocus = ma_fields.Float()
+    imageSizeX = ma_fields.Integer()
+    imageSizeY = ma_fields.Integer()
+    pixelSizeOnImage = ma_fields.Float()
+    phasePlate = ma_fields.Integer()
+    totalExposedDose = ma_fields.Float()

@@ -14,10 +14,11 @@ uri = config["general"]["db_uri"]
 user = uri.split('//')[1].split(':')[0]
 passwd = uri.split('//')[1].split(':')[1].split('@')[0]
 host = uri.split('@')[1].split('/')[0]
+db_name = uri.split('/')[-1]
 
 connection = MySQLdb.connect(host=host, user=user, passwd=passwd)
 cursor = connection.cursor()
-cursor.execute("USE ispyb_test")
+cursor.execute("USE %s" % db_name)
 cursor.execute("SHOW TABLES")
 tables = cursor.fetchall()
 
@@ -32,44 +33,70 @@ init_file = open(init_file_path, "w")
 init_file.write("from ispyb import api\n\n")
 
 
+gen_tables = [
+        'AutoProc',
+        'AutoProcIntegration',
+        'AutoProcProgram',
+        'AutoProcProgramAttachment',
+        'AutoProcProgramMessage',
+        'AutoProcScaling',
+        'AutoProcScalingStatistics',
+        'AutoProcStatus'
+        'BLSample',
+        'BLSession',
+        'BeamLineSetup',
+        'Container',
+        'Crystal',
+        'DataCollection',
+        'DataCollectionGroup',
+        'Detector',
+        'EnergyScan',
+        'ImageQualityIndicators',
+        'Person',
+        'Proposal',
+        'Protein',
+        'RobotAction',
+        'Screening',
+        'Shipping'
+        ]
 
-
-gen_tables = ['BLSample', 'Person', 'Proposal', 'DataCollection']
 
 for table in tables:
     table_name = table[0]
     if table_name in gen_tables:
-        print('Generting ma_model for table %s' % table_name)
-        cursor.execute("SHOW COLUMNS FROM %s" % table)
+        print('Generting flask and marshmallow models for table %s' % table_name)
+        cursor.execute("SHOW FULL COLUMNS FROM %s" % table)
         columns = cursor.fetchall()
         table_name = table_name.replace('BF_', '').replace('BL', '')
-
-        print(table_name)
         schema_name = "_".join(re.findall('[A-Z][^A-Z]*', table_name)).lower()
         dict_text = "%s_dict = {\n" % schema_name
         ma_text = "class %sSchema(Schema):\n" % table_name
 
         for column in columns:
-            column_name = column[0]
-            dtype = column[1]#.replace('"', '')
-            data_size = '()'
-            description = None
-            if dtype.startswith('int') or dtype.startswith('binary'):
-                column_datatype = 'Integer'
-            elif dtype.startswith('varchar') or dtype.startswith('text'):
-                column_datatype = 'String'
-                data_size = dtype.replace('varchar', '')
-            elif dtype.startswith('timestamp') or dtype.startswith('datetime'):
-                column_datatype = 'DateTime'
-            elif dtype.startswith('enum'):
-                column_datatype = 'String'
-                #description = dtype
-            dict_text += "        '%s': f_fields.%s(" % (column_name, column_datatype)
-            if description:
-                dict_text += "description='%s'),\n" % description
-            else:
-                dict_text += "),\n"
-            ma_text += "    %s = ma_fields.%s()\n" % (column_name, column_datatype)
+            name = column[0]
+            data_type = "String"
+            data_size = "()"
+            required = "required=False"
+            if column[3] == "NO":
+                required = "required=True"
+            #default = None
+            #if column[5] != "NULL":
+            #    default =
+            description = "description='%s'" % column[8].replace("'", "")
+            if 'int' in column[1]  or column[1].startswith('binary'):
+                data_type = 'Integer'
+            elif column[1].startswith('float'):
+                data_type = 'Float' 
+            elif column[1].startswith('varchar') or column[1].startswith('text'):
+                data_type = 'String'
+                data_size = column[1].replace('varchar', '')
+            elif column[1].startswith('timestamp') or column[1].startswith('datetime'):
+                data_type = 'DateTime'
+            elif column[1].startswith('enum'):
+                data_type = 'String'
+                description = "description='%s%s'"  % (column[8].replace("'", ""), column[1].replace("'", ""))
+            dict_text += "        '%s': f_fields.%s(%s, %s),\n" % (name, data_type, required, description)
+            ma_text += "    %s = ma_fields.%s()\n" % (name, data_type)
         dict_text += "        }\n\n"
 
         schema_file_path = "%s/ispyb/schemas/%s.py" % (ispyb_root, schema_name)

@@ -3,20 +3,20 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restplus import fields as f_fields
 
 person_dict = {
-        'personId': f_fields.Integer(),
-        'laboratoryId': f_fields.Integer(),
-        'siteId': f_fields.Integer(),
-        'personUUID': f_fields.String(),
-        'familyName': f_fields.String(),
-        'givenName': f_fields.String(),
-        'title': f_fields.String(),
-        'emailAddress': f_fields.String(),
-        'phoneNumber': f_fields.String(),
-        'login': f_fields.String(),
-        'faxNumber': f_fields.String(),
-        'recordTimeStamp': f_fields.DateTime(),
-        'cache': f_fields.String(),
-        'externalId': f_fields.Integer(),
+        'personId': f_fields.Integer(required=True, description=''),
+        'laboratoryId': f_fields.Integer(required=False, description=''),
+        'siteId': f_fields.Integer(required=False, description=''),
+        'personUUID': f_fields.String(required=False, description=''),
+        'familyName': f_fields.String(required=False, description=''),
+        'givenName': f_fields.String(required=False, description=''),
+        'title': f_fields.String(required=False, description=''),
+        'emailAddress': f_fields.String(required=False, description=''),
+        'phoneNumber': f_fields.String(required=False, description=''),
+        'login': f_fields.String(required=False, description=''),
+        'faxNumber': f_fields.String(required=False, description=''),
+        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
+        'externalId': f_fields.Integer(required=False, description=''),
+        'cache': f_fields.String(required=False, description=''),
         }
 
 class PersonSchema(Schema):
@@ -32,5 +32,5 @@ class PersonSchema(Schema):
     login = ma_fields.String()
     faxNumber = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
-    cache = ma_fields.String()
     externalId = ma_fields.Integer()
+    cache = ma_fields.String()

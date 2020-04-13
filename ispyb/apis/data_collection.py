@@ -14,7 +14,7 @@ def get_all_data_collections():
 #def get_data_collection_by_id():
 
 
-@ns.route("/")
+@ns.route("")
 class DataCollectionList(Resource):
     """Data collection resource"""
 
