@@ -1,3 +1,8 @@
+"""
+ISPyB flask server
+https://github.com/IvarsKarpics/ispyb_backend_prototype
+"""
+
 from flask_restplus import Namespace, Resource
 from ispyb import app
 #from ispyb.models import Proposal

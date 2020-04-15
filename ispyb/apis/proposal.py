@@ -1,10 +1,13 @@
+# ISPyB flask server
+# https://github.com/IvarsKarpics/ispyb_backend_prototype
+
 from flask_restplus import Namespace, Resource
 
 from ispyb import app, api, db
 from ispyb.auth import token_required
 from ispyb.apis import person as person_api
 from ispyb.models import Proposal as ProposalModel
-from ispyb.schemas import f_proposal_schema,  ma_proposal_schema
+from ispyb.schemas import f_proposal_schema, ma_proposal_schema
 
 ns = Namespace('Proposal', description='Proposal related namespace', path='/prop')
 
@@ -19,6 +22,8 @@ def get_proposal_by_id(proposal_id):
     return ma_proposal_schema.dump(proposal)
 
 def get_proposals_by_login_name(login_name):
+    """Returns proposals by a login name
+    """
     person_id = person_api.get_person_id_by_login(login_name)
     #TODO this is not nice...
     proposal = ProposalModel.query.filter_by(personId=person_id)
