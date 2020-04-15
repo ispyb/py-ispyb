@@ -1,5 +1,6 @@
-# ISPyB flask server
-# https://github.com/IvarsKarpics/ispyb_backend_prototype
+"""
+ISPyB flask server
+"""
 
 from flask_restplus import Namespace, Resource
 

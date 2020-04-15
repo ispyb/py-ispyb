@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 import abc
 import jwt
 import datetime

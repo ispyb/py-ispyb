@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+"""
+ISPyB flask server
+"""
+
 import os
 import sys
 import configparser

@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 import importlib
 from functools import wraps
 from flask import request, jsonify

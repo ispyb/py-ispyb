@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 from ispyb.auth.BaseAuth import BaseAuth
 
 
