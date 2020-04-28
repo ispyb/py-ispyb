@@ -15,7 +15,7 @@ if not hasattr(werkzeug, "cached_property"):
     werkzeug.cached_property = werkzeug.utils.cached_property
 
 from flask import Flask, Blueprint
-from flask_restplus import Api
+from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
 
 

@@ -1,7 +1,7 @@
 gunicorn
 Flask
 Flask-SQLAlchemy
-flask-restplus
+flask-restx
 SQLAlchemy
 marshmallow
 pyjwt

@@ -2,7 +2,7 @@
 ISPyB flask server
 """
 
-from flask_restplus import Namespace, Resource
+from flask_restx import Namespace, Resource
 from ispyb import app
 #from ispyb.models import Proposal
 #from ispyb.schemas import ProposalSchema

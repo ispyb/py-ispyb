@@ -1,4 +1,4 @@
-from flask_restplus import Namespace, Resource
+from flask_restx import Namespace, Resource
 
 from ispyb import app, api, db
 from ispyb.auth import token_required
