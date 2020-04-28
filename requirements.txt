@@ -1,7 +1,2 @@
-gunicorn
-Flask
-Flask-SQLAlchemy
-flask-restx
-SQLAlchemy
-marshmallow
-pyjwt
+-r app/requirements.txt
+-r tasks/requirements.txt
