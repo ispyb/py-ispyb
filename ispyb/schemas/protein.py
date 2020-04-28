@@ -39,4 +39,4 @@ class ProteinSchema(Schema):
     componentTypeId = ma_fields.Integer()
     modId = ma_fields.String()
     concentrationTypeId = ma_fields.Integer()
-    global = ma_fields.Integer()
+    Global = ma_fields.Integer()

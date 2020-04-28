@@ -35,6 +35,7 @@ class ProposalList(Resource):
     """Allows to get all proposals"""
 
     @ns.doc(security="apikey")
+    @ns.marshal_list_with(f_proposal_schema)
     #@token_required
     def get(self):
         """Returns all proposals"""
