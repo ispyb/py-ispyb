@@ -1,6 +1,6 @@
 
 from marshmallow import Schema, fields as ma_fields
-from flask_restplus import fields as f_fields
+from flask_restx import fields as f_fields
 
 protein_dict = {
         'proteinId': f_fields.Integer(required=True, description=''),
@@ -39,4 +39,4 @@ class ProteinSchema(Schema):
     componentTypeId = ma_fields.Integer()
     modId = ma_fields.String()
     concentrationTypeId = ma_fields.Integer()
-    #global = ma_fields.Integer()
+    global = ma_fields.Integer()

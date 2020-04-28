@@ -1,6 +1,6 @@
 
 from marshmallow import Schema, fields as ma_fields
-from flask_restplus import fields as f_fields
+from flask_restx import fields as f_fields
 
 data_collection_dict = {
         'dataCollectionId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
