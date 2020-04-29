@@ -19,15 +19,26 @@ auto_proc_program_dict = {
 
 class AutoProcProgramSchema(Schema):
     autoProcProgramId = ma_fields.Integer()
+
     dataCollectionId = ma_fields.Integer()
+
     processingCommandLine = ma_fields.String()
+
     processingPrograms = ma_fields.String()
+
     processingStatus = ma_fields.String()
+
     processingMessage = ma_fields.String()
+
     processingStartTime = ma_fields.DateTime()
+
     processingEndTime = ma_fields.DateTime()
+
     processingEnvironment = ma_fields.String()
+
     recordTimeStamp = ma_fields.DateTime()
+
     processingJobId = ma_fields.Integer()
+
 f_auto_proc_program_schema = api.model('AutoProcProgram', auto_proc_program_dict)
 ma_auto_proc_program_schema = AutoProcProgramSchema()

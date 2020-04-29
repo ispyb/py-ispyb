@@ -6,7 +6,7 @@ from flask_restx import Namespace, Resource
 
 #from ispyb.auth import token_required
 from app.models import DataCollection as DataCollectionModel
-from app.modules.data_collect.schemas import f_data_collection_schema, ma_data_collection_schema
+from app.modules.data_collection.schemas import f_data_collection_schema, ma_data_collection_schema
 
 api = Namespace('Data collections', description='Data collection related namespace', path='/dc')
 

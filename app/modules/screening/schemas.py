@@ -17,13 +17,22 @@ screening_dict = {
 
 class ScreeningSchema(Schema):
     screeningId = ma_fields.Integer()
+
     diffractionPlanId = ma_fields.Integer()
+
     dataCollectionGroupId = ma_fields.Integer()
+
     dataCollectionId = ma_fields.Integer()
+
     bltimeStamp = ma_fields.DateTime()
+
     programVersion = ma_fields.String()
+
     comments = ma_fields.String()
+
     shortComments = ma_fields.String()
+
     xmlSampleInformation = ma_fields.String()
+
 f_screening_schema = api.model('Screening', screening_dict)
 ma_screening_schema = ScreeningSchema()

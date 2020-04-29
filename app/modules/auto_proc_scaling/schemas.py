@@ -23,19 +23,34 @@ auto_proc_scaling_dict = {
 
 class AutoProcScalingSchema(Schema):
     autoProcScalingId = ma_fields.Integer()
+
     autoProcId = ma_fields.Integer()
+
     recordTimeStamp = ma_fields.DateTime()
+
     resolutionEllipsoidAxis11 = ma_fields.Float()
+
     resolutionEllipsoidAxis12 = ma_fields.Float()
+
     resolutionEllipsoidAxis13 = ma_fields.Float()
+
     resolutionEllipsoidAxis21 = ma_fields.Float()
+
     resolutionEllipsoidAxis22 = ma_fields.Float()
+
     resolutionEllipsoidAxis23 = ma_fields.Float()
+
     resolutionEllipsoidAxis31 = ma_fields.Float()
+
     resolutionEllipsoidAxis32 = ma_fields.Float()
+
     resolutionEllipsoidAxis33 = ma_fields.Float()
+
     resolutionEllipsoidValue1 = ma_fields.Float()
+
     resolutionEllipsoidValue2 = ma_fields.Float()
+
     resolutionEllipsoidValue3 = ma_fields.Float()
+
 f_auto_proc_scaling_schema = api.model('AutoProcScaling', auto_proc_scaling_dict)
 ma_auto_proc_scaling_schema = AutoProcScalingSchema()

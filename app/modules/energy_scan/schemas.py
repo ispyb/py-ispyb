@@ -42,38 +42,72 @@ energy_scan_dict = {
 
 class EnergyScanSchema(Schema):
     energyScanId = ma_fields.Integer()
+
     sessionId = ma_fields.Integer()
+
     blSampleId = ma_fields.Integer()
+
     fluorescenceDetector = ma_fields.String()
+
     scanFileFullPath = ma_fields.String()
+
     choochFileFullPath = ma_fields.String()
+
     jpegChoochFileFullPath = ma_fields.String()
+
     element = ma_fields.String()
+
     startEnergy = ma_fields.Float()
+
     endEnergy = ma_fields.Float()
+
     transmissionFactor = ma_fields.Float()
+
     exposureTime = ma_fields.Float()
+
     axisPosition = ma_fields.Float()
+
     synchrotronCurrent = ma_fields.Float()
+
     temperature = ma_fields.Float()
+
     peakEnergy = ma_fields.Float()
+
     peakFPrime = ma_fields.Float()
+
     peakFDoublePrime = ma_fields.Float()
+
     inflectionEnergy = ma_fields.Float()
+
     inflectionFPrime = ma_fields.Float()
+
     inflectionFDoublePrime = ma_fields.Float()
+
     xrayDose = ma_fields.Float()
+
     startTime = ma_fields.DateTime()
+
     endTime = ma_fields.DateTime()
+
     edgeEnergy = ma_fields.String()
+
     filename = ma_fields.String()
+
     beamSizeVertical = ma_fields.Float()
+
     beamSizeHorizontal = ma_fields.Float()
+
     crystalClass = ma_fields.String()
+
     comments = ma_fields.String()
+
     flux = ma_fields.String()
+
     flux_end = ma_fields.String()
+
     workingDirectory = ma_fields.String()
+
     blSubSampleId = ma_fields.Integer()
+
 f_energy_scan_schema = api.model('EnergyScan', energy_scan_dict)
 ma_energy_scan_schema = EnergyScanSchema()

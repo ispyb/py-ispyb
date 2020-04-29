@@ -17,13 +17,22 @@ proposal_dict = {
 
 class ProposalSchema(Schema):
     proposalId = ma_fields.Integer()
+
     personId = ma_fields.Integer()
+
     title = ma_fields.String()
+
     proposalCode = ma_fields.String()
+
     proposalNumber = ma_fields.String()
+
     proposalType = ma_fields.String()
+
     bltimeStamp = ma_fields.DateTime()
+
     externalId = ma_fields.Integer()
+
     state = ma_fields.String()
+
 f_proposal_schema = api.model('Proposal', proposal_dict)
 ma_proposal_schema = ProposalSchema()

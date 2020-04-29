@@ -82,6 +82,8 @@ for table in tables:
 
         for column in columns:
             name = column[0]
+            if name == 'global':
+                name = 'Global'
             data_type = "String"
             data_size = "()"
             required = "required=False"
@@ -104,7 +106,7 @@ for table in tables:
                 data_type = 'String'
                 description = "description='%s%s'"  % (column[8].replace("'", ""), column[1].replace("'", ""))
             dict_text += "        '%s': f_fields.%s(%s, %s),\n" % (name, data_type, required, description)
-            ma_text += "    %s = ma_fields.%s()\n" % (name, data_type)
+            ma_text += "    %s = ma_fields.%s()\n\n" % (name, data_type)
         dict_text += "        }\n\n"
 
         class_text = "f_%s_schema = api.model('%s', %s_dict)\n" % (schema_name, table_name, schema_name)
@@ -120,7 +122,22 @@ for table in tables:
         schema_file.write(class_text)
         schema_file.close()
 
+
+        resources_file_path = "%s/app/modules/%s/resources.py" % (ispyb_root, schema_name) 
         
+        if not os.path.exists(resources_file_path):
+            resources_file = open(resources_file_path, "w")
+            resources_file.write("from flask_restx import Namespace, Resource\n\n")
+            resources_file.write("from app.models import %s as %sModel\n" % (table_name, table_name))
+            resources_file.write("from app.modules.%s.schemas import f_%s_schema,  ma_%s_schema\n\n\n" % (schema_name, schema_name, schema_name))
+            resources_file.write("api = Namespace('%s', description='%s related namespace', path='/%s')\n\n\n" % (table_name, table_name, schema_name))
+            resources_file.write('@api.route("")\n')
+            resources_file.write("class %sList(Resource):\n\n" % table_name)
+            resources_file.write('    @api.doc(security="apikey")\n')
+            resources_file.write("    def get(self):\n")
+            resources_file.write("        %s_list = %sModel.query.all()\n" % (schema_name, table_name))
+            resources_file.write("        return ma_%s_schema.dump(%s_list)\n" % (schema_name, schema_name))
+
         init_file_path = "%s/app/modules/%s/__init__.py" % (ispyb_root, schema_name)  
         init_file = open(init_file_path, "w")
         init_file.write("from app.extensions.api import api_v1\n\n")

@@ -14,10 +14,16 @@ auto_proc_program_message_dict = {
 
 class AutoProcProgramMessageSchema(Schema):
     autoProcProgramMessageId = ma_fields.Integer()
+
     autoProcProgramId = ma_fields.Integer()
+
     recordTimeStamp = ma_fields.DateTime()
+
     severity = ma_fields.String()
+
     message = ma_fields.String()
+
     description = ma_fields.String()
+
 f_auto_proc_program_message_schema = api.model('AutoProcProgramMessage', auto_proc_program_message_dict)
 ma_auto_proc_program_message_schema = AutoProcProgramMessageSchema()

@@ -18,14 +18,24 @@ auto_proc_dict = {
 
 class AutoProcSchema(Schema):
     autoProcId = ma_fields.Integer()
+
     autoProcProgramId = ma_fields.Integer()
+
     spaceGroup = ma_fields.String()
+
     refinedCell_a = ma_fields.Float()
+
     refinedCell_b = ma_fields.Float()
+
     refinedCell_c = ma_fields.Float()
+
     refinedCell_alpha = ma_fields.Float()
+
     refinedCell_beta = ma_fields.Float()
+
     refinedCell_gamma = ma_fields.Float()
+
     recordTimeStamp = ma_fields.DateTime()
+
 f_auto_proc_schema = api.model('AutoProc', auto_proc_dict)
 ma_auto_proc_schema = AutoProcSchema()

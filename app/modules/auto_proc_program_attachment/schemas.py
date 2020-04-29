@@ -14,10 +14,16 @@ auto_proc_program_attachment_dict = {
 
 class AutoProcProgramAttachmentSchema(Schema):
     autoProcProgramAttachmentId = ma_fields.Integer()
+
     autoProcProgramId = ma_fields.Integer()
+
     fileType = ma_fields.String()
+
     fileName = ma_fields.String()
+
     filePath = ma_fields.String()
+
     recordTimeStamp = ma_fields.DateTime()
+
 f_auto_proc_program_attachment_schema = api.model('AutoProcProgramAttachment', auto_proc_program_attachment_dict)
 ma_auto_proc_program_attachment_schema = AutoProcProgramAttachmentSchema()

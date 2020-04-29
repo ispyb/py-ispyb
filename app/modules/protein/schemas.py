@@ -20,26 +20,43 @@ protein_dict = {
         'componentTypeId': f_fields.Integer(required=False, description=''),
         'modId': f_fields.String(required=False, description=''),
         'concentrationTypeId': f_fields.Integer(required=False, description=''),
-        'global': f_fields.Integer(required=False, description=''),
+        'Global': f_fields.Integer(required=False, description=''),
         }
 
 class ProteinSchema(Schema):
     proteinId = ma_fields.Integer()
+
     proposalId = ma_fields.Integer()
+
     name = ma_fields.String()
+
     acronym = ma_fields.String()
+
     safetyLevel = ma_fields.String()
+
     molecularMass = ma_fields.String()
+
     proteinType = ma_fields.String()
+
     sequence = ma_fields.String()
+
     personId = ma_fields.Integer()
+
     bltimeStamp = ma_fields.DateTime()
+
     isCreatedBySampleSheet = ma_fields.Integer()
+
     externalId = ma_fields.Integer()
+
     density = ma_fields.Float()
+
     componentTypeId = ma_fields.Integer()
+
     modId = ma_fields.String()
+
     concentrationTypeId = ma_fields.Integer()
-    global = ma_fields.Integer()
+
+    Global = ma_fields.Integer()
+
 f_protein_schema = api.model('Protein', protein_dict)
 ma_protein_schema = ProteinSchema()

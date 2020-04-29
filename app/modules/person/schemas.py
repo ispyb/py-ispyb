@@ -22,18 +22,32 @@ person_dict = {
 
 class PersonSchema(Schema):
     personId = ma_fields.Integer()
+
     laboratoryId = ma_fields.Integer()
+
     siteId = ma_fields.Integer()
+
     personUUID = ma_fields.String()
+
     familyName = ma_fields.String()
+
     givenName = ma_fields.String()
+
     title = ma_fields.String()
+
     emailAddress = ma_fields.String()
+
     phoneNumber = ma_fields.String()
+
     login = ma_fields.String()
+
     faxNumber = ma_fields.String()
+
     recordTimeStamp = ma_fields.DateTime()
+
     externalId = ma_fields.Integer()
+
     cache = ma_fields.String()
+
 f_person_schema = api.model('Person', person_dict)
 ma_person_schema = PersonSchema()

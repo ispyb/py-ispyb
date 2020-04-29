@@ -32,28 +32,52 @@ crystal_dict = {
 
 class CrystalSchema(Schema):
     crystalId = ma_fields.Integer()
+
     diffractionPlanId = ma_fields.Integer()
+
     proteinId = ma_fields.Integer()
+
     crystalUUID = ma_fields.String()
+
     name = ma_fields.String()
+
     spaceGroup = ma_fields.String()
+
     morphology = ma_fields.String()
+
     color = ma_fields.String()
+
     size_X = ma_fields.String()
+
     size_Y = ma_fields.String()
+
     size_Z = ma_fields.String()
+
     cell_a = ma_fields.String()
+
     cell_b = ma_fields.String()
+
     cell_c = ma_fields.String()
+
     cell_alpha = ma_fields.String()
+
     cell_beta = ma_fields.String()
+
     cell_gamma = ma_fields.String()
+
     comments = ma_fields.String()
+
     pdbFileName = ma_fields.String()
+
     pdbFilePath = ma_fields.String()
+
     recordTimeStamp = ma_fields.DateTime()
+
     abundance = ma_fields.Float()
+
     packingFraction = ma_fields.Float()
+
     theoreticaldensity = ma_fields.Float()
+
 f_crystal_schema = api.model('Crystal', crystal_dict)
 ma_crystal_schema = CrystalSchema()

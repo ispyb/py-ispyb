@@ -30,26 +30,48 @@ container_dict = {
 
 class ContainerSchema(Schema):
     containerId = ma_fields.Integer()
+
     dewarId = ma_fields.Integer()
+
     code = ma_fields.String()
+
     containerType = ma_fields.String()
+
     capacity = ma_fields.Integer()
+
     beamlineLocation = ma_fields.String()
+
     sampleChangerLocation = ma_fields.String()
+
     containerStatus = ma_fields.String()
+
     bltimeStamp = ma_fields.DateTime()
+
     barcode = ma_fields.String()
+
     sessionId = ma_fields.Integer()
+
     ownerId = ma_fields.Integer()
+
     screenId = ma_fields.Integer()
+
     scheduleId = ma_fields.Integer()
+
     imagerId = ma_fields.Integer()
+
     scLocationUpdated = ma_fields.DateTime()
+
     requestedImagerId = ma_fields.Integer()
+
     requestedReturn = ma_fields.Integer()
+
     comments = ma_fields.String()
+
     experimentType = ma_fields.String()
+
     storageTemperature = ma_fields.Float()
+
     containerRegistryId = ma_fields.Integer()
+
 f_container_schema = api.model('Container', container_dict)
 ma_container_schema = ContainerSchema()

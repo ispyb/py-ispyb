@@ -21,17 +21,30 @@ robot_action_dict = {
 
 class RobotActionSchema(Schema):
     robotActionId = ma_fields.Integer()
+
     blsessionId = ma_fields.Integer()
+
     blsampleId = ma_fields.Integer()
+
     actionType = ma_fields.String()
+
     startTimestamp = ma_fields.DateTime()
+
     endTimestamp = ma_fields.DateTime()
+
     status = ma_fields.String()
+
     message = ma_fields.String()
+
     containerLocation = ma_fields.Integer()
+
     dewarLocation = ma_fields.Integer()
+
     sampleBarcode = ma_fields.String()
+
     xtalSnapshotBefore = ma_fields.String()
+
     xtalSnapshotAfter = ma_fields.String()
+
 f_robot_action_schema = api.model('RobotAction', robot_action_dict)
 ma_robot_action_schema = RobotActionSchema()

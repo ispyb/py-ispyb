@@ -34,30 +34,56 @@ session_dict = {
 
 class SessionSchema(Schema):
     sessionId = ma_fields.Integer()
+
     expSessionPk = ma_fields.Integer()
+
     beamLineSetupId = ma_fields.Integer()
+
     proposalId = ma_fields.Integer()
+
     beamCalendarId = ma_fields.Integer()
+
     projectCode = ma_fields.String()
+
     startDate = ma_fields.DateTime()
+
     endDate = ma_fields.DateTime()
+
     beamLineName = ma_fields.String()
+
     scheduled = ma_fields.Integer()
+
     nbShifts = ma_fields.Integer()
+
     comments = ma_fields.String()
+
     beamLineOperator = ma_fields.String()
+
     visit_number = ma_fields.Integer()
+
     bltimeStamp = ma_fields.DateTime()
+
     usedFlag = ma_fields.Integer()
+
     sessionTitle = ma_fields.String()
+
     structureDeterminations = ma_fields.Float()
+
     dewarTransport = ma_fields.Float()
+
     databackupFrance = ma_fields.Float()
+
     databackupEurope = ma_fields.Float()
+
     operatorSiteNumber = ma_fields.String()
+
     lastUpdate = ma_fields.DateTime()
+
     protectedData = ma_fields.String()
+
     externalId = ma_fields.Integer()
+
     nbReimbDewars = ma_fields.Integer()
+
 f_session_schema = api.model('Session', session_dict)
 ma_session_schema = SessionSchema()
