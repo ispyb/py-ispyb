@@ -38,14 +38,15 @@ class BaseConfig(object):
     }
 
 
-
-    ENABLED_MODULES = (
+    ENABLED_MODULES = [
         'api',
-        #'auth',
-        'proposals',
-        #'persons',
-        #'api',
-    )
+    ]
+
+    enabled_modules_file = open("%s/enabled_modules.csv" % PROJECT_ROOT, 'r')
+    for module in enabled_modules_file:
+        module = module.replace('\n', '')
+        if module:
+            ENABLED_MODULES.append(module)
 
     STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 

@@ -39,12 +39,12 @@ def init_app(app):
     Application extensions initialization.
     """
     for extension in (
+            api,
             logging,
             #cross_origin_resource_sharing,
             db,
             #login_manager,
             #marshmallow,
-            api,
             #oauth2,
         ):
         extension.init_app(app)
