@@ -1,0 +1,7 @@
+gunicorn
+Flask
+Flask-SQLAlchemy
+flask-restx
+SQLAlchemy
+marshmallow
+pyjwt
