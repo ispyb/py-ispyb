@@ -37,6 +37,8 @@ class BaseConfig(object):
         "apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}
     }
 
+    #RESTX_MASK_HEADER = "token"
+
     AUTH_MODULE = "app.extensions.auth.DummyAuth"
     AUTH_CLASS = "DummyAuth"
     MASTER_TOKEN = "MasterToken"

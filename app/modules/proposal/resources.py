@@ -4,6 +4,7 @@ ISPyB flask server
 
 from flask_restx import Namespace, Resource
 
+from app.extensions import db
 from app.extensions.auth import token_required
 from app.models import Proposal as ProposalModel
 from app.modules.proposal.schemas import f_proposal_schema, ma_proposal_schema
@@ -65,10 +66,11 @@ class Proposal(Resource):
     """Allows to get/set/delete a proposal"""
 
     @api.doc(description='prop_id should be an integer ')
-    @api.marshal_with(f_proposal_schema)
+    #@api.marshal_with(f_proposal_schema)
     @token_required
     def get(self, prop_id):
         """Returns a proposal by proposalId"""
+        print("get")
         return get_proposal_by_id(prop_id)
     
     """

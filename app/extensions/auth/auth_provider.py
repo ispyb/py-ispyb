@@ -10,7 +10,7 @@ from functools import wraps
 from flask import current_app, request, jsonify
 
 
-TOKEN_EXP_TIME = 2# in minutes
+TOKEN_EXP_TIME = 10 # in minutes
 MASTER_TOKEN = None
 
 class AuthProvider(object):

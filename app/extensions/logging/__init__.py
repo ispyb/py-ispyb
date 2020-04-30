@@ -21,6 +21,7 @@ class Logging(object):
         Common Flask interface to initialize the logging according to the
         application configuration.
         """
+        return
         # We don't need the default Flask's loggers when using our invoke tasks
         # since we set up beautiful colorful loggers globally.
         for handler in list(app.logger.handlers):
