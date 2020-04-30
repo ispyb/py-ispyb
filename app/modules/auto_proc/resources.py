@@ -4,7 +4,6 @@ ISPyB flask server
 
 from flask_restx import Namespace, Resource
 
-#from ispyb.auth import token_required
 from app.models import AutoProc as AutoProcModel
 from app.modules.auto_proc.schemas import f_auto_proc_schema,  ma_auto_proc_schema
 

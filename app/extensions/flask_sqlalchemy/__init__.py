@@ -65,7 +65,6 @@ class SQLAlchemy(BaseSQLAlchemy):
         super(SQLAlchemy, self).init_app(app)
 
         database_uri = app.config['SQLALCHEMY_DATABASE_URI']
-        print(database_uri)
         assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
         if database_uri.startswith('sqlite:'):
             self.event.listens_for(engine.Engine, "connect")(set_sqlite_pragma)

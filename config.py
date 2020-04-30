@@ -28,25 +28,31 @@ class BaseConfig(object):
     REVERSE_PROXY_SETUP = os.getenv('EXAMPLE_API_REVERSE_PROXY_SETUP', False)
 
     AUTHORIZATIONS = {
-        'oauth2_password': {
-            'type': 'oauth2',
-            'flow': 'password',
-            'scopes': {},
-            'tokenUrl': '/auth/oauth2/token',
-        },
+        #'oauth2_password': {
+        #    'type': 'oauth2',
+        #    'flow': 'password',
+        #    'scopes': {},
+        #    'tokenUrl': '/auth/oauth2/token',
+        #},
         "apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}
     }
 
+    AUTH_MODULE = "app.extensions.auth.DummyAuth"
+    AUTH_CLASS = "DummyAuth"
+    MASTER_TOKEN = "MasterToken"
 
-    ENABLED_MODULES = [
+    ENABLED_MODULES = (
         'api',
-    ]
+        'login',
+    )
 
-    enabled_modules_file = open("%s/enabled_modules.csv" % PROJECT_ROOT, 'r')
-    for module in enabled_modules_file:
-        module = module.replace('\n', '')
-        if module:
-            ENABLED_MODULES.append(module)
+    ENABLED_DB_MODULES = []
+
+    enabled_db_modules_file = open("%s/enabled_modules.csv" % PROJECT_ROOT, 'r')
+    for db_module in enabled_db_modules_file:
+        db_module = db_module.replace('\n', '')
+        if db_module:
+            ENABLED_DB_MODULES.append(db_module)
 
     STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
@@ -63,7 +69,7 @@ class BaseConfig(object):
 class ProductionConfig(BaseConfig):
     SECRET_KEY = os.getenv('EXAMPLE_API_SERVER_SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = os.getenv('EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI')
-
+    MASTER_TOKEN = None
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True

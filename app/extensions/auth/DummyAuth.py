@@ -2,10 +2,7 @@
 ISPyB flask server
 """
 
-from ispyb.auth.BaseAuth import BaseAuth
-
-
-class DummyAuth(BaseAuth):
+class DummyAuth(object):
     def get_roles(self, username, password):
         result = []
         if username.startswith("user"):

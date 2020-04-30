@@ -4,10 +4,10 @@ ISPyB flask server
 
 from flask_restx import Namespace, Resource
 
-#from ispyb.auth import token_required
-#from ispyb.apis import person as person_api
+from app.extensions.auth import token_required
 from app.models import Proposal as ProposalModel
 from app.modules.proposal.schemas import f_proposal_schema, ma_proposal_schema
+from app.modules.person import resources as person_resources
 
 api = Namespace('Proposal', description='Proposal related namespace', path='/prop')
 
@@ -21,14 +21,13 @@ def get_proposal_by_id(proposal_id):
     proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
     return ma_proposal_schema.dump(proposal)
 
-#
-#def get_proposals_by_login_name(login_name):
-#    """Returns proposals by a login name
-#    """
-#    person_id = person_api.get_person_id_by_login(login_name)
-#    #TODO this is not nice...
-#    proposal = ProposalModel.query.filter_by(personId=person_id)
-#    return ma_proposal_schema.dump(proposal, many=True)
+def get_proposals_by_login_name(login_name):
+    """Returns proposals by a login name
+    """
+    person_id = person_resources.get_person_id_by_login(login_name)
+    #TODO this is not nice...
+    proposal = ProposalModel.query.filter_by(personId=person_id)
+    return ma_proposal_schema.dump(proposal, many=True)
 
 @api.route("")
 class ProposalList(Resource):
@@ -61,13 +60,13 @@ class ProposalList(Resource):
 
 
 @api.route("/<int:prop_id>")
-#@api.param("prop_id", "Proposal id")
+@api.param("prop_id", "Proposal id")
 class Proposal(Resource):
     """Allows to get/set/delete a proposal"""
 
     @api.doc(description='prop_id should be an integer ')
     @api.marshal_with(f_proposal_schema)
-    #@token_required
+    @token_required
     def get(self, prop_id):
         """Returns a proposal by proposalId"""
         return get_proposal_by_id(prop_id)

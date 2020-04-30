@@ -28,11 +28,10 @@ db = SQLAlchemy()
 #from flask_marshmallow import Marshmallow
 #marshmallow = Marshmallow()
 
-#from .auth import OAuth2Provider
-#oauth2 = OAuth2Provider()
+from .auth import AuthProvider
+auth_provider = AuthProvider()
 
 from . import api
-
 
 def init_app(app):
     """
@@ -40,6 +39,7 @@ def init_app(app):
     """
     for extension in (
             api,
+            auth_provider,
             logging,
             #cross_origin_resource_sharing,
             db,
