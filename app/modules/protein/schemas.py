@@ -3,6 +3,7 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
 from app.extensions.api import api_v1 as api
+
 protein_dict = {
         'proteinId': f_fields.Integer(required=True, description=''),
         'proposalId': f_fields.Integer(required=True, description=''),
@@ -25,37 +26,21 @@ protein_dict = {
 
 class ProteinSchema(Schema):
     proteinId = ma_fields.Integer()
-
     proposalId = ma_fields.Integer()
-
     name = ma_fields.String()
-
     acronym = ma_fields.String()
-
     safetyLevel = ma_fields.String()
-
     molecularMass = ma_fields.String()
-
     proteinType = ma_fields.String()
-
     sequence = ma_fields.String()
-
     personId = ma_fields.Integer()
-
     bltimeStamp = ma_fields.DateTime()
-
     isCreatedBySampleSheet = ma_fields.Integer()
-
     externalId = ma_fields.Integer()
-
     density = ma_fields.Float()
-
     componentTypeId = ma_fields.Integer()
-
     modId = ma_fields.String()
-
     concentrationTypeId = ma_fields.Integer()
-
     Global = ma_fields.Integer()
 
 f_protein_schema = api.model('Protein', protein_dict)

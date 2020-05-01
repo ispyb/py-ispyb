@@ -3,6 +3,7 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
 from app.extensions.api import api_v1 as api
+
 shipping_dict = {
         'shippingId': f_fields.Integer(required=True, description=''),
         'proposalId': f_fields.Integer(required=True, description=''),
@@ -39,65 +40,35 @@ shipping_dict = {
 
 class ShippingSchema(Schema):
     shippingId = ma_fields.Integer()
-
     proposalId = ma_fields.Integer()
-
     shippingName = ma_fields.String()
-
     deliveryAgent_agentName = ma_fields.String()
-
     deliveryAgent_shippingDate = ma_fields.String()
-
     deliveryAgent_deliveryDate = ma_fields.String()
-
     deliveryAgent_agentCode = ma_fields.String()
-
     deliveryAgent_flightCode = ma_fields.String()
-
     shippingStatus = ma_fields.String()
-
     bltimeStamp = ma_fields.DateTime()
-
     laboratoryId = ma_fields.Integer()
-
     isStorageShipping = ma_fields.Integer()
-
     creationDate = ma_fields.DateTime()
-
     comments = ma_fields.String()
-
     sendingLabContactId = ma_fields.Integer()
-
     returnLabContactId = ma_fields.Integer()
-
     returnCourier = ma_fields.String()
-
     dateOfShippingToUser = ma_fields.DateTime()
-
     shippingType = ma_fields.String()
-
     safetyLevel = ma_fields.String()
-
     deliveryAgent_label = ma_fields.String()
-
     readyByTime = ma_fields.String()
-
     closeTime = ma_fields.String()
-
     physicalLocation = ma_fields.String()
-
     deliveryAgent_pickupConfirmationTimestamp = ma_fields.DateTime()
-
     deliveryAgent_pickupConfirmation = ma_fields.String()
-
     deliveryAgent_readyByTime = ma_fields.String()
-
     deliveryAgent_callinTime = ma_fields.String()
-
     deliveryAgent_productcode = ma_fields.String()
-
     deliveryAgent_flightCodePersonId = ma_fields.Integer()
-
     deliveryAgent_flightCodeTimestamp = ma_fields.DateTime()
 
 f_shipping_schema = api.model('Shipping', shipping_dict)

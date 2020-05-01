@@ -276,7 +276,7 @@ class AutoProcScalingHasInt(db.Model):
 
 
 
-class AutoProcStatu(db.Model):
+class AutoProcStatus(db.Model):
     __tablename__ = 'AutoProcStatus'
 
     autoProcStatusId = db.Column(db.Integer, primary_key=True, info='Primary key (auto-incremented)')

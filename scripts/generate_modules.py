@@ -1,12 +1,11 @@
 import os
 import re
 import sys
-#import configparser
+import csv
 import MySQLdb
 
 ispyb_root = os.path.dirname(os.path.abspath(__file__)).split(os.sep)
 ispyb_root = '/' + os.path.join(*ispyb_root[1:-1])
-print(ispyb_root)
 sys.path.insert(0, ispyb_root)
 
 from config import BaseConfig
@@ -20,6 +19,16 @@ passwd = uri.split('//')[1].split(':')[1].split('@')[0]
 host = uri.split('@')[1].split('/')[0]
 db_name = uri.split('/')[-1]
 
+gen_tables = []
+gen_modules = []
+
+with open('%s/enabled_db_modules.csv' % ispyb_root) as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+        gen_modules.append(row[0])
+        gen_tables.append(row[1])
+
+
 connection = MySQLdb.connect(host=host, user=user, passwd=passwd)
 cursor = connection.cursor()
 cursor.execute("USE %s" % db_name)
@@ -31,42 +40,8 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
 from app.extensions.api import api_v1 as api
+
 """
-
-#init_file_path = "%s/ispyb/schemas/__init__.py" % ispyb_root
-#init_file = open(init_file_path, "w")
-#init_file.write("from ispyb import api\n\n")
-
-
-gen_tables = [
-        'AutoProc',
-        'AutoProcIntegration',
-        'AutoProcProgram',
-        'AutoProcProgramAttachment',
-        'AutoProcProgramMessage',
-        'AutoProcScaling',
-        'AutoProcScalingStatistics',
-        'AutoProcStatus'
-        'BLSample',
-        'BLSession',
-        'BeamLineSetup',
-        'Container',
-        'Crystal',
-        'DataCollection',
-        'DataCollectionGroup',
-        'Detector',
-        'EnergyScan',
-        'ImageQualityIndicators',
-        'Person',
-        'Proposal',
-        'Protein',
-        'RobotAction',
-        'Screening',
-        'Shipping'
-        ]
-
-modules = []
-
 
 for table in tables:
     table_name = table[0]
@@ -78,7 +53,6 @@ for table in tables:
         schema_name = "_".join(re.findall('[A-Z][^A-Z]*', table_name)).lower()
         dict_text = "%s_dict = {\n" % schema_name
         ma_text = "class %sSchema(Schema):\n" % table_name
-        modules.append(schema_name)   
 
         for column in columns:
             name = column[0]
@@ -106,7 +80,7 @@ for table in tables:
                 data_type = 'String'
                 description = "description='%s%s'"  % (column[8].replace("'", ""), column[1].replace("'", ""))
             dict_text += "        '%s': f_fields.%s(%s, %s),\n" % (name, data_type, required, description)
-            ma_text += "    %s = ma_fields.%s()\n\n" % (name, data_type)
+            ma_text += "    %s = ma_fields.%s()\n" % (name, data_type)
         dict_text += "        }\n\n"
 
         class_text = "f_%s_schema = api.model('%s', %s_dict)\n" % (schema_name, table_name, schema_name)
@@ -119,6 +93,7 @@ for table in tables:
         schema_file.write(schema_file_header)
         schema_file.write(dict_text)
         schema_file.write(ma_text)
+        schema_file.write("\n")
         schema_file.write(class_text)
         schema_file.close()
 
@@ -146,8 +121,8 @@ for table in tables:
         init_file.write("    api_v1.add_namespace(resources.api)")
 
 
-modules_file_path = "%s/enabled_modules.csv" % ispyb_root
-modules_file = open(modules_file_path, "w")
-for module in modules:
-    modules_file.write("%s\n" % module)
-modules_file.close()
+#modules_file_path = "%s/enabled_modules.csv" % ispyb_root
+#modules_file = open(modules_file_path, "w")
+#for module in modules:
+#    modules_file.write("%s\n" % module)
+#modules_file.close()

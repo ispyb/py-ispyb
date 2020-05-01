@@ -3,6 +3,7 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
 from app.extensions.api import api_v1 as api
+
 data_collection_dict = {
         'dataCollectionId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'dataCollectionGroupId': f_fields.Integer(required=True, description='references DataCollectionGroup table'),
@@ -111,209 +112,107 @@ data_collection_dict = {
 
 class DataCollectionSchema(Schema):
     dataCollectionId = ma_fields.Integer()
-
     dataCollectionGroupId = ma_fields.Integer()
-
     strategySubWedgeOrigId = ma_fields.Integer()
-
     detectorId = ma_fields.Integer()
-
     blSubSampleId = ma_fields.Integer()
-
     dataCollectionNumber = ma_fields.Integer()
-
     startTime = ma_fields.DateTime()
-
     endTime = ma_fields.DateTime()
-
     runStatus = ma_fields.String()
-
     axisStart = ma_fields.Float()
-
     axisEnd = ma_fields.Float()
-
     axisRange = ma_fields.Float()
-
     overlap = ma_fields.Float()
-
     numberOfImages = ma_fields.Integer()
-
     startImageNumber = ma_fields.Integer()
-
     numberOfPasses = ma_fields.Integer()
-
     exposureTime = ma_fields.Float()
-
     imageDirectory = ma_fields.String()
-
     imagePrefix = ma_fields.String()
-
     imageSuffix = ma_fields.String()
-
     fileTemplate = ma_fields.String()
-
     wavelength = ma_fields.Float()
-
     resolution = ma_fields.Float()
-
     detectorDistance = ma_fields.Float()
-
     xBeam = ma_fields.Float()
-
     yBeam = ma_fields.Float()
-
     xBeamPix = ma_fields.Float()
-
     yBeamPix = ma_fields.Float()
-
     comments = ma_fields.String()
-
     printableForReport = ma_fields.Integer()
-
     slitGapVertical = ma_fields.Float()
-
     slitGapHorizontal = ma_fields.Float()
-
     transmission = ma_fields.Float()
-
     synchrotronMode = ma_fields.String()
-
     xtalSnapshotFullPath1 = ma_fields.String()
-
     xtalSnapshotFullPath2 = ma_fields.String()
-
     xtalSnapshotFullPath3 = ma_fields.String()
-
     xtalSnapshotFullPath4 = ma_fields.String()
-
     rotationAxis = ma_fields.String()
-
     phiStart = ma_fields.Float()
-
     kappaStart = ma_fields.Float()
-
     omegaStart = ma_fields.Float()
-
     resolutionAtCorner = ma_fields.Float()
-
     detector2Theta = ma_fields.Float()
-
     undulatorGap1 = ma_fields.Float()
-
     undulatorGap2 = ma_fields.Float()
-
     undulatorGap3 = ma_fields.Float()
-
     beamSizeAtSampleX = ma_fields.Float()
-
     beamSizeAtSampleY = ma_fields.Float()
-
     centeringMethod = ma_fields.String()
-
     averageTemperature = ma_fields.Float()
-
     actualCenteringPosition = ma_fields.String()
-
     beamShape = ma_fields.String()
-
     flux = ma_fields.String()
-
     flux_end = ma_fields.String()
-
     totalAbsorbedDose = ma_fields.String()
-
     bestWilsonPlotPath = ma_fields.String()
-
     imageQualityIndicatorsPlotPath = ma_fields.String()
-
     imageQualityIndicatorsCSVPath = ma_fields.String()
-
     blSampleId = ma_fields.Integer()
-
     sessionId = ma_fields.Integer()
-
     experimentType = ma_fields.String()
-
     crystalClass = ma_fields.String()
-
     chiStart = ma_fields.Float()
-
     detectorMode = ma_fields.String()
-
     actualSampleBarcode = ma_fields.String()
-
     actualSampleSlotInContainer = ma_fields.Integer()
-
     actualContainerBarcode = ma_fields.String()
-
     actualContainerSlotInSC = ma_fields.Integer()
-
     positionId = ma_fields.Integer()
-
     focalSpotSizeAtSampleX = ma_fields.Float()
-
     polarisation = ma_fields.Float()
-
     focalSpotSizeAtSampleY = ma_fields.Float()
-
     apertureId = ma_fields.Integer()
-
     screeningOrigId = ma_fields.Integer()
-
     processedDataFile = ma_fields.String()
-
     datFullPath = ma_fields.String()
-
     magnification = ma_fields.Integer()
-
     binning = ma_fields.Integer()
-
     particleDiameter = ma_fields.Float()
-
     boxSize_CTF = ma_fields.Float()
-
     minResolution = ma_fields.Float()
-
     minDefocus = ma_fields.Float()
-
     maxDefocus = ma_fields.Float()
-
     defocusStepSize = ma_fields.Float()
-
     amountAstigmatism = ma_fields.Float()
-
     extractSize = ma_fields.Float()
-
     bgRadius = ma_fields.Float()
-
     voltage = ma_fields.Float()
-
     objAperture = ma_fields.Float()
-
     c1aperture = ma_fields.Float()
-
     c2aperture = ma_fields.Float()
-
     c3aperture = ma_fields.Float()
-
     c1lens = ma_fields.Float()
-
     c2lens = ma_fields.Float()
-
     c3lens = ma_fields.Float()
-
     nominalmagnification = ma_fields.Float()
-
     nominalDefocus = ma_fields.Float()
-
     imageSizeX = ma_fields.Integer()
-
     imageSizeY = ma_fields.Integer()
-
     pixelSizeOnImage = ma_fields.Float()
-
     phasePlate = ma_fields.Integer()
-
     totalExposedDose = ma_fields.Float()
 
 f_data_collection_schema = api.model('DataCollection', data_collection_dict)

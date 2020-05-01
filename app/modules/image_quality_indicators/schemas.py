@@ -3,6 +3,7 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
 from app.extensions.api import api_v1 as api
+
 image_quality_indicators_dict = {
         'imageQualityIndicatorsId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'imageId': f_fields.Integer(required=False, description=''),
@@ -26,39 +27,22 @@ image_quality_indicators_dict = {
 
 class ImageQualityIndicatorsSchema(Schema):
     imageQualityIndicatorsId = ma_fields.Integer()
-
     imageId = ma_fields.Integer()
-
     autoProcProgramId = ma_fields.Integer()
-
     spotTotal = ma_fields.Integer()
-
     inResTotal = ma_fields.Integer()
-
     goodBraggCandidates = ma_fields.Integer()
-
     iceRings = ma_fields.Integer()
-
     method1Res = ma_fields.Float()
-
     method2Res = ma_fields.Float()
-
     maxUnitCell = ma_fields.Float()
-
     pctSaturationTop50Peaks = ma_fields.Float()
-
     inResolutionOvrlSpots = ma_fields.Integer()
-
     binPopCutOffMethod2Res = ma_fields.Float()
-
     recordTimeStamp = ma_fields.DateTime()
-
     totalIntegratedSignal = ma_fields.String()
-
     dozor_score = ma_fields.String()
-
     dataCollectionId = ma_fields.Integer()
-
     imageNumber = ma_fields.Integer()
 
 f_image_quality_indicators_schema = api.model('ImageQualityIndicators', image_quality_indicators_dict)

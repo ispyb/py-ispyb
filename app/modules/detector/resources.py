@@ -1,8 +1,9 @@
 from flask_restx import Namespace, Resource
 from app.models import Detector as DetectorModel
-from app.modules.detector.schemas import f_detector_schema,  ma_detector_schema
+from app.modules.detector.schemas import f_detector_schema, ma_detector_schema
 
-api = Namespace('Detector', description='Detector related namespace', path='/detector')
+api = Namespace("Detector", description="Detector related namespace", path="/detector")
+
 
 @api.route("")
 class DetectorList(Resource):

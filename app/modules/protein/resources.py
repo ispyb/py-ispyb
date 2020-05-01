@@ -1,8 +1,9 @@
 from flask_restx import Namespace, Resource
 from app.models import Protein as ProteinModel
-from app.modules.protein.schemas import f_protein_schema,  ma_protein_schema
+from app.modules.protein.schemas import f_protein_schema, ma_protein_schema
 
-api = Namespace('Protein', description='Protein related namespace', path='/protein')
+api = Namespace("Protein", description="Protein related namespace", path="/protein")
+
 
 @api.route("")
 class ProteinList(Resource):

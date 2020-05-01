@@ -3,6 +3,7 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
 from app.extensions.api import api_v1 as api
+
 auto_proc_scaling_statistics_dict = {
         'autoProcScalingStatisticsId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'autoProcScalingId': f_fields.Integer(required=False, description='Related autoProcScaling item (used by foreign key)'),
@@ -38,63 +39,34 @@ auto_proc_scaling_statistics_dict = {
 
 class AutoProcScalingStatisticsSchema(Schema):
     autoProcScalingStatisticsId = ma_fields.Integer()
-
     autoProcScalingId = ma_fields.Integer()
-
     scalingStatisticsType = ma_fields.String()
-
     comments = ma_fields.String()
-
     resolutionLimitLow = ma_fields.Float()
-
     resolutionLimitHigh = ma_fields.Float()
-
     rMerge = ma_fields.Float()
-
     rMeasWithinIPlusIMinus = ma_fields.Float()
-
     rMeasAllIPlusIMinus = ma_fields.Float()
-
     rPimWithinIPlusIMinus = ma_fields.Float()
-
     rPimAllIPlusIMinus = ma_fields.Float()
-
     fractionalPartialBias = ma_fields.Float()
-
     nTotalObservations = ma_fields.Integer()
-
     nTotalUniqueObservations = ma_fields.Integer()
-
     meanIOverSigI = ma_fields.Float()
-
     completeness = ma_fields.Float()
-
     multiplicity = ma_fields.Float()
-
     anomalousCompleteness = ma_fields.Float()
-
     anomalousMultiplicity = ma_fields.Float()
-
     recordTimeStamp = ma_fields.DateTime()
-
     anomalous = ma_fields.Integer()
-
     ccHalf = ma_fields.Float()
-
     ccAno = ma_fields.Float()
-
     sigAno = ma_fields.String()
-
     isa = ma_fields.String()
-
     completenessSpherical = ma_fields.Float()
-
     completenessEllipsoidal = ma_fields.Float()
-
     anomalousCompletenessSpherical = ma_fields.Float()
-
     anomalousCompletenessEllipsoidal = ma_fields.Float()
-
     ccAnomalous = ma_fields.Float()
 
 f_auto_proc_scaling_statistics_schema = api.model('AutoProcScalingStatistics', auto_proc_scaling_statistics_dict)

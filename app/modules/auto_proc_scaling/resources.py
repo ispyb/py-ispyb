@@ -1,8 +1,16 @@
 from flask_restx import Namespace, Resource
 from app.models import AutoProcScaling as AutoProcScalingModel
-from app.modules.auto_proc_scaling.schemas import f_auto_proc_scaling_schema,  ma_auto_proc_scaling_schema
+from app.modules.auto_proc_scaling.schemas import (
+    f_auto_proc_scaling_schema,
+    ma_auto_proc_scaling_schema,
+)
 
-api = Namespace('AutoProcScaling', description='AutoProcScaling related namespace', path='/auto_proc_scaling')
+api = Namespace(
+    "AutoProcScaling",
+    description="AutoProcScaling related namespace",
+    path="/auto_proc_scaling",
+)
+
 
 @api.route("")
 class AutoProcScalingList(Resource):

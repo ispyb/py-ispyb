@@ -1,9 +1,9 @@
-from ispyb.tests import data
-from ispyb.models import DataCollection, Proposal
+from tests import data
+from app.modules.proposal.schemas import ProposalSchema
 
 #def test_data_collection_model():
 #    data_collection = DataCollection(**data.test_data_collection)
 
 def test_proposal_model():
-    proposal = Proposal(**data.test_proposal)
+    ma_proposal_schema = ProposalSchema(**data.test_proposal)
 

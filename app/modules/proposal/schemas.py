@@ -3,6 +3,7 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
 from app.extensions.api import api_v1 as api
+
 proposal_dict = {
         'proposalId': f_fields.Integer(required=True, description=''),
         'personId': f_fields.Integer(required=True, description=''),
@@ -17,21 +18,13 @@ proposal_dict = {
 
 class ProposalSchema(Schema):
     proposalId = ma_fields.Integer()
-
     personId = ma_fields.Integer()
-
     title = ma_fields.String()
-
     proposalCode = ma_fields.String()
-
     proposalNumber = ma_fields.String()
-
     proposalType = ma_fields.String()
-
     bltimeStamp = ma_fields.DateTime()
-
     externalId = ma_fields.Integer()
-
     state = ma_fields.String()
 
 f_proposal_schema = api.model('Proposal', proposal_dict)

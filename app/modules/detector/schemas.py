@@ -3,6 +3,7 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
 from app.extensions.api import api_v1 as api
+
 detector_dict = {
         'detectorId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'detectorType': f_fields.String(required=False, description=''),
@@ -32,51 +33,28 @@ detector_dict = {
 
 class DetectorSchema(Schema):
     detectorId = ma_fields.Integer()
-
     detectorType = ma_fields.String()
-
     detectorManufacturer = ma_fields.String()
-
     detectorModel = ma_fields.String()
-
     detectorPixelSizeHorizontal = ma_fields.Float()
-
     detectorPixelSizeVertical = ma_fields.Float()
-
     detectorSerialNumber = ma_fields.String()
-
     detectorDistanceMin = ma_fields.String()
-
     detectorDistanceMax = ma_fields.String()
-
     trustedPixelValueRangeLower = ma_fields.String()
-
     trustedPixelValueRangeUpper = ma_fields.String()
-
     sensorThickness = ma_fields.Float()
-
     overload = ma_fields.Float()
-
     XGeoCorr = ma_fields.String()
-
     YGeoCorr = ma_fields.String()
-
     detectorMode = ma_fields.String()
-
     detectorMaxResolution = ma_fields.Float()
-
     detectorMinResolution = ma_fields.Float()
-
     CS = ma_fields.Float()
-
     density = ma_fields.Float()
-
     composition = ma_fields.String()
-
     numberOfPixelsX = ma_fields.Integer()
-
     numberOfPixelsY = ma_fields.Integer()
-
     localName = ma_fields.String()
 
 f_detector_schema = api.model('Detector', detector_dict)
