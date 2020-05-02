@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -21,6 +25,8 @@ robot_action_dict = {
         }
 
 class RobotActionSchema(Schema):
+    """Marshmallows schema class representing RobotAction table"""
+
     robotActionId = ma_fields.Integer()
     blsessionId = ma_fields.Integer()
     blsampleId = ma_fields.Integer()
@@ -37,3 +43,4 @@ class RobotActionSchema(Schema):
 
 f_robot_action_schema = api.model('RobotAction', robot_action_dict)
 ma_robot_action_schema = RobotActionSchema()
+

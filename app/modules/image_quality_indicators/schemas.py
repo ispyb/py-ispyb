@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -26,6 +30,8 @@ image_quality_indicators_dict = {
         }
 
 class ImageQualityIndicatorsSchema(Schema):
+    """Marshmallows schema class representing ImageQualityIndicators table"""
+
     imageQualityIndicatorsId = ma_fields.Integer()
     imageId = ma_fields.Integer()
     autoProcProgramId = ma_fields.Integer()
@@ -47,3 +53,4 @@ class ImageQualityIndicatorsSchema(Schema):
 
 f_image_quality_indicators_schema = api.model('ImageQualityIndicators', image_quality_indicators_dict)
 ma_image_quality_indicators_schema = ImageQualityIndicatorsSchema()
+

@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -17,6 +21,8 @@ screening_dict = {
         }
 
 class ScreeningSchema(Schema):
+    """Marshmallows schema class representing Screening table"""
+
     screeningId = ma_fields.Integer()
     diffractionPlanId = ma_fields.Integer()
     dataCollectionGroupId = ma_fields.Integer()
@@ -29,3 +35,4 @@ class ScreeningSchema(Schema):
 
 f_screening_schema = api.model('Screening', screening_dict)
 ma_screening_schema = ScreeningSchema()
+

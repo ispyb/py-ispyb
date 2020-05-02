@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -32,6 +36,8 @@ crystal_dict = {
         }
 
 class CrystalSchema(Schema):
+    """Marshmallows schema class representing Crystal table"""
+
     crystalId = ma_fields.Integer()
     diffractionPlanId = ma_fields.Integer()
     proteinId = ma_fields.Integer()
@@ -59,3 +65,4 @@ class CrystalSchema(Schema):
 
 f_crystal_schema = api.model('Crystal', crystal_dict)
 ma_crystal_schema = CrystalSchema()
+

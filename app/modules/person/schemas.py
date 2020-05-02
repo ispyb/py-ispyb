@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -22,6 +26,8 @@ person_dict = {
         }
 
 class PersonSchema(Schema):
+    """Marshmallows schema class representing Person table"""
+
     personId = ma_fields.Integer()
     laboratoryId = ma_fields.Integer()
     siteId = ma_fields.Integer()
@@ -39,3 +45,4 @@ class PersonSchema(Schema):
 
 f_person_schema = api.model('Person', person_dict)
 ma_person_schema = PersonSchema()
+

@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -14,6 +18,8 @@ auto_proc_program_message_dict = {
         }
 
 class AutoProcProgramMessageSchema(Schema):
+    """Marshmallows schema class representing AutoProcProgramMessage table"""
+
     autoProcProgramMessageId = ma_fields.Integer()
     autoProcProgramId = ma_fields.Integer()
     recordTimeStamp = ma_fields.DateTime()
@@ -23,3 +29,4 @@ class AutoProcProgramMessageSchema(Schema):
 
 f_auto_proc_program_message_schema = api.model('AutoProcProgramMessage', auto_proc_program_message_dict)
 ma_auto_proc_program_message_schema = AutoProcProgramMessageSchema()
+

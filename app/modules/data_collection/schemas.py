@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -111,6 +115,8 @@ data_collection_dict = {
         }
 
 class DataCollectionSchema(Schema):
+    """Marshmallows schema class representing DataCollection table"""
+
     dataCollectionId = ma_fields.Integer()
     dataCollectionGroupId = ma_fields.Integer()
     strategySubWedgeOrigId = ma_fields.Integer()
@@ -217,3 +223,4 @@ class DataCollectionSchema(Schema):
 
 f_data_collection_schema = api.model('DataCollection', data_collection_dict)
 ma_data_collection_schema = DataCollectionSchema()
+

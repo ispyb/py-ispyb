@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -42,6 +46,8 @@ energy_scan_dict = {
         }
 
 class EnergyScanSchema(Schema):
+    """Marshmallows schema class representing EnergyScan table"""
+
     energyScanId = ma_fields.Integer()
     sessionId = ma_fields.Integer()
     blSampleId = ma_fields.Integer()
@@ -79,3 +85,4 @@ class EnergyScanSchema(Schema):
 
 f_energy_scan_schema = api.model('EnergyScan', energy_scan_dict)
 ma_energy_scan_schema = EnergyScanSchema()
+

@@ -35,7 +35,12 @@ cursor.execute("USE %s" % db_name)
 cursor.execute("SHOW TABLES")
 tables = cursor.fetchall()
 
-schema_file_header = """
+schema_file_header = '''"""
+ISPyB flask server
+"""\n
+'''
+
+schema_file_header += """
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
@@ -53,6 +58,7 @@ for table in tables:
         schema_name = "_".join(re.findall('[A-Z][^A-Z]*', table_name)).lower()
         dict_text = "%s_dict = {\n" % schema_name
         ma_text = "class %sSchema(Schema):\n" % table_name
+        ma_text += '    """Marshmallows schema class representing %s table"""\n\n' % table_name
 
         for column in columns:
             name = column[0]
@@ -95,8 +101,8 @@ for table in tables:
         schema_file.write(ma_text)
         schema_file.write("\n")
         schema_file.write(class_text)
+        schema_file.write("\n")
         schema_file.close()
-
 
         resources_file_path = "%s/app/modules/%s/resources.py" % (ispyb_root, schema_name) 
         
@@ -115,14 +121,9 @@ for table in tables:
 
         init_file_path = "%s/app/modules/%s/__init__.py" % (ispyb_root, schema_name)  
         init_file = open(init_file_path, "w")
+        init_file.write('"""ISPyB flask server"""\n\n')
         init_file.write("from app.extensions.api import api_v1\n\n")
         init_file.write("def init_app(app, **kwargs):\n\n")
         init_file.write("    from . import resources\n\n")
         init_file.write("    api_v1.add_namespace(resources.api)")
-
-
-#modules_file_path = "%s/enabled_modules.csv" % ispyb_root
-#modules_file = open(modules_file_path, "w")
-#for module in modules:
-#    modules_file.write("%s\n" % module)
-#modules_file.close()
+        init_file.write("\n")

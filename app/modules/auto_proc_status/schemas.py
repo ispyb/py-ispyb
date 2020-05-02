@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -14,6 +18,8 @@ auto_proc_status_dict = {
         }
 
 class AutoProcStatusSchema(Schema):
+    """Marshmallows schema class representing AutoProcStatus table"""
+
     autoProcStatusId = ma_fields.Integer()
     autoProcIntegrationId = ma_fields.Integer()
     step = ma_fields.String()
@@ -23,3 +29,4 @@ class AutoProcStatusSchema(Schema):
 
 f_auto_proc_status_schema = api.model('AutoProcStatus', auto_proc_status_dict)
 ma_auto_proc_status_schema = AutoProcStatusSchema()
+

@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -28,6 +32,8 @@ beam_line_setup_dict = {
         }
 
 class BeamLineSetupSchema(Schema):
+    """Marshmallows schema class representing BeamLineSetup table"""
+
     beamLineSetupId = ma_fields.Integer()
     synchrotronMode = ma_fields.String()
     undulatorType1 = ma_fields.String()
@@ -51,3 +57,4 @@ class BeamLineSetupSchema(Schema):
 
 f_beam_line_setup_schema = api.model('BeamLineSetup', beam_line_setup_dict)
 ma_beam_line_setup_schema = BeamLineSetupSchema()
+

@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -30,6 +34,8 @@ container_dict = {
         }
 
 class ContainerSchema(Schema):
+    """Marshmallows schema class representing Container table"""
+
     containerId = ma_fields.Integer()
     dewarId = ma_fields.Integer()
     code = ma_fields.String()
@@ -55,3 +61,4 @@ class ContainerSchema(Schema):
 
 f_container_schema = api.model('Container', container_dict)
 ma_container_schema = ContainerSchema()
+

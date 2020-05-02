@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -23,6 +27,8 @@ data_collection_group_dict = {
         }
 
 class DataCollectionGroupSchema(Schema):
+    """Marshmallows schema class representing DataCollectionGroup table"""
+
     dataCollectionGroupId = ma_fields.Integer()
     blSampleId = ma_fields.Integer()
     sessionId = ma_fields.Integer()
@@ -41,3 +47,4 @@ class DataCollectionGroupSchema(Schema):
 
 f_data_collection_group_schema = api.model('DataCollectionGroup', data_collection_group_dict)
 ma_data_collection_group_schema = DataCollectionGroupSchema()
+

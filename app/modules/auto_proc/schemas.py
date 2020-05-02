@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -18,6 +22,8 @@ auto_proc_dict = {
         }
 
 class AutoProcSchema(Schema):
+    """Marshmallows schema class representing AutoProc table"""
+
     autoProcId = ma_fields.Integer()
     autoProcProgramId = ma_fields.Integer()
     spaceGroup = ma_fields.String()
@@ -31,3 +37,4 @@ class AutoProcSchema(Schema):
 
 f_auto_proc_schema = api.model('AutoProc', auto_proc_dict)
 ma_auto_proc_schema = AutoProcSchema()
+

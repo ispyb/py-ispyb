@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -17,6 +21,8 @@ proposal_dict = {
         }
 
 class ProposalSchema(Schema):
+    """Marshmallows schema class representing Proposal table"""
+
     proposalId = ma_fields.Integer()
     personId = ma_fields.Integer()
     title = ma_fields.String()
@@ -29,3 +35,4 @@ class ProposalSchema(Schema):
 
 f_proposal_schema = api.model('Proposal', proposal_dict)
 ma_proposal_schema = ProposalSchema()
+

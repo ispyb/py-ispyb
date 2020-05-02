@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -39,6 +43,8 @@ shipping_dict = {
         }
 
 class ShippingSchema(Schema):
+    """Marshmallows schema class representing Shipping table"""
+
     shippingId = ma_fields.Integer()
     proposalId = ma_fields.Integer()
     shippingName = ma_fields.String()
@@ -73,3 +79,4 @@ class ShippingSchema(Schema):
 
 f_shipping_schema = api.model('Shipping', shipping_dict)
 ma_shipping_schema = ShippingSchema()
+

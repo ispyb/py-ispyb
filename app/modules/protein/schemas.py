@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -25,6 +29,8 @@ protein_dict = {
         }
 
 class ProteinSchema(Schema):
+    """Marshmallows schema class representing Protein table"""
+
     proteinId = ma_fields.Integer()
     proposalId = ma_fields.Integer()
     name = ma_fields.String()
@@ -45,3 +51,4 @@ class ProteinSchema(Schema):
 
 f_protein_schema = api.model('Protein', protein_dict)
 ma_protein_schema = ProteinSchema()
+

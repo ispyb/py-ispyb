@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -14,6 +18,8 @@ auto_proc_program_attachment_dict = {
         }
 
 class AutoProcProgramAttachmentSchema(Schema):
+    """Marshmallows schema class representing AutoProcProgramAttachment table"""
+
     autoProcProgramAttachmentId = ma_fields.Integer()
     autoProcProgramId = ma_fields.Integer()
     fileType = ma_fields.String()
@@ -23,3 +29,4 @@ class AutoProcProgramAttachmentSchema(Schema):
 
 f_auto_proc_program_attachment_schema = api.model('AutoProcProgramAttachment', auto_proc_program_attachment_dict)
 ma_auto_proc_program_attachment_schema = AutoProcProgramAttachmentSchema()
+

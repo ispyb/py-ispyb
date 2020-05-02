@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -32,6 +36,8 @@ detector_dict = {
         }
 
 class DetectorSchema(Schema):
+    """Marshmallows schema class representing Detector table"""
+
     detectorId = ma_fields.Integer()
     detectorType = ma_fields.String()
     detectorManufacturer = ma_fields.String()
@@ -59,3 +65,4 @@ class DetectorSchema(Schema):
 
 f_detector_schema = api.model('Detector', detector_dict)
 ma_detector_schema = DetectorSchema()
+

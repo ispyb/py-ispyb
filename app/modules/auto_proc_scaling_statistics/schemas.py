@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -38,6 +42,8 @@ auto_proc_scaling_statistics_dict = {
         }
 
 class AutoProcScalingStatisticsSchema(Schema):
+    """Marshmallows schema class representing AutoProcScalingStatistics table"""
+
     autoProcScalingStatisticsId = ma_fields.Integer()
     autoProcScalingId = ma_fields.Integer()
     scalingStatisticsType = ma_fields.String()
@@ -71,3 +77,4 @@ class AutoProcScalingStatisticsSchema(Schema):
 
 f_auto_proc_scaling_statistics_schema = api.model('AutoProcScalingStatistics', auto_proc_scaling_statistics_dict)
 ma_auto_proc_scaling_statistics_schema = AutoProcScalingStatisticsSchema()
+

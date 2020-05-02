@@ -1,3 +1,7 @@
+"""
+ISPyB flask server
+"""
+
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
@@ -40,6 +44,8 @@ sample_dict = {
         }
 
 class SampleSchema(Schema):
+    """Marshmallows schema class representing Sample table"""
+
     blSampleId = ma_fields.Integer()
     diffractionPlanId = ma_fields.Integer()
     crystalId = ma_fields.Integer()
@@ -75,3 +81,4 @@ class SampleSchema(Schema):
 
 f_sample_schema = api.model('Sample', sample_dict)
 ma_sample_schema = SampleSchema()
+
