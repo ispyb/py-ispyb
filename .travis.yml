@@ -13,15 +13,15 @@ before_install:
 #- sudo apt-get install mysql-server
 - wget https://github.com/DiamondLightSource/ispyb-database/releases/download/v1.10.4/ispyb-database-1.10.4.tar.gz
 - tar xvfz ispyb-database-1.10.4.tar.gz
-- mysql -u root -e "CREATE DATABASE ispybtest; SET GLOBAL log_bin_trust_function_creators=ON;"
-- mysql -u root -D ispybtest < schema/tables.sql
-- mysql -u root -D ispybtest < schema/lookups.sql
-- mysql -u root -D ispybtest < schema/data.sql
-- mysql -u root -D ispybtest < schema/routines.sql
-- mysql -u root -D ispybtest < grants/ispyb_processing.sql
-- mysql -u root -D ispybtest < grants/ispyb_import.sql
+- mysql -u root -e "CREATE DATABASE pydbtest; SET GLOBAL log_bin_trust_function_creators=ON;"
+- mysql -u root -D pydbtest < schema/tables.sql
+- mysql -u root -D pydbtest < schema/lookups.sql
+- mysql -u root -D pydbtest < schema/data.sql
+- mysql -u root -D pydbtest < schema/routines.sql
+- mysql -u root -D pydbtest < grants/ispyb_processing.sql
+- mysql -u root -D pydbtest < grants/ispyb_import.sql
 - mysql -u root -e "CREATE USER ispyb_api@'localhost' IDENTIFIED BY 'password_1234'; GRANT ispyb_processing to ispyb_api@'localhost'; GRANT ispyb_import to ispyb_api@'localhost'; SET DEFAULT ROLE ispyb_processing FOR ispyb_api@'localhost';"
-- mysql -u root -e "CREATE USER ispyb_api_future@'localhost' IDENTIFIED BY 'password_4321'; GRANT SELECT ON ispybtest.* to ispyb_api_future@'localhost';"
+- mysql -u root -e "CREATE USER ispyb_api_future@'localhost' IDENTIFIED BY 'password_4321'; GRANT SELECT ON pydbtest.* to ispyb_api_future@'localhost';"
 
 install:
 - sudo apt-get install -y python3-mysqldb
