@@ -13,17 +13,11 @@ sys.path.insert(0, ROOT_DIR)
 #print ROOT_DIR
 
 from app import create_app
-from tests import data as test_data
-
-@pytest.fixture(scope='module')
-def app():
-    app = create_app()
-
-    yield app
+#from tests import data as test_data
 
 
-
-
-@pytest.fixture
-def data():
-    return test_data
+@pytest.fixture(scope="module")
+def test_app(): 
+    app = create_app()     
+    with app.app_context():         
+        yield app

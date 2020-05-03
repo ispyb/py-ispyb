@@ -1,6 +1,7 @@
 from flask_restx import Namespace, Resource
 
 # from ispyb.auth import token_required
+from app.extensions import db
 from app.models import Person as PersonModel
 from app.modules.person.schemas import f_person_schema, ma_person_schema
 

@@ -5,6 +5,7 @@ ISPyB flask server
 from flask_restx import Namespace, Resource
 
 # from ispyb.auth import token_required
+from app.extensions import db
 from app.models import DataCollection as DataCollectionModel
 from app.modules.data_collection.schemas import (
     f_data_collection_schema,
