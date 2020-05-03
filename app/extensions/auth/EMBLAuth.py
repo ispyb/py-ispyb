@@ -1,7 +1,4 @@
-from ispyb.auth.BaseAuth import BaseAuth
-
-
-class EMBLAuth(BaseAuth):
+class EMBLAuth(object):
     def get_roles(self, user):
         result = []
         return result

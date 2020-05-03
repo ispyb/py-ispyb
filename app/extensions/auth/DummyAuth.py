@@ -8,5 +8,5 @@ class DummyAuth(object):
         if username.startswith("user"):
             result.append("user")
         if username.startswith("manager"):
-            results.append("manager")
+            result.append("manager")
         return result

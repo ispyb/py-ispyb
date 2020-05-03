@@ -9,7 +9,6 @@ from copy import deepcopy
 from flask import current_app, Blueprint
 
 from flask_restx import Api, Namespace
-#from .namespace import Namespace
 from .http_exceptions import abort
 
 authorizations = {"apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}}
