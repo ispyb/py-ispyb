@@ -28,5 +28,5 @@ install:
 - pip install -r requirements.txt pytest==4.0.1 pylint
 
 script:
-- pylint -E ispyb
+- pylint -E app
 - pytest
