@@ -20,7 +20,7 @@ class BaseConfig(object):
     #     name=DB_NAME,
     # )
 
-    SQLALCHEMY_DATABASE_URI = 'mysql://ispyb_api:password_1234@localhost/pydb_test'
+    SQLALCHEMY_DATABASE_URI = 'mysql://mxuser:mxpass@localhost/pydb_test'
 
     DEBUG = False
     ERROR_404_HELP = False

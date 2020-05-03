@@ -20,8 +20,8 @@ before_install:
 - mysql -u root -D pydb_test < schema/routines.sql
 - mysql -u root -D pydb_test < grants/ispyb_processing.sql
 - mysql -u root -D pydb_test < grants/ispyb_import.sql
-- mysql -u root -e "CREATE USER mxuser@'localhost' IDENTIFIED BY 'mxpass'; GRANT ispyb_processing to ispyb_api@'localhost'; GRANT ispyb_import to ispyb_api@'localhost'; SET DEFAULT ROLE ispyb_processing FOR ispyb_api@'localhost';"
-- mysql -u root -e "CREATE USER mxuser_future@'localhost' IDENTIFIED BY 'password_4321'; GRANT SELECT ON pydb_test.* to ispyb_api_future@'localhost';"
+- mysql -u root -e "CREATE USER mxuser@'localhost' IDENTIFIED BY 'mxpass'; GRANT ispyb_processing to mxuser@'localhost'; GRANT ispyb_import to mxuser@'localhost'; SET DEFAULT ROLE ispyb_processing FOR mxuser@'localhost';"
+- mysql -u root -e "CREATE USER mxuser_future@'localhost' IDENTIFIED BY 'password_4321'; GRANT SELECT ON pydb_test.* to mxuser_future@'localhost';"
 
 install:
 - sudo apt-get install -y python3-mysqldb
