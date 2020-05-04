@@ -23,12 +23,12 @@ before_install:
         - mysql -u root -e "GRANT ALL ON pydb_test.* TO 'mxuser'@'localhost';"
 
 install:
-- sudo apt-get install -y python3-mysqldb
-- pip install -r requirements.txt pytest==4.0.1 pylint
+        - sudo apt-get install -y python3-mysqldb
+        - pip install -r requirements.txt pytest==4.0.1 pylint codecov pytest-cov
 
 script:
-- pylint -E app
-- python3 -m pytest
+        - pylint -E app
+        - python3 -m pytest
 
 after_success:
-- codecov
+        - codecov
