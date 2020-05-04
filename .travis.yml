@@ -6,8 +6,8 @@ matrix:
       #    - python: pypy
       #env: OPTIONAL=1
 
-addons:
-  mariadb: 10.3
+services:
+  - mysql
 
 before_install:
 #- sudo apt-get install mysql-server
