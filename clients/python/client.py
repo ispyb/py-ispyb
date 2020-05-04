@@ -2,12 +2,12 @@ from requests import get, post
 
 root_url = "http://localhost:5000/ispyb/api/v1"
 
-user = 'user'
-password = 'password'
+payload = {
+        "username": "user",
+        "password": "password"}
+response = get(root_url + "/auth/login", json=payload)
 
-data = {"login": user, "password": password}
-response = get(root_url + "/login", data=data)
-print response
+print(response)
 
 
 paths = ["/prop"]

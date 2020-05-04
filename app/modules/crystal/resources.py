@@ -1,20 +1,8 @@
-"""
-ISPyB flask server
-"""
-
 from flask_restx import Namespace, Resource
-
-# from ispyb.auth import token_required
-
-api = Namespace("Crystal", description="Crystal related namespace", path="/crystal")
+from app.models import Crystal as CrystalModel
+from app.modules.crystal.schemas import f_crystal_schema, ma_crystal_schema
 
 
-@api.route("/")
-class CrystalList(Resource):
-    """Crystal list resource"""
-
-    @api.doc(security="apikey")
-    # @token_required
-    def get(self):
-        """Returns all crystal records"""
-        return "TODO"
+def get_crystal_list():
+    crystal_list = CrystalModel.query.all()
+    return ma_crystal_schema.dump(crystal_list)

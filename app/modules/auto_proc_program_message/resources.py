@@ -5,6 +5,7 @@ from app.modules.auto_proc_program_message.schemas import (
     ma_auto_proc_program_message_schema,
 )
 
+"""
 api = Namespace(
     "AutoProcProgramMessage",
     description="AutoProcProgramMessage related namespace",
@@ -18,3 +19,4 @@ class AutoProcProgramMessageList(Resource):
     def get(self):
         auto_proc_program_message_list = AutoProcProgramMessageModel.query.all()
         return ma_auto_proc_program_message_schema.dump(auto_proc_program_message_list)
+"""

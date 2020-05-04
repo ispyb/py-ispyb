@@ -6,6 +6,7 @@ class BaseConfig(object):
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
+    API_ROOT = "/ispyb/api/v1"
     # POSTGRESQL
     # DB_USER = 'user'
     # DB_PASSWORD = 'password'
@@ -45,7 +46,7 @@ class BaseConfig(object):
 
     ENABLED_MODULES = (
         'api',
-        'login',
+        'auth',
     )
 
     ENABLED_DB_MODULES = []

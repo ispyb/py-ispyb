@@ -6,6 +6,7 @@ from app.modules.auto_proc_status.schemas import (
     ma_auto_proc_status_schema,
 )
 
+"""
 api = Namespace(
     "AutoProcStatus",
     description="AutoProcStatus related namespace",
@@ -20,3 +21,4 @@ class AutoProcStatusList(Resource):
     def get(self):
         auto_proc_status_list = AutoProcStatusModel.query.all()
         return ma_auto_proc_status_schema.dump(auto_proc_status_list)
+"""

@@ -5,6 +5,7 @@ from app.modules.auto_proc_program_attachment.schemas import (
     ma_auto_proc_program_attachment_schema,
 )
 
+"""
 api = Namespace(
     "AutoProcProgramAttachment",
     description="AutoProcProgramAttachment related namespace",
@@ -20,3 +21,4 @@ class AutoProcProgramAttachmentList(Resource):
         return ma_auto_proc_program_attachment_schema.dump(
             auto_proc_program_attachment_list
         )
+"""

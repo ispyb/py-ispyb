@@ -5,6 +5,7 @@ from app.modules.auto_proc_scaling.schemas import (
     ma_auto_proc_scaling_schema,
 )
 
+"""
 api = Namespace(
     "AutoProcScaling",
     description="AutoProcScaling related namespace",
@@ -18,3 +19,4 @@ class AutoProcScalingList(Resource):
     def get(self):
         auto_proc_scaling_list = AutoProcScalingModel.query.all()
         return ma_auto_proc_scaling_schema.dump(auto_proc_scaling_list)
+"""

@@ -5,6 +5,7 @@ from app.modules.auto_proc_scaling_statistics.schemas import (
     ma_auto_proc_scaling_statistics_schema,
 )
 
+"""
 api = Namespace(
     "AutoProcScalingStatistics",
     description="AutoProcScalingStatistics related namespace",
@@ -20,3 +21,4 @@ class AutoProcScalingStatisticsList(Resource):
         return ma_auto_proc_scaling_statistics_schema.dump(
             auto_proc_scaling_statistics_list
         )
+"""
