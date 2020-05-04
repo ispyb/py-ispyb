@@ -5,22 +5,7 @@ from app.modules.auto_proc_integration.schemas import (
     ma_auto_proc_integration_schema,
 )
 
-"""
-api = Namespace(
-    "AutoProcIntegration",
-    description="AutoProcIntegration related namespace",
-    path="/auto_proc_integration",
-)
-"""
-
 def get_auto_proc_integration_list():
     auto_proc_integration_list = AutoProcIntegrationModel.query.all()
-        return ma_auto_proc_integration_schema.dump(auto_proc_integration_list)
+    return ma_auto_proc_integration_schema.dump(auto_proc_integration_list)
 
-"""
-@api.route("")
-class AutoProcIntegrationList(Resource):
-    @api.doc(security="apikey")
-    def get(self):
-        return get_auto_proc_integration_list()
-"""

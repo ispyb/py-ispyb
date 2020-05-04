@@ -69,23 +69,23 @@ class ProposalList(Resource):
         # data = ma_proposal_schema.load(json_data)
 
 
-@api.route("/<int:prop_id>")
-@api.param("prop_id", "Proposal id (integer)")
+@api.route("/<int:proposal_id>")
+@api.param("proposal_id", "Proposal id (integer)")
 #@use_args({"name": fields.Int(required=True)}, location="headers")
 class Proposal(Resource):
     """Allows to get/set/delete a proposal"""
 
-    @api.doc(description="prop_id should be an integer ")
+    @api.doc(description="proposal_id should be an integer ")
     # @api.marshal_with(f_proposal_schema)
     @token_required
-    def get(self, prop_id):
+    def get(self, proposal_id):
         """Returns a proposal by proposalId"""
-        return get_proposal_by_id(prop_id)
+        return get_proposal_by_id(proposal_id)
 
     """
     #@api.doc(parser=parser)
     @api.expect(f_proposal_schema)
-    def post(self, prop_id):
+    def post(self, proposal_id):
         json_data = request.form['data']
         print(json_data)
         data = ma_proposal_schema.load(json_data)
@@ -94,7 +94,7 @@ class Proposal(Resource):
 
 
 @api.route("/login_name/<string:login_name>")
-# @api.param("prop_id", "Proposal id")
+# @api.param("proposal_id", "Proposal id")
 class ProposalByLogin(Resource):
     """Allows to get proposal by person login name"""
 

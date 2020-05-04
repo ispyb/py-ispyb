@@ -10,26 +10,25 @@ addons:
   mariadb: 10.3
 
 before_install:
-#- sudo apt-get install mysql-server
-- wget https://github.com/DiamondLightSource/ispyb-database/releases/download/v1.10.4/ispyb-database-1.10.4.tar.gz
-- tar xvfz ispyb-database-1.10.4.tar.gz
-- mysql -u root -e "CREATE DATABASE pydb_test; SET GLOBAL log_bin_trust_function_creators=ON;"
-- mysql -u root -D pydb_test < schema/tables.sql
-- mysql -u root -D pydb_test < schema/lookups.sql
-- mysql -u root -D pydb_test < schema/data.sql
-- mysql -u root -D pydb_test < schema/routines.sql
-- mysql -u root -D pydb_test < grants/ispyb_processing.sql
-- mysql -u root -D pydb_test < grants/ispyb_import.sql
-- mysql -u root -e "CREATE USER mxuser@'localhost' IDENTIFIED BY 'mxpass'; GRANT ispyb_processing to mxuser@'localhost'; GRANT ispyb_import to mxuser@'localhost'; SET DEFAULT ROLE ispyb_processing FOR mxuser@'localhost';"
-- mysql -u root -e "CREATE USER mxuser_future@'localhost' IDENTIFIED BY 'password_4321'; GRANT SELECT ON pydb_test.* to mxuser_future@'localhost';"
+        - wget https://github.com/DiamondLightSource/ispyb-database/releases/download/v1.10.4/ispyb-database-1.10.4.tar.gz
+        - tar xvfz ispyb-database-1.10.4.tar.gz
+        - mysql -u root -e "CREATE DATABASE pydb_test; SET GLOBAL log_bin_trust_function_creators=ON;"
+        - mysql -u root -D pydb_test < schema/tables.sql
+        - mysql -u root -D pydb_test < schema/lookups.sql
+        - mysql -u root -D pydb_test < schema/data.sql
+        - mysql -u root -D pydb_test < schema/routines.sql
+        - mysql -u root -D pydb_test < grants/ispyb_processing.sql
+        - mysql -u root -D pydb_test < grants/ispyb_import.sql
+        - mysql -u root -e "CREATE USER mxuser@'localhost' IDENTIFIED BY 'mxpass';"
+        - mysql -u root -e "GRANT ALL ON pydb_test.* TO 'mxuser'@'localhost';"
 
 install:
-- sudo apt-get install -y python3-mysqldb
-- pip install -r requirements.txt pytest==4.0.1 pylint
+        - sudo apt-get install -y python3-mysqldb
+        - pip install -r requirements.txt pytest==4.0.1 pylint codecov pytest-cov
 
 script:
-- pylint -E app
-- python3 -m pytest
+        - pylint -E app
+        - python3 -m pytest
 
 after_success:
-- codecov
+        - codecov
