@@ -10,8 +10,9 @@ from functools import wraps
 from flask import current_app, request, jsonify
 
 
-TOKEN_EXP_TIME = 10 # in minutes
+TOKEN_EXP_TIME = 10  # in minutes
 MASTER_TOKEN = None
+
 
 class AuthProvider(object):
 
@@ -27,7 +28,7 @@ class AuthProvider(object):
         cls = getattr(importlib.import_module(module_name), class_name)
         self.site_auth = cls()
 
-        assert app.config['SECRET_KEY'], "SECRET_KEY must be configured!"
+        assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 
         if app.config.get("MASTER_TOKEN"):
             global MASTER_TOKEN
@@ -37,9 +38,13 @@ class AuthProvider(object):
         return self.site_auth.get_roles(user, password)
 
     def generate_token(self, username, roles):
-        token = jwt.encode({
-            'sub': username,
-            'iat': datetime.datetime.utcnow(),
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=TOKEN_EXP_TIME)},
-            current_app.config['SECRET_KEY'])
-        return token.decode('UTF-8')
+        token = jwt.encode(
+            {
+                "sub": username,
+                "iat": datetime.datetime.utcnow(),
+                "exp": datetime.datetime.utcnow()
+                + datetime.timedelta(minutes=TOKEN_EXP_TIME),
+            },
+            current_app.config["SECRET_KEY"],
+        )
+        return token.decode("UTF-8")

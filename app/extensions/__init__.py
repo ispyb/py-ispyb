@@ -4,16 +4,16 @@
 ISPyB flask server
 """
 
+from . import api
+from .auth import AuthProvider
+from .flask_sqlalchemy import SQLAlchemy
 from .logging import Logging
+
 logging = Logging()
 
-from .flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
-from .auth import AuthProvider
 auth_provider = AuthProvider()
-
-from . import api
 
 
 def init_app(app):
@@ -21,9 +21,9 @@ def init_app(app):
     Application extensions initialization.
     """
     for extension in (
-            api,
-            auth_provider,
-            logging,
-            db,
-        ):
+        api,
+        auth_provider,
+        logging,
+        db,
+    ):
         extension.init_app(app)

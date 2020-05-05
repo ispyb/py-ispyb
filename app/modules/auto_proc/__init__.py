@@ -2,6 +2,7 @@
 
 from app.extensions.api import api_v1
 
+
 def init_app(app, **kwargs):
 
     from . import resources

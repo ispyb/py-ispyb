@@ -9,20 +9,26 @@ from flask_restx import fields as f_fields
 from app.extensions.api import api_v1 as api
 
 robot_action_dict = {
-        'robotActionId': f_fields.Integer(required=True, description=''),
-        'blsessionId': f_fields.Integer(required=True, description=''),
-        'blsampleId': f_fields.Integer(required=False, description=''),
-        'actionType': f_fields.String(required=False, description='enum(LOAD,UNLOAD,DISPOSE,STORE,WASH,ANNEAL)'),
-        'startTimestamp': f_fields.DateTime(required=True, description=''),
-        'endTimestamp': f_fields.DateTime(required=True, description=''),
-        'status': f_fields.String(required=False, description='enum(SUCCESS,ERROR,CRITICAL,WARNING,COMMANDNOTSENT)'),
-        'message': f_fields.String(required=False, description=''),
-        'containerLocation': f_fields.Integer(required=False, description=''),
-        'dewarLocation': f_fields.Integer(required=False, description=''),
-        'sampleBarcode': f_fields.String(required=False, description=''),
-        'xtalSnapshotBefore': f_fields.String(required=False, description=''),
-        'xtalSnapshotAfter': f_fields.String(required=False, description=''),
-        }
+    "robotActionId": f_fields.Integer(required=True, description=""),
+    "blsessionId": f_fields.Integer(required=True, description=""),
+    "blsampleId": f_fields.Integer(required=False, description=""),
+    "actionType": f_fields.String(
+        required=False, description="enum(LOAD,UNLOAD,DISPOSE,STORE,WASH,ANNEAL)"
+    ),
+    "startTimestamp": f_fields.DateTime(required=True, description=""),
+    "endTimestamp": f_fields.DateTime(required=True, description=""),
+    "status": f_fields.String(
+        required=False,
+        description="enum(SUCCESS,ERROR,CRITICAL,WARNING,COMMANDNOTSENT)",
+    ),
+    "message": f_fields.String(required=False, description=""),
+    "containerLocation": f_fields.Integer(required=False, description=""),
+    "dewarLocation": f_fields.Integer(required=False, description=""),
+    "sampleBarcode": f_fields.String(required=False, description=""),
+    "xtalSnapshotBefore": f_fields.String(required=False, description=""),
+    "xtalSnapshotAfter": f_fields.String(required=False, description=""),
+}
+
 
 class RobotActionSchema(Schema):
     """Marshmallows schema class representing RobotAction table"""
@@ -41,6 +47,6 @@ class RobotActionSchema(Schema):
     xtalSnapshotBefore = ma_fields.String()
     xtalSnapshotAfter = ma_fields.String()
 
-f_robot_action_schema = api.model('RobotAction', robot_action_dict)
-ma_robot_action_schema = RobotActionSchema()
 
+f_robot_action_schema = api.model("RobotAction", robot_action_dict)
+ma_robot_action_schema = RobotActionSchema()

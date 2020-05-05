@@ -7,8 +7,8 @@ import logging
 
 DEFAULT_LOG_FORMAT = "%(asctime)s |%(levelname)-5s| %(message)s"
 
-class Logging(object):
 
+class Logging(object):
     def __init__(self, app=None):
         if app:
             self.init_app(app)

@@ -9,17 +9,24 @@ from flask_restx import fields as f_fields
 from app.extensions.api import api_v1 as api
 
 auto_proc_dict = {
-        'autoProcId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'autoProcProgramId': f_fields.Integer(required=False, description='Related program item'),
-        'spaceGroup': f_fields.String(required=False, description='Space group'),
-        'refinedCell_a': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_b': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_c': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_alpha': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_beta': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_gamma': f_fields.Float(required=False, description='Refined cell'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
-        }
+    "autoProcId": f_fields.Integer(
+        required=True, description="Primary key (auto-incremented)"
+    ),
+    "autoProcProgramId": f_fields.Integer(
+        required=False, description="Related program item"
+    ),
+    "spaceGroup": f_fields.String(required=False, description="Space group"),
+    "refinedCell_a": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_b": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_c": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_alpha": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_beta": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_gamma": f_fields.Float(required=False, description="Refined cell"),
+    "recordTimeStamp": f_fields.DateTime(
+        required=False, description="Creation or last update date/time"
+    ),
+}
+
 
 class AutoProcSchema(Schema):
     """Marshmallows schema class representing AutoProc table"""
@@ -35,6 +42,6 @@ class AutoProcSchema(Schema):
     refinedCell_gamma = ma_fields.Float()
     recordTimeStamp = ma_fields.DateTime()
 
-f_auto_proc_schema = api.model('AutoProc', auto_proc_dict)
-ma_auto_proc_schema = AutoProcSchema()
 
+f_auto_proc_schema = api.model("AutoProc", auto_proc_dict)
+ma_auto_proc_schema = AutoProcSchema()

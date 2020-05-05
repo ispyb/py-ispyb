@@ -14,9 +14,9 @@ def get_proposal_sessions(proposal_id):
     session_list = SessionModel.query.filter_by(proposalId=proposal_id)
     return ma_session_schema.dump(session_list, many=True)
 
+
 @api.route("/list")
 class SessionList(Resource):
-
     @api.doc(security="apikey")
     def get(self):
         return get_all_sessions()
@@ -25,9 +25,8 @@ class SessionList(Resource):
 @api.route("/proposal/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(description="proposal_id should be an integer ")
-#@token_required
+# @token_required
 class ProposalSessionList(Resource):
-
     def get(self, proposal_id):
         """Returns all proposal shippings"""
         return get_proposal_sessions(proposal_id)
