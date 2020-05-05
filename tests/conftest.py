@@ -6,18 +6,18 @@ import sys
 import pytest
 
 TESTS_DIR = os.path.abspath(os.path.dirname(__file__))
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 sys.path.insert(0, ROOT_DIR)
 
-from ispyb import create_app
+#print ROOT_DIR
 
-@pytest.fixture
-def app():
-    app = create_app()
+from app import create_app
+#from tests import data as test_data
 
-    yield app
 
-@pytest.fixture
-def client(app):
-    return app.test_client()
+@pytest.fixture(scope="module")
+def test_app(): 
+    app = create_app()     
+    with app.app_context():         
+        yield app

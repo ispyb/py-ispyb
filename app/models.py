@@ -276,7 +276,7 @@ class AutoProcScalingHasInt(db.Model):
 
 
 
-class AutoProcStatu(db.Model):
+class AutoProcStatus(db.Model):
     __tablename__ = 'AutoProcStatus'
 
     autoProcStatusId = db.Column(db.Integer, primary_key=True, info='Primary key (auto-incremented)')
@@ -928,8 +928,8 @@ class DataCollection(db.Model):
     detectorId = db.Column(db.Integer, index=True, info='references Detector table')
     blSubSampleId = db.Column(db.Integer, index=True)
     dataCollectionNumber = db.Column(db.Integer, index=True)
-    startTime = db.Column(db.DateTime, index=True, info='Start time of the dataCollection')
-    endTime = db.Column(db.DateTime, info='end time of the dataCollection')
+    startTime = db.Column(DateTime, index=True, info='Start time of the dataCollection')
+    endTime = db.Column(DateTime, info='end time of the dataCollection')
     runStatus = db.Column(db.String(200))
     axisStart = db.Column(db.Float)
     axisEnd = db.Column(db.Float)

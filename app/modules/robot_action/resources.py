@@ -1,8 +1,14 @@
 from flask_restx import Namespace, Resource
 from app.models import RobotAction as RobotActionModel
-from app.modules.robot_action.schemas import f_robot_action_schema,  ma_robot_action_schema
+from app.modules.robot_action.schemas import (
+    f_robot_action_schema,
+    ma_robot_action_schema,
+)
 
-api = Namespace('RobotAction', description='RobotAction related namespace', path='/robot_action')
+api = Namespace(
+    "RobotAction", description="RobotAction related namespace", path="/robot_action"
+)
+
 
 @api.route("")
 class RobotActionList(Resource):

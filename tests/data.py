@@ -1,3 +1,5 @@
+from datetime import datetime
+
 test_proposal = {
             "proposalCode": "MX",
             "title": "Test proposal",
@@ -6,7 +8,7 @@ test_proposal = {
             "proposalId": 1,
             "externalId": None,
             "proposalNumber": "1",
-            "bltimeStamp": "2015-12-21 16:20:43",
+            "bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%Y-%m-%d %H:%M:%S"),
             "state": "Open"
             }
 
@@ -66,7 +68,7 @@ test_data_collection = {
     "beamSizeAtSampleX": 0.05,
     "omegaStart": 45,
     "CRYSTALCLASS": None,
-    "endTime": "2016-01-14T12:41:54",
+    "endTime": datetime.strptime("2016-01-14 12:41:54", "%Y-%m-%d %H:%M:%S"),
     "particleDiameter": None,
     "extractSize": None,
     "dataCollectionNumber": 1,
@@ -113,5 +115,5 @@ test_data_collection = {
     "centeringMethod": None,
     "totalAbsorbedDose": None,
     "screeningOrigId": None,
-    "startTime": "2016-01-14T12:40:34"
+    "startTime": datetime.strptime("2016-01-14 12:40:34", "%Y-%m-%d %H:%M:%S")
   }

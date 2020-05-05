@@ -9,11 +9,10 @@ from copy import deepcopy
 from flask import current_app, Blueprint
 
 from flask_restx import Api, Namespace
-#from .namespace import Namespace
-from .http_exceptions import abort
+
 
 authorizations = {"apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}}
-blueprint = Blueprint('api', __name__, url_prefix='/ispyb/api/v1')
+blueprint = Blueprint("api", __name__)
 api_v1 = Api(
     blueprint,
     version="1.0",
@@ -23,7 +22,7 @@ api_v1 = Api(
     authorizations=authorizations,
     default="Main",
     default_label="Main",
-        )
+)
 
 
 def init_app(app, **kwargs):
@@ -31,7 +30,5 @@ def init_app(app, **kwargs):
     """
     API extension initialization point.
     """
-    #app.route('/swaggerui/<path:path>')(serve_swaggerui_assets)
-
     # Prevent config variable modification with runtime changes
-    api_v1.authorizations = deepcopy(app.config['AUTHORIZATIONS'])
+    api_v1.authorizations = deepcopy(app.config["AUTHORIZATIONS"])

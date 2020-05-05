@@ -1,11 +1,12 @@
-# pylint: disable=too-few-public-methods,invalid-name,missing-docstring
 import os
+import csv
 
 class BaseConfig(object):
     SECRET_KEY = 'this-really-needs-to-be-changed'
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
+    API_ROOT = "/ispyb/api/v1"
     # POSTGRESQL
     # DB_USER = 'user'
     # DB_PASSWORD = 'password'
@@ -45,16 +46,16 @@ class BaseConfig(object):
 
     ENABLED_MODULES = (
         'api',
-        'login',
+        'auth',
     )
 
     ENABLED_DB_MODULES = []
 
-    enabled_db_modules_file = open("%s/enabled_modules.csv" % PROJECT_ROOT, 'r')
-    for db_module in enabled_db_modules_file:
-        db_module = db_module.replace('\n', '')
-        if db_module:
-            ENABLED_DB_MODULES.append(db_module)
+    with open('%s/enabled_db_modules.csv' % PROJECT_ROOT) as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            ENABLED_DB_MODULES.append(row[0])
+
 
     STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
@@ -66,7 +67,9 @@ class BaseConfig(object):
     # TODO: consider if these are relevant for this project
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     CSRF_ENABLED = True
-
+    
+    LOG_FILENAME = "/tmp/ispyb_server.log"
+    #LOG_FORMAT = "%(asctime)s |%(levelname)-5s| %(message)s"
 
 class ProductionConfig(BaseConfig):
     SECRET_KEY = os.getenv('EXAMPLE_API_SERVER_SECRET_KEY')
