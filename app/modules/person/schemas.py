@@ -9,21 +9,24 @@ from flask_restx import fields as f_fields
 from app.extensions.api import api_v1 as api
 
 person_dict = {
-        'personId': f_fields.Integer(required=True, description=''),
-        'laboratoryId': f_fields.Integer(required=False, description=''),
-        'siteId': f_fields.Integer(required=False, description=''),
-        'personUUID': f_fields.String(required=False, description=''),
-        'familyName': f_fields.String(required=False, description=''),
-        'givenName': f_fields.String(required=False, description=''),
-        'title': f_fields.String(required=False, description=''),
-        'emailAddress': f_fields.String(required=False, description=''),
-        'phoneNumber': f_fields.String(required=False, description=''),
-        'login': f_fields.String(required=False, description=''),
-        'faxNumber': f_fields.String(required=False, description=''),
-        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
-        'externalId': f_fields.Integer(required=False, description=''),
-        'cache': f_fields.String(required=False, description=''),
-        }
+    "personId": f_fields.Integer(required=True, description=""),
+    "laboratoryId": f_fields.Integer(required=False, description=""),
+    "siteId": f_fields.Integer(required=False, description=""),
+    "personUUID": f_fields.String(required=False, description=""),
+    "familyName": f_fields.String(required=False, description=""),
+    "givenName": f_fields.String(required=False, description=""),
+    "title": f_fields.String(required=False, description=""),
+    "emailAddress": f_fields.String(required=False, description=""),
+    "phoneNumber": f_fields.String(required=False, description=""),
+    "login": f_fields.String(required=False, description=""),
+    "faxNumber": f_fields.String(required=False, description=""),
+    "recordTimeStamp": f_fields.DateTime(
+        required=True, description="Creation or last update date/time"
+    ),
+    "externalId": f_fields.Integer(required=False, description=""),
+    "cache": f_fields.String(required=False, description=""),
+}
+
 
 class PersonSchema(Schema):
     """Marshmallows schema class representing Person table"""
@@ -43,6 +46,6 @@ class PersonSchema(Schema):
     externalId = ma_fields.Integer()
     cache = ma_fields.String()
 
-f_person_schema = api.model('Person', person_dict)
-ma_person_schema = PersonSchema()
 
+f_person_schema = api.model("Person", person_dict)
+ma_person_schema = PersonSchema()

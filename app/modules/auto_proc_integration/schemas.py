@@ -9,29 +9,48 @@ from flask_restx import fields as f_fields
 from app.extensions.api import api_v1 as api
 
 auto_proc_integration_dict = {
-        'autoProcIntegrationId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'dataCollectionId': f_fields.Integer(required=True, description='DataCollection item'),
-        'autoProcProgramId': f_fields.Integer(required=False, description='Related program item'),
-        'startImageNumber': f_fields.Integer(required=False, description='start image number'),
-        'endImageNumber': f_fields.Integer(required=False, description='end image number'),
-        'refinedDetectorDistance': f_fields.Float(required=False, description='Refined DataCollection.detectorDistance'),
-        'refinedXBeam': f_fields.Float(required=False, description='Refined DataCollection.xBeam'),
-        'refinedYBeam': f_fields.Float(required=False, description='Refined DataCollection.yBeam'),
-        'rotationAxisX': f_fields.Float(required=False, description='Rotation axis'),
-        'rotationAxisY': f_fields.Float(required=False, description='Rotation axis'),
-        'rotationAxisZ': f_fields.Float(required=False, description='Rotation axis'),
-        'beamVectorX': f_fields.Float(required=False, description='Beam vector'),
-        'beamVectorY': f_fields.Float(required=False, description='Beam vector'),
-        'beamVectorZ': f_fields.Float(required=False, description='Beam vector'),
-        'cell_a': f_fields.Float(required=False, description='Unit cell'),
-        'cell_b': f_fields.Float(required=False, description='Unit cell'),
-        'cell_c': f_fields.Float(required=False, description='Unit cell'),
-        'cell_alpha': f_fields.Float(required=False, description='Unit cell'),
-        'cell_beta': f_fields.Float(required=False, description='Unit cell'),
-        'cell_gamma': f_fields.Float(required=False, description='Unit cell'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
-        'anomalous': f_fields.Integer(required=False, description='boolean type:0 noanoum - 1 anoum'),
-        }
+    "autoProcIntegrationId": f_fields.Integer(
+        required=True, description="Primary key (auto-incremented)"
+    ),
+    "dataCollectionId": f_fields.Integer(
+        required=True, description="DataCollection item"
+    ),
+    "autoProcProgramId": f_fields.Integer(
+        required=False, description="Related program item"
+    ),
+    "startImageNumber": f_fields.Integer(
+        required=False, description="start image number"
+    ),
+    "endImageNumber": f_fields.Integer(required=False, description="end image number"),
+    "refinedDetectorDistance": f_fields.Float(
+        required=False, description="Refined DataCollection.detectorDistance"
+    ),
+    "refinedXBeam": f_fields.Float(
+        required=False, description="Refined DataCollection.xBeam"
+    ),
+    "refinedYBeam": f_fields.Float(
+        required=False, description="Refined DataCollection.yBeam"
+    ),
+    "rotationAxisX": f_fields.Float(required=False, description="Rotation axis"),
+    "rotationAxisY": f_fields.Float(required=False, description="Rotation axis"),
+    "rotationAxisZ": f_fields.Float(required=False, description="Rotation axis"),
+    "beamVectorX": f_fields.Float(required=False, description="Beam vector"),
+    "beamVectorY": f_fields.Float(required=False, description="Beam vector"),
+    "beamVectorZ": f_fields.Float(required=False, description="Beam vector"),
+    "cell_a": f_fields.Float(required=False, description="Unit cell"),
+    "cell_b": f_fields.Float(required=False, description="Unit cell"),
+    "cell_c": f_fields.Float(required=False, description="Unit cell"),
+    "cell_alpha": f_fields.Float(required=False, description="Unit cell"),
+    "cell_beta": f_fields.Float(required=False, description="Unit cell"),
+    "cell_gamma": f_fields.Float(required=False, description="Unit cell"),
+    "recordTimeStamp": f_fields.DateTime(
+        required=False, description="Creation or last update date/time"
+    ),
+    "anomalous": f_fields.Integer(
+        required=False, description="boolean type:0 noanoum - 1 anoum"
+    ),
+}
+
 
 class AutoProcIntegrationSchema(Schema):
     """Marshmallows schema class representing AutoProcIntegration table"""
@@ -59,6 +78,8 @@ class AutoProcIntegrationSchema(Schema):
     recordTimeStamp = ma_fields.DateTime()
     anomalous = ma_fields.Integer()
 
-f_auto_proc_integration_schema = api.model('AutoProcIntegration', auto_proc_integration_dict)
-ma_auto_proc_integration_schema = AutoProcIntegrationSchema()
 
+f_auto_proc_integration_schema = api.model(
+    "AutoProcIntegration", auto_proc_integration_dict
+)
+ma_auto_proc_integration_schema = AutoProcIntegrationSchema()

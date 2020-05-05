@@ -5,8 +5,8 @@ import logging
 
 from flask_restx import Namespace, Resource
 
-#from webargs import fields
-#from webargs.flaskparser import use_args
+# from webargs import fields
+# from webargs.flaskparser import use_args
 
 from app.extensions import db
 from app.extensions.auth import token_required
@@ -71,7 +71,7 @@ class ProposalList(Resource):
 
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
-#@use_args({"name": fields.Int(required=True)}, location="headers")
+# @use_args({"name": fields.Int(required=True)}, location="headers")
 class Proposal(Resource):
     """Allows to get/set/delete a proposal"""
 

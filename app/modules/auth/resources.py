@@ -3,7 +3,9 @@ from flask_restx import Namespace, Resource
 
 from app.extensions import auth_provider
 
-api = Namespace("Authentification", description="authentification namespace", path="/auth")
+api = Namespace(
+    "Authentification", description="authentification namespace", path="/auth"
+)
 
 
 @api.route("/login")

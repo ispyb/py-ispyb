@@ -9,25 +9,50 @@ from flask_restx import fields as f_fields
 from app.extensions.api import api_v1 as api
 
 image_quality_indicators_dict = {
-        'imageQualityIndicatorsId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'imageId': f_fields.Integer(required=False, description=''),
-        'autoProcProgramId': f_fields.Integer(required=True, description='Foreign key to the AutoProcProgram table'),
-        'spotTotal': f_fields.Integer(required=False, description='Total number of spots'),
-        'inResTotal': f_fields.Integer(required=False, description='Total number of spots in resolution range'),
-        'goodBraggCandidates': f_fields.Integer(required=False, description='Total number of Bragg diffraction spots'),
-        'iceRings': f_fields.Integer(required=False, description='Number of ice rings identified'),
-        'method1Res': f_fields.Float(required=False, description='Resolution estimate 1 (see publication)'),
-        'method2Res': f_fields.Float(required=False, description='Resolution estimate 2 (see publication)'),
-        'maxUnitCell': f_fields.Float(required=False, description='Estimation of the largest possible unit cell edge'),
-        'pctSaturationTop50Peaks': f_fields.Float(required=False, description='The fraction of the dynamic range being used'),
-        'inResolutionOvrlSpots': f_fields.Integer(required=False, description='Number of spots overloaded'),
-        'binPopCutOffMethod2Res': f_fields.Float(required=False, description='Cut off used in resolution limit calculation'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
-        'totalIntegratedSignal': f_fields.String(required=False, description=''),
-        'dozor_score': f_fields.String(required=False, description='dozor_score'),
-        'dataCollectionId': f_fields.Integer(required=False, description=''),
-        'imageNumber': f_fields.Integer(required=False, description=''),
-        }
+    "imageQualityIndicatorsId": f_fields.Integer(
+        required=True, description="Primary key (auto-incremented)"
+    ),
+    "imageId": f_fields.Integer(required=False, description=""),
+    "autoProcProgramId": f_fields.Integer(
+        required=True, description="Foreign key to the AutoProcProgram table"
+    ),
+    "spotTotal": f_fields.Integer(required=False, description="Total number of spots"),
+    "inResTotal": f_fields.Integer(
+        required=False, description="Total number of spots in resolution range"
+    ),
+    "goodBraggCandidates": f_fields.Integer(
+        required=False, description="Total number of Bragg diffraction spots"
+    ),
+    "iceRings": f_fields.Integer(
+        required=False, description="Number of ice rings identified"
+    ),
+    "method1Res": f_fields.Float(
+        required=False, description="Resolution estimate 1 (see publication)"
+    ),
+    "method2Res": f_fields.Float(
+        required=False, description="Resolution estimate 2 (see publication)"
+    ),
+    "maxUnitCell": f_fields.Float(
+        required=False, description="Estimation of the largest possible unit cell edge"
+    ),
+    "pctSaturationTop50Peaks": f_fields.Float(
+        required=False, description="The fraction of the dynamic range being used"
+    ),
+    "inResolutionOvrlSpots": f_fields.Integer(
+        required=False, description="Number of spots overloaded"
+    ),
+    "binPopCutOffMethod2Res": f_fields.Float(
+        required=False, description="Cut off used in resolution limit calculation"
+    ),
+    "recordTimeStamp": f_fields.DateTime(
+        required=False, description="Creation or last update date/time"
+    ),
+    "totalIntegratedSignal": f_fields.String(required=False, description=""),
+    "dozor_score": f_fields.String(required=False, description="dozor_score"),
+    "dataCollectionId": f_fields.Integer(required=False, description=""),
+    "imageNumber": f_fields.Integer(required=False, description=""),
+}
+
 
 class ImageQualityIndicatorsSchema(Schema):
     """Marshmallows schema class representing ImageQualityIndicators table"""
@@ -51,6 +76,8 @@ class ImageQualityIndicatorsSchema(Schema):
     dataCollectionId = ma_fields.Integer()
     imageNumber = ma_fields.Integer()
 
-f_image_quality_indicators_schema = api.model('ImageQualityIndicators', image_quality_indicators_dict)
-ma_image_quality_indicators_schema = ImageQualityIndicatorsSchema()
 
+f_image_quality_indicators_schema = api.model(
+    "ImageQualityIndicators", image_quality_indicators_dict
+)
+ma_image_quality_indicators_schema = ImageQualityIndicatorsSchema()
