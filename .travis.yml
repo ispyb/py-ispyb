@@ -28,7 +28,7 @@ install:
 
 script:
         - pylint -E app
-        - python3 -m pytest
+        - pytest /test
 
 after_success:
         - codecov
