@@ -17,8 +17,6 @@ before_install:
         - mysql -u root -D pydb_test < schema/lookups.sql
         - mysql -u root -D pydb_test < schema/data.sql
         - mysql -u root -D pydb_test < schema/routines.sql
-        - mysql -u root -D pydb_test < grants/ispyb_processing.sql
-        - mysql -u root -D pydb_test < grants/ispyb_import.sql
         - mysql -u root -e "CREATE USER mxuser@'localhost' IDENTIFIED BY 'mxpass';"
         - mysql -u root -e "GRANT ALL ON pydb_test.* TO 'mxuser'@'localhost';"
 

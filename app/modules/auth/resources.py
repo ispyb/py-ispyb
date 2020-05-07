@@ -14,19 +14,27 @@ class Login(Resource):
 
     def get(self):
         authorization = request.authorization
-
+ 
+        print(request.headers.get('username'))
         if (
             not authorization
             or not authorization.username
             or not authorization.password
         ):
-            return make_response(
-                "Could not verify",
-                401,
-                {"WWW-Authenticate": 'Basic realm="Login required!"'},
+            if not request.headers.get('username') or not request.headers.get('password'): 
+                return make_response(
+                        "Could not verify",
+                        401,
+                        {"WWW-Authenticate": 'Basic realm="Login required!"'},
             )
-        roles = auth_provider.get_roles(authorization.username, authorization.password)
+            else:
+                username = request.headers.get('username')
+                password = request.headers.get('password')
+        else:
+            username = authorization.username
+            password = authorization.password
 
+        roles = auth_provider.get_roles(username, password)
         if not roles:
             return make_response(
                 "Could not verify",
@@ -34,5 +42,5 @@ class Login(Resource):
                 {"WWW-Authenticate": 'Basic realm="Login required!"'},
             )
         else:
-            token = auth_provider.generate_token(authorization.username, roles)
+            token = auth_provider.generate_token(username, roles)
             return {"token": token, "roles": roles}

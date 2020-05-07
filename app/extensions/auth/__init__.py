@@ -20,14 +20,15 @@ def token_required(f):
         if not token:
             return {"message": "Token is missing."}, 401
 
-        print(111)
-        print(token)
         if current_app.config.get("MASTER_TOKEN"):
             if current_app.config["MASTER_TOKEN"] == token:
                 current_app.logger.info("Master token validated")
                 return f(*args, **kwargs)
         try:
-            pyload = jwt.decode(token, current_app.config["SECRET_KEY"])
+            pyload = jwt.decode(
+                    token,
+                    current_app.config["SECRET_KEY"],
+                    algorithms=current_app.config["JWT_CODING_ALGORITHM"])
         except jwt.ExpiredSignatureError:
             current_app.logger.info("Token expired. Please log in again")
             print("Token expired. Please log in again")
