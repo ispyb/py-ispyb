@@ -23,7 +23,7 @@ class BaseConfig(object):
 
     SQLALCHEMY_DATABASE_URI = 'mysql://mxuser:mxpass@localhost/pydb_test'
 
-    DEBUG = False
+    DEBUG = True
     ERROR_404_HELP = False
 
     REVERSE_PROXY_SETUP = os.getenv('EXAMPLE_API_REVERSE_PROXY_SETUP', False)
@@ -38,10 +38,10 @@ class BaseConfig(object):
         "apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}
     }
 
-    #RESTX_MASK_HEADER = "token"
-
     AUTH_MODULE = "app.extensions.auth.DummyAuth"
     AUTH_CLASS = "DummyAuth"
+    JWT_CODING_ALGORITHM = 'HS256'
+    TOKEN_EXP_TIME = 60 #in minutes
     MASTER_TOKEN = "MasterToken"
 
     ENABLED_MODULES = (
