@@ -20,8 +20,6 @@ def token_required(f):
         if not token:
             return {"message": "Token is missing."}, 401
 
-        print(111)
-        print(token)
         if current_app.config.get("MASTER_TOKEN"):
             if current_app.config["MASTER_TOKEN"] == token:
                 current_app.logger.info("Master token validated")

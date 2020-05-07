@@ -45,7 +45,7 @@ class ProposalList(Resource):
 
     @api.doc(security="apikey")
     @api.marshal_list_with(f_proposal_schema)
-    # @token_required
+    @token_required
     def get(self):
         """Returns all proposals"""
         log.info("Return all proposals")

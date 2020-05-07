@@ -10,7 +10,7 @@ from functools import wraps
 from flask import current_app, request, jsonify
 
 
-TOKEN_EXP_TIME = 10  # in minutes
+TOKEN_EXP_TIME = 1  # in minutes
 MASTER_TOKEN = None
 
 
@@ -38,6 +38,17 @@ class AuthProvider(object):
         return self.site_auth.get_roles(user, password)
 
     def generate_token(self, username, roles):
+        #Usrname is authentificated via site specific auth
+        if username in self.tokens:
+            #Check if the previously generated token is still valid
+            try:
+                pyload = jwt.decode(
+                        self.tokens[username],
+                        current_app.config["SECRET_KEY"])
+                return self.tokens[username]
+            except jwt.ExpiredSignatureError:
+                pass
+
         token = jwt.encode(
             {
                 "sub": username,
@@ -47,4 +58,7 @@ class AuthProvider(object):
             },
             current_app.config["SECRET_KEY"],
         )
-        return token.decode("UTF-8")
+        dec_token = token.decode("UTF-8")
+        self.tokens[username] = dec_token
+
+        return dec_token

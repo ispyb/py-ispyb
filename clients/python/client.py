@@ -2,21 +2,34 @@ from requests import get, post
 
 root_url = "http://localhost:5000/ispyb/api/v1"
 
-payload = {
-        "username": "user",
-        "password": "password"}
-response = get(root_url + "/auth/login", json=payload)
+username = 'user'
+response = get(root_url + "/auth/login", auth=(username, 'pass'))
 
-print(response)
+if response.status_code == 200:
+    payload = response.json()
+    roles = response.json()['roles']
+    token = response.json()['token']
+    print('User %s validated' % username)
+    print('Token: %s' % token)
+    paths = ["/prop"]
+    headers = {'token': token}
+    for path in paths:
+        print("-----------------------------------------")
+        print("Request: %s%s" % (root_url, path))
+        response = get(root_url + path, headers=headers)
+        print("Status code: %d" % response.status_code)
+        data = response.json()
+        print(len(data))
 
+    headers = {'token': 'invalid token'}
+    for path in paths:
+        print("-----------------------------------------")
+        print("Request: %s%s" % (root_url, path))
+        response = get(root_url + path, headers=headers)
+        print("Status code: %d" % response.status_code)
+        data = response.json()
+        print(data)
+else:
+    print('Unable to validate user %s' % username)
+    print(response.reason, response.text)
 
-paths = ["/prop"]
-for path in paths:
-    print("-----------------------------------------")
-    print("Request: %s%s" % (root_url, path))
-    r = get(root_url + path)
-    print("Status code: %d" % r.status_code)
-    data = r.json()
-    #for d in data:
-    #    print(d)
-    # print('Data: %s' % str(data))

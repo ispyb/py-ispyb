@@ -26,7 +26,6 @@ class Login(Resource):
                 {"WWW-Authenticate": 'Basic realm="Login required!"'},
             )
         roles = auth_provider.get_roles(authorization.username, authorization.password)
-
         if not roles:
             return make_response(
                 "Could not verify",
