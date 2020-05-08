@@ -26,7 +26,8 @@ install:
 
 script:
         - pylint -E app
-        - python3 -m pytest
+        - coverage run -m pytest
 
 after_success:
+        - bash <(curl -s https://codecov.io/bash)
         - codecov
