@@ -45,8 +45,8 @@ class BaseConfig(object):
     MASTER_TOKEN = "MasterToken"
 
     ENABLED_MODULES = (
-        'api',
-        'auth',
+            'api',
+            'auth',
     )
 
     ENABLED_DB_MODULES = []
