@@ -1,11 +1,10 @@
-# ISPyB flask server
+# py-ispyb
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2126d052de464a27bf9a60ef27012e2f)](https://app.codacy.com/manual/IvarsKarpics/ispyb_backend_prototype?utm_source=github.com&utm_medium=referral&utm_content=IvarsKarpics/ispyb_backend_prototype&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/mxcube/mxcube.svg?branch=master)](https://travis-ci.org/IvarsKarpics/ispyb_backend_prototype)
 [![codecov](https://codecov.io/gh/IvarsKarpics/ispyb_backend_prototype/branch/master/graph/badge.svg)](https://codecov.io/gh/IvarsKarpics/ispyb_backend_prototype)
 
-
-Project struture is based on the [RESTful API Server Example](RESTful API Server Example)
+ISPyB backend server based on python flask-restx.
 
 ## Dependencies
 
@@ -14,7 +13,7 @@ Project struture is based on the [RESTful API Server Example](RESTful API Server
   [*flask*](http://flask.pocoo.org/))
 * [**sqlalchemy**](http://www.sqlalchemy.org/) (+
   [*flask-sqlalchemy*](http://flask-sqlalchemy.pocoo.org/)) - Database ORM.
-* [**marshmallow**](http://marshmallow.rtfd.org/) (+
+* [**marshmallow**](http://marshmallow.rtfd.org/)
 
 
 ```bash
