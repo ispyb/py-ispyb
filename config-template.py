@@ -58,6 +58,7 @@ class BaseConfig(object):
     ENABLED_ROUTES = [
             'auth',
             'auto_proc',
+            'data_collection',
             'proposal',
     ]
 
