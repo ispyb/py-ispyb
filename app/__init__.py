@@ -1,4 +1,5 @@
 # encoding: utf-8
+# pylint: disable=no-member
 """
 Example RESTful API Server.
 """
@@ -23,6 +24,8 @@ def create_app(flask_config_name=None, **kwargs):
     env_flask_config_name = os.getenv('FLASK_CONFIG')
     if flask_config_name is None:
         flask_config_name = env_flask_config_name
+    if flask_config_name is None:
+        flask_config_name = 'testing'
 
     app.logger.debug("Starting ISPyB server in %s mode" % flask_config_name)
     try:
