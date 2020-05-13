@@ -2,41 +2,14 @@
 ISPyB flask server
 """
 import logging
-
 from flask_restx import Namespace, Resource
 
-# from webargs import fields
-# from webargs.flaskparser import use_args
-
-from app.extensions import db
 from app.extensions.auth import token_required
-from app.models import Proposal as ProposalModel
-from app.modules.proposal.schemas import f_proposal_schema, ma_proposal_schema
-from app.modules.person import resources as person_resources
+from app.modules import proposal
+
 
 log = logging.getLogger(__name__)
 api = Namespace("Proposal", description="Proposal related namespace", path="/prop")
-
-
-def get_all_proposals():
-    """Returns all proposals"""
-    proposals = ProposalModel.query.all()
-    return ma_proposal_schema.dump(proposals, many=True)
-
-
-def get_proposal_by_id(proposal_id):
-    """Returns proposal by id"""
-    proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
-    return ma_proposal_schema.dump(proposal)
-
-
-def get_proposals_by_login_name(login_name):
-    """Returns proposals by a login name
-    """
-    person_id = person_resources.get_person_id_by_login(login_name)
-    # TODO this is not nice...
-    proposal = ProposalModel.query.filter_by(personId=person_id)
-    return ma_proposal_schema.dump(proposal, many=True)
 
 
 @api.route("")
@@ -44,15 +17,15 @@ class ProposalList(Resource):
     """Allows to get all proposals"""
 
     @api.doc(security="apikey")
-    @api.marshal_list_with(f_proposal_schema)
-    @token_required
+    @api.marshal_list_with(proposal.schemas.f_proposal_schema)
+    #@token_required
     def get(self):
         """Returns all proposals"""
         log.info("Return all proposals")
-        return get_all_proposals()
+        return proposal.get_all_proposals()
 
-    @api.expect(f_proposal_schema)
-    @api.marshal_with(f_proposal_schema, code=201)
+    @api.expect(proposal.schemas.f_proposal_schema)
+    @api.marshal_with(proposal.schemas.f_proposal_schema, code=201)
     def post(self):
         """Adds a new proposal"""
         # app.logger.info("Insert new proposal")
@@ -80,7 +53,7 @@ class Proposal(Resource):
     @token_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
-        return get_proposal_by_id(proposal_id)
+        return proposal.get_proposal_by_id(proposal_id)
 
     """
     #@api.doc(parser=parser)
@@ -99,9 +72,9 @@ class ProposalByLogin(Resource):
     """Allows to get proposal by person login name"""
 
     @api.doc(description="login_name should be a string")
-    @api.marshal_with(f_proposal_schema)
+    @api.marshal_with(proposal.schemas.f_proposal_schema)
     # @token_required
     def get(self, login_name):
         """Returns a proposal by login"""
         # app.logger.info("Returns all proposals for user with login name %s" % login_name)
-        return get_proposals_by_login_name(login_name)
+        return proposal.get_proposals_by_login_name(login_name)

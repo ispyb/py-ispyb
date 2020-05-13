@@ -5,7 +5,7 @@ ISPyB flask server
 from flask_restx import Namespace, Resource
 
 from app.models import AutoProc as AutoProcModel
-from app.modules.auto_proc.schemas import f_auto_proc_schema, ma_auto_proc_schema
+from app.modules import auto_proc
 
 api = Namespace(
     "Auto processing", description="Auto processing related namespace", path="/autoproc"
@@ -21,5 +21,5 @@ class AutoProcList(Resource):
     def get(self):
         """Returns all auto processing results"""
         # app.logger.info('Returns all auto proc results')
-        auto_proc_list = AutoProcModel.query.all()
-        return ma_auto_proc_schema.dump(auto_proc_list)
+        auto_proc_list = auto_proc.schemas.AutoProcModel.query.all()
+        return auto_proc.schemas.ma_auto_proc_schema.dump(auto_proc_list)

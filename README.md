@@ -1,7 +1,7 @@
 # py-ispyb
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2126d052de464a27bf9a60ef27012e2f)](https://app.codacy.com/manual/IvarsKarpics/ispyb_backend_prototype?utm_source=github.com&utm_medium=referral&utm_content=IvarsKarpics/ispyb_backend_prototype&utm_campaign=Badge_Grade_Dashboard)
-[![Build Status](https://travis-ci.org/mxcube/mxcube.svg?branch=master)](https://travis-ci.org/IvarsKarpics/ispyb_backend_prototype)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/301f7c319e504a94950e7798bdb8cd31)](https://www.codacy.com/manual/IvarsKarpics/py-ispyb?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ispyb/py-ispyb&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.org/ispyb/py-ispyb.svg?branch=master)](https://travis-ci.org/ispyb/py-ispyb)
 [![codecov](https://codecov.io/gh/IvarsKarpics/ispyb_backend_prototype/branch/master/graph/badge.svg)](https://codecov.io/gh/IvarsKarpics/ispyb_backend_prototype)
 
 ISPyB backend server based on python flask-restx.

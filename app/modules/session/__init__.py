@@ -1,8 +1,13 @@
-from app.extensions.api import api_v1
+from app.models import BLSession as SessionModel
+from app.modules.session.schemas import f_session_schema, ma_session_schema
 
 
-def init_app(app, **kwargs):
+def get_all_sessions():
+    session_list = SessionModel.query.all()
+    return ma_session_schema.dump(session_list, many=True)
 
-    from . import resources
 
-    api_v1.add_namespace(resources.api)
+def get_proposal_sessions(proposal_id):
+    session_list = SessionModel.query.filter_by(proposalId=proposal_id)
+    return ma_session_schema.dump(session_list, many=True)
+

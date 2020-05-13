@@ -15,7 +15,6 @@ class Login(Resource):
     def get(self):
         authorization = request.authorization
  
-        print(request.headers.get('username'))
         if (
             not authorization
             or not authorization.username
