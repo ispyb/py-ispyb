@@ -1,21 +1,17 @@
-"""
-ISPyB flask server
-"""
+#ISPyB flask server
 
-import abc
-import jwt
 import datetime
 import importlib
-from functools import wraps
-from flask import current_app, request, jsonify
+
+import jwt
+from flask import current_app, jsonify
 
 
 MASTER_TOKEN = None
 
 
-class AuthProvider(object):
-
-    __metaclass__ = abc.ABCMeta
+class AuthProvider():
+    """Allows to authentificate users and create tokens"""
 
     def __init__(self):
         self.tokens = {}
@@ -37,11 +33,13 @@ class AuthProvider(object):
         return self.site_auth.get_roles(user, password)
 
     def generate_token(self, username, roles):
-        #Username is authentificated via site specific auth
+        """
+        User is authentificated via site specific auth
+        """
         if username in self.tokens:
             #Check if the previously generated token is still valid
             try:
-                pyload = jwt.decode(
+                jwt.decode(
                         self.tokens[username],
                         current_app.config["SECRET_KEY"],
                         algorithms=current_app.config["JWT_CODING_ALGORITHM"])

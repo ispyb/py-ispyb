@@ -58,4 +58,7 @@ def create_app(flask_config_name=None, **kwargs):
     from . import modules
     modules.init_app(app)
 
+    from . import routes
+    routes.init_app(app)
+
     return app

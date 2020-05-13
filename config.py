@@ -46,7 +46,6 @@ class BaseConfig(object):
 
     ENABLED_MODULES = (
             'api',
-            'auth',
     )
 
     ENABLED_DB_MODULES = []
@@ -55,6 +54,11 @@ class BaseConfig(object):
         reader = csv.reader(csvfile)
         for row in reader:
             ENABLED_DB_MODULES.append(row[0])
+
+    ENABLED_ROUTES = [
+            'auth',
+            'proposal',
+    ]
 
 
     STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
