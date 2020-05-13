@@ -1,10 +1,10 @@
 """ISPyB flask server"""
 
-from app.extensions.api import api_v1
+import logging
+
+from app.extensions import db
+from app.models import Screening as ScreeningModel
+from app.modules.screening.schemas import f_screening_schema, ma_screening_schema
 
 
-def init_app(app, **kwargs):
-
-    from . import resources
-
-    api_v1.add_namespace(resources.api)
+log = logging.getLogger(__name__)

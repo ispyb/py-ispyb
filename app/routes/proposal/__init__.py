@@ -14,7 +14,7 @@ api = Namespace("Proposal", description="Proposal related namespace", path="/pro
 api_v1.add_namespace(api)
 
 
-@api.route("")
+@api.route("/list")
 class ProposalList(Resource):
     """Allows to get all proposals"""
 

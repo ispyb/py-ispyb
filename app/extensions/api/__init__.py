@@ -12,7 +12,7 @@ from flask_restx import Api, Namespace
 api_v1 = Api(
     version="1.0",
     title="ISPyB",
-    description="ISPyB Flask restplus server",
+    description="ISPyB Flask rest server",
     doc="/doc",
     default="Main",
     default_label="Main",

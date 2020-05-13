@@ -118,6 +118,7 @@ for table in tables:
         schema_file.write("\n")
         schema_file.close()
 
+        """
         resources_file_path = "%s/app/modules/%s/resources.py" % (
             ispyb_root,
             schema_name,
@@ -148,7 +149,7 @@ for table in tables:
                 "        return ma_%s_schema.dump(%s_list)\n"
                 % (schema_name, schema_name)
             )
-
+       
         init_file_path = "%s/app/modules/%s/__init__.py" % (ispyb_root, schema_name)
         init_file = open(init_file_path, "w")
         init_file.write('"""ISPyB flask server"""\n\n')
@@ -157,3 +158,4 @@ for table in tables:
         init_file.write("    from . import resources\n\n")
         init_file.write("    api_v1.add_namespace(resources.api)")
         init_file.write("\n")
+        """
