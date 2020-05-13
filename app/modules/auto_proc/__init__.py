@@ -1,10 +1,8 @@
 """ISPyB flask server"""
 
-from app.extensions.api import api_v1
+from app.models import AutoProc as AutoProcModel
+from app.modules import auto_proc
 
-
-def init_app(app, **kwargs):
-
-    from . import resources
-
-    api_v1.add_namespace(resources.api)
+def get_auto_proc_list():
+    auto_proc_list = AutoProcModel.query.all()
+    return auto_proc.schemas.ma_auto_proc_schema.dump(auto_proc_list)
