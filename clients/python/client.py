@@ -11,7 +11,7 @@ if response.status_code == 200:
     token = response.json()['token']
     print('User %s validated' % username)
     print('Token: %s' % token)
-    paths = ["/prop"]
+    paths = ["/prop/list"]
     headers = {'token': token}
     for path in paths:
         print("-----------------------------------------")
