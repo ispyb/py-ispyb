@@ -49,7 +49,7 @@ def token_required(f):
                 current_app.logger.info("Master token validated")
                 return f(*args, **kwargs)
         try:
-            pyload = jwt.decode(
+            jwt.decode(
                 token,
                 current_app.config["SECRET_KEY"],
                 algorithms=current_app.config["JWT_CODING_ALGORITHM"],

@@ -5,4 +5,4 @@ flask-restx
 SQLAlchemy
 marshmallow
 pyjwt
-mysqlclient
+#mysqlclient
