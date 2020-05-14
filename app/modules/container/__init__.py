@@ -1,11 +1,2 @@
-"""ISPyB flask server"""
-
-from app.extensions.api import api_v1
-
-
-def init_app(app, **kwargs):
-    return
-
-    # from . import resources
-
-    # api_v1.add_namespace(resources.api)
+from app.models import Container as ContainerModel
+from app.modules.container.schemas import f_container_schema, ma_container_schema

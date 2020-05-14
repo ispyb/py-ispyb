@@ -22,12 +22,30 @@
 __license__ = "LGPLv3+"
 
 
-from app.models import BeamLineSetup as BeamLineSetupModel
-from app.modules.beam_line_setup.schemas import (
-    f_beam_line_setup_schema,
-    ma_beam_line_setup_schema,
-)
+import logging
+from flask_restx import Namespace, Resource
 
-def get_beamline_setup_list():
-    beam_line_setup_list = BeamLineSetupModel.query.all()
-    return ma_beam_line_setup_schema.dump(beam_line_setup_list)
+from app.extensions.api import api_v1
+from app.extensions.auth import token_required
+from app.modules import shipping
+
+
+api = Namespace("Shipping", description="Shipping related namespace", path="/shipping")
+api_v1.add_namespace(api)
+
+
+@api.route("/list")
+class ShippingList(Resource):
+    @api.doc(security="apikey")
+    def get(self):
+        return shipping.get_all_shippings()
+
+
+@api.route("/proposal/<int:proposal_id>")
+@api.param("proposal_id", "Proposal id (integer)")
+@api.doc(description="proposal_id should be an integer ")
+# @token_required
+class ProposalShippingList(Resource):
+    def get(self, proposal_id):
+        """Returns all proposal shippings"""
+        return shipping.get_proposal_shippings(proposal_id)

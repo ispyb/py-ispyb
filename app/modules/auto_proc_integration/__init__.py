@@ -1,10 +1,11 @@
 """ISPyB flask server"""
 
-from app.extensions.api import api_v1
+from app.models import AutoProcIntegration as AutoProcIntegrationModel
+from app.modules.auto_proc_integration.schemas import (
+    f_auto_proc_integration_schema,
+    ma_auto_proc_integration_schema,
+)
 
-
-def init_app(app, **kwargs):
-    return
-    # from . import resources
-
-    # api_v1.add_namespace(resources.api)
+def get_auto_proc_integration_list():
+    auto_proc_integration_list = AutoProcIntegrationModel.query.all()
+    return ma_auto_proc_integration_schema.dump(auto_proc_integration_list)
