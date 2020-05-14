@@ -1,11 +1,7 @@
-"""ISPyB flask server"""
+from app.models import Crystal as CrystalModel
+from app.modules.crystal.schemas import f_crystal_schema, ma_crystal_schema
 
-from app.extensions.api import api_v1
 
-
-def init_app(app, **kwargs):
-    return
-
-    # from . import resources
-
-    # api_v1.add_namespace(resources.api)
+def get_crystal_list():
+    crystal_list = CrystalModel.query.all()
+    return ma_crystal_schema.dump(crystal_list)

@@ -26,7 +26,7 @@ import datetime
 import importlib
 
 import jwt
-from flask import current_app, jsonify
+from flask import current_app
 
 
 MASTER_TOKEN = None
