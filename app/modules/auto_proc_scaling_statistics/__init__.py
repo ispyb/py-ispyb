@@ -1,11 +1,6 @@
-"""ISPyB flask server"""
+from app.models import AutoProcScalingStatistic as AutoProcScalingStatisticsModel
+from app.modules.auto_proc_scaling_statistics.schemas import (
+    f_auto_proc_scaling_statistics_schema,
+    ma_auto_proc_scaling_statistics_schema,
+)
 
-from app.extensions.api import api_v1
-
-
-def init_app(app, **kwargs):
-    return
-
-    # from . import resources
-
-    # api_v1.add_namespace(resources.api)

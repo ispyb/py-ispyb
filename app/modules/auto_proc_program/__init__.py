@@ -1,10 +1,5 @@
-"""ISPyB flask server"""
-
-from app.extensions.api import api_v1
-
-
-def init_app(app, **kwargs):
-    return
-    # from . import resources
-
-    # api_v1.add_namespace(resources.api)
+from app.models import AutoProcProgram as AutoProcProgramModel
+from app.modules.auto_proc_program.schemas import (
+    f_auto_proc_program_schema,
+    ma_auto_proc_program_schema,
+)
