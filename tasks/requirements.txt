@@ -1,4 +1,0 @@
-invoke
-colorlog
-lockfile
-requests

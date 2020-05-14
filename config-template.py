@@ -1,51 +1,56 @@
+# encoding: utf-8
+#
+#  Project: py-ispyb
+#  https://github.com/ispyb/py-ispyb
+#
+#  This file is part of py-ispyb software.
+#
+#  py-ispyb is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  py-ispyb is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public License
+#  along with MXCuBE. If not, see <http://www.gnu.org/licenses/>.
+
+
+__license__ = "LGPLv3+"
+
+
 import os
 import csv
 
-class BaseConfig(object):
-    SECRET_KEY = 'this-really-needs-to-be-changed'
 
+class BaseConfig(object):
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+    STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
     API_ROOT = "/ispyb/api/v1"
-    # POSTGRESQL
-    # DB_USER = 'user'
-    # DB_PASSWORD = 'password'
-    # DB_NAME = 'restplusdb'
-    # DB_HOST = 'localhost'
-    # DB_PORT = 5432
-    # SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{password}@{host}:{port}/{name}'.format(
-    #     user=DB_USER,
-    #     password=DB_PASSWORD,
-    #     host=DB_HOST,
-    #     port=DB_PORT,
-    #     name=DB_NAME,
-    # )
-
+    SECRET_KEY = 'this-really-needs-to-be-changed'
     SQLALCHEMY_DATABASE_URI = 'mysql://mxuser:mxpass@localhost/pydb_test'
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     DEBUG = True
     ERROR_404_HELP = False
-
     REVERSE_PROXY_SETUP = os.getenv('EXAMPLE_API_REVERSE_PROXY_SETUP', False)
 
     AUTHORIZATIONS = {
-        #'oauth2_password': {
-        #    'type': 'oauth2',
-        #    'flow': 'password',
-        #    'scopes': {},
-        #    'tokenUrl': '/auth/oauth2/token',
-        #},
         "apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}
     }
 
     AUTH_MODULE = "app.extensions.auth.DummyAuth"
     AUTH_CLASS = "DummyAuth"
     JWT_CODING_ALGORITHM = 'HS256'
-    TOKEN_EXP_TIME = 60 #in minutes
+    TOKEN_EXP_TIME = 60  # in minutes
     MASTER_TOKEN = "MasterToken"
 
     ENABLED_MODULES = (
-            'api',
+        'api',
     )
 
     ENABLED_DB_MODULES = []
@@ -56,31 +61,28 @@ class BaseConfig(object):
             ENABLED_DB_MODULES.append(row[0])
 
     ENABLED_ROUTES = [
-            'auth',
-            'auto_proc',
-            'data_collection',
-            'proposal',
+        'auth',
+        'auto_proc',
+        'data_collection',
+        'proposal',
     ]
-
-
-    STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = 'documentation'
     SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB Flask-RESTplus server documentation"
     SWAGGER_UI_OAUTH_APP_NAME = "ISPyB Flask-RESTplus server documentation"
 
-    # TODO: consider if these are relevant for this project
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
     CSRF_ENABLED = True
-    
+
     LOG_FILENAME = "/tmp/ispyb_server.log"
     #LOG_FORMAT = "%(asctime)s |%(levelname)-5s| %(message)s"
+
 
 class ProductionConfig(BaseConfig):
     SECRET_KEY = os.getenv('EXAMPLE_API_SERVER_SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = os.getenv('EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI')
     MASTER_TOKEN = None
+
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True

@@ -1,6 +1,27 @@
-"""
-ISPyB flask server
-"""
+# encoding: utf-8
+#
+#  Project: py-ispyb
+#  https://github.com/ispyb/py-ispyb
+#
+#  This file is part of py-ispyb software.
+#
+#  py-ispyb is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  py-ispyb is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public License
+#  along with MXCuBE. If not, see <http://www.gnu.org/licenses/>.
+
+
+__license__ = "LGPLv3+"
+
+
 import logging
 from flask_restx import Namespace, Resource
 
@@ -20,7 +41,7 @@ class ProposalList(Resource):
 
     @api.doc(security="apikey")
     @api.marshal_list_with(proposal.schemas.f_proposal_schema)
-    #@token_required
+    # @token_required
     def get(self):
         """Returns all proposals"""
         log.info("Return all proposals")
@@ -32,6 +53,7 @@ class ProposalList(Resource):
         """Adds a new proposal"""
         log.info("Insert new proposal")
         proposal.add_proposal(**api.payload)
+
 
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
@@ -69,4 +91,3 @@ class ProposalByLogin(Resource):
         """Returns a proposal by login"""
         # app.logger.info("Returns all proposals for user with login name %s" % login_name)
         return proposal.get_proposals_by_login_name(login_name)
-
