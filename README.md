@@ -3,8 +3,13 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/301f7c319e504a94950e7798bdb8cd31)](https://www.codacy.com/manual/IvarsKarpics/py-ispyb?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ispyb/py-ispyb&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.org/ispyb/py-ispyb.svg?branch=master)](https://travis-ci.org/ispyb/py-ispyb)
 [![codecov](https://codecov.io/gh/IvarsKarpics/ispyb_backend_prototype/branch/master/graph/badge.svg)](https://codecov.io/gh/IvarsKarpics/ispyb_backend_prototype)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+
 
 ISPyB backend server based on python flask-restx.
+
+<p align="center"><img src="https://github.com/ispyb/py-ispyb/blob/master/docs/ispyb_doc.png"/></p>
+
 
 ## Dependencies
 
@@ -20,11 +25,17 @@ ISPyB backend server based on python flask-restx.
 sudo pip install -r requirements.txt
 ```
 
+## Deployment
+
+- `python3 wsgi.py`
+- `gunicorn wsgi.py`
+
+
 ## Available scripts
-```bash
-generate_db_models.csh : generates sqlalchemy db models.
-generate_modules.py :  generates flask api models and marshmallow schemas. Generates a simple resource.py if it does not exist.
-```
+
+- `generate_db_models.sh` : generates sqlalchemy db models.
+- `generate_modules.py` :  generates flask api models and marshmallow schemas. Generates a simple resource.py if it does not exist.
+- `format_code.sh`: formats code based on autopep and black.
 
 ## Authentication
 JWT (Jason web tokens) are used to authenticate requests. See jwt.io to test the token.
