@@ -1,3 +1,27 @@
+# encoding: utf-8
+#
+#  Project: py-ispyb
+#  https://github.com/ispyb/py-ispyb
+#
+#  This file is part of py-ispyb software.
+#
+#  py-ispyb is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  py-ispyb is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public License
+#  along with MXCuBE. If not, see <http://www.gnu.org/licenses/>.
+
+
+__license__ = "LGPLv3+"
+
+
 from config import BaseConfig
 import os
 import re
@@ -118,7 +142,7 @@ for table in tables:
         schema_file.write("\n")
         schema_file.close()
 
-        """
+        '''
         resources_file_path = "%s/app/modules/%s/resources.py" % (
             ispyb_root,
             schema_name,
@@ -149,7 +173,7 @@ for table in tables:
                 "        return ma_%s_schema.dump(%s_list)\n"
                 % (schema_name, schema_name)
             )
-       
+
         init_file_path = "%s/app/modules/%s/__init__.py" % (ispyb_root, schema_name)
         init_file = open(init_file_path, "w")
         init_file.write('"""ISPyB flask server"""\n\n')
@@ -158,4 +182,4 @@ for table in tables:
         init_file.write("    from . import resources\n\n")
         init_file.write("    api_v1.add_namespace(resources.api)")
         init_file.write("\n")
-        """
+        '''

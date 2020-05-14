@@ -30,6 +30,7 @@ def get_proposals_by_login_name(login_name):
     proposal = ProposalModel.query.filter_by(personId=person_id)
     return ma_proposal_schema.dump(proposal, many=True)
 
+
 def add_proposal(proposal_dict):
     try:
         proposal = ProposalModel(proposal_dict)

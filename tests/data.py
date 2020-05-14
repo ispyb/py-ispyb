@@ -1,16 +1,16 @@
 from datetime import datetime
 
 test_proposal = {
-            "proposalCode": "MX",
-            "title": "Test proposal",
-            "proposalType": "MX",
-            "personId": 1,
-            "proposalId": 1,
-            "externalId": None,
-            "proposalNumber": "1",
-            "bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%Y-%m-%d %H:%M:%S"),
-            "state": "Open"
-            }
+    "proposalCode": "MX",
+    "title": "Test proposal",
+    "proposalType": "MX",
+    "personId": 1,
+    "proposalId": 1,
+    "externalId": None,
+    "proposalNumber": "1",
+    "bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%Y-%m-%d %H:%M:%S"),
+    "state": "Open",
+}
 
 
 test_data_collection = {
@@ -115,5 +115,5 @@ test_data_collection = {
     "centeringMethod": None,
     "totalAbsorbedDose": None,
     "screeningOrigId": None,
-    "startTime": datetime.strptime("2016-01-14 12:40:34", "%Y-%m-%d %H:%M:%S")
-  }
+    "startTime": datetime.strptime("2016-01-14 12:40:34", "%Y-%m-%d %H:%M:%S"),
+}

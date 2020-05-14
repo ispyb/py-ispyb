@@ -1,3 +1,27 @@
+# encoding: utf-8
+#
+#  Project: py-ispyb
+#  https://github.com/ispyb/py-ispyb
+#
+#  This file is part of py-ispyb software.
+#
+#  py-ispyb is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  py-ispyb is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public License
+#  along with MXCuBE. If not, see <http://www.gnu.org/licenses/>.
+
+
+__license__ = "LGPLv3+"
+
+
 from flask import request, make_response
 from flask_restx import Namespace, Resource
 
@@ -16,21 +40,23 @@ class Login(Resource):
 
     def get(self):
         authorization = request.authorization
- 
+
         if (
             not authorization
             or not authorization.username
             or not authorization.password
         ):
-            if not request.headers.get('username') or not request.headers.get('password'): 
+            if not request.headers.get("username") or not request.headers.get(
+                "password"
+            ):
                 return make_response(
-                        "Could not verify",
-                        401,
-                        {"WWW-Authenticate": 'Basic realm="Login required!"'},
-            )
+                    "Could not verify",
+                    401,
+                    {"WWW-Authenticate": 'Basic realm="Login required!"'},
+                )
             else:
-                username = request.headers.get('username')
-                password = request.headers.get('password')
+                username = request.headers.get("username")
+                password = request.headers.get("password")
         else:
             username = authorization.username
             password = authorization.password

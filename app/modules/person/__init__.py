@@ -23,4 +23,3 @@ def get_person_id_by_login(login_name):
 
 def find_person_by_logn(self, login, beamline=None):
     return
-
