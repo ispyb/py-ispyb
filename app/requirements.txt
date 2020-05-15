@@ -2,6 +2,7 @@ gunicorn
 Flask
 Flask-SQLAlchemy
 flask-restx
+flask-cors
 SQLAlchemy
 marshmallow
 pyjwt
