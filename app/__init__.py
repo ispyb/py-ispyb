@@ -27,6 +27,7 @@ import os
 import sys
 
 from flask import Flask
+from flask_cors import CORS
 
 
 CONFIG_NAME_MAPPER = {
@@ -41,6 +42,8 @@ def create_app(flask_config_name=None, **kwargs):
     Entry point to the Flask RESTful Server application.
     """
     app = Flask(__name__, **kwargs)
+    CORS(app)
+    #TODO configure CORS via config file
 
     env_flask_config_name = os.getenv("FLASK_CONFIG")
     if flask_config_name is None:
