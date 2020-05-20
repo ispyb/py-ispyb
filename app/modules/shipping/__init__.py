@@ -34,4 +34,3 @@ def get_all_shippings():
 def get_proposal_shippings(proposal_id):
     shipping_list = ShippingModel.query.filter_by(proposalId=proposal_id)
     return ma_shipping_schema.dump(shipping_list, many=True)
-

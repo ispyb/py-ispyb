@@ -28,6 +28,7 @@ from app.modules.beam_line_setup.schemas import (
     ma_beam_line_setup_schema,
 )
 
+
 def get_beamline_setup_list():
     beam_line_setup_list = BeamLineSetupModel.query.all()
     return ma_beam_line_setup_schema.dump(beam_line_setup_list)

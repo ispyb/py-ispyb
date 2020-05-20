@@ -43,7 +43,7 @@ def create_app(flask_config_name=None, **kwargs):
     """
     app = Flask(__name__, **kwargs)
     CORS(app)
-    #TODO configure CORS via config file
+    # TODO configure CORS via config file
 
     env_flask_config_name = os.getenv("FLASK_CONFIG")
     if flask_config_name is None:

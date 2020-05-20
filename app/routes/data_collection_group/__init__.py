@@ -46,7 +46,9 @@ class DataCollectionGroupList(Resource):
         return data_collection_group.get_all_data_collection_groups()
 
     @api.expect(data_collection_group.schemas.f_data_collection_group_schema)
-    @api.marshal_with(data_collection_group.schemas.f_data_collection_group_schema, code=201)
+    @api.marshal_with(
+        data_collection_group.schemas.f_data_collection_group_schema, code=201
+    )
     def post(self):
         """Adds a new data collection group"""
         data_collection_group.add_data_collection_group(**api.payload)

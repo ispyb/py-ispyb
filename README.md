@@ -40,6 +40,8 @@ sudo pip install -r requirements.txt
 ## Authentication
 JWT (Jason web tokens) are used to authenticate requests. See jwt.io to test the token.
 
+Status codes: https://www.flaskapi.org/api-guide/status-codes/
+
 ## Format code
 ```bash
 autopep8 -a -r -j 0 -i --max-line-length 88 ./

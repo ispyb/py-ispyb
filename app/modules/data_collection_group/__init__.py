@@ -30,9 +30,11 @@ from app.modules.data_collection_group.schemas import (
     ma_data_collection_group_schema,
 )
 
+
 def get_all_data_collection_groups():
     data_collection_groups = DataCollectionGroupModel.query.all()
     return ma_data_collection_group_schema.dump(data_collection_groups, many=True)
+
 
 def add_data_collection_group(data_collection_group_dict):
     try:

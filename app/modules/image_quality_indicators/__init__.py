@@ -32,4 +32,3 @@ from app.modules.image_quality_indicators.schemas import (
 def get_image_quality_indicators_list():
     image_quality_indicators_list = ImageQualityIndicatorsModel.query.all()
     return ma_image_quality_indicators_schema.dump(image_quality_indicators_list)
-
