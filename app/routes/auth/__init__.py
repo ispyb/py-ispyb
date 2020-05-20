@@ -28,9 +28,7 @@ from flask_restx import Namespace, Resource
 from app.extensions import auth_provider
 from app.extensions.api import api_v1
 
-api = Namespace(
-    "Authentication", description="authentication namespace", path="/auth"
-)
+api = Namespace("Authentication", description="authentication namespace", path="/auth")
 api_v1.add_namespace(api)
 
 
