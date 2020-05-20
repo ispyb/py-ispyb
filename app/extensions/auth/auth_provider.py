@@ -29,9 +29,6 @@ import jwt
 from flask import current_app
 
 
-MASTER_TOKEN = None
-
-
 class AuthProvider:
     """Allows to authentificate users and create tokens"""
 
@@ -46,10 +43,6 @@ class AuthProvider:
         self.site_auth = cls()
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
-
-        if app.config.get("MASTER_TOKEN"):
-            global MASTER_TOKEN
-            MASTER_TOKEN = app.config["MASTER_TOKEN"]
 
     def get_roles(self, user, password):
         return self.site_auth.get_roles(user, password)
