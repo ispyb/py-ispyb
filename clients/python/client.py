@@ -21,7 +21,6 @@ if response.status_code == 200:
         print("Status code: %d" % response.status_code)
         data = response.json()
         print(len(data))
-
     headers = {"Authorization": "invalid token"}
     for path in paths:
         print("-----------------------------------------")

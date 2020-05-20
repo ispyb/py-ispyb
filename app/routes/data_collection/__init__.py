@@ -36,10 +36,10 @@ api_v1.add_namespace(api)
 
 
 @api.route("/list")
+@api.doc(security="apikey")
 class DataCollectionList(Resource):
     """Data collection resource"""
 
-    @api.doc(security="apikey")
     # @token_required
     def get(self):
         """Returns all data collections"""

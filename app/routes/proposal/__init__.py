@@ -31,17 +31,17 @@ from app.modules import proposal
 
 
 log = logging.getLogger(__name__)
-api = Namespace("Proposal", description="Proposal related namespace", path="/prop")
+api = Namespace("Proposal", description="Proposal related namespace", path="/proposals")
 api_v1.add_namespace(api)
 
 
-@api.route("/list")
+@api.route("")
+@api.doc(security="apikey")
 class ProposalList(Resource):
     """Allows to get all proposals"""
 
-    @api.doc(security="apikey")
-    @api.marshal_list_with(proposal.schemas.f_proposal_schema)
-    # @token_required
+    #@api.marshal_list_with(proposal.schemas.f_proposal_schema)
+    @token_required
     def get(self):
         """Returns all proposals"""
         log.info("Return all proposals")
@@ -57,7 +57,7 @@ class ProposalList(Resource):
 
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
-# @use_args({"name": fields.Int(required=True)}, location="headers")
+@api.doc(security="apikey")
 class Proposal(Resource):
     """Allows to get/set/delete a proposal"""
 
@@ -73,14 +73,14 @@ class Proposal(Resource):
     @api.expect(f_proposal_schema)
     def post(self, proposal_id):
         json_data = request.form['data']
-        print(json_data)
         data = ma_proposal_schema.load(json_data)
 
     """
 
 
-@api.route("/login_name/<string:login_name>")
+@api.route("/<string:login_name>")
 # @api.param("proposal_id", "Proposal id")
+@api.doc(security="apikey")
 class ProposalByLogin(Resource):
     """Allows to get proposal by person login name"""
 

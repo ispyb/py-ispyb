@@ -26,12 +26,13 @@ import os
 import csv
 
 
-class BaseConfig(object):
+class BaseConfig():
+
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
     API_ROOT = "/ispyb/api/v1"
-    SECRET_KEY = 'this-really-needs-to-be-changed'
+    SECRET_KEY = os.urandom(16)
     SQLALCHEMY_DATABASE_URI = 'mysql://mxuser:mxpass@localhost/pydb_test'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
@@ -40,7 +41,7 @@ class BaseConfig(object):
     REVERSE_PROXY_SETUP = os.getenv('EXAMPLE_API_REVERSE_PROXY_SETUP', False)
 
     AUTHORIZATIONS = {
-        "apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}
+        "apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}
     }
 
     AUTH_MODULE = "app.extensions.auth.DummyAuth"
