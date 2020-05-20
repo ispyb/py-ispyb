@@ -29,7 +29,7 @@ from app.extensions import auth_provider
 from app.extensions.api import api_v1
 
 api = Namespace(
-    "Authentification", description="authentification namespace", path="/auth"
+    "Authentication", description="authentication namespace", path="/auth"
 )
 api_v1.add_namespace(api)
 

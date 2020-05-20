@@ -35,12 +35,12 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = None
 
-        # Check if token is in header
-        if "token" in request.headers:
-            token = request.headers["token"]
-        # Check if token is in args
-        if not token:
-            token = request.args.get("token")
+        if "Authorization" in request.headers:
+            # Bearer <jwt token>
+            try:
+                token = request.headers["Authorization"].split(' ')[1]
+            except:
+                pass
         if not token:
             return {"message": "Token is missing."}, 401
 
