@@ -45,8 +45,12 @@ class Proposals(Resource):
     #@token_required
     def get(self):
         """Returns all proposals"""
-        log.info("Return all proposals")
-        return proposal.get_all_proposals()
+        #log.info("Return all proposals")
+        page = request.args.get('page', type=int)
+        if page:  
+            return proposal.get_proposals_page(page)
+        else:
+            return proposal.get_all_proposals()
 
     @api.expect(proposal.schemas.f_proposal_schema)
     @api.marshal_with(proposal.schemas.f_proposal_schema, code=201)
@@ -92,14 +96,3 @@ class ProposalByLogin(Resource):
         """Returns a proposal by login"""
         # app.logger.info("Returns all proposals for user with login name %s" % login_name)
         return proposal.get_proposals_by_login_name(login_name)
-
-@api.route('/page/<int:page_num>')
-@api.doc(security="apikey")
-class ProposalPage(Resource):
-
-    @api.doc(description="page should be an integer")
-    @api.marshal_with(proposal.schemas.f_proposal_schema)
-    @token_required
-    def get(self, page_num):
-        #page_num = request.args.get('page_num', 1, type=int)
-        return proposal.get_proposals_page(page_num)
