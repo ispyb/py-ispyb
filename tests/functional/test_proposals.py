@@ -19,5 +19,3 @@ def test_proposal_route(test_app):
     
     response = client.get(api_root + "/proposals/page/1", headers=headers)
     assert response.status_code == 200, "Wrong status code"
-    assert len(response.json) == 20, "Wrong proposal count"
-        
