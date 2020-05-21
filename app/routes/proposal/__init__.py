@@ -16,7 +16,7 @@
 #  GNU Lesser General Public License for more details.
 #
 #  You should have received a copy of the GNU Lesser General Public License
-#  along with MXCuBE. If not, see <http://www.gnu.org/licenses/>.
+#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
 __license__ = "LGPLv3+"
@@ -41,7 +41,7 @@ class ProposalList(Resource):
     """Allows to get all proposals"""
 
     #@api.marshal_list_with(proposal.schemas.f_proposal_schema)
-    @token_required
+    #@token_required
     def get(self):
         """Returns all proposals"""
         log.info("Return all proposals")
