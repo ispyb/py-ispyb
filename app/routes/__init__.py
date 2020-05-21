@@ -16,7 +16,7 @@
 #  GNU Lesser General Public License for more details.
 #
 #  You should have received a copy of the GNU Lesser General Public License
-#  along with MXCuBE. If not, see <http://www.gnu.org/licenses/>.
+#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
 __license__ = "LGPLv3+"
@@ -27,4 +27,4 @@ def init_app(app, **kwargs):
     from importlib import import_module
 
     for module_name in app.config["ENABLED_ROUTES"]:
-        import_module(".%s" % module_name, package=__name__)  # .init_app(app, **kwargs)
+        import_module(".%s" % module_name, package=__name__)

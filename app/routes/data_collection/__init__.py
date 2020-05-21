@@ -16,7 +16,7 @@
 #  GNU Lesser General Public License for more details.
 #
 #  You should have received a copy of the GNU Lesser General Public License
-#  along with MXCuBE. If not, see <http://www.gnu.org/licenses/>.
+#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
 __license__ = "LGPLv3+"
@@ -25,27 +25,28 @@ __license__ = "LGPLv3+"
 from flask_restx import Namespace, Resource
 
 from app.extensions.api import api_v1
-from app.extensions import db
+from app.extensions.auth import token_required
 from app.modules import data_collection
 
 
 api = Namespace(
-    "Data collections", description="Data collection related namespace", path="/dc"
+    "Data collections", description="Data collection related namespace", path="/data_collections"
 )
 api_v1.add_namespace(api)
 
 
-@api.route("/list")
+@api.route("")
 @api.doc(security="apikey")
-class DataCollectionList(Resource):
+class DataCollections(Resource):
     """Data collection resource"""
 
-    # @token_required
+    @token_required
     def get(self):
         """Returns all data collections"""
         # app.logger.info("Return all data collections")
         return data_collection.get_all_data_collections()
 
+    @token_required
     @api.expect(data_collection.schemas.f_data_collection_schema)
     @api.marshal_with(data_collection.schemas.f_data_collection_schema, code=201)
     def post(self):

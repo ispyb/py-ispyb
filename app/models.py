@@ -16,7 +16,7 @@
 #  GNU Lesser General Public License for more details.
 #
 #  You should have received a copy of the GNU Lesser General Public License
-#  along with MXCuBE. If not, see <http://www.gnu.org/licenses/>.
+#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
 __license__ = "LGPLv3+"
@@ -1100,8 +1100,6 @@ class DataCollection(db.Model):
     detectorDistance = db.Column(db.Float)
     xBeam = db.Column(db.Float)
     yBeam = db.Column(db.Float)
-    xBeamPix = db.Column(db.Float, info="Beam size in pixels")
-    yBeamPix = db.Column(db.Float, info="Beam size in pixels")
     comments = db.Column(db.String(1024))
     printableForReport = db.Column(db.Integer, server_default=db.FetchedValue())
     slitGapVertical = db.Column(db.Float)
@@ -3456,8 +3454,6 @@ t_v_datacollection = db.Table(
     db.Column("detectorDistance", db.Float),
     db.Column("xBeam", db.Float),
     db.Column("yBeam", db.Float),
-    db.Column("xBeamPix", db.Float),
-    db.Column("yBeamPix", db.Float),
     db.Column("comments", db.String(1024)),
     db.Column("printableForReport", db.Integer),
     db.Column("slitGapVertical", db.Float),
