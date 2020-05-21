@@ -37,7 +37,7 @@ api_v1.add_namespace(api)
 
 @api.route("")
 @api.doc(security="apikey")
-class ProposalList(Resource):
+class Proposals(Resource):
     """Allows to get all proposals"""
 
     #@api.marshal_list_with(proposal.schemas.f_proposal_schema)
