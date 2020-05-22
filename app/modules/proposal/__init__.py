@@ -50,6 +50,11 @@ def get_proposals_by_login_name(login_name):
     proposal = ProposalModel.query.filter_by(personId=person_id)
     return ma_proposal_schema.dump(proposal, many=True)
 
+def get_proposals_page(page_num):
+    items_per_page = 20
+    proposals = ProposalModel.query.paginate(page_num, items_per_page, False).items
+    return ma_proposal_schema.dump(proposals, many=True)
+
 
 def add_proposal(proposal_dict):
     try:

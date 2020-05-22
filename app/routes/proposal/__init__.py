@@ -23,11 +23,12 @@ __license__ = "LGPLv3+"
 
 
 import logging
+from flask import request, render_template
 from flask_restx import Namespace, Resource
 
 from app.extensions.api import api_v1
 from app.extensions.auth import token_required
-from app.modules import proposal
+from app.modules import proposal, session
 
 
 log = logging.getLogger(__name__)
@@ -44,8 +45,12 @@ class Proposals(Resource):
     #@token_required
     def get(self):
         """Returns all proposals"""
-        log.info("Return all proposals")
-        return proposal.get_all_proposals()
+        #log.info("Return all proposals")
+        page = request.args.get('page', type=int)
+        if page:  
+            return proposal.get_proposals_page(page)
+        else:
+            return proposal.get_all_proposals()
 
     @api.expect(proposal.schemas.f_proposal_schema)
     @api.marshal_with(proposal.schemas.f_proposal_schema, code=201)
@@ -53,7 +58,6 @@ class Proposals(Resource):
         """Adds a new proposal"""
         log.info("Insert new proposal")
         proposal.add_proposal(**api.payload)
-
 
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")

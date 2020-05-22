@@ -12,7 +12,7 @@ if response.status_code == 200:
     token = response.json()["token"]
     print("User %s validated" % username)
     print("Token: %s" % token)
-    paths = ["/proposals", "/data_collections"]
+    paths = ["/proposals", "/proposals/page/1", "/data_collections"]
     headers = {"Authorization": "Bearer " + token}
     for path in paths:
         print("-----------------------------------------")
