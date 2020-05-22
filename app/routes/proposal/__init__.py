@@ -23,12 +23,12 @@ __license__ = "LGPLv3+"
 
 
 import logging
-from flask import request
+from flask import request, render_template
 from flask_restx import Namespace, Resource
 
 from app.extensions.api import api_v1
 from app.extensions.auth import token_required
-from app.modules import proposal
+from app.modules import proposal, session
 
 
 log = logging.getLogger(__name__)
@@ -58,7 +58,6 @@ class Proposals(Resource):
         """Adds a new proposal"""
         log.info("Insert new proposal")
         proposal.add_proposal(**api.payload)
-
 
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
