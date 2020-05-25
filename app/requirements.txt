@@ -1,9 +1,12 @@
 gunicorn
-Flask
-Flask-SQLAlchemy
-flask-restx
-flask-cors
 SQLAlchemy
 marshmallow
 pyjwt
 mysqlclient
+webargs
+
+Flask
+Flask-SQLAlchemy>=2.4,<3
+flask-restx
+flask-cors
+flask-marshmallow

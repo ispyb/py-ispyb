@@ -18,16 +18,29 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+"""
+GET /proposals - Retrieves a list of proposals
+GET /proposals/1 - Retrieves proposal #1
+POST /proposals - Creates a new proposal
+PUT /proposals/1 - Updates proposal #1
+PATCH /proposals/1 - Partially updates proposal #1
+DELETE /proposals/1 - Deletes proposal #1
+"""
+
 
 __license__ = "LGPLv3+"
 
 
 import logging
 from flask import request, render_template
+#from flask_restx_patched import Resource
+from flask_restx._http import HTTPStatus
 from flask_restx import Namespace, Resource
 
-from app.extensions.api import api_v1
+from app.extensions import db
+from app.extensions.api import api_v1 #, Namespace
 from app.extensions.auth import token_required
+from app.models import Proposal
 from app.modules import proposal, session
 
 
@@ -57,12 +70,24 @@ class Proposals(Resource):
     def post(self):
         """Adds a new proposal"""
         log.info("Insert new proposal")
-        proposal.add_proposal(**api.payload)
+
+        with api.commit_or_abort(
+                db.session,
+                default_error_message="Failed to create a new proposal."
+            ):
+            new_proposal = proposal.get_proposal_from_dict(api.payload)
+            db.session.add(proposal)
+        return new_proposal
 
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
-class Proposal(Resource):
+@api.response(
+    code=HTTPStatus.NOT_FOUND,
+    description="Proposal not found.",
+)
+#@api.resolve_object_by_model(Proposal, 'proposal')
+class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
     @api.doc(description="proposal_id should be an integer ")
@@ -70,17 +95,40 @@ class Proposal(Resource):
     @token_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
-        return proposal.get_proposal_by_id(proposal_id)
+        result = proposal.get_proposal_by_id(proposal_id)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            return {'message': 'Proposal with id %d not found' % proposal_id}, HTTPStatus.NOT_FOUND
 
-    """
-    #@api.doc(parser=parser)
-    @api.expect(f_proposal_schema)
-    def post(self, proposal_id):
-        json_data = request.form['data']
-        data = ma_proposal_schema.load(json_data)
+    @api.expect(proposal.schemas.f_proposal_schema)
+    @api.marshal_with(proposal.schemas.f_proposal_schema, code=201)
+    def put(self, proposal_id):
+        """Updates proposal with id proposal_id
 
-    """
+        Args:
+            proposal_id (int): corresponds to proposalId in db
+        """
+        log.info("Update proposal %d" % proposal_id)
+        proposal.update_proposal(**api.payload)
 
+    def delete(self, proposal_id):
+        """Deletes proposal by proposal_id
+
+        Args:
+            proposal_id (int): corresponds to proposalId in db
+
+        Returns:
+            json, status_code: 
+        """
+
+        with api.commit_or_abort(
+                db.session,
+                default_error_message="Failed to delete the proposal."
+            ):
+            proposal_item = proposal.get_proposal_item_by_id(proposal_id)
+            db.session.delete(proposal_item)
+        return None
 
 @api.route("/<string:login_name>")
 # @api.param("proposal_id", "Proposal id")
@@ -95,3 +143,17 @@ class ProposalByLogin(Resource):
         """Returns a proposal by login"""
         # app.logger.info("Returns all proposals for user with login name %s" % login_name)
         return proposal.get_proposals_by_login_name(login_name)
+
+@api.route("/<int:proposal_id>/sessions")
+@api.param("proposal_id", "Proposal id (integer)")
+@api.doc(security="apikey")
+class Proposal(Resource):
+    """Allows to get sessions"""
+
+    @api.doc(description="proposal_id should be an integer ")
+    # @api.marshal_with(f_proposal_schema)
+    @token_required
+    def get(self, proposal_id):
+        """Returns a proposal by proposalId"""
+        return
+        #return proposal.get_proposal_by_id(proposal_id)
