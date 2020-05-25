@@ -143,17 +143,3 @@ class ProposalByLogin(Resource):
         """Returns a proposal by login"""
         # app.logger.info("Returns all proposals for user with login name %s" % login_name)
         return proposal.get_proposals_by_login_name(login_name)
-
-@api.route("/<int:proposal_id>/sessions")
-@api.param("proposal_id", "Proposal id (integer)")
-@api.doc(security="apikey")
-class Proposal(Resource):
-    """Allows to get sessions"""
-
-    @api.doc(description="proposal_id should be an integer ")
-    # @api.marshal_with(f_proposal_schema)
-    @token_required
-    def get(self, proposal_id):
-        """Returns a proposal by proposalId"""
-        return
-        #return proposal.get_proposal_by_id(proposal_id)
