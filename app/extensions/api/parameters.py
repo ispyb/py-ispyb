@@ -7,7 +7,7 @@ Common reusable Parameters classes
 from marshmallow import validate
 
 from flask_marshmallow import base_fields
-from flask_restplus_patched import Parameters
+from flask_restx_patched import Parameters
 
 
 class PaginationParameters(Parameters):
