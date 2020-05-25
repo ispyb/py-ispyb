@@ -32,7 +32,9 @@ log = logging.getLogger(__name__)
 
 def get_all_proposals():
     """Returns all proposals"""
+    print(1)
     proposals = ProposalModel.query.all()
+    print(2)
     return ma_proposal_schema.dump(proposals, many=True)
 
 
@@ -41,7 +43,10 @@ def get_proposal_by_id(proposal_id):
     proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
     return ma_proposal_schema.dump(proposal)
 
-
+def get_proposal_item_by_id(proposal_id):
+    """Returns proposal by id"""
+    return ProposalModel.query.filter_by(proposalId=proposal_id).first()
+    
 def get_proposals_by_login_name(login_name):
     """Returns proposals by a login name
     """
@@ -56,12 +61,21 @@ def get_proposals_page(page_num):
     return ma_proposal_schema.dump(proposals, many=True)
 
 
-def add_proposal(proposal_dict):
+def get_proposal_from_dict(proposal_dict):
+    return ProposalModel(**proposal_dict)
+
+def update_proposal(proposal_dict):
+    print(proposal_dict)
+
+def delete_proposal(proposal_id):
     try:
-        proposal = ProposalModel(proposal_dict)
-        db.session.add(proposal)
-        db.session.commit()
+        proposal_item = ProposalModel.query.filter_by(proposalId=proposal_id).first()
+        local_object = db.session.merge(proposal_item)
+        db.session.delete(local_object)
+        #db.session.commit()
+        return True 
     except Exception as ex:
         print(ex)
-        # app.logger.exception(str(ex))
+        log.exception(str(ex))
         db.session.rollback()
+        

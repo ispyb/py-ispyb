@@ -22,6 +22,7 @@
 __license__ = "LGPLv3+"
 
 
+from flask_restx._http import HTTPStatus
 from flask_restx import Namespace, Resource
 
 from app.extensions.api import api_v1
