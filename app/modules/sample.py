@@ -23,7 +23,7 @@ __license__ = "LGPLv3+"
 
 
 from app.models import BLSample as SampleModel
-from app.modules.sample.schemas import f_sample_schema, ma_sample_schema
+from app.schemas.sample import f_sample_schema, ma_sample_schema
 
 
 def get_sample_list(self):

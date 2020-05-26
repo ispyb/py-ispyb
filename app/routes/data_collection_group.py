@@ -22,8 +22,10 @@
 __license__ = "LGPLv3+"
 
 
-from flask_restx import Namespace, Resource
-
+from flask_restx_patched import Resource
+from app.extensions.api import api_v1, Namespace
+from app.extensions.auth import token_required
+from app.schemas import data_collection_group as data_collection_group_schemas
 from app.modules import data_collection_group
 
 
@@ -45,9 +47,9 @@ class DataCollectionGroupList(Resource):
         # app.logger.info("Return all data collection groups")
         return data_collection_group.get_all_data_collection_groups()
 
-    @api.expect(data_collection_group.schemas.f_data_collection_group_schema)
+    @api.expect(data_collection_group_schemas.f_data_collection_group_schema)
     @api.marshal_with(
-        data_collection_group.schemas.f_data_collection_group_schema, code=201
+        data_collection_group_schemas.f_data_collection_group_schema, code=201
     )
     def post(self):
         """Adds a new data collection group"""

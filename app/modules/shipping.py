@@ -23,7 +23,7 @@ __license__ = "LGPLv3+"
 
 
 from app.models import Shipping as ShippingModel
-from app.modules.shipping.schemas import f_shipping_schema, ma_shipping_schema
+from app.schemas.shipping import f_shipping_schema, ma_shipping_schema
 
 
 def get_all_shippings():

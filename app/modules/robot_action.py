@@ -23,7 +23,7 @@ __license__ = "LGPLv3+"
 
 
 from app.models import RobotAction as RobotActionModel
-from app.modules.robot_action.schemas import (
+from app.schemas.robot_action import (
     f_robot_action_schema,
     ma_robot_action_schema,
 )

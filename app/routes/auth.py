@@ -23,10 +23,10 @@ __license__ = "LGPLv3+"
 
 
 from flask import request, make_response
-from flask_restx import Namespace, Resource
 
+from flask_restx_patched import Resource
+from app.extensions.api import api_v1, Namespace
 from app.extensions import auth_provider
-from app.extensions.api import api_v1
 
 api = Namespace("Authentication", description="authentication namespace", path="/auth")
 api_v1.add_namespace(api)

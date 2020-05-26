@@ -7,7 +7,7 @@ auto_proc_scaling,AutoProcScaling
 auto_proc_scaling_statistics,AutoProcScalingStatistics
 auto_proc_status,AutoProcStatus
 sample,BLSample
-session,BLSesssion
+session,BLSession
 beam_line_setup,BeamLineSetup
 container,Container
 crystal,Crystal

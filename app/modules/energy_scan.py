@@ -23,7 +23,7 @@ __license__ = "LGPLv3+"
 
 
 from app.models import EnergyScan as EnergyScanModel
-from app.modules.energy_scan.schemas import f_energy_scan_schema, ma_energy_scan_schema
+from app.schemas.energy_scan import f_energy_scan_schema, ma_energy_scan_schema
 
 
 def get_energy_scan_list():

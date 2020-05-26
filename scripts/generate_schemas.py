@@ -58,10 +58,12 @@ cursor.execute("USE %s" % db_name)
 cursor.execute("SHOW TABLES")
 tables = cursor.fetchall()
 
-schema_file_header = '''"""
-ISPyB flask server
-"""\n
-'''
+schema_file_header = ''
+
+licence_header_file = open(ispyb_root + '/py_file_header.txt', "r")
+schema_file_header = licence_header_file.read()
+licence_header_file.close()
+
 
 schema_file_header += """
 from marshmallow import Schema, fields as ma_fields

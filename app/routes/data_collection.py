@@ -23,10 +23,11 @@ __license__ = "LGPLv3+"
 
 
 from flask_restx._http import HTTPStatus
-from flask_restx import Namespace, Resource
 
-from app.extensions.api import api_v1
+from flask_restx_patched import Resource
+from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required
+from app.schemas import data_collection as data_collection_schemas
 from app.modules import data_collection
 
 
@@ -48,8 +49,8 @@ class DataCollections(Resource):
         return data_collection.get_all_data_collections()
 
     @token_required
-    @api.expect(data_collection.schemas.f_data_collection_schema)
-    @api.marshal_with(data_collection.schemas.f_data_collection_schema, code=201)
+    @api.expect(data_collection_schemas.f_data_collection_schema)
+    @api.marshal_with(data_collection_schemas.f_data_collection_schema, code=201)
     def post(self):
         """Adds a new proposal"""
         # app.logger.info("Insert new data collection")

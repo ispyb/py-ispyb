@@ -1,7 +1,7 @@
 """ISPyB flask server"""
 
 from app.models import AutoProcIntegration as AutoProcIntegrationModel
-from app.modules.auto_proc_integration.schemas import (
+from app.schemas.auto_proc_integration import (
     f_auto_proc_integration_schema,
     ma_auto_proc_integration_schema,
 )
