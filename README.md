@@ -27,6 +27,7 @@ sudo pip install -r requirements.txt
 
 ## Deployment
 
+- `flask run`
 - `python3 wsgi.py`
 - `gunicorn wsgi.py`
 
