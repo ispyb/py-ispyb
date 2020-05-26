@@ -1,7 +1,7 @@
 from tests import data
 
-from app.modules.data_collection.schemas import DataCollectionSchema
-from app.modules.proposal.schemas import ProposalSchema
+from app.schemas.data_collection import DataCollectionSchema
+from app.schemas.proposal import ProposalSchema
 
 
 def test_data_collection_model():
