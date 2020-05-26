@@ -13,9 +13,9 @@ def test_proposal_route(test_app):
     assert response.status_code == 200, "Wrong status code"
     assert len(response.json) > 0, "No proposal returned"
 
-    #response = client.get(api_root + "/proposals/1", headers=headers)
-    #assert response.status_code == 200, "Wrong status code"
+    proposal_id = response.json[0]['proposalId']
+    response = client.get(api_root + "/proposals/%d" % proposal_id, headers=headers)
+    assert response.status_code == 200, "Wrong status code"
 
-    
-    #response = client.get(api_root + "/proposals?page=1", headers=headers)
-    #assert response.status_code == 200, "Wrong status code"
+    response = client.get(api_root + "/proposals?page=1", headers=headers)
+    assert response.status_code == 200, "Wrong status code"

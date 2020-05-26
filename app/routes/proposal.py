@@ -33,8 +33,7 @@ __license__ = "LGPLv3+"
 
 import logging
 from flask import request, render_template
-from flask_restx_patched import Resource
-from flask_restx._http import HTTPStatus
+from flask_restx_patched import Resource, HTTPStatus
 
 from app.extensions import db
 from app.extensions.api import api_v1, Namespace
@@ -95,6 +94,7 @@ class ProposalById(Resource):
     @token_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
+
         result = proposal.get_proposal_by_id(proposal_id)
         if result:
             return result, HTTPStatus.OK
@@ -121,14 +121,14 @@ class ProposalById(Resource):
         Returns:
             json, status_code: 
         """
-
         with api.commit_or_abort(
                 db.session,
                 default_error_message="Failed to delete the proposal."
             ):
-            proposal_item = proposal.get_proposal_item_by_id(proposal_id)
+            proposal_item = Proposal.query.filter_by(proposalId=proposal_id).first()
             db.session.delete(proposal_item)
         return None
+
 
 @api.route("/<string:login_name>")
 # @api.param("proposal_id", "Proposal id")

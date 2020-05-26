@@ -12,7 +12,7 @@ if response.status_code == 200:
     token = response.json()["token"]
     print("User %s validated" % username)
     print("Token: %s" % token)
-    paths = ["/proposals", "/proposals/page/1", "/data_collections"]
+    paths = ["/proposals", "/data_collections"]
     headers = {"Authorization": "Bearer " + token}
     for path in paths:
         print("-----------------------------------------")
@@ -21,13 +21,7 @@ if response.status_code == 200:
         print("Status code: %d" % response.status_code)
         data = response.json()
         print(len(data))
-    headers = {"Authorization": "invalid token"}
-    for path in paths:
-        print("-----------------------------------------")
-        print("Request: %s%s" % (root_url, path))
-        response = get(root_url + path, headers=headers)
-        print("Status code: %d" % response.status_code)
-        print("Response text: %s" % response.reason)
+        print(data[0])
 else:
     print("Unable to validate user %s" % username)
     print(response.reason, response.text)
