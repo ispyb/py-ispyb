@@ -24,6 +24,7 @@ __license__ = "LGPLv3+"
 
 import logging
 
+
 from app.extensions import db
 from app.models import Proposal as ProposalModel
 from app.modules import person
@@ -35,9 +36,7 @@ log = logging.getLogger(__name__)
 
 def get_all_proposals():
     """Returns all proposals"""
-    print(1)
     proposals = ProposalModel.query.all()
-    print(2)
     return ma_proposal_schema.dump(proposals, many=True)
 
 
@@ -69,6 +68,7 @@ def get_proposal_from_dict(proposal_dict):
 
 def update_proposal(proposal_dict):
     print(proposal_dict)
+
 
 def delete_proposal(proposal_id):
     try:
