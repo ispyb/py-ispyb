@@ -24,23 +24,45 @@ __license__ = "LGPLv3+"
 
 import importlib
 
+from marshmallow_jsonschema import JSONSchema
+
 from flask_restx_patched import Resource, HTTPStatus
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required
-
-from marshmallow_jsonschema import JSONSchema
+from app import schemas
 
 api = Namespace("Schemas", description="Schemas related namespace", path="/schemas")
 api_v1.add_namespace(api)
 
 
+@api.route("/available_names")
+class Schemas(Resource):
+
+    #@token_required
+    def get(self):
+        """Returns list of available schemas
+
+        Returns:
+            list: list of names
+        """
+
+        #TODO I guess there is oneliner fancy code that can do this...
+        result = []
+        for item in dir(schemas):
+            if not item.startswith('__'):
+                result.append(item)
+
+        return result
+
+
 @api.route("/<string:name>")
 @api.param("name", "name (string)")
 @api.doc(description="name should be a string")
-# @token_required
 class Schemas(Resource):
+
+    #@token_required
     def get(self, name):
-        """Returns empty schema
+        """Returns json schema
 
         Args:
             name (string): schema name
