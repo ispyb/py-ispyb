@@ -36,7 +36,7 @@ api_v1.add_namespace(api)
 
 
 @api.route("/available_names")
-class Schemas(Resource):
+class SchemasList(Resource):
 
     #@token_required
     def get(self):
