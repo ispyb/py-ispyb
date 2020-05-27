@@ -86,7 +86,7 @@ class Proposals(Resource):
     code=HTTPStatus.NOT_FOUND,
     description="Proposal not found.",
 )
-#@api.resolve_object_by_model(Proposal, 'proposal')
+@api.resolve_object_by_model(Proposal, 'proposal')
 class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 

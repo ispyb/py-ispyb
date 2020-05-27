@@ -28,7 +28,7 @@ from app.extensions.auth import token_required
 from app.modules import session
 
 
-api = Namespace("Session", description="Session related namespace", path="/sessions")
+api = Namespace("Sessions", description="Session related namespace", path="/sessions")
 api_v1.add_namespace(api)
 
 

@@ -66,6 +66,7 @@ class BaseConfig():
         'auto_proc',
         'data_collection',
         'proposal',
+        'schemas',
     ]
 
     SWAGGER_UI_JSONEDITOR = True

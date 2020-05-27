@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 
@@ -55,4 +54,3 @@ class ProposalSchema(Schema):
 
 f_proposal_schema = api.model('Proposal', proposal_dict)
 ma_proposal_schema = ProposalSchema()
-
