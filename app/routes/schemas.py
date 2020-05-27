@@ -22,28 +22,35 @@
 __license__ = "LGPLv3+"
 
 
+import importlib
+
 from flask_restx_patched import Resource, HTTPStatus
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required
-from app.modules import session
 
+from marshmallow_jsonschema import JSONSchema
 
-api = Namespace("Sessions", description="Session related namespace", path="/sessions")
+api = Namespace("Schemas", description="Schemas related namespace", path="/schemas")
 api_v1.add_namespace(api)
 
 
-@api.route("")
-class Sessions(Resource):
-    @api.doc(security="apikey")
-    def get(self):
-        return session.get_all_sessions()
-
-
-@api.route("<int:proposal_id>")
-@api.param("proposal_id", "Proposal id (integer)")
-@api.doc(description="proposal_id should be an integer ")
+@api.route("/<string:name>")
+@api.param("name", "name (string)")
+@api.doc(description="name should be a string")
 # @token_required
-class SessionsByProposalList(Resource):
-    def get(self, proposal_id):
-        """Returns all proposal shippings"""
-        return session.get_proposal_sessions(proposal_id)
+class Schemas(Resource):
+    def get(self, name):
+        """Returns empty schema
+
+        Args:
+            name (string): schema name
+
+        Returns:
+            json: schema as json
+        """
+        try:
+            schemas_module = importlib.import_module("app.schemas." + name)
+            ma_schema = getattr(schemas_module, "ma_%s_schema" % name)
+            return JSONSchema().dump(ma_schema)
+        except Exception as ex:
+            return "Unable to return schema with name %s (%s)" % (name, str(ex)), HTTPStatus.NOT_FOUND
