@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -97,4 +98,4 @@ class AutoProcScalingStatisticsSchema(Schema):
 
 f_auto_proc_scaling_statistics_schema = api.model('AutoProcScalingStatistics', auto_proc_scaling_statistics_dict)
 ma_auto_proc_scaling_statistics_schema = AutoProcScalingStatisticsSchema()
-
+json_auto_proc_scaling_statistics_schema = JSONSchema().dump(ma_auto_proc_scaling_statistics_schema)

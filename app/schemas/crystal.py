@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -85,4 +86,4 @@ class CrystalSchema(Schema):
 
 f_crystal_schema = api.model('Crystal', crystal_dict)
 ma_crystal_schema = CrystalSchema()
-
+json_crystal_schema = JSONSchema().dump(ma_crystal_schema)

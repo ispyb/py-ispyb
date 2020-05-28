@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -73,4 +74,4 @@ class ImageQualityIndicatorsSchema(Schema):
 
 f_image_quality_indicators_schema = api.model('ImageQualityIndicators', image_quality_indicators_dict)
 ma_image_quality_indicators_schema = ImageQualityIndicatorsSchema()
-
+json_image_quality_indicators_schema = JSONSchema().dump(ma_image_quality_indicators_schema)

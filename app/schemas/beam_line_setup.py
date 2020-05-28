@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -77,4 +78,4 @@ class BeamLineSetupSchema(Schema):
 
 f_beam_line_setup_schema = api.model('BeamLineSetup', beam_line_setup_dict)
 ma_beam_line_setup_schema = BeamLineSetupSchema()
-
+json_beam_line_setup_schema = JSONSchema().dump(ma_beam_line_setup_schema)

@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -101,4 +102,4 @@ class SampleSchema(Schema):
 
 f_sample_schema = api.model('Sample', sample_dict)
 ma_sample_schema = SampleSchema()
-
+json_sample_schema = JSONSchema().dump(ma_sample_schema)

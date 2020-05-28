@@ -24,8 +24,6 @@ __license__ = "LGPLv3+"
 
 import importlib
 
-from marshmallow_jsonschema import JSONSchema
-
 from flask_restx_patched import Resource, HTTPStatus
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required
@@ -72,7 +70,6 @@ class Schemas(Resource):
         """
         try:
             schemas_module = importlib.import_module("app.schemas." + name)
-            ma_schema = getattr(schemas_module, "ma_%s_schema" % name)
-            return JSONSchema().dump(ma_schema)
+            return getattr(schemas_module, "json_%s_schema" % name) 
         except Exception as ex:
             return "Unable to return schema with name %s (%s)" % (name, str(ex)), HTTPStatus.NOT_FOUND
