@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -85,4 +86,4 @@ class DetectorSchema(Schema):
 
 f_detector_schema = api.model('Detector', detector_dict)
 ma_detector_schema = DetectorSchema()
-
+json_detector_schema = JSONSchema().dump(ma_detector_schema)

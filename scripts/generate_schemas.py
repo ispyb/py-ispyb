@@ -68,6 +68,7 @@ licence_header_file.close()
 schema_file_header += """
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -130,6 +131,7 @@ for table in tables:
             schema_name,
         )
         class_text += "ma_%s_schema = %sSchema()\n" % (schema_name, table_name)
+        json_text = "json_%s_schema = JSONSchema().dump(ma_%s_schema)\n" % (schema_name, schema_name)
 
         schema_file_path = "%s/app/schemas/%s.py" % (ispyb_root, schema_name)
         if not os.path.exists(os.path.dirname(schema_file_path)):
@@ -140,5 +142,5 @@ for table in tables:
         schema_file.write(ma_text)
         schema_file.write("\n")
         schema_file.write(class_text)
-        schema_file.write("\n")
+        schema_file.write(json_text)
         schema_file.close()

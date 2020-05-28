@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -99,4 +100,4 @@ class ShippingSchema(Schema):
 
 f_shipping_schema = api.model('Shipping', shipping_dict)
 ma_shipping_schema = ShippingSchema()
-
+json_shipping_schema = JSONSchema().dump(ma_shipping_schema)

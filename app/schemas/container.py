@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -81,4 +82,4 @@ class ContainerSchema(Schema):
 
 f_container_schema = api.model('Container', container_dict)
 ma_container_schema = ContainerSchema()
-
+json_container_schema = JSONSchema().dump(ma_container_schema)

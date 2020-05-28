@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -67,4 +68,4 @@ class DataCollectionGroupSchema(Schema):
 
 f_data_collection_group_schema = api.model('DataCollectionGroup', data_collection_group_dict)
 ma_data_collection_group_schema = DataCollectionGroupSchema()
-
+json_data_collection_group_schema = JSONSchema().dump(ma_data_collection_group_schema)

@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -105,4 +106,4 @@ class EnergyScanSchema(Schema):
 
 f_energy_scan_schema = api.model('EnergyScan', energy_scan_dict)
 ma_energy_scan_schema = EnergyScanSchema()
-
+json_energy_scan_schema = JSONSchema().dump(ma_energy_scan_schema)

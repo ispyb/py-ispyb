@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -57,4 +58,4 @@ class AutoProcSchema(Schema):
 
 f_auto_proc_schema = api.model('AutoProc', auto_proc_dict)
 ma_auto_proc_schema = AutoProcSchema()
-
+json_auto_proc_schema = JSONSchema().dump(ma_auto_proc_schema)

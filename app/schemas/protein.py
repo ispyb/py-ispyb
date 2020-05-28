@@ -25,6 +25,7 @@ __license__ = "LGPLv3+"
 
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
+from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
@@ -71,4 +72,4 @@ class ProteinSchema(Schema):
 
 f_protein_schema = api.model('Protein', protein_dict)
 ma_protein_schema = ProteinSchema()
-
+json_protein_schema = JSONSchema().dump(ma_protein_schema)
