@@ -1,12 +1,6 @@
-def test_schemas_route(test_app):
-    client = test_app.test_client()
-    api_root = test_app.config["API_ROOT"]
-
-    response = client.get(
-        api_root + "/auth/login", headers={"username": "user", "password": "pass"}
-    )
-    token = response.json["token"]
-    assert token, "User not authenticated. No token returned"
+def test_schemas_route(flask_app, token):
+    client = flask_app.test_client()
+    api_root = flask_app.config["API_ROOT"]
 
     headers = {"Authorization": "Bearer " + token}
     response = client.get(api_root + "/schemas/available_names", headers=headers)
