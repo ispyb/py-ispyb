@@ -57,12 +57,22 @@ class Proposals(Resource):
     #@api.marshal_list_with(proposal.schemas.f_proposal_schema)
     #@token_required
     def get(self):
-        """Returns all proposals"""
-        #log.info("Return all proposals")
+        """
+        Depending on the pagination parameters returns list of proposals.
+        Example routes
+
+        /ispyb/api/v1/proposals: returns all proposals
+        /ispyb/api/v1/proposals?limit=10: returns first 10 proposals
+        /ispyb/api/v1/proposals?offset=10: returns proposals 10..30 (default limit defined in config.py)
+        /ispyb/api/v1/proposals?offset=10&limit=10: returns 10 proposals starting from index 10
+
+        Returns:
+            list: list of proposals.
+        """
         offset = request.args.get('offset', type=int)
         limit = request.args.get('limit', type=int)
-
-        if offset and limit:
+        print(offset, limit)
+        if offset or limit:
             #TODO add decorator @paginate  
             return proposal.get_proposals_page(offset, limit)
         else:
