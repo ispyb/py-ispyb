@@ -59,9 +59,12 @@ class Proposals(Resource):
     def get(self):
         """Returns all proposals"""
         #log.info("Return all proposals")
-        page = request.args.get('page', type=int)
-        if page:  
-            return proposal.get_proposals_page(page)
+        offset = request.args.get('offset', type=int)
+        limit = request.args.get('limit', type=int)
+
+        if offset and limit:
+            #TODO add decorator @paginate  
+            return proposal.get_proposals_page(offset, limit)
         else:
             return proposal.get_all_proposals()
 
