@@ -24,6 +24,7 @@ __license__ = "LGPLv3+"
 
 import logging
 
+from flask import current_app
 
 from app.extensions import db
 from app.models import Proposal as ProposalModel
@@ -57,9 +58,23 @@ def get_proposals_by_login_name(login_name):
     proposal = ProposalModel.query.filter_by(personId=person_id)
     return ma_proposal_schema.dump(proposal, many=True)
 
-def get_proposals_page(page_num):
-    items_per_page = 20
-    proposals = ProposalModel.query.paginate(page_num, items_per_page, False).items
+def get_proposals_page(offset, limit):
+    """Returns proposals defined by pagination offset and limit
+
+    Args:
+        offset (int): pagination offset
+        limit (int): if not passed then limit is defined as
+        PAGINATION_ITEMS_LIMIT in config.py
+
+    Returns:
+        list: list of proposals
+    """
+    if not offset:
+        offset = 1
+    if not limit:
+        limit = current_app.config["PAGINATION_ITEMS_LIMIT"]
+    print(offset, limit)
+    proposals = ProposalModel.query.paginate(offset, limit, False).items
     return ma_proposal_schema.dump(proposals, many=True)
 
 

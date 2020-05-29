@@ -22,10 +22,12 @@
 __license__ = "LGPLv3+"
 
 
-from app import create_app
 import os
 import sys
 import pytest
+
+from app import create_app
+
 
 TESTS_DIR = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))

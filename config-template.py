@@ -36,6 +36,10 @@ class BaseConfig():
     SQLALCHEMY_DATABASE_URI = 'mysql://mxuser:mxpass@localhost/pydb_test'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
+    #SQLALCHEMY_POOL_RECYCLE = 2999
+    #SQLALCHEMY_POOL_TIMEOUT = 20
+    PAGINATION_ITEMS_LIMIT = 20
+
     DEBUG = True
     ERROR_404_HELP = False
     REVERSE_PROXY_SETUP = os.getenv('EXAMPLE_API_REVERSE_PROXY_SETUP', False)
@@ -66,6 +70,7 @@ class BaseConfig():
         'auto_proc',
         'data_collection',
         'proposal',
+        'session',
         'schemas',
     ]
 
