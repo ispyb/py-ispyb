@@ -160,7 +160,7 @@ class ProposalByLogin(Resource):
 
 @api.route("/params")
 @api.doc(security="apikey")
-class ProposalByLogin(Resource):
+class ProposalsByParams(Resource):
     """Allows to get proposals by query parametes"""
 
     @api.marshal_with(proposal_schemas.proposal_f_schema)
