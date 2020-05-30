@@ -24,6 +24,6 @@ __license__ = "LGPLv3+"
 
 from app.models import AutoProcScaling as AutoProcScalingModel
 from app.schemas.auto_proc_scaling import (
-    f_auto_proc_scaling_schema,
-    ma_auto_proc_scaling_schema,
+    auto_proc_scaling_f_schema,
+    auto_proc_scaling_ma_schema,
 )

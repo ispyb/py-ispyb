@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-auto_proc_scaling_statistics_dict = {
+auto_proc_scaling_statistics_dict_schema = {
         'autoProcScalingStatisticsId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'autoProcScalingId': f_fields.Integer(required=False, description='Related autoProcScaling item (used by foreign key)'),
         'scalingStatisticsType': f_fields.String(required=True, description='Scaling statistics typeenum(overall,innerShell,outerShell)'),
@@ -96,6 +96,6 @@ class AutoProcScalingStatisticsSchema(Schema):
     anomalousCompletenessEllipsoidal = ma_fields.Float()
     ccAnomalous = ma_fields.Float()
 
-f_auto_proc_scaling_statistics_schema = api.model('AutoProcScalingStatistics', auto_proc_scaling_statistics_dict)
-ma_auto_proc_scaling_statistics_schema = AutoProcScalingStatisticsSchema()
-json_auto_proc_scaling_statistics_schema = JSONSchema().dump(ma_auto_proc_scaling_statistics_schema)
+auto_proc_scaling_statistics_f_schema = api.model('AutoProcScalingStatistics', auto_proc_scaling_statistics_dict_schema)
+auto_proc_scaling_statistics_ma_schema = AutoProcScalingStatisticsSchema()
+auto_proc_scaling_statistics_json_schema = JSONSchema().dump(auto_proc_scaling_statistics_ma_schema)

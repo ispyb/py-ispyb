@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-energy_scan_dict = {
+energy_scan_dict_schema = {
         'energyScanId': f_fields.Integer(required=True, description=''),
         'sessionId': f_fields.Integer(required=True, description=''),
         'blSampleId': f_fields.Integer(required=False, description=''),
@@ -104,6 +104,6 @@ class EnergyScanSchema(Schema):
     workingDirectory = ma_fields.String()
     blSubSampleId = ma_fields.Integer()
 
-f_energy_scan_schema = api.model('EnergyScan', energy_scan_dict)
-ma_energy_scan_schema = EnergyScanSchema()
-json_energy_scan_schema = JSONSchema().dump(ma_energy_scan_schema)
+energy_scan_f_schema = api.model('EnergyScan', energy_scan_dict_schema)
+energy_scan_ma_schema = EnergyScanSchema()
+energy_scan_json_schema = JSONSchema().dump(energy_scan_ma_schema)

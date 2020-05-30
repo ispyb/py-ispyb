@@ -23,14 +23,14 @@ __license__ = "LGPLv3+"
 
 
 from app.models import BLSession as SessionModel
-from app.schemas.session import f_session_schema, ma_session_schema
+from app.schemas.session import session_f_schema, session_ma_schema
 
 
 def get_all_sessions():
     session_list = SessionModel.query.all()
-    return ma_session_schema.dump(session_list, many=True)
+    return session_ma_schema.dump(session_list, many=True)
 
 
 def get_proposal_sessions(proposal_id):
     session_list = SessionModel.query.filter_by(proposalId=proposal_id)
-    return ma_session_schema.dump(session_list, many=True)
+    return session_ma_schema.dump(session_list, many=True)

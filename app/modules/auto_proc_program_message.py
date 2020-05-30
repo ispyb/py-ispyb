@@ -24,6 +24,6 @@ __license__ = "LGPLv3+"
 
 from app.models import AutoProcProgramMessage as AutoProcProgramMessageModel
 from app.schemas.auto_proc_program_message import (
-    f_auto_proc_program_message_schema,
-    ma_auto_proc_program_message_schema,
+    auto_proc_program_message_f_schema,
+    auto_proc_program_message_ma_schema,
 )

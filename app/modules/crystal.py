@@ -23,9 +23,9 @@ __license__ = "LGPLv3+"
 
 
 from app.models import Crystal as CrystalModel
-from app.schemas.crystal import f_crystal_schema, ma_crystal_schema
+from app.schemas.crystal import crystal_f_schema, crystal_ma_schema
 
 
 def get_crystal_list():
     crystal_list = CrystalModel.query.all()
-    return ma_crystal_schema.dump(crystal_list)
+    return crystal_ma_schema.dump(crystal_list)

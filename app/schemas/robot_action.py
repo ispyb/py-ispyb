@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-robot_action_dict = {
+robot_action_dict_schema = {
         'robotActionId': f_fields.Integer(required=True, description=''),
         'blsessionId': f_fields.Integer(required=True, description=''),
         'blsampleId': f_fields.Integer(required=False, description=''),
@@ -62,6 +62,6 @@ class RobotActionSchema(Schema):
     xtalSnapshotBefore = ma_fields.String()
     xtalSnapshotAfter = ma_fields.String()
 
-f_robot_action_schema = api.model('RobotAction', robot_action_dict)
-ma_robot_action_schema = RobotActionSchema()
-json_robot_action_schema = JSONSchema().dump(ma_robot_action_schema)
+robot_action_f_schema = api.model('RobotAction', robot_action_dict_schema)
+robot_action_ma_schema = RobotActionSchema()
+robot_action_json_schema = JSONSchema().dump(robot_action_ma_schema)

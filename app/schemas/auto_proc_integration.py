@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-auto_proc_integration_dict = {
+auto_proc_integration_dict_schema = {
         'autoProcIntegrationId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'dataCollectionId': f_fields.Integer(required=True, description='DataCollection item'),
         'autoProcProgramId': f_fields.Integer(required=False, description='Related program item'),
@@ -80,6 +80,6 @@ class AutoProcIntegrationSchema(Schema):
     recordTimeStamp = ma_fields.DateTime()
     anomalous = ma_fields.Integer()
 
-f_auto_proc_integration_schema = api.model('AutoProcIntegration', auto_proc_integration_dict)
-ma_auto_proc_integration_schema = AutoProcIntegrationSchema()
-json_auto_proc_integration_schema = JSONSchema().dump(ma_auto_proc_integration_schema)
+auto_proc_integration_f_schema = api.model('AutoProcIntegration', auto_proc_integration_dict_schema)
+auto_proc_integration_ma_schema = AutoProcIntegrationSchema()
+auto_proc_integration_json_schema = JSONSchema().dump(auto_proc_integration_ma_schema)

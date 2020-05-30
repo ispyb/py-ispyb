@@ -23,9 +23,9 @@ __license__ = "LGPLv3+"
 
 
 from app.models import Detector as DetectorModel
-from app.schemas.detector import f_detector_schema, ma_detector_schema
+from app.schemas.detector import detector_f_schema, detector_ma_schema
 
 
 def get_detector_list():
     detector_list = DetectorModel.query.all()
-    return ma_detector_schema.dump(detector_list)
+    return detector_ma_schema.dump(detector_list)

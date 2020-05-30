@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-container_dict = {
+container_dict_schema = {
         'containerId': f_fields.Integer(required=True, description=''),
         'dewarId': f_fields.Integer(required=False, description=''),
         'code': f_fields.String(required=False, description=''),
@@ -80,6 +80,6 @@ class ContainerSchema(Schema):
     storageTemperature = ma_fields.Float()
     containerRegistryId = ma_fields.Integer()
 
-f_container_schema = api.model('Container', container_dict)
-ma_container_schema = ContainerSchema()
-json_container_schema = JSONSchema().dump(ma_container_schema)
+container_f_schema = api.model('Container', container_dict_schema)
+container_ma_schema = ContainerSchema()
+container_json_schema = JSONSchema().dump(container_ma_schema)

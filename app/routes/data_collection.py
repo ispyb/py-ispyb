@@ -47,8 +47,8 @@ class DataCollections(Resource):
         return data_collection.get_all_data_collections()
 
     @token_required
-    @api.expect(data_collection_schemas.f_data_collection_schema)
-    @api.marshal_with(data_collection_schemas.f_data_collection_schema, code=201)
+    @api.expect(data_collection_schemas.data_collection_f_schema)
+    @api.marshal_with(data_collection_schemas.data_collection_f_schema, code=201)
     def post(self):
         """Adds a new proposal"""
         # app.logger.info("Insert new data collection")

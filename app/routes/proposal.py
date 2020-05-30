@@ -32,16 +32,16 @@ __license__ = "LGPLv3+"
 
 
 import logging
-from flask import request, render_template
-from flask_restx_patched import Resource
+from flask import request
 from flask_restx._http import HTTPStatus
+from flask_restx_patched import Resource
 
 from app.extensions import db
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required
 from app.models import Proposal
 from app.schemas import proposal as proposal_schemas
-from app.modules import proposal, session
+from app.modules import proposal
 
 
 log = logging.getLogger(__name__)
@@ -57,29 +57,26 @@ class Proposals(Resource):
     #@api.marshal_list_with(proposal.schemas.f_proposal_schema)
     #@token_required
     def get(self):
-        """
-        Depending on the pagination parameters returns list of proposals.
-        Example routes
+        """Returns list of proposals
 
         /ispyb/api/v1/proposals: returns all proposals
         /ispyb/api/v1/proposals?limit=10: returns first 10 proposals
-        /ispyb/api/v1/proposals?offset=10: returns proposals 10..30 (default limit defined in config.py)
-        /ispyb/api/v1/proposals?offset=10&limit=10: returns 10 proposals starting from index 10
+        /ispyb/api/v1/proposals?offset=10: returns proposals 10..30
+        (default limit defined in config.py)
+        /ispyb/api/v1/proposals?offset=10&limit=10: returns 10 proposals
+        starting from index 10
 
         Returns:
             list: list of proposals.
         """
         offset = request.args.get('offset', type=int)
         limit = request.args.get('limit', type=int)
-        print(offset, limit)
-        if offset or limit:
-            #TODO add decorator @paginate  
-            return proposal.get_proposals_page(offset, limit)
-        else:
-            return proposal.get_all_proposals()
 
-    @api.expect(proposal_schemas.f_proposal_schema)
-    @api.marshal_with(proposal_schemas.f_proposal_schema, code=201)
+        #TODO add decorator @paginate
+        return proposal.get_proposals(offset, limit), HTTPStatus.OK
+
+    @api.expect(proposal_schemas.proposal_f_schema)
+    @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
     def post(self):
         """Adds a new proposal"""
         log.info("Insert new proposal")
@@ -99,7 +96,7 @@ class Proposals(Resource):
     code=HTTPStatus.NOT_FOUND,
     description="Proposal not found.",
 )
-@api.resolve_object_by_model(Proposal, 'proposal')
+#@api.resolve_object_by_model(Proposal, 'proposal')
 class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
@@ -108,14 +105,17 @@ class ProposalById(Resource):
     @token_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
+        print(proposal_id)
         result = proposal.get_proposal_by_id(proposal_id)
         if result:
             return result, HTTPStatus.OK
         else:
-            return {'message': 'Proposal with id %d not found' % proposal_id}, HTTPStatus.NOT_FOUND
+            return
+            {'message': 'Proposal with id %d not found' % proposal_id},
+            HTTPStatus.NOT_FOUND
 
-    @api.expect(proposal_schemas.f_proposal_schema)
-    @api.marshal_with(proposal_schemas.f_proposal_schema, code=201)
+    @api.expect(proposal_schemas.proposal_f_schema)
+    @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
     def put(self, proposal_id):
         """Updates proposal with id proposal_id
 
@@ -150,9 +150,21 @@ class ProposalByLogin(Resource):
     """Allows to get proposal by person login name"""
 
     @api.doc(description="login_name should be a string")
-    @api.marshal_with(proposal_schemas.f_proposal_schema)
-    # @token_required
+    @api.marshal_with(proposal_schemas.proposal_f_schema)
+    #@token_required
     def get(self, login_name):
         """Returns a proposal by login"""
         # app.logger.info("Returns all proposals for user with login name %s" % login_name)
         return proposal.get_proposals_by_login_name(login_name)
+
+
+@api.route("/params")
+@api.doc(security="apikey")
+class ProposalsByParams(Resource):
+    """Allows to get proposals by query parametes"""
+
+    @api.marshal_with(proposal_schemas.proposal_f_schema)
+    #@token_required
+    def get(self):
+        """Returns proposals by query parameters"""
+        return proposal.get_proposals_by_params(request.args)

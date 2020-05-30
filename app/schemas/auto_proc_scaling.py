@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-auto_proc_scaling_dict = {
+auto_proc_scaling_dict_schema = {
         'autoProcScalingId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'autoProcId': f_fields.Integer(required=False, description='Related autoProc item (used by foreign key)'),
         'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
@@ -66,6 +66,6 @@ class AutoProcScalingSchema(Schema):
     resolutionEllipsoidValue2 = ma_fields.Float()
     resolutionEllipsoidValue3 = ma_fields.Float()
 
-f_auto_proc_scaling_schema = api.model('AutoProcScaling', auto_proc_scaling_dict)
-ma_auto_proc_scaling_schema = AutoProcScalingSchema()
-json_auto_proc_scaling_schema = JSONSchema().dump(ma_auto_proc_scaling_schema)
+auto_proc_scaling_f_schema = api.model('AutoProcScaling', auto_proc_scaling_dict_schema)
+auto_proc_scaling_ma_schema = AutoProcScalingSchema()
+auto_proc_scaling_json_schema = JSONSchema().dump(auto_proc_scaling_ma_schema)

@@ -26,14 +26,14 @@ from app.extensions import db
 
 from app.models import DataCollectionGroup as DataCollectionGroupModel
 from app.schemas.data_collection_group import (
-    f_data_collection_group_schema,
-    ma_data_collection_group_schema,
+    data_collection_group_f_schema,
+    data_collection_group_ma_schema,
 )
 
 
 def get_all_data_collection_groups():
     data_collection_groups = DataCollectionGroupModel.query.all()
-    return ma_data_collection_group_schema.dump(data_collection_groups, many=True)
+    return data_collection_group_ma_schema.dump(data_collection_groups, many=True)
 
 
 def add_data_collection_group(data_collection_group_dict):

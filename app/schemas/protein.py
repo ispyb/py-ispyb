@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-protein_dict = {
+protein_dict_schema = {
         'proteinId': f_fields.Integer(required=True, description=''),
         'proposalId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=False, description=''),
@@ -70,6 +70,6 @@ class ProteinSchema(Schema):
     concentrationTypeId = ma_fields.Integer()
     Global = ma_fields.Integer()
 
-f_protein_schema = api.model('Protein', protein_dict)
-ma_protein_schema = ProteinSchema()
-json_protein_schema = JSONSchema().dump(ma_protein_schema)
+protein_f_schema = api.model('Protein', protein_dict_schema)
+protein_ma_schema = ProteinSchema()
+protein_json_schema = JSONSchema().dump(protein_ma_schema)

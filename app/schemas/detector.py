@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-detector_dict = {
+detector_dict_schema = {
         'detectorId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'detectorType': f_fields.String(required=False, description=''),
         'detectorManufacturer': f_fields.String(required=False, description=''),
@@ -84,6 +84,6 @@ class DetectorSchema(Schema):
     numberOfPixelsY = ma_fields.Integer()
     localName = ma_fields.String()
 
-f_detector_schema = api.model('Detector', detector_dict)
-ma_detector_schema = DetectorSchema()
-json_detector_schema = JSONSchema().dump(ma_detector_schema)
+detector_f_schema = api.model('Detector', detector_dict_schema)
+detector_ma_schema = DetectorSchema()
+detector_json_schema = JSONSchema().dump(detector_ma_schema)

@@ -25,4 +25,4 @@ from app.schemas import auto_proc as auto_proc_schemas
 
 def get_auto_proc_list():
     auto_proc_list = AutoProcModel.query.all()
-    return auto_proc_schemas.ma_auto_proc_schema.dump(auto_proc_list)
+    return auto_proc_schemas.auto_proc_ma_schema.dump(auto_proc_list)

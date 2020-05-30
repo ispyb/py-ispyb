@@ -70,6 +70,6 @@ class Schemas(Resource):
         """
         try:
             schemas_module = importlib.import_module("app.schemas." + name)
-            return getattr(schemas_module, "json_%s_schema" % name) 
+            return getattr(schemas_module, "%s_json_schema" % name) 
         except Exception as ex:
             return "Unable to return schema with name %s (%s)" % (name, str(ex)), HTTPStatus.NOT_FOUND

@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-auto_proc_dict = {
+auto_proc_dict_schema = {
         'autoProcId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'autoProcProgramId': f_fields.Integer(required=False, description='Related program item'),
         'spaceGroup': f_fields.String(required=False, description='Space group'),
@@ -56,6 +56,6 @@ class AutoProcSchema(Schema):
     refinedCell_gamma = ma_fields.Float()
     recordTimeStamp = ma_fields.DateTime()
 
-f_auto_proc_schema = api.model('AutoProc', auto_proc_dict)
-ma_auto_proc_schema = AutoProcSchema()
-json_auto_proc_schema = JSONSchema().dump(ma_auto_proc_schema)
+auto_proc_f_schema = api.model('AutoProc', auto_proc_dict_schema)
+auto_proc_ma_schema = AutoProcSchema()
+auto_proc_json_schema = JSONSchema().dump(auto_proc_ma_schema)

@@ -25,7 +25,7 @@ __license__ = "LGPLv3+"
 import logging
 
 from app.models import Screening as ScreeningModel
-from app.schemas.screening import f_screening_schema, ma_screening_schema
+from app.schemas.screening import screening_f_schema, screening_ma_schema
 
 
 log = logging.getLogger(__name__)

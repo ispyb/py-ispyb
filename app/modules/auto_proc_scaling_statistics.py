@@ -24,6 +24,6 @@ __license__ = "LGPLv3+"
 
 from app.models import AutoProcScalingStatistic as AutoProcScalingStatisticsModel
 from app.schemas.auto_proc_scaling_statistics import (
-    f_auto_proc_scaling_statistics_schema,
-    ma_auto_proc_scaling_statistics_schema,
+    auto_proc_scaling_statistics_f_schema,
+    auto_proc_scaling_statistics_ma_schema,
 )

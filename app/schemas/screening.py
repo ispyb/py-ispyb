@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-screening_dict = {
+screening_dict_schema = {
         'screeningId': f_fields.Integer(required=True, description=''),
         'diffractionPlanId': f_fields.Integer(required=False, description='references DiffractionPlan'),
         'dataCollectionGroupId': f_fields.Integer(required=False, description=''),
@@ -54,6 +54,6 @@ class ScreeningSchema(Schema):
     shortComments = ma_fields.String()
     xmlSampleInformation = ma_fields.String()
 
-f_screening_schema = api.model('Screening', screening_dict)
-ma_screening_schema = ScreeningSchema()
-json_screening_schema = JSONSchema().dump(ma_screening_schema)
+screening_f_schema = api.model('Screening', screening_dict_schema)
+screening_ma_schema = ScreeningSchema()
+screening_json_schema = JSONSchema().dump(screening_ma_schema)

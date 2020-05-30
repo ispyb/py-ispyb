@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-session_dict = {
+session_dict_schema = {
         'sessionId': f_fields.Integer(required=True, description=''),
         'expSessionPk': f_fields.Integer(required=False, description='smis session Pk '),
         'beamLineSetupId': f_fields.Integer(required=False, description=''),
@@ -88,6 +88,6 @@ class SessionSchema(Schema):
     externalId = ma_fields.Integer()
     nbReimbDewars = ma_fields.Integer()
 
-f_session_schema = api.model('Session', session_dict)
-ma_session_schema = SessionSchema()
-json_session_schema = JSONSchema().dump(ma_session_schema)
+session_f_schema = api.model('Session', session_dict_schema)
+session_ma_schema = SessionSchema()
+session_json_schema = JSONSchema().dump(session_ma_schema)

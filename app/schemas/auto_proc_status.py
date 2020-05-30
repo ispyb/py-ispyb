@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-auto_proc_status_dict = {
+auto_proc_status_dict_schema = {
         'autoProcStatusId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'autoProcIntegrationId': f_fields.Integer(required=True, description=''),
         'step': f_fields.String(required=True, description='autoprocessing stepenum(Indexing,Integration,Correction,Scaling,Importing)'),
@@ -48,6 +48,6 @@ class AutoProcStatusSchema(Schema):
     comments = ma_fields.String()
     bltimeStamp = ma_fields.DateTime()
 
-f_auto_proc_status_schema = api.model('AutoProcStatus', auto_proc_status_dict)
-ma_auto_proc_status_schema = AutoProcStatusSchema()
-json_auto_proc_status_schema = JSONSchema().dump(ma_auto_proc_status_schema)
+auto_proc_status_f_schema = api.model('AutoProcStatus', auto_proc_status_dict_schema)
+auto_proc_status_ma_schema = AutoProcStatusSchema()
+auto_proc_status_json_schema = JSONSchema().dump(auto_proc_status_ma_schema)
