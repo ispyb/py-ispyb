@@ -25,14 +25,18 @@ def test_proposal_route(flask_app, token):
     
     headers = {"Authorization": "Bearer " + token}
     response = client.get(route_root, headers=headers)
+    data = response.json
     assert response.status_code == 200, "Wrong status code"
-    assert len(response.json) > 0, "No proposal returned"
+    assert len(data["rows"]) > 0, "No proposal returned"
 
-    return
-    proposal_id = response.json[0]['proposalId']
+    proposal_id = data["rows"][0]['proposalId']
     path = route_root + "/" + str(proposal_id)
     response = client.get(path, headers=headers)
     assert response.status_code == 200, "Wrong status code"
 
     response = client.get(route_root + "?offset=1&limit=1", headers=headers)
+    assert response.status_code == 200, "Wrong status code"
+
+    path = route_root + "/params?proposalType=MX"
+    response = client.get(path, headers=headers)
     assert response.status_code == 200, "Wrong status code"
