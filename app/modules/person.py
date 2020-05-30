@@ -23,19 +23,19 @@ __license__ = "LGPLv3+"
 
 
 from app.models import Person as PersonModel
-from app.schemas.person import f_person_schema, ma_person_schema
+from app.schemas.person import person_f_schema, person_ma_schema
 
 
 def get_all_persons():
     """Returns all person"""
     person = PersonModel.query.all()
-    return ma_person_schema.dump(person, many=True)
+    return person_ma_schema.dump(person, many=True)
 
 
 def get_person_by_id(person_id):
     """Returns person by id"""
     person = PersonModel.query.filter_by(personId=person_id).first()
-    return ma_person_schema.dump(person)
+    return person_ma_schema.dump(person)
 
 
 def get_person_id_by_login(login_name):

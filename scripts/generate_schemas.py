@@ -82,7 +82,7 @@ for table in tables:
         columns = cursor.fetchall()
         table_name = table_name.replace("BF_", "").replace("BL", "")
         schema_name = "_".join(re.findall("[A-Z][^A-Z]*", table_name)).lower()
-        dict_text = "%s_dict = {\n" % schema_name
+        dict_text = "%s_dict_schema = {\n" % schema_name
         ma_text = "class %sSchema(Schema):\n" % table_name
         ma_text += (
             '    """Marshmallows schema class representing %s table"""\n\n' % table_name
@@ -125,13 +125,13 @@ for table in tables:
             ma_text += "    %s = ma_fields.%s()\n" % (name, data_type)
         dict_text += "        }\n\n"
 
-        class_text = "f_%s_schema = api.model('%s', %s_dict)\n" % (
+        class_text = "%s_f_schema = api.model('%s', %s_dict_schema)\n" % (
             schema_name,
             table_name,
             schema_name,
         )
-        class_text += "ma_%s_schema = %sSchema()\n" % (schema_name, table_name)
-        json_text = "json_%s_schema = JSONSchema().dump(ma_%s_schema)\n" % (schema_name, schema_name)
+        class_text += "%s_ma_schema = %sSchema()\n" % (schema_name, table_name)
+        json_text = "%s_json_schema = JSONSchema().dump(%s_ma_schema)\n" % (schema_name, schema_name)
 
         schema_file_path = "%s/app/schemas/%s.py" % (ispyb_root, schema_name)
         if not os.path.exists(os.path.dirname(schema_file_path)):

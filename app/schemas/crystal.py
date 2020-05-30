@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-crystal_dict = {
+crystal_dict_schema = {
         'crystalId': f_fields.Integer(required=True, description=''),
         'diffractionPlanId': f_fields.Integer(required=False, description=''),
         'proteinId': f_fields.Integer(required=True, description=''),
@@ -84,6 +84,6 @@ class CrystalSchema(Schema):
     packingFraction = ma_fields.Float()
     theoreticaldensity = ma_fields.Float()
 
-f_crystal_schema = api.model('Crystal', crystal_dict)
-ma_crystal_schema = CrystalSchema()
-json_crystal_schema = JSONSchema().dump(ma_crystal_schema)
+crystal_f_schema = api.model('Crystal', crystal_dict_schema)
+crystal_ma_schema = CrystalSchema()
+crystal_json_schema = JSONSchema().dump(crystal_ma_schema)

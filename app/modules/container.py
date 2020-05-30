@@ -23,4 +23,4 @@ __license__ = "LGPLv3+"
 
 
 from app.models import Container as ContainerModel
-from app.schemas.container import f_container_schema, ma_container_schema
+from app.schemas.container import container_f_schema, container_ma_schema

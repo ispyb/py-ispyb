@@ -24,6 +24,6 @@ __license__ = "LGPLv3+"
 
 from app.models import AutoProcProgramAttachment as AutoProcProgramAttachmentModel
 from app.schemas.auto_proc_program_attachment import (
-    f_auto_proc_program_attachment_schema,
-    ma_auto_proc_program_attachment_schema,
+    auto_proc_program_attachment_f_schema,
+    auto_proc_program_attachment_ma_schema,
 )

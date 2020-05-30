@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-sample_dict = {
+sample_dict_schema = {
         'blSampleId': f_fields.Integer(required=True, description=''),
         'diffractionPlanId': f_fields.Integer(required=False, description=''),
         'crystalId': f_fields.Integer(required=False, description=''),
@@ -100,6 +100,6 @@ class SampleSchema(Schema):
     subLocation = ma_fields.Integer()
     packingfraction = ma_fields.Float()
 
-f_sample_schema = api.model('Sample', sample_dict)
-ma_sample_schema = SampleSchema()
-json_sample_schema = JSONSchema().dump(ma_sample_schema)
+sample_f_schema = api.model('Sample', sample_dict_schema)
+sample_ma_schema = SampleSchema()
+sample_json_schema = JSONSchema().dump(sample_ma_schema)

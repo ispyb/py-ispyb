@@ -26,10 +26,9 @@ import logging
 
 from app.extensions import db
 from app.models import DataCollection as DataCollectionModel
-from app.modules import data_collection
 from app.schemas.data_collection import (
-    f_data_collection_schema,
-    ma_data_collection_schema,
+    data_collection_f_schema,
+    data_collection_ma_schema,
 )
 
 
@@ -38,7 +37,7 @@ log = logging.getLogger(__name__)
 
 def get_all_data_collections():
     data_collections = DataCollectionModel.query.all()
-    return ma_data_collection_schema.dump(data_collections, many=True)
+    return data_collection_ma_schema.dump(data_collections, many=True)
 
 
 def add_data_collection(data_collection_dict):

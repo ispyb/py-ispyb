@@ -23,9 +23,9 @@ __license__ = "LGPLv3+"
 
 
 from app.models import Protein as ProteinModel
-from app.schemas.protein import f_protein_schema, ma_protein_schema
+from app.schemas.protein import protein_f_schema, protein_ma_schema
 
 
 def get_protein_list():
     protein_list = ProteinModel.query.all()
-    return ma_protein_schema.dump(protein_list)
+    return protein_ma_schema.dump(protein_list)

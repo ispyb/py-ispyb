@@ -44,8 +44,8 @@ class PersonList(Resource):
         # app.logger.info("Return all person")
         return person.get_all_persons()
 
-    @api.expect(person_schemas.f_person_schema)
-    @api.marshal_with(person_schemas.f_person_schema, code=201)
+    @api.expect(person_schemas.person_f_schema)
+    @api.marshal_with(person_schemas.person_f_schema, code=201)
     def post(self):
         return
 
@@ -55,7 +55,7 @@ class Person(Resource):
     """Allows to get/set/delete a person"""
 
     @api.doc(description="person_id should be an integer ")
-    @api.marshal_with(person_schemas.f_person_schema)
+    @api.marshal_with(person_schemas.person_f_schema)
     # @token_required
     def get(self, person_id):
         """Returns a person by personId"""
@@ -67,6 +67,6 @@ class Person(Resource):
     def post(self, prop_id):
         json_data = request.form['data']
         print(json_data)
-        data = ma_proposal_schema.load(json_data)
+        data = proposal_ma_schema.load(json_data)
 
     """

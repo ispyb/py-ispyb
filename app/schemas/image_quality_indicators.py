@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-image_quality_indicators_dict = {
+image_quality_indicators_dict_schema = {
         'imageQualityIndicatorsId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'imageId': f_fields.Integer(required=False, description=''),
         'autoProcProgramId': f_fields.Integer(required=True, description='Foreign key to the AutoProcProgram table'),
@@ -72,6 +72,6 @@ class ImageQualityIndicatorsSchema(Schema):
     dataCollectionId = ma_fields.Integer()
     imageNumber = ma_fields.Integer()
 
-f_image_quality_indicators_schema = api.model('ImageQualityIndicators', image_quality_indicators_dict)
-ma_image_quality_indicators_schema = ImageQualityIndicatorsSchema()
-json_image_quality_indicators_schema = JSONSchema().dump(ma_image_quality_indicators_schema)
+image_quality_indicators_f_schema = api.model('ImageQualityIndicators', image_quality_indicators_dict_schema)
+image_quality_indicators_ma_schema = ImageQualityIndicatorsSchema()
+image_quality_indicators_json_schema = JSONSchema().dump(image_quality_indicators_ma_schema)

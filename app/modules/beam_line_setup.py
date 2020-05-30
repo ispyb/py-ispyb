@@ -24,11 +24,11 @@ __license__ = "LGPLv3+"
 
 from app.models import BeamLineSetup as BeamLineSetupModel
 from app.schemas.beam_line_setup import (
-    f_beam_line_setup_schema,
-    ma_beam_line_setup_schema,
+    beam_line_setup_f_schema,
+    beam_line_setup_ma_schema,
 )
 
 
 def get_beamline_setup_list():
     beam_line_setup_list = BeamLineSetupModel.query.all()
-    return ma_beam_line_setup_schema.dump(beam_line_setup_list)
+    return beam_line_setup_ma_schema.dump(beam_line_setup_list)

@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-data_collection_dict = {
+data_collection_dict_schema = {
         'dataCollectionId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'dataCollectionGroupId': f_fields.Integer(required=True, description='references DataCollectionGroup table'),
         'strategySubWedgeOrigId': f_fields.Integer(required=False, description='references ScreeningStrategySubWedge table'),
@@ -242,6 +242,6 @@ class DataCollectionSchema(Schema):
     phasePlate = ma_fields.Integer()
     totalExposedDose = ma_fields.Float()
 
-f_data_collection_schema = api.model('DataCollection', data_collection_dict)
-ma_data_collection_schema = DataCollectionSchema()
-json_data_collection_schema = JSONSchema().dump(ma_data_collection_schema)
+data_collection_f_schema = api.model('DataCollection', data_collection_dict_schema)
+data_collection_ma_schema = DataCollectionSchema()
+data_collection_json_schema = JSONSchema().dump(data_collection_ma_schema)

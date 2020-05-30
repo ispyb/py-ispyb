@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-auto_proc_program_attachment_dict = {
+auto_proc_program_attachment_dict_schema = {
         'autoProcProgramAttachmentId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'autoProcProgramId': f_fields.Integer(required=True, description='Related autoProcProgram item'),
         'fileType': f_fields.String(required=False, description='Type of file Attachmentenum(Log,Result,Graph)'),
@@ -48,6 +48,6 @@ class AutoProcProgramAttachmentSchema(Schema):
     filePath = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
 
-f_auto_proc_program_attachment_schema = api.model('AutoProcProgramAttachment', auto_proc_program_attachment_dict)
-ma_auto_proc_program_attachment_schema = AutoProcProgramAttachmentSchema()
-json_auto_proc_program_attachment_schema = JSONSchema().dump(ma_auto_proc_program_attachment_schema)
+auto_proc_program_attachment_f_schema = api.model('AutoProcProgramAttachment', auto_proc_program_attachment_dict_schema)
+auto_proc_program_attachment_ma_schema = AutoProcProgramAttachmentSchema()
+auto_proc_program_attachment_json_schema = JSONSchema().dump(auto_proc_program_attachment_ma_schema)

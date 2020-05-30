@@ -23,14 +23,14 @@ __license__ = "LGPLv3+"
 
 
 from app.models import Shipping as ShippingModel
-from app.schemas.shipping import f_shipping_schema, ma_shipping_schema
+from app.schemas.shipping import shipping_f_schema, shipping_ma_schema
 
 
 def get_all_shippings():
     shipping_list = ShippingModel.query.all()
-    return ma_shipping_schema.dump(shipping_list, many=True)
+    return shipping_ma_schema.dump(shipping_list, many=True)
 
 
 def get_proposal_shippings(proposal_id):
     shipping_list = ShippingModel.query.filter_by(proposalId=proposal_id)
-    return ma_shipping_schema.dump(shipping_list, many=True)
+    return shipping_ma_schema.dump(shipping_list, many=True)

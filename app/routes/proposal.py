@@ -75,8 +75,8 @@ class Proposals(Resource):
         #TODO add decorator @paginate
         return proposal.get_proposals(offset, limit), HTTPStatus.OK
 
-    @api.expect(proposal_schemas.f_proposal_schema)
-    @api.marshal_with(proposal_schemas.f_proposal_schema, code=201)
+    @api.expect(proposal_schemas.proposal_f_schema)
+    @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
     def post(self):
         """Adds a new proposal"""
         log.info("Insert new proposal")
@@ -114,8 +114,8 @@ class ProposalById(Resource):
             {'message': 'Proposal with id %d not found' % proposal_id},
             HTTPStatus.NOT_FOUND
 
-    @api.expect(proposal_schemas.f_proposal_schema)
-    @api.marshal_with(proposal_schemas.f_proposal_schema, code=201)
+    @api.expect(proposal_schemas.proposal_f_schema)
+    @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
     def put(self, proposal_id):
         """Updates proposal with id proposal_id
 
@@ -150,7 +150,7 @@ class ProposalByLogin(Resource):
     """Allows to get proposal by person login name"""
 
     @api.doc(description="login_name should be a string")
-    @api.marshal_with(proposal_schemas.f_proposal_schema)
+    @api.marshal_with(proposal_schemas.proposal_f_schema)
     #@token_required
     def get(self, login_name):
         """Returns a proposal by login"""
@@ -163,7 +163,7 @@ class ProposalByLogin(Resource):
 class ProposalByLogin(Resource):
     """Allows to get proposals by query parametes"""
 
-    @api.marshal_with(proposal_schemas.f_proposal_schema)
+    @api.marshal_with(proposal_schemas.proposal_f_schema)
     #@token_required
     def get(self):
         """Returns proposals by query parameters"""

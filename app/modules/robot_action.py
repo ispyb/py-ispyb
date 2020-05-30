@@ -24,11 +24,11 @@ __license__ = "LGPLv3+"
 
 from app.models import RobotAction as RobotActionModel
 from app.schemas.robot_action import (
-    f_robot_action_schema,
-    ma_robot_action_schema,
+    robot_action_f_schema,
+    robot_action_ma_schema,
 )
 
 
 def get_robot_action_list():
     robot_action_list = RobotActionModel.query.all()
-    return ma_robot_action_schema.dump(robot_action_list)
+    return robot_action_ma_schema.dump(robot_action_list)

@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-data_collection_group_dict = {
+data_collection_group_dict_schema = {
         'dataCollectionGroupId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'blSampleId': f_fields.Integer(required=False, description='references BLSample table'),
         'sessionId': f_fields.Integer(required=True, description='references Session table'),
@@ -66,6 +66,6 @@ class DataCollectionGroupSchema(Schema):
     actualContainerSlotInSC = ma_fields.Integer()
     xtalSnapshotFullPath = ma_fields.String()
 
-f_data_collection_group_schema = api.model('DataCollectionGroup', data_collection_group_dict)
-ma_data_collection_group_schema = DataCollectionGroupSchema()
-json_data_collection_group_schema = JSONSchema().dump(ma_data_collection_group_schema)
+data_collection_group_f_schema = api.model('DataCollectionGroup', data_collection_group_dict_schema)
+data_collection_group_ma_schema = DataCollectionGroupSchema()
+data_collection_group_json_schema = JSONSchema().dump(data_collection_group_ma_schema)

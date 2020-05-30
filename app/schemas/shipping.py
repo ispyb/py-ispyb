@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-shipping_dict = {
+shipping_dict_schema = {
         'shippingId': f_fields.Integer(required=True, description=''),
         'proposalId': f_fields.Integer(required=True, description=''),
         'shippingName': f_fields.String(required=False, description=''),
@@ -98,6 +98,6 @@ class ShippingSchema(Schema):
     deliveryAgent_flightCodePersonId = ma_fields.Integer()
     deliveryAgent_flightCodeTimestamp = ma_fields.DateTime()
 
-f_shipping_schema = api.model('Shipping', shipping_dict)
-ma_shipping_schema = ShippingSchema()
-json_shipping_schema = JSONSchema().dump(ma_shipping_schema)
+shipping_f_schema = api.model('Shipping', shipping_dict_schema)
+shipping_ma_schema = ShippingSchema()
+shipping_json_schema = JSONSchema().dump(shipping_ma_schema)

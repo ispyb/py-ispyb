@@ -24,6 +24,6 @@ __license__ = "LGPLv3+"
 
 from app.models import AutoProcStatus as AutoProcStatusModel
 from app.schemas.auto_proc_status import (
-    f_auto_proc_status_schema,
-    ma_auto_proc_status_schema,
+    auto_proc_status_f_schema,
+    auto_proc_status_ma_schema,
 )

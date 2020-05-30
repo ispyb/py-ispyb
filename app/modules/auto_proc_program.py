@@ -24,6 +24,6 @@ __license__ = "LGPLv3+"
 
 from app.models import AutoProcProgram as AutoProcProgramModel
 from app.schemas.auto_proc_program import (
-    f_auto_proc_program_schema,
-    ma_auto_proc_program_schema,
+    auto_proc_program_f_schema,
+    auto_proc_program_ma_schema,
 )

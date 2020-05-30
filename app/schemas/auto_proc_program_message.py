@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-auto_proc_program_message_dict = {
+auto_proc_program_message_dict_schema = {
         'autoProcProgramMessageId': f_fields.Integer(required=True, description=''),
         'autoProcProgramId': f_fields.Integer(required=False, description=''),
         'recordTimeStamp': f_fields.DateTime(required=True, description=''),
@@ -48,6 +48,6 @@ class AutoProcProgramMessageSchema(Schema):
     message = ma_fields.String()
     description = ma_fields.String()
 
-f_auto_proc_program_message_schema = api.model('AutoProcProgramMessage', auto_proc_program_message_dict)
-ma_auto_proc_program_message_schema = AutoProcProgramMessageSchema()
-json_auto_proc_program_message_schema = JSONSchema().dump(ma_auto_proc_program_message_schema)
+auto_proc_program_message_f_schema = api.model('AutoProcProgramMessage', auto_proc_program_message_dict_schema)
+auto_proc_program_message_ma_schema = AutoProcProgramMessageSchema()
+auto_proc_program_message_json_schema = JSONSchema().dump(auto_proc_program_message_ma_schema)

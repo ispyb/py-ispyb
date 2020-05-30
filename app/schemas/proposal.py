@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-proposal_dict = {
+proposal_dict_schema = {
         'proposalId': f_fields.Integer(required=True, description=''),
         'personId': f_fields.Integer(required=True, description=''),
         'title': f_fields.String(required=False, description=''),
@@ -54,6 +54,6 @@ class ProposalSchema(Schema):
     externalId = ma_fields.Integer()
     state = ma_fields.String()
 
-f_proposal_schema = api.model('Proposal', proposal_dict)
-ma_proposal_schema = ProposalSchema()
-json_proposal_schema = JSONSchema().dump(ma_proposal_schema)
+proposal_f_schema = api.model('Proposal', proposal_dict_schema)
+proposal_ma_schema = ProposalSchema()
+proposal_json_schema = JSONSchema().dump(proposal_ma_schema)

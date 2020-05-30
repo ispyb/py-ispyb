@@ -24,11 +24,11 @@ __license__ = "LGPLv3+"
 
 from app.models import ImageQualityIndicator as ImageQualityIndicatorsModel
 from app.schemas.image_quality_indicators import (
-    f_image_quality_indicators_schema,
-    ma_image_quality_indicators_schema,
+    image_quality_indicators_f_schema,
+    image_quality_indicators_ma_schema,
 )
 
 
 def get_image_quality_indicators_list():
     image_quality_indicators_list = ImageQualityIndicatorsModel.query.all()
-    return ma_image_quality_indicators_schema.dump(image_quality_indicators_list)
+    return image_quality_indicators_ma_schema.dump(image_quality_indicators_list)

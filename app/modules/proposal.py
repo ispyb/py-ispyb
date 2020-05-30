@@ -29,7 +29,7 @@ from flask import current_app
 from app.extensions import db
 from app.models import Proposal as ProposalModel
 from app.modules import person
-from app.schemas.proposal import ma_proposal_schema, proposal_dict
+from app.schemas.proposal import proposal_ma_schema, proposal_dict_schema
 
 
 log = logging.getLogger(__name__)
@@ -54,14 +54,14 @@ def get_proposals(offset, limit):
 
     total = ProposalModel.query.count()
     query = ProposalModel.query.limit(limit).offset(offset)
-    proposals = ma_proposal_schema.dump(query, many=True)[0] #Why this is a list of list???
+    proposals = proposal_ma_schema.dump(query, many=True)[0] #Why this is a list of list???
 
     return {"total": total, "rows": proposals}
 
 def get_proposal_by_id(proposal_id):
     """Returns proposal by id"""
     proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
-    return ma_proposal_schema.dump(proposal)[0] #Again this...
+    return proposal_ma_schema.dump(proposal)[0] #Again this...
 
 def get_proposals_by_params(params):
     """Returns list of proposals defined by query parameters
@@ -74,11 +74,11 @@ def get_proposals_by_params(params):
     """
     query_params = {}
     for key in params.keys():
-        if key in proposal_dict.keys():
+        if key in proposal_dict_schema.keys():
             query_params[key] = params[key]
 
     proposal = ProposalModel.query.filter_by(**query_params)
-    return ma_proposal_schema.dump(proposal, many=True)[0]
+    return proposal_ma_schema.dump(proposal, many=True)[0]
  
 def get_proposal_item_by_id(proposal_id):
     """Returns proposal by id"""
@@ -90,14 +90,13 @@ def get_proposals_by_login_name(login_name):
     person_id = person.get_person_id_by_login(login_name)
     # TODO this is not nice...
     proposal = ProposalModel.query.filter_by(personId=person_id)
-    return ma_proposal_schema.dump(proposal, many=True)
+    return proposal_ma_schema.dump(proposal, many=True)
 
 def get_proposal_from_dict(proposal_dict):
     return ProposalModel(**proposal_dict)
 
 def update_proposal(proposal_dict):
     print(proposal_dict)
-
 
 def delete_proposal(proposal_id):
     try:
