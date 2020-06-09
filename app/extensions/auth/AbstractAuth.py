@@ -22,24 +22,18 @@
 __license__ = "LGPLv3+"
 
 
-from marshmallow import validate
-
-from flask_marshmallow import base_fields
-from flask_restx_patched import Parameters
+import abc
 
 
-class PaginationParameters(Parameters):
-    """
-    Helper Parameters class to reuse pagination.
-    """
+class AbstractAuth(object):
 
-    limit = base_fields.Integer(
-        description="limit a number of items (allowed range is 1-100), default is 20.",
-        missing=20,
-        validate=validate.Range(min=1, max=100)
-    )
-    offset = base_fields.Integer(
-        description="a number of items to skip, default is 0.",
-        missing=0,
-        validate=validate.Range(min=0)
-    )
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def get_roles(self, username, password):
+        """Returns roles associated to the user
+
+        Args:
+            username (str): username
+            password (str): password
+        """

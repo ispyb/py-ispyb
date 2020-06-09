@@ -22,7 +22,10 @@
 __license__ = "LGPLv3+"
 
 
-class DummyAuth(object):
+from app.extensions.auth.AbstractAuth import AbstractAuth
+
+
+class DummyAuth(AbstractAuth):
     def get_roles(self, username, password):
         result = []
         if username.startswith("user"):
