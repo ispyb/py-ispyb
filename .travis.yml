@@ -22,7 +22,7 @@ before_install:
 
 install:
         - sudo apt-get install -y python3-mysqldb
-        - pip install -r requirements.txt pytest==4.0.1 pylint codecov pytest-cov
+        - pip install -r requirements.txt pytest>=4.6 pylint codecov pytest-cov
 
 script:
         - cp config-template.py config.py
