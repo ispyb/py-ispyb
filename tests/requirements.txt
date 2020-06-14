@@ -1,0 +1,5 @@
+pylint
+
+pytest>=4.6
+codecov
+pytest-cov<2.6.0
