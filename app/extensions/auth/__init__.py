@@ -38,16 +38,25 @@ def token_required(f):
 
         auth = request.headers.get("Authorization", None)
         if not auth:
-            return {"message": "Authorization header is expected"}, HTTPStatus.UNAUTHORIZED
-        
+            return (
+                {"message": "Authorization header is expected"},
+                HTTPStatus.UNAUTHORIZED,
+            )
+
         parts = auth.split()
 
         if parts[0].lower() != "bearer":
-            return {"message": "Authorization header must start with Bearer"}, HTTPStatus.UNAUTHORIZED
+            return (
+                {"message": "Authorization header must start with Bearer"},
+                HTTPStatus.UNAUTHORIZED,
+            )
         elif len(parts) == 1:
             return {"message": "Token not found"}, HTTPStatus.UNAUTHORIZED
         elif len(parts) > 2:
-            return {"message": "Authorization header must be Bearer token"}, HTTPStatus.UNAUTHORIZED
+            return (
+                {"message": "Authorization header must be Bearer token"},
+                HTTPStatus.UNAUTHORIZED,
+            )
 
         token = parts[1]
 
@@ -64,10 +73,16 @@ def token_required(f):
         except jwt.ExpiredSignatureError:
             current_app.logger.info("Token expired. Please log in again")
             print("Token expired. Please log in again")
-            return {"message": "Token expired. Please log in again"}, HTTPStatus.UNAUTHORIZED
+            return (
+                {"message": "Token expired. Please log in again"},
+                HTTPStatus.UNAUTHORIZED,
+            )
         except jwt.InvalidTokenError:
             print("Invalid token. Please log in again")
-            return {"message": "Invalid token. Please log in again"}, HTTPStatus.UNAUTHORIZED
+            return (
+                {"message": "Invalid token. Please log in again"},
+                HTTPStatus.UNAUTHORIZED,
+            )
         return f(*args, **kwargs)
 
     return decorated

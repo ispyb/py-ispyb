@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -54,9 +54,12 @@ def get_proposals(offset, limit):
 
     total = ProposalModel.query.count()
     query = ProposalModel.query.limit(limit).offset(offset)
-    proposals = proposal_ma_schema.dump(query, many=True)[0] #Why this is a list of list???
+    proposals = proposal_ma_schema.dump(query, many=True)[
+        0
+    ]  # Why this is a list of list???
 
     return {"total": total, "rows": proposals}
+
 
 def get_proposal_by_id(proposal_id):
     """Returns proposal by its proposalId
@@ -68,7 +71,8 @@ def get_proposal_by_id(proposal_id):
         dict: info about proposal as dict
     """
     proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
-    return proposal_ma_schema.dump(proposal)[0] #Again this...
+    return proposal_ma_schema.dump(proposal)[0]  # Again this...
+
 
 def get_proposals_by_params(params):
     """Returns list of proposals defined by query parameters
@@ -86,7 +90,8 @@ def get_proposals_by_params(params):
 
     proposal = ProposalModel.query.filter_by(**query_params)
     return proposal_ma_schema.dump(proposal, many=True)[0]
- 
+
+
 def get_proposal_item_by_id(proposal_id):
     """Returns proposal by proposalId
 
@@ -97,7 +102,8 @@ def get_proposal_item_by_id(proposal_id):
         [type]: [description]
     """
     return ProposalModel.query.filter_by(proposalId=proposal_id).first()
-    
+
+
 def get_proposals_by_login_name(login_name):
     """Returns proposals by a login name
     """
@@ -106,11 +112,14 @@ def get_proposals_by_login_name(login_name):
     proposal = ProposalModel.query.filter_by(personId=person_id)
     return proposal_ma_schema.dump(proposal, many=True)
 
+
 def get_proposal_from_dict(proposal_dict):
     return ProposalModel(**proposal_dict)
 
+
 def update_proposal(proposal_dict):
     print(proposal_dict)
+
 
 def delete_proposal(proposal_id):
     """Deletes proposal item from db
@@ -129,9 +138,8 @@ def delete_proposal(proposal_id):
         else:
             db.session.delete(proposal_item)
             db.session.commit()
-            return True 
+            return True
     except Exception as ex:
         print(ex)
         log.exception(str(ex))
         db.session.rollback()
-        

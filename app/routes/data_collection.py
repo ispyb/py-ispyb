@@ -30,7 +30,9 @@ from app.modules import data_collection
 
 
 api = Namespace(
-    "Data collections", description="Data collection related namespace", path="/data_collections"
+    "Data collections",
+    description="Data collection related namespace",
+    path="/data_collections",
 )
 api_v1.add_namespace(api)
 

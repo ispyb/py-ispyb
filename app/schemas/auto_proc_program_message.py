@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,13 +29,14 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 auto_proc_program_message_dict_schema = {
-        'autoProcProgramMessageId': f_fields.Integer(required=True, description=''),
-        'autoProcProgramId': f_fields.Integer(required=False, description=''),
-        'recordTimeStamp': f_fields.DateTime(required=True, description=''),
-        'severity': f_fields.String(required=False, description='enum(ERROR,WARNING,INFO)'),
-        'message': f_fields.String(required=False, description=''),
-        'description': f_fields.String(required=False, description=''),
-        }
+    "autoProcProgramMessageId": f_fields.Integer(required=True, description=""),
+    "autoProcProgramId": f_fields.Integer(required=False, description=""),
+    "recordTimeStamp": f_fields.DateTime(required=True, description=""),
+    "severity": f_fields.String(required=False, description="enum(ERROR,WARNING,INFO)"),
+    "message": f_fields.String(required=False, description=""),
+    "description": f_fields.String(required=False, description=""),
+}
+
 
 class AutoProcProgramMessageSchema(Schema):
     """Marshmallows schema class representing AutoProcProgramMessage table"""
@@ -48,6 +48,11 @@ class AutoProcProgramMessageSchema(Schema):
     message = ma_fields.String()
     description = ma_fields.String()
 
-auto_proc_program_message_f_schema = api.model('AutoProcProgramMessage', auto_proc_program_message_dict_schema)
+
+auto_proc_program_message_f_schema = api.model(
+    "AutoProcProgramMessage", auto_proc_program_message_dict_schema
+)
 auto_proc_program_message_ma_schema = AutoProcProgramMessageSchema()
-auto_proc_program_message_json_schema = JSONSchema().dump(auto_proc_program_message_ma_schema)
+auto_proc_program_message_json_schema = JSONSchema().dump(
+    auto_proc_program_message_ma_schema
+)

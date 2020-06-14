@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,24 +29,27 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 protein_dict_schema = {
-        'proteinId': f_fields.Integer(required=True, description=''),
-        'proposalId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'acronym': f_fields.String(required=False, description=''),
-        'safetyLevel': f_fields.String(required=False, description='enum(GREEN,YELLOW,RED)'),
-        'molecularMass': f_fields.String(required=False, description=''),
-        'proteinType': f_fields.String(required=False, description=''),
-        'sequence': f_fields.String(required=False, description=''),
-        'personId': f_fields.Integer(required=False, description=''),
-        'bltimeStamp': f_fields.DateTime(required=True, description=''),
-        'isCreatedBySampleSheet': f_fields.Integer(required=False, description=''),
-        'externalId': f_fields.Integer(required=False, description=''),
-        'density': f_fields.Float(required=False, description=''),
-        'componentTypeId': f_fields.Integer(required=False, description=''),
-        'modId': f_fields.String(required=False, description=''),
-        'concentrationTypeId': f_fields.Integer(required=False, description=''),
-        'Global': f_fields.Integer(required=False, description=''),
-        }
+    "proteinId": f_fields.Integer(required=True, description=""),
+    "proposalId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(required=False, description=""),
+    "acronym": f_fields.String(required=False, description=""),
+    "safetyLevel": f_fields.String(
+        required=False, description="enum(GREEN,YELLOW,RED)"
+    ),
+    "molecularMass": f_fields.String(required=False, description=""),
+    "proteinType": f_fields.String(required=False, description=""),
+    "sequence": f_fields.String(required=False, description=""),
+    "personId": f_fields.Integer(required=False, description=""),
+    "bltimeStamp": f_fields.DateTime(required=True, description=""),
+    "isCreatedBySampleSheet": f_fields.Integer(required=False, description=""),
+    "externalId": f_fields.Integer(required=False, description=""),
+    "density": f_fields.Float(required=False, description=""),
+    "componentTypeId": f_fields.Integer(required=False, description=""),
+    "modId": f_fields.String(required=False, description=""),
+    "concentrationTypeId": f_fields.Integer(required=False, description=""),
+    "Global": f_fields.Integer(required=False, description=""),
+}
+
 
 class ProteinSchema(Schema):
     """Marshmallows schema class representing Protein table"""
@@ -70,6 +72,7 @@ class ProteinSchema(Schema):
     concentrationTypeId = ma_fields.Integer()
     Global = ma_fields.Integer()
 
-protein_f_schema = api.model('Protein', protein_dict_schema)
+
+protein_f_schema = api.model("Protein", protein_dict_schema)
 protein_ma_schema = ProteinSchema()
 protein_json_schema = JSONSchema().dump(protein_ma_schema)

@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,16 +29,19 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 screening_dict_schema = {
-        'screeningId': f_fields.Integer(required=True, description=''),
-        'diffractionPlanId': f_fields.Integer(required=False, description='references DiffractionPlan'),
-        'dataCollectionGroupId': f_fields.Integer(required=False, description=''),
-        'dataCollectionId': f_fields.Integer(required=False, description=''),
-        'bltimeStamp': f_fields.DateTime(required=True, description=''),
-        'programVersion': f_fields.String(required=False, description=''),
-        'comments': f_fields.String(required=False, description=''),
-        'shortComments': f_fields.String(required=False, description=''),
-        'xmlSampleInformation': f_fields.String(required=False, description=''),
-        }
+    "screeningId": f_fields.Integer(required=True, description=""),
+    "diffractionPlanId": f_fields.Integer(
+        required=False, description="references DiffractionPlan"
+    ),
+    "dataCollectionGroupId": f_fields.Integer(required=False, description=""),
+    "dataCollectionId": f_fields.Integer(required=False, description=""),
+    "bltimeStamp": f_fields.DateTime(required=True, description=""),
+    "programVersion": f_fields.String(required=False, description=""),
+    "comments": f_fields.String(required=False, description=""),
+    "shortComments": f_fields.String(required=False, description=""),
+    "xmlSampleInformation": f_fields.String(required=False, description=""),
+}
+
 
 class ScreeningSchema(Schema):
     """Marshmallows schema class representing Screening table"""
@@ -54,6 +56,7 @@ class ScreeningSchema(Schema):
     shortComments = ma_fields.String()
     xmlSampleInformation = ma_fields.String()
 
-screening_f_schema = api.model('Screening', screening_dict_schema)
+
+screening_f_schema = api.model("Screening", screening_dict_schema)
 screening_ma_schema = ScreeningSchema()
 screening_json_schema = JSONSchema().dump(screening_ma_schema)
