@@ -49,7 +49,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
 
-db = SQLAlchemy()
+from app.extensions import db
 
 db.ENUM = ENUM
 db.LONGBLOB = LONGBLOB
