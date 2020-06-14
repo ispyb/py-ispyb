@@ -59,7 +59,14 @@ def get_proposals(offset, limit):
     return {"total": total, "rows": proposals}
 
 def get_proposal_by_id(proposal_id):
-    """Returns proposal by id"""
+    """Returns proposal by its proposalId
+
+    Args:
+        proposal_id (int): corresponds to proposalId in db
+
+    Returns:
+        dict: info about proposal as dict
+    """
     proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
     return proposal_ma_schema.dump(proposal)[0] #Again this...
 
