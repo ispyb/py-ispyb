@@ -54,8 +54,8 @@ api_v1.add_namespace(api)
 class Proposals(Resource):
     """Allows to get all proposals"""
 
-    #@api.marshal_list_with(proposal.schemas.f_proposal_schema)
-    #@token_required
+    # @api.marshal_list_with(proposal.schemas.f_proposal_schema)
+    # @token_required
     def get(self):
         """Returns list of proposals
 
@@ -69,10 +69,10 @@ class Proposals(Resource):
         Returns:
             list: list of proposals.
         """
-        offset = request.args.get('offset', type=int)
-        limit = request.args.get('limit', type=int)
+        offset = request.args.get("offset", type=int)
+        limit = request.args.get("limit", type=int)
 
-        #TODO add decorator @paginate
+        # TODO add decorator @paginate
         return proposal.get_proposals(offset, limit), HTTPStatus.OK
 
     @api.expect(proposal_schemas.proposal_f_schema)
@@ -82,19 +82,18 @@ class Proposals(Resource):
         log.info("Insert new proposal")
 
         with api.commit_or_abort(
-                db.session,
-                default_error_message="Failed to create a new proposal."
-            ):
+            db.session, default_error_message="Failed to create a new proposal."
+        ):
             new_proposal = proposal.get_proposal_from_dict(api.payload)
             db.session.add(proposal)
         return new_proposal
+
 
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
 @api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="Proposal not found.",
+    code=HTTPStatus.NOT_FOUND, description="Proposal not found.",
 )
 class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
@@ -111,7 +110,7 @@ class ProposalById(Resource):
             return result, HTTPStatus.OK
         else:
             return
-            {'message': 'Proposal with id %d not found' % proposal_id},
+            {"message": "Proposal with id %d not found" % proposal_id},
             HTTPStatus.NOT_FOUND
 
     @api.expect(proposal_schemas.proposal_f_schema)
@@ -133,13 +132,17 @@ class ProposalById(Resource):
             proposal_id (int): corresponds to proposalId in db
 
         Returns:
-            json, status_code: 
+            json, status_code:
         """
         result = proposal.delete_proposal(proposal_id)
         if result:
-            return {'message': 'Proposal with id %d deleted' % proposal_id}, HTTPStatus.OK
+            return (
+                {"message": "Proposal with id %d deleted" % proposal_id},
+                HTTPStatus.OK,
+            )
         else:
             return "Proposal with id %d not found" % proposal_id, HTTPStatus.NOT_FOUND
+
 
 @api.route("/<string:login_name>")
 # @api.param("proposal_id", "Proposal id")
@@ -149,7 +152,7 @@ class ProposalByLogin(Resource):
 
     @api.doc(description="login_name should be a string")
     @api.marshal_with(proposal_schemas.proposal_f_schema)
-    #@token_required
+    # @token_required
     def get(self, login_name):
         """Returns a proposal by login"""
         # app.logger.info("Returns all proposals for user with login name %s" % login_name)
@@ -162,7 +165,7 @@ class ProposalsByParams(Resource):
     """Allows to get proposals by query parametes"""
 
     @api.marshal_with(proposal_schemas.proposal_f_schema)
-    #@token_required
+    # @token_required
     def get(self):
         """Returns proposals by query parameters"""
         return proposal.get_proposals_by_params(request.args)

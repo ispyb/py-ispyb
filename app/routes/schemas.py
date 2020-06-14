@@ -36,7 +36,7 @@ api_v1.add_namespace(api)
 @api.route("/available_names")
 class SchemasList(Resource):
 
-    #@token_required
+    # @token_required
     def get(self):
         """Returns list of available schemas
 
@@ -44,10 +44,10 @@ class SchemasList(Resource):
             list: list of names
         """
 
-        #TODO I guess there is oneliner fancy code that can do this...
+        # TODO I guess there is oneliner fancy code that can do this...
         result = []
         for item in dir(schemas):
-            if not item.startswith('__'):
+            if not item.startswith("__"):
                 result.append(item)
 
         return result
@@ -58,7 +58,7 @@ class SchemasList(Resource):
 @api.doc(description="name should be a string")
 class Schemas(Resource):
 
-    #@token_required
+    # @token_required
     def get(self, name):
         """Returns json schema
 
@@ -70,6 +70,9 @@ class Schemas(Resource):
         """
         try:
             schemas_module = importlib.import_module("app.schemas." + name)
-            return getattr(schemas_module, "%s_json_schema" % name) 
+            return getattr(schemas_module, "%s_json_schema" % name)
         except Exception as ex:
-            return "Unable to return schema with name %s (%s)" % (name, str(ex)), HTTPStatus.NOT_FOUND
+            return (
+                "Unable to return schema with name %s (%s)" % (name, str(ex)),
+                HTTPStatus.NOT_FOUND,
+            )

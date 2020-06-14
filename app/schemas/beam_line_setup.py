@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,27 +29,30 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 beam_line_setup_dict_schema = {
-        'beamLineSetupId': f_fields.Integer(required=True, description=''),
-        'synchrotronMode': f_fields.String(required=False, description=''),
-        'undulatorType1': f_fields.String(required=False, description=''),
-        'undulatorType2': f_fields.String(required=False, description=''),
-        'undulatorType3': f_fields.String(required=False, description=''),
-        'focalSpotSizeAtSample': f_fields.Float(required=False, description=''),
-        'focusingOptic': f_fields.String(required=False, description=''),
-        'beamDivergenceHorizontal': f_fields.Float(required=False, description=''),
-        'beamDivergenceVertical': f_fields.Float(required=False, description=''),
-        'polarisation': f_fields.Float(required=False, description=''),
-        'monochromatorType': f_fields.String(required=False, description=''),
-        'setupDate': f_fields.DateTime(required=False, description=''),
-        'synchrotronName': f_fields.String(required=False, description=''),
-        'maxExpTimePerDataCollection': f_fields.String(required=False, description=''),
-        'minExposureTimePerImage': f_fields.String(required=False, description=''),
-        'goniostatMaxOscillationSpeed': f_fields.String(required=False, description=''),
-        'goniostatMinOscillationWidth': f_fields.String(required=False, description=''),
-        'minTransmission': f_fields.String(required=False, description=''),
-        'CS': f_fields.Float(required=False, description=''),
-        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
-        }
+    "beamLineSetupId": f_fields.Integer(required=True, description=""),
+    "synchrotronMode": f_fields.String(required=False, description=""),
+    "undulatorType1": f_fields.String(required=False, description=""),
+    "undulatorType2": f_fields.String(required=False, description=""),
+    "undulatorType3": f_fields.String(required=False, description=""),
+    "focalSpotSizeAtSample": f_fields.Float(required=False, description=""),
+    "focusingOptic": f_fields.String(required=False, description=""),
+    "beamDivergenceHorizontal": f_fields.Float(required=False, description=""),
+    "beamDivergenceVertical": f_fields.Float(required=False, description=""),
+    "polarisation": f_fields.Float(required=False, description=""),
+    "monochromatorType": f_fields.String(required=False, description=""),
+    "setupDate": f_fields.DateTime(required=False, description=""),
+    "synchrotronName": f_fields.String(required=False, description=""),
+    "maxExpTimePerDataCollection": f_fields.String(required=False, description=""),
+    "minExposureTimePerImage": f_fields.String(required=False, description=""),
+    "goniostatMaxOscillationSpeed": f_fields.String(required=False, description=""),
+    "goniostatMinOscillationWidth": f_fields.String(required=False, description=""),
+    "minTransmission": f_fields.String(required=False, description=""),
+    "CS": f_fields.Float(required=False, description=""),
+    "recordTimeStamp": f_fields.DateTime(
+        required=True, description="Creation or last update date/time"
+    ),
+}
+
 
 class BeamLineSetupSchema(Schema):
     """Marshmallows schema class representing BeamLineSetup table"""
@@ -76,6 +78,7 @@ class BeamLineSetupSchema(Schema):
     CS = ma_fields.Float()
     recordTimeStamp = ma_fields.DateTime()
 
-beam_line_setup_f_schema = api.model('BeamLineSetup', beam_line_setup_dict_schema)
+
+beam_line_setup_f_schema = api.model("BeamLineSetup", beam_line_setup_dict_schema)
 beam_line_setup_ma_schema = BeamLineSetupSchema()
 beam_line_setup_json_schema = JSONSchema().dump(beam_line_setup_ma_schema)

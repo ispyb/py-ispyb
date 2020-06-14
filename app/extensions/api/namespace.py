@@ -59,6 +59,7 @@ class Namespace(BaseNamespace):
         ...    def get(self, user):
         ...        # user is a User instance here
         """
+
         def decorator(func_or_class):
             if isinstance(func_or_class, type):
                 # Handle Resource classes decoration
@@ -70,9 +71,10 @@ class Namespace(BaseNamespace):
             def wrapper(*args, **kwargs):
                 kwargs[object_arg_name] = resolver(kwargs)
                 return func_or_class(*args, **kwargs)
-            return wrapper
-        return decorator
 
+            return wrapper
+
+        return decorator
 
     def resolve_object_by_model(self, model, object_arg_name, identity_arg_names=None):
         """
@@ -100,14 +102,17 @@ class Namespace(BaseNamespace):
         <MyModel(user_id=3, name="test", ...)>
         """
         if identity_arg_names is None:
-            identity_arg_names = ('%s_id' % object_arg_name, )
+            identity_arg_names = ("%s_id" % object_arg_name,)
         elif not isinstance(identity_arg_names, (list, tuple)):
-            identity_arg_names = (identity_arg_names, )
+            identity_arg_names = (identity_arg_names,)
         return self.resolve_object(
             object_arg_name,
             resolver=lambda kwargs: model.query.get_or_404(
-                [kwargs.pop(identity_arg_name) for identity_arg_name in identity_arg_names]
-            )
+                [
+                    kwargs.pop(identity_arg_name)
+                    for identity_arg_name in identity_arg_names
+                ]
+            ),
         )
 
     def model(self, name=None, model=None, **kwargs):
@@ -121,8 +126,8 @@ class Namespace(BaseNamespace):
         """
         if isinstance(model, flask_marshmallow.Schema) and not name:
             name = model.__class__.__name__
-            if name.endswith('Schema'):
-                name = name[:-len('Schema')]
+            if name.endswith("Schema"):
+                name = name[: -len("Schema")]
         return super(Namespace, self).model(name=name, model=model, **kwargs)
 
     def _register_access_restriction_decorator(self, func, decorator_to_register):
@@ -131,12 +136,16 @@ class Namespace(BaseNamespace):
         Helper function to register decorator to function to perform checks
         in options method
         """
-        if not hasattr(func, '_access_restriction_decorators'):
+        if not hasattr(func, "_access_restriction_decorators"):
             func._access_restriction_decorators = []  # pylint: disable=protected-access
-        func._access_restriction_decorators.append(decorator_to_register)  # pylint: disable=protected-access
+        func._access_restriction_decorators.append(
+            decorator_to_register
+        )  # pylint: disable=protected-access
 
     @contextmanager
-    def commit_or_abort(self, session, default_error_message="The operation failed to complete"):
+    def commit_or_abort(
+        self, session, default_error_message="The operation failed to complete"
+    ):
         """
         Context manager to simplify a workflow in resources
 
@@ -159,6 +168,5 @@ class Namespace(BaseNamespace):
         except sqlalchemy.exc.IntegrityError as exception:
             log.info("Database transaction was rolled back due to: %r", exception)
             http_exceptions.abort(
-                code=HTTPStatus.CONFLICT,
-                message=default_error_message
+                code=HTTPStatus.CONFLICT, message=default_error_message
             )

@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from flask_restx_patched import Resource
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required
