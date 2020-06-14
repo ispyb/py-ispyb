@@ -47,8 +47,12 @@ gen_modules = []
 
 with open("%s/enabled_db_modules.csv" % ispyb_root) as csvfile:
     reader = csv.reader(csvfile)
+    """
+    If the module name starts with # then the schema file is generated
+    but the db module is not mapped with modules in app
+    """
     for row in reader:
-        gen_modules.append(row[0])
+        gen_modules.append(row[0].replace("#", ""))
         gen_tables.append(row[1])
 
 

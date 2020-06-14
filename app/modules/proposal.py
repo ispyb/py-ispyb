@@ -81,7 +81,14 @@ def get_proposals_by_params(params):
     return proposal_ma_schema.dump(proposal, many=True)[0]
  
 def get_proposal_item_by_id(proposal_id):
-    """Returns proposal by id"""
+    """Returns proposal by proposalId
+
+    Args:
+        proposal_id ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     return ProposalModel.query.filter_by(proposalId=proposal_id).first()
     
 def get_proposals_by_login_name(login_name):
@@ -99,12 +106,23 @@ def update_proposal(proposal_dict):
     print(proposal_dict)
 
 def delete_proposal(proposal_id):
+    """Deletes proposal item from db
+
+    Args:
+        proposal_id (int): proposalId column in db
+
+    Returns:
+        bool: True if the proposal exists and deleted successfully,
+        otherwise return False
+    """
     try:
         proposal_item = ProposalModel.query.filter_by(proposalId=proposal_id).first()
-        local_object = db.session.merge(proposal_item)
-        db.session.delete(local_object)
-        #db.session.commit()
-        return True 
+        if not proposal_item:
+            return None
+        else:
+            db.session.delete(proposal_item)
+            db.session.commit()
+            return True 
     except Exception as ex:
         print(ex)
         log.exception(str(ex))

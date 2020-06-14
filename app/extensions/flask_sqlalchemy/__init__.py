@@ -65,7 +65,7 @@ class SQLAlchemy(BaseSQLAlchemy):
     def __init__(self, *args, **kwargs):
         if "session_options" not in kwargs:
             kwargs["session_options"] = {}
-        kwargs["session_options"]["autocommit"] = True
+        kwargs["session_options"]["autocommit"] = False
         # Configure Constraint Naming Conventions:
         # http://docs.sqlalchemy.org/en/latest/core/constraints.html#constraint-naming-conventions
         kwargs["metadata"] = MetaData(

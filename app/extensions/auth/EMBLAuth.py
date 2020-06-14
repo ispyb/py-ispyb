@@ -22,7 +22,14 @@
 __license__ = "LGPLv3+"
 
 
-class EMBLAuth(object):
-    def get_roles(self, user):
+from app.extensions.auth.AbstractAuth import AbstractAuth
+
+class EMBLAuth(AbstractAuth):
+
+    def get_roles(self, username, password):
         result = []
+        if username.startswith("user"):
+            result.append("user")
+        if username.startswith("manager"):
+            result.append("manager")
         return result

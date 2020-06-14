@@ -19,10 +19,9 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-from app.models import AutoProc as AutoProcModel
-from app.schemas import auto_proc as auto_proc_schemas
+from app import models, schemas
 
 
 def get_auto_proc_list():
-    auto_proc_list = AutoProcModel.query.all()
-    return auto_proc_schemas.auto_proc_ma_schema.dump(auto_proc_list)
+    auto_proc_list = models.AutoProc.query.all()
+    return schemas.auto_proc.auto_proc_ma_schema.dump(auto_proc_list)
