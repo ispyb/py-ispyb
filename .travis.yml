@@ -22,14 +22,18 @@ before_install:
 
 install:
         - sudo apt-get install -y python3-mysqldb
-        - pip install -r requirements.txt pytest==4.0.1 pylint codecov pytest-cov
+        - pip install -r requirements.txt 
+        - pip install -r tests/requirements.txt 
 
 script:
         - cp config-template.py config.py
+        - cd scripts
+        - bash run_all.sh
+        - cd ..
         - pylint -E app
         - coverage run -m pytest
 
 after_success:
         - codecov
         - bash <(curl -s https://codecov.io/bash)
-        - bash <(curl -Ls https://coverage.codacy.com/get.sh)
+#        - bash <(curl -Ls https://coverage.codacy.com/get.sh)

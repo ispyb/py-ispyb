@@ -63,7 +63,8 @@ class BaseConfig():
     with open('%s/enabled_db_modules.csv' % PROJECT_ROOT) as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
-            ENABLED_DB_MODULES.append(row[0])
+            if not row[0].startswith("#"):
+                ENABLED_DB_MODULES.append(row[0])
 
     ENABLED_ROUTES = [
         'auth',
@@ -76,8 +77,8 @@ class BaseConfig():
 
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = 'documentation'
-    SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB Flask-RESTplus server documentation"
-    SWAGGER_UI_OAUTH_APP_NAME = "ISPyB Flask-RESTplus server documentation"
+    SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB Flask-RESTx server documentation"
+    SWAGGER_UI_OAUTH_APP_NAME = "ISPyB Flask-RESTx server documentation"
 
     CSRF_ENABLED = True
 

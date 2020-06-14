@@ -96,7 +96,6 @@ class Proposals(Resource):
     code=HTTPStatus.NOT_FOUND,
     description="Proposal not found.",
 )
-#@api.resolve_object_by_model(Proposal, 'proposal')
 class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
@@ -107,6 +106,7 @@ class ProposalById(Resource):
         """Returns a proposal by proposalId"""
         print(proposal_id)
         result = proposal.get_proposal_by_id(proposal_id)
+        print(result)
         if result:
             return result, HTTPStatus.OK
         else:
@@ -125,6 +125,7 @@ class ProposalById(Resource):
         log.info("Update proposal %d" % proposal_id)
         proposal.update_proposal(**api.payload)
 
+    @token_required
     def delete(self, proposal_id):
         """Deletes proposal by proposal_id
 
@@ -134,14 +135,11 @@ class ProposalById(Resource):
         Returns:
             json, status_code: 
         """
-
-        with api.commit_or_abort(
-                db.session,
-                default_error_message="Failed to delete the proposal."
-            ):
-            proposal_item = proposal.get_proposal_item_by_id(proposal_id)
-            db.session.delete(proposal_item)
-        return None
+        result = proposal.delete_proposal(proposal_id)
+        if result:
+            return {'message': 'Proposal with id %d deleted' % proposal_id}, HTTPStatus.OK
+        else:
+            return "Proposal with id %d not found" % proposal_id, HTTPStatus.NOT_FOUND
 
 @api.route("/<string:login_name>")
 # @api.param("proposal_id", "Proposal id")

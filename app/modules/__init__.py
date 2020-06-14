@@ -22,10 +22,17 @@
 __license__ = "LGPLv3+"
 
 
+import logging
+
+
+log = logging.getLogger(__name__)
+
+
 def init_app(app, **kwargs):
     from importlib import import_module
 
     for module_name in app.config["ENABLED_MODULES"]:
+        log.debug("Loading module %s" % module_name)
         import_module(".%s" % module_name, package=__name__).init_app(app, **kwargs)
 
     for module_name in app.config["ENABLED_DB_MODULES"]:

@@ -49,8 +49,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
 
-# from ispyb import db
-
 db = SQLAlchemy()
 
 db.ENUM = ENUM
