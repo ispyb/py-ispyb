@@ -1,5 +1,4 @@
 # encoding: utf-8
-# pylint: disable=invalid-name,wrong-import-position,wrong-import-order
 #
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
@@ -23,25 +22,9 @@
 __license__ = "LGPLv3+"
 
 
-from . import api
-from .auth import auth_provider
-from .flask_sqlalchemy import SQLAlchemy
-from .logging import Logging
+from app.models import AutoProcIntegration as AutoProcIntegrationModel
+from app.schemas.auto_proc_integration import (
+    auto_proc_integration_ma_schema,
+)
 
 
-logging = Logging()
-db = SQLAlchemy()
-#auth_provider = AuthProvider()
-
-
-def init_app(app):
-    """
-    Application extensions initialization.
-    """
-    for extension in (
-        api,
-        auth_provider,
-        logging,
-        db,
-    ):
-        extension.init_app(app)

@@ -47,9 +47,23 @@ class AuthProvider:
     def get_roles(self, user, password):
         return self.site_auth.get_roles(user, password)
 
+    def get_roles_by_token(self, token):
+        if current_app.config.get('MASTER_TOKEN') == token:
+            return ('manager')
+        else:
+            for user_token in self.tokens.items():
+                if user_token['token'] == token:
+                    return user_token['roles']
+
     def generate_token(self, username, roles):
-        """
-        User is authentificated via site specific auth
+        """Generates token
+
+        Args:
+            username (string): username
+            roles (list): list of roles associated to the user
+
+        Returns:
+            str: token
         """
         if username in self.tokens:
             # Check if the previously generated token is still valid
@@ -74,6 +88,9 @@ class AuthProvider:
             algorithm=current_app.config["JWT_CODING_ALGORITHM"],
         )
         dec_token = token.decode("UTF-8")
-        self.tokens[username] = dec_token
+        self.tokens[username] = {
+            'token': dec_token,
+            'roles': roles
+        }
 
         return dec_token
