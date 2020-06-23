@@ -93,16 +93,21 @@ def token_required(f):
 def write_permission_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+
+        roles = ()
         try:
             auth = request.headers.get("Authorization", None)
             parts = auth.split()
             token = parts[1]
             roles = auth_provider.get_roles_by_token(token)
+        except BaseException:
+            pass
+        
+        if 'admin' in roles:
             return f(*args, **kwargs)
-        except:
+        else:
             return (
                 {"message": "User has no write permission"},
                 HTTPStatus.UNAUTHORIZED,
             )
-
     return decorated

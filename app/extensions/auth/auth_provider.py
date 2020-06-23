@@ -44,12 +44,31 @@ class AuthProvider:
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 
-    def get_roles(self, user, password):
-        return self.site_auth.get_roles(user, password)
+    def get_roles(self, username, password):
+        """Returns roles associated to user.
+        Basically this is the main authentification method where site_auth
+        is site specific authentication class.    
+
+        Args:
+            username (str): username
+            password (str): password
+
+        Returns:
+            tuple or list: tuple or list with roles associated to the username 
+        """
+        return self.site_auth.get_roles(username, password)
 
     def get_roles_by_token(self, token):
+        """Returns roles associated with the token
+
+        Args:
+            token (str): jwt token 
+
+        Returns:
+            tuple: tuple with roles associated to the token, user
+        """
         if current_app.config.get('MASTER_TOKEN') == token:
-            return ('manager')
+            return ('admin')
         else:
             for user_token in self.tokens.items():
                 if user_token['token'] == token:
@@ -88,6 +107,7 @@ class AuthProvider:
             algorithm=current_app.config["JWT_CODING_ALGORITHM"],
         )
         dec_token = token.decode("UTF-8")
+
         self.tokens[username] = {
             'token': dec_token,
             'roles': roles

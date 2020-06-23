@@ -31,7 +31,6 @@ from .logging import Logging
 
 logging = Logging()
 db = SQLAlchemy()
-#auth_provider = AuthProvider()
 
 
 def init_app(app):
