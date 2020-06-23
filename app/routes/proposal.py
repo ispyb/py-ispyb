@@ -77,18 +77,18 @@ class Proposals(Resource):
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
-    @token_required
-    @write_permission_required
+    #@token_required
+    #@write_permission_required
     def post(self):
         """Adds a new proposal"""
-        log.info("Insert new proposal")
-
-        with api.commit_or_abort(
-            db.session, default_error_message="Failed to create a new proposal."
-        ):
-            new_proposal = proposal.get_proposal_from_dict(api.payload)
-            db.session.add(proposal)
-        return new_proposal
+        log.info("Inserts a new proposal")
+        result = proposal.add_proposal(api.payload)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            return
+            {"message": "Unable to add new proposal"},
+            HTTPStatus.NOT_ACCEPTABLE
 
 
 @api.route("/<int:proposal_id>")

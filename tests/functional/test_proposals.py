@@ -50,7 +50,7 @@ def test_put(flask_app, token):
     route_root = flask_app.config["API_ROOT"] + "/proposals"
 
     headers = {"Authorization": "Bearer " + token}
-    response = client.put(route_root, data=test_proposal, headers=headers)
+    response = client.post(route_root, data=test_proposal, headers=headers)
 
     assert response.status_code == 200, "Wrong status code"
 

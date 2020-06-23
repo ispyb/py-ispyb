@@ -33,7 +33,7 @@ class AuthProvider:
     """Allows to authentificate users and create tokens"""
 
     def __init__(self):
-        self.tokens = {}
+        self.tokens = []
         self.site_auth = None
 
     def init_app(self, app):
@@ -70,7 +70,9 @@ class AuthProvider:
         if current_app.config.get('MASTER_TOKEN') == token:
             return ('admin')
         else:
-            for user_token in self.tokens.items():
+            print(self.tokens)
+            for user_token in self.tokens:
+                print(user_token)
                 if user_token['token'] == token:
                     return user_token['roles']
 
@@ -88,11 +90,11 @@ class AuthProvider:
             # Check if the previously generated token is still valid
             try:
                 jwt.decode(
-                    self.tokens[username],
+                    self.tokens[username]['token'],
                     current_app.config["SECRET_KEY"],
                     algorithms=current_app.config["JWT_CODING_ALGORITHM"],
                 )
-                return self.tokens[username]
+                return self.tokens[username]['token']
             except jwt.ExpiredSignatureError:
                 pass
 
@@ -108,9 +110,12 @@ class AuthProvider:
         )
         dec_token = token.decode("UTF-8")
 
-        self.tokens[username] = {
-            'token': dec_token,
-            'roles': roles
-        }
+        self.tokens.append(
+            {
+                "username" : username,
+                "token": dec_token,
+                "roles": roles
+                }
+        )
 
         return dec_token

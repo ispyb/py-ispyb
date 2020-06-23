@@ -106,6 +106,7 @@ def write_permission_required(f):
         if 'admin' in roles:
             return f(*args, **kwargs)
         else:
+            print('No permission to write in db. Current permissions are %s' % str(roles))
             return (
                 {"message": "User has no write permission"},
                 HTTPStatus.UNAUTHORIZED,
