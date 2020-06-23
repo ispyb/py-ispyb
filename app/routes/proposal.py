@@ -38,7 +38,7 @@ from flask_restx_patched import Resource
 
 from app.extensions import db
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required
+from app.extensions.auth import token_required, write_permission_required
 from app.models import Proposal
 from app.schemas import proposal as proposal_schemas
 from app.modules import proposal
@@ -55,7 +55,7 @@ class Proposals(Resource):
     """Allows to get all proposals"""
 
     # @api.marshal_list_with(proposal.schemas.f_proposal_schema)
-    # @token_required
+    @token_required
     def get(self):
         """Returns list of proposals
 
@@ -77,16 +77,18 @@ class Proposals(Resource):
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
+    #@token_required
+    #@write_permission_required
     def post(self):
         """Adds a new proposal"""
-        log.info("Insert new proposal")
-
-        with api.commit_or_abort(
-            db.session, default_error_message="Failed to create a new proposal."
-        ):
-            new_proposal = proposal.get_proposal_from_dict(api.payload)
-            db.session.add(proposal)
-        return new_proposal
+        log.info("Inserts a new proposal")
+        result = proposal.add_proposal(api.payload)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            return
+            {"message": "Unable to add new proposal"},
+            HTTPStatus.NOT_ACCEPTABLE
 
 
 @api.route("/<int:proposal_id>")
@@ -115,6 +117,8 @@ class ProposalById(Resource):
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
+    @token_required
+    @write_permission_required
     def put(self, proposal_id):
         """Updates proposal with id proposal_id
 
@@ -125,6 +129,7 @@ class ProposalById(Resource):
         proposal.update_proposal(**api.payload)
 
     @token_required
+    @write_permission_required
     def delete(self, proposal_id):
         """Deletes proposal by proposal_id
 
@@ -152,7 +157,7 @@ class ProposalByLogin(Resource):
 
     @api.doc(description="login_name should be a string")
     @api.marshal_with(proposal_schemas.proposal_f_schema)
-    # @token_required
+    @token_required
     def get(self, login_name):
         """Returns a proposal by login"""
         # app.logger.info("Returns all proposals for user with login name %s" % login_name)
@@ -165,7 +170,7 @@ class ProposalsByParams(Resource):
     """Allows to get proposals by query parametes"""
 
     @api.marshal_with(proposal_schemas.proposal_f_schema)
-    # @token_required
+    @token_required
     def get(self):
         """Returns proposals by query parameters"""
         return proposal.get_proposals_by_params(request.args)

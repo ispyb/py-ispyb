@@ -117,6 +117,15 @@ def get_proposal_from_dict(proposal_dict):
     return ProposalModel(**proposal_dict)
 
 
+def add_proposal(proposal_dict):
+    try:
+        proposal_item = ProposalModel(**proposal_dict)
+        db.session.add(proposal_item)
+        db.session.commit()
+        return proposal_item.proposalId
+    except BaseException:
+        return
+        
 def update_proposal(proposal_dict):
     print(proposal_dict)
 

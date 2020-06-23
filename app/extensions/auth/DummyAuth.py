@@ -26,10 +26,13 @@ from app.extensions.auth.AbstractAuth import AbstractAuth
 
 
 class DummyAuth(AbstractAuth):
+    
     def get_roles(self, username, password):
         result = []
         if username.startswith("user"):
             result.append("user")
         if username.startswith("manager"):
             result.append("manager")
+        if username.startswith("admin"):
+            result.append("admin")
         return result

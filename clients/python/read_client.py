@@ -1,16 +1,13 @@
 from requests import get, post
 
 root_url = "http://localhost:5000/ispyb/api/v1"
-
-username = "user"
-response = get(root_url + "/auth/login", auth=(username, "pass"))
+response = get(root_url + "/auth/login", auth=("user", "pass"))
 # Alternative get(root_url + "/auth/login", headers={'username': 'user',
 # 'password': 'pass'}
 
 if response.status_code == 200:
     roles = response.json()["roles"]
     token = response.json()["token"]
-    print("User %s validated" % username)
     print("Token: %s" % token)
     headers = {"Authorization": "Bearer " + token}
     
@@ -32,5 +29,4 @@ if response.status_code == 200:
     data = response.json() 
           
 else:
-    print("Unable to validate user %s" % username)
     print(response.reason, response.text)

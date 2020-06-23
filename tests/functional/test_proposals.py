@@ -19,7 +19,11 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-def test_proposal_route(flask_app, token):
+import json
+
+from tests.data import test_proposal
+
+def test_get(flask_app, token):
     client = flask_app.test_client()
     route_root = flask_app.config["API_ROOT"] + "/proposals"
     
@@ -40,3 +44,13 @@ def test_proposal_route(flask_app, token):
     path = route_root + "/params?proposalType=MX"
     response = client.get(path, headers=headers)
     assert response.status_code == 200, "Wrong status code"
+
+def test_put(flask_app, token):
+    client = flask_app.test_client()
+    route_root = flask_app.config["API_ROOT"] + "/proposals"
+
+    headers = {"Authorization": "Bearer " + token}
+    response = client.post(route_root, data=test_proposal, headers=headers)
+
+    assert response.status_code == 200, "Wrong status code"
+

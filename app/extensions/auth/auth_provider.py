@@ -33,7 +33,7 @@ class AuthProvider:
     """Allows to authentificate users and create tokens"""
 
     def __init__(self):
-        self.tokens = {}
+        self.tokens = []
         self.site_auth = None
 
     def init_app(self, app):
@@ -44,22 +44,57 @@ class AuthProvider:
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 
-    def get_roles(self, user, password):
-        return self.site_auth.get_roles(user, password)
+    def get_roles(self, username, password):
+        """Returns roles associated to user.
+        Basically this is the main authentification method where site_auth
+        is site specific authentication class.    
+
+        Args:
+            username (str): username
+            password (str): password
+
+        Returns:
+            tuple or list: tuple or list with roles associated to the username 
+        """
+        return self.site_auth.get_roles(username, password)
+
+    def get_roles_by_token(self, token):
+        """Returns roles associated with the token
+
+        Args:
+            token (str): jwt token 
+
+        Returns:
+            tuple: tuple with roles associated to the token, user
+        """
+        if current_app.config.get('MASTER_TOKEN') == token:
+            return ('admin')
+        else:
+            print(self.tokens)
+            for user_token in self.tokens:
+                print(user_token)
+                if user_token['token'] == token:
+                    return user_token['roles']
 
     def generate_token(self, username, roles):
-        """
-        User is authentificated via site specific auth
+        """Generates token
+
+        Args:
+            username (string): username
+            roles (list): list of roles associated to the user
+
+        Returns:
+            str: token
         """
         if username in self.tokens:
             # Check if the previously generated token is still valid
             try:
                 jwt.decode(
-                    self.tokens[username],
+                    self.tokens[username]['token'],
                     current_app.config["SECRET_KEY"],
                     algorithms=current_app.config["JWT_CODING_ALGORITHM"],
                 )
-                return self.tokens[username]
+                return self.tokens[username]['token']
             except jwt.ExpiredSignatureError:
                 pass
 
@@ -74,6 +109,13 @@ class AuthProvider:
             algorithm=current_app.config["JWT_CODING_ALGORITHM"],
         )
         dec_token = token.decode("UTF-8")
-        self.tokens[username] = dec_token
+
+        self.tokens.append(
+            {
+                "username" : username,
+                "token": dec_token,
+                "roles": roles
+                }
+        )
 
         return dec_token

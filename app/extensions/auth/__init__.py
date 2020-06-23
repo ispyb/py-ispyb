@@ -31,6 +31,9 @@ from flask_restx._http import HTTPStatus
 from .auth_provider import AuthProvider
 
 
+auth_provider = AuthProvider()
+
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -85,4 +88,27 @@ def token_required(f):
             )
         return f(*args, **kwargs)
 
+    return decorated
+
+def write_permission_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        roles = ()
+        try:
+            auth = request.headers.get("Authorization", None)
+            parts = auth.split()
+            token = parts[1]
+            roles = auth_provider.get_roles_by_token(token)
+        except BaseException:
+            pass
+        
+        if 'admin' in roles:
+            return f(*args, **kwargs)
+        else:
+            print('No permission to write in db. Current permissions are %s' % str(roles))
+            return (
+                {"message": "User has no write permission"},
+                HTTPStatus.UNAUTHORIZED,
+            )
     return decorated

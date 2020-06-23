@@ -46,7 +46,6 @@ def token(flask_app):
     api_root = flask_app.config["API_ROOT"]
 
     response = client.get(
-        api_root + "/auth/login", headers={"username": "user", "password": "pass"}
+        api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
     )
     return response.json["token"]
-
