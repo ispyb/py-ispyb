@@ -19,17 +19,17 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 """
-GET /proposals - Retrieves a list of proposals
-GET /proposals/1 - Retrieves proposal #1
-POST /proposals - Creates a new proposal
-PUT /proposals/1 - Updates proposal #1
-PATCH /proposals/1 - Partially updates proposal #1
-DELETE /proposals/1 - Deletes proposal #1
+Proposal namespace with enpoint allowing to manipulate proposal items.
+
+Example routes:
+
+[GET]   /ispyb/api/v1/proposals     - Retrieves a list of proposals
+[GET]   /ispyb/api/v1//proposals/1  - Retrieves proposal #1
+[POST]  /ispyb/api/v1//proposals    - Creates a new proposal
+[PUT]   /ispyb/api/v1//proposals/1  - Updates proposal #1
+[PATCH] /ispyb/api/v1//proposals/1  - Partially updates proposal #1
+[DELETE]/ispyb/api/v1//proposals/1  - Deletes proposal #1
 """
-
-
-__license__ = "LGPLv3+"
-
 
 import logging
 from flask import request
@@ -44,6 +44,9 @@ from app.schemas import proposal as proposal_schemas
 from app.modules import proposal
 
 
+__license__ = "LGPLv3+"
+
+
 log = logging.getLogger(__name__)
 api = Namespace("Proposal", description="Proposal related namespace", path="/proposals")
 api_v1.add_namespace(api)
@@ -54,7 +57,8 @@ api_v1.add_namespace(api)
 class Proposals(Resource):
     """Allows to get all proposals"""
 
-    # @api.marshal_list_with(proposal.schemas.f_proposal_schema)
+    #@api.marshal_list_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
+    #TODO Define model with JSON Schema 
     @token_required
     def get(self):
         """Returns list of proposals
@@ -77,11 +81,15 @@ class Proposals(Resource):
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
-    #@token_required
-    #@write_permission_required
+    #@api.errorhandler(FakeException)
+    #TODO add custom exception handling
+    @token_required
+    @write_permission_required
     def post(self):
         """Adds a new proposal"""
         log.info("Inserts a new proposal")
+
+        #with 
         result = proposal.add_proposal(api.payload)
         if result:
             return result, HTTPStatus.OK
@@ -101,32 +109,57 @@ class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
     @api.doc(description="proposal_id should be an integer ")
-    # @api.marshal_with(f_proposal_schema)
+    @api.marshal_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
     @token_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
-        print(proposal_id)
         result = proposal.get_proposal_by_id(proposal_id)
-        print(result)
         if result:
             return result, HTTPStatus.OK
         else:
-            return
-            {"message": "Proposal with id %d not found" % proposal_id},
-            HTTPStatus.NOT_FOUND
+            api.abort(HTTPStatus.NOT_FOUND, "Proposal not found")
 
     @api.expect(proposal_schemas.proposal_f_schema)
-    @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
+    @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
     @token_required
     @write_permission_required
     def put(self, proposal_id):
-        """Updates proposal with id proposal_id
+        """Fully updates proposal with id proposal_id
 
         Args:
             proposal_id (int): corresponds to proposalId in db
         """
         log.info("Update proposal %d" % proposal_id)
-        proposal.update_proposal(**api.payload)
+        result = proposal.update_proposal(proposal_id, api.payload)
+        if result:
+            return (
+                {"message": "Proposal with id %d updated" % proposal_id},
+                HTTPStatus.OK,
+            )
+        else:
+            api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
+
+    @api.expect(proposal_schemas.proposal_f_schema)
+    @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @write_permission_required
+    def patch(self, proposal_id):
+        """Partially updates proposal with id proposal_id
+
+        Args:
+            proposal_id (int): corresponds to proposalId in db
+        """
+        log.info("Patch proposal %d" % proposal_id)
+        print(proposal_id, api.payload)
+        result = proposal.patch_proposal(proposal_id, api.payload)
+        if result:
+            return (
+                {"message": "Proposal with id %d updated" % proposal_id},
+                HTTPStatus.OK,
+            )
+        else:
+            api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
+
 
     @token_required
     @write_permission_required
@@ -146,11 +179,11 @@ class ProposalById(Resource):
                 HTTPStatus.OK,
             )
         else:
-            return "Proposal with id %d not found" % proposal_id, HTTPStatus.NOT_FOUND
+            api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
 
 
 @api.route("/<string:login_name>")
-# @api.param("proposal_id", "Proposal id")
+# @api.param("login_name", "Login name as str")
 @api.doc(security="apikey")
 class ProposalByLogin(Resource):
     """Allows to get proposal by person login name"""
