@@ -57,7 +57,8 @@ api_v1.add_namespace(api)
 class Proposals(Resource):
     """Allows to get all proposals"""
 
-    @api.marshal_list_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
+    #@api.marshal_list_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
+    #TODO Define model with JSON Schema 
     @token_required
     def get(self):
         """Returns list of proposals
@@ -80,6 +81,8 @@ class Proposals(Resource):
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
+    #@api.errorhandler(FakeException)
+    #TODO add custom exception handling
     @token_required
     @write_permission_required
     def post(self):
@@ -107,7 +110,7 @@ class ProposalById(Resource):
 
     @api.doc(description="proposal_id should be an integer ")
     @api.marshal_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
-    #@token_required
+    @token_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
         result = proposal.get_proposal_by_id(proposal_id)
@@ -138,8 +141,8 @@ class ProposalById(Resource):
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
-    #@token_required
-    #@write_permission_required
+    @token_required
+    @write_permission_required
     def patch(self, proposal_id):
         """Partially updates proposal with id proposal_id
 
@@ -180,7 +183,7 @@ class ProposalById(Resource):
 
 
 @api.route("/<string:login_name>")
-# @api.param("proposal_id", "Proposal id")
+# @api.param("login_name", "Login name as str")
 @api.doc(security="apikey")
 class ProposalByLogin(Resource):
     """Allows to get proposal by person login name"""
