@@ -127,7 +127,12 @@ def add_proposal(proposal_dict):
         return
         
 def update_proposal(proposal_id, proposal_dict):
-    print(proposal_dict)
+    proposal_item = get_proposal_item_by_id(proposal_id)
+    if not proposal_item:
+        return None
+    else:
+        #Do something
+        return True
 
 def patch_proposal(proposal_id, proposal_dict):
     proposal_item = get_proposal_item_by_id(proposal_id)
