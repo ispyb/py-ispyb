@@ -126,10 +126,22 @@ def add_proposal(proposal_dict):
     except BaseException:
         return
         
-def update_proposal(proposal_dict):
+def update_proposal(proposal_id, proposal_dict):
     print(proposal_dict)
 
-
+def patch_proposal(proposal_id, proposal_dict):
+    proposal_item = get_proposal_item_by_id(proposal_id)
+    if not proposal_item:
+        return None
+    else:
+        for key, value in proposal_dict.items():
+            if hasattr(proposal_item, key):
+                setattr(proposal_item, key, value)
+            else:
+                print('Attribute %s not defined in the Proposal model' % key)
+        db.session.commit()
+        return True
+    
 def delete_proposal(proposal_id):
     """Deletes proposal item from db
 
@@ -141,7 +153,7 @@ def delete_proposal(proposal_id):
         otherwise return False
     """
     try:
-        proposal_item = ProposalModel.query.filter_by(proposalId=proposal_id).first()
+        proposal_item = get_proposal_item_by_id(proposal_id)
         if not proposal_item:
             return None
         else:
