@@ -1,27 +1,4 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-
-
-__license__ = "LGPLv3+"
-
-
+# coding: utf-8
 from sqlalchemy import (
     BINARY,
     BigInteger,
@@ -29,30 +6,22 @@ from sqlalchemy import (
     Date,
     DateTime,
     Float,
-    ForeignKey,
     Index,
     Integer,
     LargeBinary,
-    Numeric,
     SmallInteger,
     String,
     Table,
     Text,
     Time,
 )
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql.types import LONGBLOB
 from flask_sqlalchemy import SQLAlchemy
 
-from datetime import datetime
 
 from app.extensions import db
-
-db.ENUM = ENUM
-db.LONGBLOB = LONGBLOB
 
 
 class AbInitioModel(db.Model):
@@ -1078,8 +1047,10 @@ class DataCollection(db.Model):
     detectorId = db.Column(db.Integer, index=True, info="references Detector table")
     blSubSampleId = db.Column(db.Integer, index=True)
     dataCollectionNumber = db.Column(db.Integer, index=True)
-    startTime = db.Column(DateTime, index=True, info="Start time of the dataCollection")
-    endTime = db.Column(DateTime, info="end time of the dataCollection")
+    startTime = db.Column(
+        db.DateTime, index=True, info="Start time of the dataCollection"
+    )
+    endTime = db.Column(db.DateTime, info="end time of the dataCollection")
     runStatus = db.Column(db.String(200))
     axisStart = db.Column(db.Float)
     axisEnd = db.Column(db.Float)
@@ -1098,6 +1069,8 @@ class DataCollection(db.Model):
     detectorDistance = db.Column(db.Float)
     xBeam = db.Column(db.Float)
     yBeam = db.Column(db.Float)
+    xBeamPix = db.Column(db.Float, info="Beam size in pixels")
+    yBeamPix = db.Column(db.Float, info="Beam size in pixels")
     comments = db.Column(db.String(1024))
     printableForReport = db.Column(db.Integer, server_default=db.FetchedValue())
     slitGapVertical = db.Column(db.Float)
@@ -1838,8 +1811,8 @@ class IspybReference(db.Model):
 class LabContact(db.Model):
     __tablename__ = "LabContact"
     __table_args__ = (
-        db.Index("personAndProposal", "personId", "proposalId"),
         db.Index("cardNameAndProposal", "cardName", "proposalId"),
+        db.Index("personAndProposal", "personId", "proposalId"),
     )
 
     labContactId = db.Column(db.Integer, primary_key=True)
@@ -3452,6 +3425,8 @@ t_v_datacollection = db.Table(
     db.Column("detectorDistance", db.Float),
     db.Column("xBeam", db.Float),
     db.Column("yBeam", db.Float),
+    db.Column("xBeamPix", db.Float),
+    db.Column("yBeamPix", db.Float),
     db.Column("comments", db.String(1024)),
     db.Column("printableForReport", db.Integer),
     db.Column("slitGapVertical", db.Float),

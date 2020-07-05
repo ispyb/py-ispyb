@@ -32,7 +32,7 @@ ispyb_root = os.path.dirname(os.path.abspath(__file__)).split(os.sep)
 ispyb_root = "/" + os.path.join(*ispyb_root[1:-1])
 sys.path.insert(0, ispyb_root)
 
-from config import BaseConfig
+from ispyb_core_config import BaseConfig
 config = BaseConfig()
 
 uri = config.SQLALCHEMY_DATABASE_URI
@@ -137,7 +137,7 @@ for table in tables:
         class_text += "%s_ma_schema = %sSchema()\n" % (schema_name, table_name)
         json_text = "%s_json_schema = JSONSchema().dump(%s_ma_schema)\n" % (schema_name, schema_name)
 
-        schema_file_path = "%s/app/schemas/%s.py" % (ispyb_root, schema_name)
+        schema_file_path = "%s/ispyb_core/schemas/%s.py" % (ispyb_root, schema_name)
         if not os.path.exists(os.path.dirname(schema_file_path)):
             os.makedirs(os.path.dirname(schema_file_path))
         schema_file = open(schema_file_path, "w")

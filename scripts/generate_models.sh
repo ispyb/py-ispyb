@@ -1,3 +1,3 @@
-flask-sqlacodegen --flask --outfile ../models.py mysql://mxuser:mxpass@localhost/pydb_test
+flask-sqlacodegen --flask --outfile ../ispyb_core/models.py mysql://mxuser:mxpass@localhost/pydb_test
 
-sed -i -e 's/db = SQLAlchemy()/from app.extensions import db/g' ../app/models.py
+sed -i -e 's/db = SQLAlchemy()/from app.extensions import db/g' ../ispyb_core/models.py
