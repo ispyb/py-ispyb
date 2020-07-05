@@ -22,9 +22,13 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import BeamLineSetup as BeamLineSetupModel
+from ispyb_core.schemas.beam_line_setup import (
+    beam_line_setup_f_schema,
+    beam_line_setup_ma_schema,
+)
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_beamline_setup_list():
+    beam_line_setup_list = BeamLineSetupModel.query.all()
+    return beam_line_setup_ma_schema.dump(beam_line_setup_list)

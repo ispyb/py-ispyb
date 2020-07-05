@@ -1,4 +1,5 @@
 # encoding: utf-8
+# pylint: disable=no-member
 #
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
@@ -22,9 +23,15 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+def init_app(app):
 
-    from importlib import import_module
+    from . import modules
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+    modules.init_app(app)
+
+    from . import routes
+
+    routes.init_app(app)
+
+    print('ispyb-core loaded')
+    #app.logger.debug("ISPyB server started")

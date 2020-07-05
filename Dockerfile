@@ -4,14 +4,13 @@ ENV API_SERVER_HOME=/opt/www
 WORKDIR "$API_SERVER_HOME"
 COPY "./requirements.txt" "./"
 COPY "./app/requirements.txt" "./app/"
-COPY "./config.py" "./"
-COPY "./tasks" "./tasks"
+COPY "./config-template.py" "./config.py"
 
 ARG INCLUDE_POSTGRESQL=false
 ARG INCLUDE_UWSGI=false
 RUN apk add --no-cache --virtual=.build_dependencies musl-dev gcc python3-dev libffi-dev linux-headers && \
     cd /opt/www && \
-    pip install -r tasks/requirements.txt && \
+    pip install -r requirements.txt && \
     invoke app.dependencies.install && \
     ( \
         if [ "$INCLUDE_POSTGRESQL" = 'true' ]; then \
@@ -25,11 +24,5 @@ RUN apk add --no-cache --virtual=.build_dependencies musl-dev gcc python3-dev li
     apk del .build_dependencies
 
 COPY "./" "./"
-
-RUN chown -R nobody "." && \
-    if [ ! -e "./local_config.py" ]; then \
-        cp "./local_config.py.template" "./local_config.py" ; \
-    fi
-
 USER nobody
 CMD [ "invoke", "app.run", "--no-install-dependencies", "--host", "0.0.0.0" ]

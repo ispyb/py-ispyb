@@ -22,9 +22,10 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import Detector as DetectorModel
+from ispyb_core.schemas.detector import detector_f_schema, detector_ma_schema
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_detector_list():
+    detector_list = DetectorModel.query.all()
+    return detector_ma_schema.dump(detector_list)

@@ -22,9 +22,10 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import Protein as ProteinModel
+from ispyb_core.schemas.protein import protein_f_schema, protein_ma_schema
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_protein_list():
+    protein_list = ProteinModel.query.all()
+    return protein_ma_schema.dump(protein_list)

@@ -19,10 +19,11 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
+from app import create_app
+
+
 __license__ = "LGPLv3+"
 
 
-from app import create_app
-
-app = create_app("development")
-app.run(debug=True)
+app = create_app("ispyb_core_dev")
+app.run(port=5100, debug=True)

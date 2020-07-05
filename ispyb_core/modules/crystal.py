@@ -22,9 +22,10 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import Crystal as CrystalModel
+from ispyb_core.schemas.crystal import crystal_f_schema, crystal_ma_schema
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_crystal_list():
+    crystal_list = CrystalModel.query.all()
+    return crystal_ma_schema.dump(crystal_list)

@@ -22,9 +22,10 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+import logging
 
-    from importlib import import_module
+from ispyb_core.models import Screening as ScreeningModel
+from ispyb_core.schemas.screening import screening_f_schema, screening_ma_schema
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+
+log = logging.getLogger(__name__)

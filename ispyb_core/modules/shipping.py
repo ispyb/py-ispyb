@@ -22,9 +22,15 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import Shipping as ShippingModel
+from ispyb_core.schemas.shipping import shipping_f_schema, shipping_ma_schema
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_all_shippings():
+    shipping_list = ShippingModel.query.all()
+    return shipping_ma_schema.dump(shipping_list, many=True)
+
+
+def get_proposal_shippings(proposal_id):
+    shipping_list = ShippingModel.query.filter_by(proposalId=proposal_id)
+    return shipping_ma_schema.dump(shipping_list, many=True)

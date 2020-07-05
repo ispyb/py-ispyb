@@ -22,9 +22,13 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import RobotAction as RobotActionModel
+from ispyb_core.schemas.robot_action import (
+    robot_action_f_schema,
+    robot_action_ma_schema,
+)
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_robot_action_list():
+    robot_action_list = RobotActionModel.query.all()
+    return robot_action_ma_schema.dump(robot_action_list)

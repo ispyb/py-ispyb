@@ -23,11 +23,11 @@ import json
 
 from tests.data import test_proposal
 
-def test_get(flask_app, token):
-    client = flask_app.test_client()
-    route_root = flask_app.config["API_ROOT"] + "/proposals"
+def test_get(ispyb_core_app, ispyb_core_token):
+    client = ispyb_core_app.test_client()
+    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
     
-    headers = {"Authorization": "Bearer " + token}
+    headers = {"Authorization": "Bearer " + ispyb_core_token}
     response = client.get(route_root, headers=headers)
     data = response.json
     assert response.status_code == 200, "Wrong status code"
@@ -45,11 +45,11 @@ def test_get(flask_app, token):
     response = client.get(path, headers=headers)
     assert response.status_code == 200, "Wrong status code"
 
-def test_put(flask_app, token):
-    client = flask_app.test_client()
-    route_root = flask_app.config["API_ROOT"] + "/proposals"
+def test_put(ispyb_core_app, ispyb_core_token):
+    client = ispyb_core_app.test_client()
+    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
 
-    headers = {"Authorization": "Bearer " + token}
+    headers = {"Authorization": "Bearer " + ispyb_core_token}
     response = client.post(route_root, data=test_proposal, headers=headers)
 
     assert response.status_code == 200, "Wrong status code"

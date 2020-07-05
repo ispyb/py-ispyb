@@ -22,9 +22,30 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+import logging
 
-    from importlib import import_module
+from app.extensions import db
+from ispyb_core.models import DataCollection as DataCollectionModel
+from ispyb_core.schemas.data_collection import (
+    data_collection_f_schema,
+    data_collection_ma_schema,
+)
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+
+log = logging.getLogger(__name__)
+
+
+def get_all_data_collections():
+    data_collections = DataCollectionModel.query.all()
+    return data_collection_ma_schema.dump(data_collections, many=True)
+
+
+def add_data_collection(data_collection_dict):
+    try:
+        data_collection = DataCollectionModel(data_collection_dict)
+        db.session.add(data_collection)
+        db.session.commit()
+    except Exception as ex:
+        print(ex)
+        # app.logger.exception(str(ex))
+        db.session.rollback()

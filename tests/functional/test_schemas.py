@@ -19,15 +19,15 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-def test_schemas_route(flask_app, token):
-    client = flask_app.test_client()
-    api_root = flask_app.config["API_ROOT"]
+def test_schemas_route(ispyb_core_app, ispyb_core_token):
+    client = ispyb_core_app.test_client()
+    api_root = ispyb_core_app.config["API_ROOT"]
 
-    headers = {"Authorization": "Bearer " + token}
+    headers = {"Authorization": "Bearer " + ispyb_core_token}
     response = client.get(api_root + "/schemas/available_names", headers=headers)
     assert response.status_code == 200, "Wrong status code"
     assert len(response.json) > 0, "No schemas returned"
 
     schema_name = response.json[0]
     response = client.get(api_root + "/schemas/%s" % schema_name, headers=headers)
-    assert response.status_code == 200, "Wrong status code"
+    assert response.status_code == 200, "Wrong status code" + schema_name

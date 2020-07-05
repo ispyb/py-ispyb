@@ -22,9 +22,26 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from app.extensions import db
 
-    from importlib import import_module
+from ispyb_core.models import DataCollectionGroup as DataCollectionGroupModel
+from ispyb_core.schemas.data_collection_group import (
+    data_collection_group_f_schema,
+    data_collection_group_ma_schema,
+)
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+
+def get_all_data_collection_groups():
+    data_collection_groups = DataCollectionGroupModel.query.all()
+    return data_collection_group_ma_schema.dump(data_collection_groups, many=True)
+
+
+def add_data_collection_group(data_collection_group_dict):
+    try:
+        data_collection_group = DataCollectionGroupModel(data_collection_group_dict)
+        db.session.add(data_collection_group)
+        db.session.commit()
+    except Exception as ex:
+        print(ex)
+        # app.logger.exception(str(ex))
+        db.session.rollback()

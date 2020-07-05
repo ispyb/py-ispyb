@@ -19,12 +19,16 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
+from flask import current_app
+from requests import get, post
+
+
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
-
-    from importlib import import_module
-
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_ispyb_resource(service_name, path):
+    root_url = current_app.config["SERVICE_CONNECTOR"][service_name]
+    headers = {"Authorization": "Bearer %s" % current_app.config["MASTER_TOKEN"]}
+    response = get(root_url + path, headers=headers)
+    data = response.json()
+    return data, response.status_code

@@ -35,17 +35,25 @@ sys.path.insert(0, ROOT_DIR)
 
 
 @pytest.fixture(scope="session")
-def flask_app():
-    app = create_app()
+def ispyb_core_app():
+    app = create_app("ispyb_core_test")
     with app.app_context():
         yield app
 
 @pytest.fixture(scope="session")
-def token(flask_app):
-    client = flask_app.test_client()
-    api_root = flask_app.config["API_ROOT"]
+def ispyb_ssx_app():
+    app = create_app("ispyb_ssx_test")
+    with app.app_context():
+        yield app
+
+
+@pytest.fixture(scope="session")
+def ispyb_core_token(ispyb_core_app):
+    client = ispyb_core_app.test_client()
+    api_root = ispyb_core_app.config["API_ROOT"]
 
     response = client.get(
         api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
     )
     return response.json["token"]
+
