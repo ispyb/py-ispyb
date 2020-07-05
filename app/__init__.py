@@ -35,6 +35,10 @@ CONFIG_NAME_MAPPER = {
     "ispyb_core_dev": "ispyb_core_config.DevelopmentConfig",
     "ispyb_core_test": "ispyb_core_config.TestingConfig",
     "ispyb_core_prod": "ispyb_core_config.ProductionConfig",
+
+    "ispyb_ssx_dev": "ispyb_ssx_config.DevelopmentConfig",
+    "ispyb_ssx_test": "ispyb_ssx_config.TestingConfig",
+    "ispyb_ssx_prod": "ispyb_ssx_config.ProductionConfig",
 }
 
 

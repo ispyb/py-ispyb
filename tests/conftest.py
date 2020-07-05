@@ -57,3 +57,13 @@ def ispyb_core_token(ispyb_core_app):
     )
     return response.json["token"]
 
+@pytest.fixture(scope="session")
+def ispyb_ssx_token(ispyb_ssx_app):
+    client = ispyb_ssx_app.test_client()
+    api_root = ispyb_ssx_app.config["API_ROOT"]
+
+    response = client.get(
+        api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
+    )
+    return response.json["token"]
+

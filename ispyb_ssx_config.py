@@ -32,9 +32,13 @@ class BaseConfig():
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
-    SERVICES = ['ispyb_ssx']
+    SERVICE = 'ispyb_ssx'
+    SERVICE_CONNECTOR = {
+        "ispyb_core": "http://localhost:500/ispyb/api/v1" 
 
-    API_ROOT = "/ispyb/api/v1"
+    }
+
+    API_ROOT = "/ispyb/api/v1/ssx"
     SECRET_KEY = os.urandom(16)
     SQLALCHEMY_DATABASE_URI = 'mysql://mxuser:mxpass@localhost/pydb_test'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -57,19 +61,19 @@ class BaseConfig():
     TOKEN_EXP_TIME = 60  # in minutes
     MASTER_TOKEN = "MasterToken"
 
-    ENABLED_MODULES = (
+    MODULES = (
         'api',
     )
 
-    ENABLED_DB_MODULES = []
+    DB_MODULES = []
 
     with open('%s/enabled_db_modules.csv' % PROJECT_ROOT) as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
             if not row[0].startswith("#"):
-                ENABLED_DB_MODULES.append(row[0])
+                DB_MODULES.append(row[0])
 
-    ENABLED_ROUTES = [
+    ROUTES = [
         'ssx',
     ]
 

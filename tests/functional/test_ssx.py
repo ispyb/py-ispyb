@@ -19,15 +19,12 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-def test_ssx(ispyb_ssx_app, token):
-    client = ispyb_core_app.test_client()
-        api_root = ispyb_core_app.config["API_ROOT"]
+def test_ssx(ispyb_ssx_app, ispyb_ssx_token):
+    client = ispyb_ssx_app.test_client()
+    api_root = ispyb_ssx_app.config["API_ROOT"]
 
-        headers = {"Authorization": "Bearer " + token}
-        response = client.get(api_root + "/schemas/available_names", headers=headers)
-        assert response.status_code == 200, "Wrong status code"
-        assert len(response.json) > 0, "No schemas returned"
-
-        schema_name = response.json[0]
-        response = client.get(api_root + "/schemas/%s" % schema_name, headers=headers)
-        assert response.status_code == 200, "Wrong status code" + schema_name
+    return
+    headers = {"Authorization": "Bearer " + ispyb_ssx_token}
+    response = client.get(api_root + "/main", headers=headers)
+    assert response.status_code == 200, "Wrong status code"
+    assert len(response.json) > 0, "No schemas returned"
