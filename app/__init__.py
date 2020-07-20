@@ -71,12 +71,12 @@ def create_app(flask_config_name=None, **kwargs):
 
     extensions.init_app(app)
 
+    service_module = importlib.import_module(app.config["SERVICE"])
+    service_module.init_app(app)
+
     from . import routes
 
     routes.init_app(app)
-
-    service_module = importlib.import_module(app.config["SERVICE"])
-    service_module.init_app(app)
 
     app.logger.debug("ISPyB server started")
     return app
