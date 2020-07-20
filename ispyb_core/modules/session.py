@@ -22,9 +22,15 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import BLSession as SessionModel
+from ispyb_core.schemas.session import session_f_schema, session_ma_schema
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_all_sessions():
+    session_list = SessionModel.query.all()
+    return session_ma_schema.dump(session_list, many=True)
+
+
+def get_proposal_sessions(proposal_id):
+    session_list = SessionModel.query.filter_by(proposalId=proposal_id)
+    return session_ma_schema.dump(session_list, many=True)

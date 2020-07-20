@@ -22,9 +22,10 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import BLSample as SampleModel
+from ispyb_core.schemas.sample import sample_f_schema, sample_ma_schema
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_sample_list(self):
+    sample_list = SampleModel.query.all()
+    return sample_ma_schema.dump(sample_list)

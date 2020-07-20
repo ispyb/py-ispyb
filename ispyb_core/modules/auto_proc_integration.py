@@ -22,9 +22,9 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import AutoProcIntegration as AutoProcIntegrationModel
+from ispyb_core.schemas.auto_proc_integration import (
+    auto_proc_integration_ma_schema,
+)
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)

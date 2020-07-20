@@ -19,12 +19,8 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-__license__ = "LGPLv3+"
+from ispyb_core import models, schemas
 
-
-def init_app(app, **kwargs):
-
-    from importlib import import_module
-
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_auto_proc_list():
+    auto_proc_list = models.AutoProc.query.all()
+    return schemas.auto_proc.auto_proc_ma_schema.dump(auto_proc_list)

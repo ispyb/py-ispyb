@@ -1,5 +1,5 @@
 # encoding: utf-8
-#
+# 
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -19,12 +19,12 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-__license__ = "LGPLv3+"
+def test_ssx(ispyb_ssx_app, ispyb_ssx_token):
+    client = ispyb_ssx_app.test_client()
+    api_root = ispyb_ssx_app.config["API_ROOT"]
 
-
-def init_app(app, **kwargs):
-
-    from importlib import import_module
-
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+    return
+    headers = {"Authorization": "Bearer " + ispyb_ssx_token}
+    response = client.get(api_root + "/main", headers=headers)
+    assert response.status_code == 200, "Wrong status code"
+    assert len(response.json) > 0, "No schemas returned"

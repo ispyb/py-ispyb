@@ -20,20 +20,25 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-__license__ = "LGPLv3+"
-
-
 import os
 import sys
+import importlib
 
 from flask import Flask
 from flask_cors import CORS
 
 
+__license__ = "LGPLv3+"
+
+
 CONFIG_NAME_MAPPER = {
-    "development": "config.DevelopmentConfig",
-    "testing": "config.TestingConfig",
-    "production": "config.ProductionConfig",
+    "ispyb_core_dev": "ispyb_core_config.DevelopmentConfig",
+    "ispyb_core_test": "ispyb_core_config.TestingConfig",
+    "ispyb_core_prod": "ispyb_core_config.ProductionConfig",
+
+    "ispyb_ssx_dev": "ispyb_ssx_config.DevelopmentConfig",
+    "ispyb_ssx_test": "ispyb_ssx_config.TestingConfig",
+    "ispyb_ssx_prod": "ispyb_ssx_config.ProductionConfig",
 }
 
 
@@ -49,7 +54,7 @@ def create_app(flask_config_name=None, **kwargs):
     if flask_config_name is None:
         flask_config_name = env_flask_config_name
     if flask_config_name is None:
-        flask_config_name = "testing"
+        flask_config_name = "ispyb_core_test"
 
     app.logger.debug("Starting ISPyB server in %s mode" % flask_config_name)
     try:
@@ -66,9 +71,8 @@ def create_app(flask_config_name=None, **kwargs):
 
     extensions.init_app(app)
 
-    from . import modules
-
-    modules.init_app(app)
+    service_module = importlib.import_module(app.config["SERVICE"])
+    service_module.init_app(app)
 
     from . import routes
 

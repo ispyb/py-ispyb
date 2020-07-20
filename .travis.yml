@@ -16,13 +16,13 @@ install:
         - pip install -r tests/requirements.txt 
 
 script:
-        - cp config-template.py config.py
         - cd scripts
         - bash create_db.sh
         - bash run_all.sh
         - cd ..
         - pylint -E app
-        - coverage run -m pytest
+#        - coverage run -m pytest
+        
 
 after_success:
         - codecov

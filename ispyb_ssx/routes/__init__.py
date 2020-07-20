@@ -26,5 +26,5 @@ def init_app(app, **kwargs):
 
     from importlib import import_module
 
-    for module_name in ["auth"]:
+    for module_name in app.config["ROUTES"]:
         import_module(".%s" % module_name, package=__name__)

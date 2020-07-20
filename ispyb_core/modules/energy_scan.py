@@ -22,9 +22,10 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import EnergyScan as EnergyScanModel
+from ispyb_core.schemas.energy_scan import energy_scan_f_schema, energy_scan_ma_schema
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_energy_scan_list():
+    energy_scan_list = EnergyScanModel.query.all()
+    return energy_scan_ma_schema.dump(energy_scan_list)

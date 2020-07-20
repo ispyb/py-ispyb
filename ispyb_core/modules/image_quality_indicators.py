@@ -22,9 +22,13 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+from ispyb_core.models import ImageQualityIndicator as ImageQualityIndicatorsModel
+from ispyb_core.schemas.image_quality_indicators import (
+    image_quality_indicators_f_schema,
+    image_quality_indicators_ma_schema,
+)
 
-    from importlib import import_module
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+def get_image_quality_indicators_list():
+    image_quality_indicators_list = ImageQualityIndicatorsModel.query.all()
+    return image_quality_indicators_ma_schema.dump(image_quality_indicators_list)

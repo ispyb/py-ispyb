@@ -22,9 +22,13 @@
 __license__ = "LGPLv3+"
 
 
+from flask import Blueprint
+
+from app.extensions import api
+
+
 def init_app(app, **kwargs):
-
-    from importlib import import_module
-
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+    # pylint: disable=unused-argument
+    api_v1_blueprint = Blueprint("api", __name__, url_prefix=app.config["API_ROOT"])
+    api.api_v1.init_app(api_v1_blueprint)
+    app.register_blueprint(api_v1_blueprint, url_prefix=app.config["API_ROOT"])

@@ -19,12 +19,31 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
+from flask_restx_patched import Resource
+
+from app.extensions.api import api_v1, Namespace
+from app.extensions.auth import token_required
+
+from ispyb_core.modules import auto_proc
+
+
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+api = Namespace(
+    "Auto processing", description="Auto processing related namespace", path="/autoproc"
+)
 
-    from importlib import import_module
+api_v1.add_namespace(api)
 
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+
+@api.route("")
+class AutoProcList(Resource):
+    """Auto processing resource"""
+
+    @api.doc(security="apikey")
+    # @token_required
+    def get(self):
+        """Returns all auto processing results"""
+        # app.logger.info('Returns all auto proc results')
+        auto_proc.get_auto_proc_list()

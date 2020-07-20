@@ -22,9 +22,5 @@
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
-
-    from importlib import import_module
-
-    for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+from ispyb_core.models import Container as ContainerModel
+from ispyb_core.schemas.container import container_f_schema, container_ma_schema
