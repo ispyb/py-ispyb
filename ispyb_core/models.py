@@ -5,7 +5,6 @@ from sqlalchemy import (
     Column,
     Date,
     DateTime,
-    Enum,
     Float,
     Index,
     Integer,
@@ -18,7 +17,7 @@ from sqlalchemy import (
 )
 
 from sqlalchemy.schema import FetchedValue
-#from sqlalchemy.dialects.mysql.enumerated import ENUM
+from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql.types import LONGBLOB
 from flask_sqlalchemy import SQLAlchemy
 
@@ -28,7 +27,7 @@ from datetime import datetime
 from app.extensions import db
  
 
-db.ENUM = Enum
+#ENUM = Enum
 db.LONGBLOB = LONGBLOB
 
 
@@ -179,7 +178,7 @@ class AutoProcProgram(db.Model):
         db.String(255), info="Processing programs (comma separated)"
     )
     processingStatus = db.Column(
-        db.ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"), info="success (1) / fail (0)"
+        ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"), info="success (1) / fail (0)"
     )
     processingMessage = db.Column(db.String(255), info="warning, error,...")
     processingStartTime = db.Column(db.DateTime, info="Processing start time")
@@ -199,7 +198,7 @@ class AutoProcProgramAttachment(db.Model):
         db.Integer, nullable=False, index=True, info="Related autoProcProgram item"
     )
     fileType = db.Column(
-        db.ENUM("Log", "Result", "Graph"), info="Type of file Attachment"
+        ENUM("Log", "Result", "Graph"), info="Type of file Attachment"
     )
     fileName = db.Column(db.String(255), info="Attachment filename")
     filePath = db.Column(db.String(255), info="Attachment filepath to disk storage")
@@ -214,7 +213,7 @@ class AutoProcProgramMessage(db.Model):
     recordTimeStamp = db.Column(
         db.DateTime, nullable=False, server_default=db.FetchedValue()
     )
-    severity = db.Column(db.ENUM("ERROR", "WARNING", "INFO"))
+    severity = db.Column(ENUM("ERROR", "WARNING", "INFO"))
     message = db.Column(db.String(200))
     description = db.Column(db.Text)
 
@@ -282,7 +281,7 @@ class AutoProcScalingStatistic(db.Model):
         info="Related autoProcScaling item (used by foreign key)",
     )
     scalingStatisticsType = db.Column(
-        db.ENUM("overall", "innerShell", "outerShell"),
+        ENUM("overall", "innerShell", "outerShell"),
         nullable=False,
         index=True,
         server_default=db.FetchedValue(),
@@ -359,12 +358,12 @@ class AutoProcStatus(db.Model):
     )
     autoProcIntegrationId = db.Column(db.Integer, nullable=False, index=True)
     step = db.Column(
-        db.ENUM("Indexing", "Integration", "Correction", "Scaling", "Importing"),
+        ENUM("Indexing", "Integration", "Correction", "Scaling", "Importing"),
         nullable=False,
         info="autoprocessing step",
     )
     status = db.Column(
-        db.ENUM("Launched", "Successful", "Failed"),
+        ENUM("Launched", "Successful", "Failed"),
         nullable=False,
         info="autoprocessing status",
     )
@@ -388,7 +387,7 @@ class BFAutomationFault(db.Model):
     automationFaultId = db.Column(db.Integer, primary_key=True)
     automationErrorId = db.Column(db.Integer, index=True)
     containerId = db.Column(db.Integer, index=True)
-    severity = db.Column(db.ENUM("1", "2", "3"))
+    severity = db.Column(ENUM("1", "2", "3"))
     stacktrace = db.Column(db.Text)
     resolved = db.Column(db.Integer)
     faultTimeStamp = db.Column(
@@ -530,7 +529,7 @@ class BLSampleGroupHasBLSample(db.Model):
     blSampleGroupId = db.Column(db.Integer, primary_key=True, nullable=False)
     blSampleId = db.Column(db.Integer, primary_key=True, nullable=False, index=True)
     order = db.Column(db.Integer)
-    type = db.Column(db.ENUM("background", "container", "sample", "calibrant"))
+    type = db.Column(ENUM("background", "container", "sample", "calibrant"))
 
 
 class BLSampleImage(db.Model):
@@ -764,9 +763,9 @@ class BeamlineAction(db.Model):
     message = db.Column(db.String(255))
     parameter = db.Column(db.String(50))
     value = db.Column(db.String(30))
-    loglevel = db.Column(db.ENUM("DEBUG", "CRITICAL", "INFO"))
+    loglevel = db.Column(ENUM("DEBUG", "CRITICAL", "INFO"))
     status = db.Column(
-        db.ENUM("PAUSED", "RUNNING", "TERMINATED", "COMPLETE", "ERROR", "EPICSFAIL")
+        ENUM("PAUSED", "RUNNING", "TERMINATED", "COMPLETE", "ERROR", "EPICSFAIL")
     )
 
 
@@ -1090,7 +1089,7 @@ class DataCollection(db.Model):
     xtalSnapshotFullPath2 = db.Column(db.String(255))
     xtalSnapshotFullPath3 = db.Column(db.String(255))
     xtalSnapshotFullPath4 = db.Column(db.String(255))
-    rotationAxis = db.Column(db.ENUM("Omega", "Kappa", "Phi"))
+    rotationAxis = db.Column(ENUM("Omega", "Kappa", "Phi"))
     phiStart = db.Column(db.Float)
     kappaStart = db.Column(db.Float)
     omegaStart = db.Column(db.Float)
@@ -1183,7 +1182,7 @@ class DataCollectionFileAttachment(db.Model):
     dataCollectionId = db.Column(db.Integer, nullable=False, index=True)
     fileFullPath = db.Column(db.String(255), nullable=False)
     fileType = db.Column(
-        db.ENUM("snapshot", "log", "xy", "recip"),
+        ENUM("snapshot", "log", "xy", "recip"),
         info="snapshot: image file, usually of the sample. \\nlog: a text file with logging info. \\nxy: x and y data in text format. \\nrecip: a compressed csv file with reciprocal space coordinates.",
     )
     createTime = db.Column(
@@ -1203,7 +1202,7 @@ class DataCollectionGroup(db.Model):
     )
     workflowId = db.Column(db.Integer, index=True)
     experimentType = db.Column(
-        db.ENUM(
+        ENUM(
             "EM",
             "SAD",
             "SAD - Inverse Beam",
@@ -1317,7 +1316,7 @@ class Dewar(db.Model):
         db.String(20), info="Unique barcode assigned to each dewar"
     )
     type = db.Column(
-        db.ENUM("Dewar", "Toolbox"), nullable=False, server_default=db.FetchedValue()
+        ENUM("Dewar", "Toolbox"), nullable=False, server_default=db.FetchedValue()
     )
     isReimbursed = db.Column(
         db.Integer,
@@ -1332,7 +1331,7 @@ class DewarLocation(db.Model):
     __tablename__ = "DewarLocation"
 
     eventId = db.Column(db.Integer, primary_key=True)
-    dewarNumber = db.Column(db.String(128), nullable=False, info="Dewar number")
+    dewaENUMber = db.Column(db.String(128), nullable=False, info="Dewar number")
     userId = db.Column(db.String(128), info="User who locates the dewar")
     dateTime = db.Column(db.DateTime, info="Date and time of locatization")
     locationName = db.Column(db.String(128), info="Location of the dewar")
@@ -1392,7 +1391,7 @@ class DiffractionPlan(db.Model):
     diffractionPlanId = db.Column(db.Integer, primary_key=True)
     xmlDocumentId = db.Column(db.Integer)
     experimentKind = db.Column(
-        db.ENUM(
+        ENUM(
             "Default",
             "MXPressE",
             "MXPressO",
@@ -1476,7 +1475,7 @@ class DiffractionPlan(db.Model):
         db.String(45),
         info="Indicates this plan is available to all sessions on given beamline",
     )
-    centringmethod = db.Column(db.ENUM("xray", "loop", "diffraction", "optical"))
+    centringmethod = db.Column(ENUM("xray", "loop", "diffraction", "optical"))
 
 
 class DiffractionPlanHasDetector(db.Model):
@@ -1656,7 +1655,7 @@ class GridInfo(db.Model):
         info="Creation or last update date/time",
     )
     orientation = db.Column(
-        db.ENUM("vertical", "horizontal"), server_default=db.FetchedValue()
+        ENUM("vertical", "horizontal"), server_default=db.FetchedValue()
     )
     dataCollectionGroupId = db.Column(db.Integer, index=True)
     pixelspermicronX = db.Column(db.Float)
@@ -1783,12 +1782,12 @@ class IspybAutoProcAttachment(db.Model):
     fileName = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255), nullable=False)
     step = db.Column(
-        db.ENUM("XDS", "XSCALE", "SCALA", "SCALEPACK", "TRUNCATE", "DIMPLE"),
+        ENUM("XDS", "XSCALE", "SCALA", "SCALEPACK", "TRUNCATE", "DIMPLE"),
         server_default=db.FetchedValue(),
         info="step where the file is generated",
     )
     fileCategory = db.Column(
-        db.ENUM("input", "output", "log", "correction"),
+        ENUM("input", "output", "log", "correction"),
         server_default=db.FetchedValue(),
     )
     hasGraph = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
@@ -1812,7 +1811,7 @@ class IspybReference(db.Model):
     referenceUrl = db.Column(db.String(1024), info="url of the reference")
     referenceBibtext = db.Column(db.LargeBinary, info="bibtext value of the reference")
     beamline = db.Column(
-        db.ENUM("All", "ID14-4", "ID23-1", "ID23-2", "ID29", "XRF", "AllXRF", "Mesh"),
+        ENUM("All", "ID14-4", "ID23-1", "ID23-2", "ID29", "XRF", "AllXRF", "Mesh"),
         info="beamline involved",
     )
 
@@ -2247,7 +2246,7 @@ class Phasing(db.Model):
     )
     spaceGroupId = db.Column(db.Integer, index=True, info="Related spaceGroup")
     method = db.Column(
-        db.ENUM("solvent flattening", "solvent flipping"), info="phasing method"
+        ENUM("solvent flattening", "solvent flipping"), info="phasing method"
     )
     solventContent = db.Column(db.Float(asdecimal=True))
     enantiomorph = db.Column(db.Integer, info="0 or 1")
@@ -2277,7 +2276,7 @@ class PhasingProgramAttachment(db.Model):
         db.Integer, nullable=False, index=True, info="Related program item"
     )
     fileType = db.Column(
-        db.ENUM(
+        ENUM(
             "DSIGMA_RESOLUTION",
             "OCCUPANCY_SITENUMBER",
             "CONTRAST_CYCLE",
@@ -2350,7 +2349,7 @@ class PhasingStatistic(db.Model):
         db.Float(asdecimal=True), info="high resolution cutoff of this binfloat"
     )
     metric = db.Column(
-        db.ENUM(
+        ENUM(
             "Rcullis",
             "Average Fragment Length",
             "Chain Count",
@@ -2391,7 +2390,7 @@ class PhasingStep(db.Model):
     autoProcScalingId = db.Column(db.Integer, index=True)
     phasingAnalysisId = db.Column(db.Integer, index=True)
     phasingStepType = db.Column(
-        db.ENUM(
+        ENUM(
             "PREPARE",
             "SUBSTRUCTUREDETERMINATION",
             "PHASING",
@@ -2627,7 +2626,7 @@ class Proposal(db.Model):
     )
     externalId = db.Column(db.BINARY(16))
     state = db.Column(
-        db.ENUM("Open", "Closed", "Cancelled"), server_default=db.FetchedValue()
+        ENUM("Open", "Closed", "Cancelled"), server_default=db.FetchedValue()
     )
 
 
@@ -2649,7 +2648,7 @@ class Protein(db.Model):
     )
     name = db.Column(db.String(255, "utf8mb4_unicode_ci"))
     acronym = db.Column(db.String(45), index=True)
-    safetyLevel = db.Column(db.ENUM("GREEN", "YELLOW", "RED"))
+    safetyLevel = db.Column(ENUM("GREEN", "YELLOW", "RED"))
     molecularMass = db.Column(db.Float(asdecimal=True))
     proteinType = db.Column(db.String(45))
     sequence = db.Column(db.Text)
@@ -2709,7 +2708,7 @@ class RobotAction(db.Model):
     blsessionId = db.Column(db.Integer, nullable=False, index=True)
     blsampleId = db.Column(db.Integer, index=True)
     actionType = db.Column(
-        db.ENUM("LOAD", "UNLOAD", "DISPOSE", "STORE", "WASH", "ANNEAL")
+        ENUM("LOAD", "UNLOAD", "DISPOSE", "STORE", "WASH", "ANNEAL")
     )
     startTimestamp = db.Column(
         db.DateTime, nullable=False, server_default=db.FetchedValue()
@@ -2718,7 +2717,7 @@ class RobotAction(db.Model):
         db.DateTime, nullable=False, server_default=db.FetchedValue()
     )
     status = db.Column(
-        db.ENUM("SUCCESS", "ERROR", "CRITICAL", "WARNING", "COMMANDNOTSENT")
+        ENUM("SUCCESS", "ERROR", "CRITICAL", "WARNING", "COMMANDNOTSENT")
     )
     message = db.Column(db.String(255))
     containerLocation = db.Column(db.SmallInteger)
@@ -3108,7 +3107,7 @@ class SessionHasPerson(db.Model):
         server_default=db.FetchedValue(),
     )
     role = db.Column(
-        db.ENUM(
+        ENUM(
             "Local Contact",
             "Local Contact 2",
             "Staff",
@@ -3262,7 +3261,7 @@ class SubstructureDetermination(db.Model):
     )
     spaceGroupId = db.Column(db.Integer, index=True, info="Related spaceGroup")
     method = db.Column(
-        db.ENUM("SAD", "MAD", "SIR", "SIRAS", "MR", "MIR", "MIRAS", "RIP", "RIPAS"),
+        ENUM("SAD", "MAD", "SIR", "SIRAS", "MR", "MIR", "MIRAS", "RIP", "RIPAS"),
         info="phasing method",
     )
     lowRes = db.Column(db.Float(asdecimal=True))
@@ -3446,7 +3445,7 @@ t_v_datacollection = db.Table(
     db.Column("xtalSnapshotFullPath2", db.String(255)),
     db.Column("xtalSnapshotFullPath3", db.String(255)),
     db.Column("xtalSnapshotFullPath4", db.String(255)),
-    db.Column("rotationAxis", db.ENUM("Omega", "Kappa", "Phi")),
+    db.Column("rotationAxis", ENUM("Omega", "Kappa", "Phi")),
     db.Column("phiStart", db.Float),
     db.Column("kappaStart", db.Float),
     db.Column("omegaStart", db.Float),
@@ -3479,7 +3478,7 @@ t_v_datacollection = db.Table(
     db.Column("cell_beta", db.Float),
     db.Column("cell_gamma", db.Float),
     db.Column("anomalous", db.Integer),
-    db.Column("scalingStatisticsType", db.ENUM("overall", "innerShell", "outerShell")),
+    db.Column("scalingStatisticsType", ENUM("overall", "innerShell", "outerShell")),
     db.Column("resolutionLimitHigh", db.Float),
     db.Column("resolutionLimitLow", db.Float),
     db.Column("completeness", db.Float),
@@ -3490,7 +3489,7 @@ t_v_datacollection = db.Table(
     db.Column("AutoProcProgram_processingPrograms", db.String(255)),
     db.Column(
         "AutoProcProgram_processingStatus",
-        db.ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"),
+        ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"),
     ),
     db.Column("AutoProcProgram_autoProcProgramId", db.Integer),
     db.Column("ScreeningOutput_rankingResolution", db.Float(asdecimal=True)),
@@ -3515,7 +3514,7 @@ t_v_datacollection_autoprocintegration = db.Table(
     db.Column("v_datacollection_summary_phasing_autoProcProgramId", db.Integer),
     db.Column(
         "v_datacollection_processingStatus",
-        db.ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"),
+        ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"),
     ),
     db.Column("v_datacollection_processingStartTime", db.DateTime),
     db.Column("v_datacollection_processingEndTime", db.DateTime),
@@ -3525,7 +3524,7 @@ t_v_datacollection_autoprocintegration = db.Table(
     db.Column("AutoProcIntegration_autoProcIntegrationId", db.Integer),
     db.Column(
         "PhasingStep_phasing_phasingStepType",
-        db.ENUM(
+        ENUM(
             "PREPARE",
             "SUBSTRUCTUREDETERMINATION",
             "PHASING",
@@ -3551,7 +3550,7 @@ t_v_datacollection_summary = db.Table(
     db.Column("DataCollectionGroup_workflowId", db.Integer),
     db.Column(
         "DataCollectionGroup_experimentType",
-        db.ENUM(
+        ENUM(
             "EM",
             "SAD",
             "SAD - Inverse Beam",
@@ -3629,7 +3628,7 @@ t_v_datacollection_summary = db.Table(
     db.Column("DataCollection_axisRange", db.Float),
     db.Column("DataCollection_axisStart", db.Float),
     db.Column("DataCollection_axisEnd", db.Float),
-    db.Column("DataCollection_rotationAxis", db.ENUM("Omega", "Kappa", "Phi")),
+    db.Column("DataCollection_rotationAxis", ENUM("Omega", "Kappa", "Phi")),
     db.Column("DataCollection_undulatorGap1", db.Float),
     db.Column("DataCollection_undulatorGap2", db.Float),
     db.Column("DataCollection_undulatorGap3", db.Float),
@@ -3643,7 +3642,7 @@ t_v_datacollection_summary = db.Table(
     db.Column("Workflow_workflowTitle", db.String(255)),
     db.Column(
         "Workflow_workflowType",
-        db.ENUM(
+        ENUM(
             "Characterisation",
             "Undefined",
             "BioSAXS Post Processing",
@@ -3690,7 +3689,7 @@ t_v_datacollection_summary = db.Table(
     db.Column("cell_beta", db.Float),
     db.Column("cell_gamma", db.Float),
     db.Column("anomalous", db.Integer),
-    db.Column("scalingStatisticsType", db.ENUM("overall", "innerShell", "outerShell")),
+    db.Column("scalingStatisticsType", ENUM("overall", "innerShell", "outerShell")),
     db.Column("resolutionLimitHigh", db.Float),
     db.Column("resolutionLimitLow", db.Float),
     db.Column("completeness", db.Float),
@@ -3701,7 +3700,7 @@ t_v_datacollection_summary = db.Table(
     db.Column("AutoProcProgram_processingPrograms", db.String(255)),
     db.Column(
         "AutoProcProgram_processingStatus",
-        db.ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"),
+        ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"),
     ),
     db.Column("AutoProcProgram_autoProcProgramId", db.Integer),
     db.Column("Screening_screeningId", db.Integer),
@@ -3734,7 +3733,7 @@ t_v_datacollection_summary = db.Table(
     db.Column("diffractionPlanId", db.Integer),
     db.Column(
         "experimentKind",
-        db.ENUM(
+        ENUM(
             "Default",
             "MXPressE",
             "MXPressO",
@@ -3831,12 +3830,12 @@ t_v_datacollection_summary_autoprocintegration = db.Table(
     db.Column("AutoProcProgram_autoProcProgramId", db.Integer),
     db.Column(
         "v_datacollection_summary_autoprocintegration_processingStatus",
-        db.ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"),
+        ENUM("RUNNING", "FAILED", "SUCCESS", "0", "1"),
     ),
     db.Column("AutoProcIntegration_phasing_dataCollectionId", db.Integer),
     db.Column(
         "PhasingStep_phasing_phasingStepType",
-        db.ENUM(
+        ENUM(
             "PREPARE",
             "SUBSTRUCTUREDETERMINATION",
             "PHASING",
@@ -3848,7 +3847,7 @@ t_v_datacollection_summary_autoprocintegration = db.Table(
     db.Column("SpaceGroup_spaceGroupShortName", db.String(45)),
     db.Column("autoProcId", db.Integer),
     db.Column("AutoProc_spaceGroup", db.String(45)),
-    db.Column("scalingStatisticsType", db.ENUM("overall", "innerShell", "outerShell")),
+    db.Column("scalingStatisticsType", ENUM("overall", "innerShell", "outerShell")),
     db.Column("resolutionLimitHigh", db.Float),
     db.Column("resolutionLimitLow", db.Float),
     db.Column("rMerge", db.Float),
@@ -3865,7 +3864,7 @@ t_v_datacollection_summary_datacollectiongroup = db.Table(
     db.Column("DataCollectionGroup_workflowId", db.Integer),
     db.Column(
         "DataCollectionGroup_experimentType",
-        db.ENUM(
+        ENUM(
             "EM",
             "SAD",
             "SAD - Inverse Beam",
@@ -3925,7 +3924,7 @@ t_v_datacollection_summary_datacollectiongroup = db.Table(
     db.Column("Workflow_workflowTitle", db.String(255)),
     db.Column(
         "Workflow_workflowType",
-        db.ENUM(
+        ENUM(
             "Characterisation",
             "Undefined",
             "BioSAXS Post Processing",
@@ -3973,7 +3972,7 @@ t_v_datacollection_summary_phasing = db.Table(
     db.Column("v_datacollection_summary_phasing_dataCollectionId", db.Integer),
     db.Column(
         "v_datacollection_summary_phasing_phasingStepType",
-        db.ENUM(
+        ENUM(
             "PREPARE",
             "SUBSTRUCTUREDETERMINATION",
             "PHASING",
@@ -4135,7 +4134,7 @@ t_v_dewar_summary = db.Table(
     db.Column("transportValue", db.Integer),
     db.Column("trackingNumberToSynchrotron", db.String(30)),
     db.Column("trackingNumberFromSynchrotron", db.String(30)),
-    db.Column("type", db.ENUM("Dewar", "Toolbox")),
+    db.Column("type", ENUM("Dewar", "Toolbox")),
     db.Column("isReimbursed", db.Integer),
     db.Column("sessionId", db.Integer),
     db.Column("beamlineName", db.String(45)),
