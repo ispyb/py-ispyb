@@ -2,7 +2,7 @@ Flask>=1.1,<2
 flask-restx
 Flask-Cors>=3.0.8,<4
 
-SQLAlchemy>=1.3.0,<2
+SQLAlchemy>=1.3.17
 Flask-SQLAlchemy>=2.4,<3
 flask-sqlacodegen
 
