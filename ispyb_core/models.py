@@ -43,8 +43,8 @@ from sqlalchemy import (
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import FetchedValue
-#from sqlalchemy.dialects.mysql.enumerated import ENUM
-from sqlalchemy.dialects.mysql import ENUM
+from sqlalchemy.dialects.mysql.enumerated import ENUM
+#from sqlalchemy.dialects.mysql import ENUM
 from sqlalchemy.dialects.mysql.types import LONGBLOB
 from flask_sqlalchemy import SQLAlchemy
 

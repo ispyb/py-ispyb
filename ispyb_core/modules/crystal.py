@@ -28,4 +28,16 @@ from ispyb_core.schemas.crystal import crystal_f_schema, crystal_ma_schema
 
 def get_crystal_list():
     crystal_list = CrystalModel.query.all()
-    return crystal_ma_schema.dump(crystal_list)
+    return crystal_ma_schema.dump(crystal_list, many=True)
+
+def get_crystal_by_id(crystal_id):
+    """Returns crystal by its crystalId
+
+    Args:
+        crystal_id (int): corresponds to crystalId in db
+
+    Returns:
+        dict: info about crystal as dict
+    """
+    crystal_item = CrystalModel.query.filter_by(crystalId=crystal_id).first()
+    return crystal_ma_schema.dump(crystal_item)[0]
