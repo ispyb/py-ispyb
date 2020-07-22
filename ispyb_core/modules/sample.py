@@ -26,6 +26,18 @@ from ispyb_core.models import BLSample as SampleModel
 from ispyb_core.schemas.sample import sample_f_schema, sample_ma_schema
 
 
-def get_sample_list(self):
+def get_sample_list():
     sample_list = SampleModel.query.all()
-    return sample_ma_schema.dump(sample_list)
+    return sample_ma_schema.dump(sample_list, many=True)
+
+def get_sample_by_id(sample_id):
+    """Returns sample by its sampleId
+
+    Args:
+        sample_id (int): corresponds to sampleId in db
+
+    Returns:
+        dict: info about sample as dict
+    """
+    sample_item = SampleModel.query.filter_by(blSampleId=sample_id).first()
+    return sample_ma_schema.dump(sample_item)[0]
