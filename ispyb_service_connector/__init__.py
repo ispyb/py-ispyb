@@ -31,4 +31,4 @@ def get_ispyb_resource(service_name, path):
     headers = {"Authorization": "Bearer %s" % current_app.config["MASTER_TOKEN"]}
     response = get(root_url + path, headers=headers)
     data = response.json()
-    return data, response.status_code
+    return response.status_code, data
