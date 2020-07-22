@@ -34,13 +34,13 @@ class BaseConfig():
 
     SERVICE = 'ispyb_ssx'
     SERVICE_CONNECTOR = {
-        "ispyb_core": "http://localhost:500/ispyb/api/v1" 
+        "ispyb_core": "http://localhost:5000/ispyb/api/v1" 
 
     }
 
     API_ROOT = "/ispyb/api/v1/ssx"
     SECRET_KEY = os.urandom(16)
-    SQLALCHEMY_DATABASE_URI = 'mysql://mxuser:mxpass@localhost/pydb_test'
+    SQLALCHEMY_DATABASE_URI = 'mysql://mxuser:mxpass@localhost/ispyb_ssx'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     #SQLALCHEMY_POOL_RECYCLE = 2999
@@ -74,7 +74,7 @@ class BaseConfig():
                 DB_MODULES.append(row[0])
 
     ROUTES = [
-        'ssx',
+        'sample',
     ]
 
     SWAGGER_UI_JSONEDITOR = True
