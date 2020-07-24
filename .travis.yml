@@ -21,7 +21,7 @@ script:
         - bash run_all.sh
         - cd ..
         - pylint -E app
-#        - coverage run -m pytest
+:        - coverage run -m pytest
         
 
 after_success:
