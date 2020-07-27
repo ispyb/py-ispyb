@@ -223,8 +223,9 @@ class AutoProcProgramAttachment(db.Model):
         db.Integer, nullable=False, index=True, info="Related autoProcProgram item"
     )
     fileType = db.Column(
-        ENUM("Log", "Result", "Graph"), info="Type of file Attachment"
+        ENUM("Log", "Result", "Graph"), info="Type of file attachment"
     )
+
     fileName = db.Column(db.String(255), info="Attachment filename")
     filePath = db.Column(db.String(255), info="Attachment filepath to disk storage")
     recordTimeStamp = db.Column(db.DateTime, info="Creation or last update date/time")
