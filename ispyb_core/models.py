@@ -19,9 +19,6 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-__license__ = "LGPLv3+"
-
-
 from sqlalchemy import (
     BINARY,
     BigInteger,
@@ -52,7 +49,11 @@ from datetime import datetime
 
 from app.extensions import db
 
-#ENUM = ENUM
+
+__license__ = "LGPLv3+"
+
+
+#db.ENUM = ENUM
 db.LONGBLOB = LONGBLOB
 
 
