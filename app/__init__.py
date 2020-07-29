@@ -78,5 +78,6 @@ def create_app(flask_config_name=None, **kwargs):
 
     routes.init_app(app)
 
+
     app.logger.debug("ISPyB server started")
     return app
