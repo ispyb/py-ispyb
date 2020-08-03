@@ -75,7 +75,6 @@ class BaseConfig():
         'proposal',
 	'sample',
         'session',
-        'sample',
         'schemas',
     ]
 

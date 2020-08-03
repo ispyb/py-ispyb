@@ -56,24 +56,23 @@ def get_all_crystal_slurry():
     return crystal_slurry_ma_schema.dump(crystal_slurry_list, many=True)
 
 def add_crystal_slurry(crystal_slurry_dict):
-    status_code, result = ispyb_service_connector.is_resource_available("ispyb_core")
-    print(status_code, result)
-    if status_code != 200:
-        return status_code, result
-    crystal_id = crystal_slurry_dict.get("crystalId")
-    if crystal_id is None:
-        return 404, "No crystalId in crystalSlurry dict"
-    else:
-        status_code, result = ispyb_service_connector.get_ispyb_resource("ispyb_core", "/sample/crystal/%d" % crystal_id)
-        if status_code == 200:
+    status_code, result = ispyb_service_connector.get_ispyb_resource("ispyb_core", "/sample/crystal/%d" % crystal_id)
+    if status_code == 200:
+        crystal_id = crystal_slurry_dict.get("crystalId")
+        if crystal_id is None:
+            status_code = 404
+            result = "No crystalId in crystalSlurry dict"
+        else:
             try:
                 crystal_slurry_item = CrystalSlurryModel(**crystal_slurry_dict)
                 db.session.add(crystal_slurry_item)
                 db.session.commit()
-                return crystal_slurry_item.crystalSlurryId
+                status_code = 200
+                result = crystal_slurry_item.crystalSlurryId
             except BaseException as ex:
                 print(ex)
                 db.session.rollback()
-                return 400, "Unable to store item in db (%s)" % str(ex)
-        else:
-            return status_code, result["message"]
+                status_code = 400
+                result = "Unable to store item in db (%s)" % str(ex)
+    
+    return status_code, result["message"]
