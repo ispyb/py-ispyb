@@ -34,7 +34,7 @@ class BaseConfig():
 
     SERVICE = 'ispyb_ssx'
     SERVICE_CONNECTOR = {
-        "ispyb_core": "http://localhost:5000/ispyb/api/v1" 
+        ispyb_core": "http://localhost:5000/ispyb/api/v1" 
 
     }
 
