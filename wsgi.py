@@ -26,4 +26,4 @@ __license__ = "LGPLv3+"
 
 
 app = create_app("ispyb_core_dev")
-app.run(port=5100, debug=True)
+app.run(port=5000, debug=True)
