@@ -33,9 +33,8 @@ class BaseConfig():
     STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
     SERVICE = 'ispyb_ssx'
-    SERVICE_CONNECTOR = {
-        ispyb_core": "http://localhost:5000/ispyb/api/v1" 
-
+    SERVICE_CONNECTIONS = {
+        "ispyb_core": "http://localhost:5000/ispyb/api/v1" 
     }
 
     API_ROOT = "/ispyb/api/v1/ssx"

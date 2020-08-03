@@ -24,7 +24,7 @@ __license__ = "LGPLv3+"
 
 import logging
 
-from ispyb_service_connector import get_ispyb_resource
+import ispyb_service_connector
 from app.extensions import db
 
 
@@ -56,13 +56,15 @@ def get_all_crystal_slurry():
     return crystal_slurry_ma_schema.dump(crystal_slurry_list, many=True)
 
 def add_crystal_slurry(crystal_slurry_dict):
-    print(crystal_slurry_dict)
+    status_code, result = ispyb_service_connector.is_resource_available("ispyb_core")
+    print(status_code, result)
+    if status_code != 200:
+        return status_code, result
     crystal_id = crystal_slurry_dict.get("crystalId")
-    print(crystal_id)
     if crystal_id is None:
         return 404, "No crystalId in crystalSlurry dict"
     else:
-        status_code, result = get_ispyb_resource("ispyb_core", "/sample/crystal/%d" % crystal_id)
+        status_code, result = ispyb_service_connector.get_ispyb_resource("ispyb_core", "/sample/crystal/%d" % crystal_id)
         if status_code == 200:
             try:
                 crystal_slurry_item = CrystalSlurryModel(**crystal_slurry_dict)
@@ -74,4 +76,4 @@ def add_crystal_slurry(crystal_slurry_dict):
                 db.session.rollback()
                 return 400, "Unable to store item in db (%s)" % str(ex)
         else:
-            return status_code, result
+            return status_code, result["message"]

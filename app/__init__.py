@@ -78,5 +78,8 @@ def create_app(flask_config_name=None, **kwargs):
 
     routes.init_app(app)
 
+    #import ispyb_service_connector
+    #ispyb_service_connector.check_service_connection(app.config["SERVICE_CONNECTIONS"])
+
     app.logger.debug("ISPyB server started")
     return app
