@@ -76,7 +76,7 @@ class SampleById(Resource):
         if result:
             return result, HTTPStatus.OK
         else:
-            api.abort(HTTPStatus.NOT_FOUND, "Sample not found")
+            api.abort(HTTPStatus.NOT_FOUND, "Sample with id %d not found" % sample_id)
 
 @api.route("/crystal")
 @api.doc(security="apikey")
@@ -114,4 +114,4 @@ class CrystalById(Resource):
         if result:
             return result, HTTPStatus.OK
         else:
-            api.abort(HTTPStatus.NOT_FOUND, "Crystal not found")
+            api.abort(HTTPStatus.NOT_FOUND, "Crystal with id %s not found" % str(crystal_id))
