@@ -47,16 +47,21 @@ def get_all_loaded_samples():
     loaded_samples = LoadedSampleModel.query.all()
     return loaded_sample_ma_schema.dump(loaded_samples, many=True)
 
+
 def add_loaded_sample(loaded_sample_dict):
     print(loaded_sample_dict)
     return
+
 
 def get_all_crystal_slurry():
     crystal_slurry_list = CrystalSlurryModel.query.all()
     return crystal_slurry_ma_schema.dump(crystal_slurry_list, many=True)
 
+
 def add_crystal_slurry(crystal_slurry_dict):
-    status_code, result = ispyb_service_connector.get_ispyb_resource("ispyb_core", "/sample/crystal/%d" % crystal_id)
+    status_code, result = ispyb_service_connector.get_ispyb_resource(
+        "ispyb_core", "/sample/crystal/%d" % crystal_id
+    )
     if status_code == 200:
         crystal_id = crystal_slurry_dict.get("crystalId")
         if crystal_id is None:
@@ -74,5 +79,5 @@ def add_crystal_slurry(crystal_slurry_dict):
                 db.session.rollback()
                 status_code = 400
                 result = "Unable to store item in db (%s)" % str(ex)
-    
+
     return status_code, result["message"]

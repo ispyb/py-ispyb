@@ -59,8 +59,8 @@ api_v1.add_namespace(api)
 class Proposals(Resource):
     """Allows to get all proposals"""
 
-    #@api.marshal_list_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
-    #TODO Define model with JSON Schema 
+    # @api.marshal_list_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
+    # TODO Define model with JSON Schema
     @token_required
     def get(self):
         """Returns list of proposals
@@ -83,15 +83,15 @@ class Proposals(Resource):
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
-    #@api.errorhandler(FakeException)
-    #TODO add custom exception handling
+    # @api.errorhandler(FakeException)
+    # TODO add custom exception handling
     @token_required
     @write_permission_required
     def post(self):
         """Adds a new proposal"""
         log.info("Inserts a new proposal")
 
-        #with 
+        # with
         result = proposal.add_proposal(api.payload)
         if result:
             return result, HTTPStatus.OK
@@ -111,7 +111,9 @@ class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
     @api.doc(description="proposal_id should be an integer ")
-    @api.marshal_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(
+        proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK
+    )
     @token_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
@@ -139,7 +141,9 @@ class ProposalById(Resource):
                 HTTPStatus.OK,
             )
         else:
-            api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
+            api.abort(
+                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
+            )
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
@@ -160,8 +164,9 @@ class ProposalById(Resource):
                 HTTPStatus.OK,
             )
         else:
-            api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
-
+            api.abort(
+                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
+            )
 
     @token_required
     @write_permission_required
@@ -181,7 +186,9 @@ class ProposalById(Resource):
                 HTTPStatus.OK,
             )
         else:
-            api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
+            api.abort(
+                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
+            )
 
 
 @api.route("/<string:login_name>")

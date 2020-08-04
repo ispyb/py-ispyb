@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,13 +29,16 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 loaded_sample_dict_schema = {
-        'loadedSampleId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description='to be used as part of the image and processing file names'),
-        'sampleStockId': f_fields.Integer(required=False, description=''),
-        'sampleDeliveryDevice': f_fields.Integer(required=False, description=''),
-        'loadingPattern': f_fields.Integer(required=False, description=''),
-        'description': f_fields.String(required=False, description=''),
-        }
+    "loadedSampleId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(
+        required=False, description="to be used for image and processing file names"
+    ),
+    "sampleStockId": f_fields.Integer(required=False, description=""),
+    "sampleDeliveryDevice": f_fields.Integer(required=False, description=""),
+    "loadingPattern": f_fields.Integer(required=False, description=""),
+    "description": f_fields.String(required=False, description=""),
+}
+
 
 class LoadedSampleSchema(Schema):
     """Marshmallows schema class representing LoadedSample table"""
@@ -48,6 +50,7 @@ class LoadedSampleSchema(Schema):
     loadingPattern = ma_fields.Integer()
     description = ma_fields.String()
 
-loaded_sample_f_schema = api.model('LoadedSample', loaded_sample_dict_schema)
+
+loaded_sample_f_schema = api.model("LoadedSample", loaded_sample_dict_schema)
 loaded_sample_ma_schema = LoadedSampleSchema()
 loaded_sample_json_schema = JSONSchema().dump(loaded_sample_ma_schema)

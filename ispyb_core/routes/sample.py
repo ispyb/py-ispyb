@@ -32,11 +32,7 @@ from ispyb_core.modules import sample, crystal
 __license__ = "LGPLv3+"
 
 
-api = Namespace(
-    "Sample",
-    description="Sample related namespace",
-    path="/sample",
-)
+api = Namespace("Sample", description="Sample related namespace", path="/sample",)
 api_v1.add_namespace(api)
 
 
@@ -55,8 +51,9 @@ class Sample(Resource):
     @api.marshal_with(sample_schemas.sample_f_schema, code=201)
     def post(self):
         """Adds a new sample item"""
-        #sample_module.(**api.payload)
+        # sample_module.(**api.payload)
         return
+
 
 @api.route("/<int:sample_id>")
 @api.param("sample_id", "Sample id (integer)")
@@ -68,8 +65,10 @@ class SampleById(Resource):
     """Allows to get/set/delete a sample item"""
 
     @api.doc(description="sample_id should be an integer ")
-    @api.marshal_with(sample_schemas.sample_f_schema, skip_none=True, code=HTTPStatus.OK)
-    #@token_required
+    @api.marshal_with(
+        sample_schemas.sample_f_schema, skip_none=True, code=HTTPStatus.OK
+    )
+    # @token_required
     def get(self, sample_id):
         """Returns a sample by sampleId"""
         result = sample.get_sample_by_id(sample_id)
@@ -78,23 +77,25 @@ class SampleById(Resource):
         else:
             api.abort(HTTPStatus.NOT_FOUND, "Sample with id %d not found" % sample_id)
 
+
 @api.route("/crystal")
 @api.doc(security="apikey")
 class Crystal(Resource):
     """Crystal resource"""
 
-    #@token_required
+    # @token_required
     def get(self):
         """Returns all crystal items"""
         return crystal.get_crystal_list()
 
-    #@token_required
+    # @token_required
     @api.expect(crystal_schemas.crystal_f_schema)
     @api.marshal_with(crystal_schemas.crystal_f_schema, code=201)
     def post(self):
         """Adds a new crystal item"""
-        #sample_module.(**api.payload)
+        # sample_module.(**api.payload)
         return
+
 
 @api.route("/crystal/<int:crystal_id>")
 @api.param("crystal_id", "Crystal id (integer)")
@@ -106,12 +107,16 @@ class CrystalById(Resource):
     """Allows to get/set/delete a crystal item"""
 
     @api.doc(description="crystal_id should be an integer ")
-    @api.marshal_with(crystal_schemas.crystal_f_schema, skip_none=True, code=HTTPStatus.OK)
-    #@token_required
+    @api.marshal_with(
+        crystal_schemas.crystal_f_schema, skip_none=True, code=HTTPStatus.OK
+    )
+    # @token_required
     def get(self, crystal_id):
         """Returns a crystal by crystalId"""
         result = crystal.get_crystal_by_id(crystal_id)
         if result:
             return result, HTTPStatus.OK
         else:
-            api.abort(HTTPStatus.NOT_FOUND, "Crystal with id %s not found" % str(crystal_id))
+            api.abort(
+                HTTPStatus.NOT_FOUND, "Crystal with id %s not found" % str(crystal_id)
+            )

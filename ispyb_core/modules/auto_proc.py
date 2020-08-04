@@ -21,6 +21,7 @@
 
 from ispyb_core import models, schemas
 
+
 def get_auto_proc_list():
     auto_proc_list = models.AutoProc.query.all()
     return schemas.auto_proc.auto_proc_ma_schema.dump(auto_proc_list)

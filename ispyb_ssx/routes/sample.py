@@ -30,7 +30,7 @@ from flask_restx._http import HTTPStatus
 
 from flask_restx_patched import Resource
 
-#from app.extensions import db
+# from app.extensions import db
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, write_permission_required
 
@@ -49,19 +49,18 @@ api = Namespace("Sample", description="Sample related namespace", path="/sample"
 api_v1.add_namespace(api)
 
 
-
 @api.route("")
 @api.doc(security="apikey")
 class LoadedSample(Resource):
     """Loaded sample resource"""
 
-    #@token_required
+    # @token_required
     def get(self):
         """Returns all loaded samples"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_all_loaded_samples()
 
-    #@token_required
+    # @token_required
     @api.expect(loaded_sample_schemas.loaded_sample_f_schema)
     @api.marshal_with(loaded_sample_schemas.loaded_sample_f_schema, code=201)
     def post(self):
@@ -69,27 +68,27 @@ class LoadedSample(Resource):
         # app.logger.info("Insert new data collection")
         loaded_sample.add_loaded_sample(api.payload)
 
+
 @api.route("/crystal_slurry")
 @api.doc(security="apikey")
 class CrystalSlurry(Resource):
     """Crystal slurry resource"""
 
-    #@token_required
+    # @token_required
     def get(self):
         """Returns all crystal slurry"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_all_crystal_slurry()
 
-    #@token_required
+    # @token_required
     @api.expect(crystal_slurry_schemas.crystal_slurry_f_schema)
-    #@api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
+    # @api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
     def post(self):
         """Adds a new crystal slury"""
         status_code, result = loaded_sample.add_crystal_slurry(api.payload)
         if status_code >= 400:
             api.abort(HTTPStatus.NOT_ACCEPTABLE, result)
-        #return status_code, result
+        # return status_code, result
 
 
-
-#return get_ispyb_resource("ispyb_core", "schemas/available_names")
+# return get_ispyb_resource("ispyb_core", "schemas/available_names")

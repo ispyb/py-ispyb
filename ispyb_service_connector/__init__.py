@@ -26,11 +26,12 @@ from requests import ConnectionError
 
 __license__ = "LGPLv3+"
 
+
 def check_service_connection(service_connection_config):
     print("Configured service connections:")
     print("| Service name | Address       | Connection available ")
     for name, address in service_connection_config.items():
-        status_code, data = is_resource_available(name)    
+        status_code, data = is_resource_available(name)
         print("| %s | %s  | %s" % (name, address, str(status_code == 200)))
 
 

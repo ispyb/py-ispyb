@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,12 +29,17 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 crystal_size_distribution_dict_schema = {
-        'crystalSizeDistributionId': f_fields.Integer(required=True, description=''),
-        'crystalHabit': f_fields.String(required=False, description=''),
-        'characteristicDimensions': f_fields.Float(required=False, description=''),
-        'minDimension': f_fields.String(required=False, description='comma separated floats'),
-        'maxDimension': f_fields.Float(required=False, description='comma separated floats'),
-        }
+    "crystalSizeDistributionId": f_fields.Integer(required=True, description=""),
+    "crystalHabit": f_fields.String(required=False, description=""),
+    "characteristicDimensions": f_fields.Float(required=False, description=""),
+    "minDimension": f_fields.String(
+        required=False, description="comma separated floats"
+    ),
+    "maxDimension": f_fields.Float(
+        required=False, description="comma separated floats"
+    ),
+}
+
 
 class CrystalSizeDistributionSchema(Schema):
     """Marshmallows schema class representing CrystalSizeDistribution table"""
@@ -46,6 +50,11 @@ class CrystalSizeDistributionSchema(Schema):
     minDimension = ma_fields.String()
     maxDimension = ma_fields.Float()
 
-crystal_size_distribution_f_schema = api.model('CrystalSizeDistribution', crystal_size_distribution_dict_schema)
+
+crystal_size_distribution_f_schema = api.model(
+    "CrystalSizeDistribution", crystal_size_distribution_dict_schema
+)
 crystal_size_distribution_ma_schema = CrystalSizeDistributionSchema()
-crystal_size_distribution_json_schema = JSONSchema().dump(crystal_size_distribution_ma_schema)
+crystal_size_distribution_json_schema = JSONSchema().dump(
+    crystal_size_distribution_ma_schema
+)

@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,11 +29,12 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 data_set_dict_schema = {
-        'dataSetId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=True, description=''),
-        'dataAcquisitionId': f_fields.Integer(required=False, description=''),
-        'mergedResults': f_fields.String(required=False, description=''),
-        }
+    "dataSetId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(required=True, description=""),
+    "dataAcquisitionId": f_fields.Integer(required=False, description=""),
+    "mergedResults": f_fields.String(required=False, description=""),
+}
+
 
 class DataSetSchema(Schema):
     """Marshmallows schema class representing DataSet table"""
@@ -44,6 +44,7 @@ class DataSetSchema(Schema):
     dataAcquisitionId = ma_fields.Integer()
     mergedResults = ma_fields.String()
 
-data_set_f_schema = api.model('DataSet', data_set_dict_schema)
+
+data_set_f_schema = api.model("DataSet", data_set_dict_schema)
 data_set_ma_schema = DataSetSchema()
 data_set_json_schema = JSONSchema().dump(data_set_ma_schema)

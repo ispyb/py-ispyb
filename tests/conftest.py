@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -40,6 +40,7 @@ def ispyb_core_app():
     with app.app_context():
         yield app
 
+
 @pytest.fixture(scope="session")
 def ispyb_ssx_app():
     app = create_app("ispyb_ssx_test")
@@ -57,6 +58,7 @@ def ispyb_core_token(ispyb_core_app):
     )
     return response.json["token"]
 
+
 @pytest.fixture(scope="session")
 def ispyb_ssx_token(ispyb_ssx_app):
     client = ispyb_ssx_app.test_client()
@@ -66,4 +68,3 @@ def ispyb_ssx_token(ispyb_ssx_app):
         api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
     )
     return response.json["token"]
-

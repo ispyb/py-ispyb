@@ -125,14 +125,16 @@ def add_proposal(proposal_dict):
         return proposal_item.proposalId
     except BaseException:
         return
-        
+
+
 def update_proposal(proposal_id, proposal_dict):
     proposal_item = get_proposal_item_by_id(proposal_id)
     if not proposal_item:
         return None
     else:
-        #Do something
+        # Do something
         return True
+
 
 def patch_proposal(proposal_id, proposal_dict):
     proposal_item = get_proposal_item_by_id(proposal_id)
@@ -143,10 +145,11 @@ def patch_proposal(proposal_id, proposal_dict):
             if hasattr(proposal_item, key):
                 setattr(proposal_item, key, value)
             else:
-                print('Attribute %s not defined in the Proposal model' % key)
+                print("Attribute %s not defined in the Proposal model" % key)
         db.session.commit()
         return True
-    
+
+
 def delete_proposal(proposal_id):
     """Deletes proposal item from db
 

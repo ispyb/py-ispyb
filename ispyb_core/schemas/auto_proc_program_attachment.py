@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,14 +29,29 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 auto_proc_program_attachment_dict_schema = {
-        'autoProcProgramAttachmentId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'autoProcProgramId': f_fields.Integer(required=True, description='Related autoProcProgram item'),
-        'fileType': f_fields.String(required=False, description='Type of file Attachmentenum(Log,Result,Graph,Debug)'),
-        'fileName': f_fields.String(required=False, description='Attachment filename'),
-        'filePath': f_fields.String(required=False, description='Attachment filepath to disk storage'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
-        'importanceRank': f_fields.Integer(required=False, description='For the particular autoProcProgramId and fileType, indicate the importance of the attachment. Higher numbers are more important'),
-        }
+    "autoProcProgramAttachmentId": f_fields.Integer(
+        required=True, description="Primary key (auto-incremented)"
+    ),
+    "autoProcProgramId": f_fields.Integer(
+        required=True, description="Related autoProcProgram item"
+    ),
+    "fileType": f_fields.String(
+        required=False,
+        description="Type of file Attachmentenum(Log,Result,Graph,Debug)",
+    ),
+    "fileName": f_fields.String(required=False, description="Attachment filename"),
+    "filePath": f_fields.String(
+        required=False, description="Attachment filepath to disk storage"
+    ),
+    "recordTimeStamp": f_fields.DateTime(
+        required=False, description="Creation or last update date/time"
+    ),
+    "importanceRank": f_fields.Integer(
+        required=False,
+        description="For the particular autoProcProgramId and fileType, indicate the importance of the attachment. Higher numbers are more important",
+    ),
+}
+
 
 class AutoProcProgramAttachmentSchema(Schema):
     """Marshmallows schema class representing AutoProcProgramAttachment table"""
@@ -50,6 +64,11 @@ class AutoProcProgramAttachmentSchema(Schema):
     recordTimeStamp = ma_fields.DateTime()
     importanceRank = ma_fields.Integer()
 
-auto_proc_program_attachment_f_schema = api.model('AutoProcProgramAttachment', auto_proc_program_attachment_dict_schema)
+
+auto_proc_program_attachment_f_schema = api.model(
+    "AutoProcProgramAttachment", auto_proc_program_attachment_dict_schema
+)
 auto_proc_program_attachment_ma_schema = AutoProcProgramAttachmentSchema()
-auto_proc_program_attachment_json_schema = JSONSchema().dump(auto_proc_program_attachment_ma_schema)
+auto_proc_program_attachment_json_schema = JSONSchema().dump(
+    auto_proc_program_attachment_ma_schema
+)

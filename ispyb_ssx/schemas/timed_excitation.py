@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,11 +29,12 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 timed_excitation_dict_schema = {
-        'timedExcitationId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'timedSequenceId': f_fields.Integer(required=False, description=''),
-        'ssxExcitation': f_fields.String(required=False, description=''),
-        }
+    "timedExcitationId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(required=False, description=""),
+    "timedSequenceId": f_fields.Integer(required=False, description=""),
+    "ssxExcitation": f_fields.String(required=False, description=""),
+}
+
 
 class TimedExcitationSchema(Schema):
     """Marshmallows schema class representing TimedExcitation table"""
@@ -44,6 +44,7 @@ class TimedExcitationSchema(Schema):
     timedSequenceId = ma_fields.Integer()
     ssxExcitation = ma_fields.String()
 
-timed_excitation_f_schema = api.model('TimedExcitation', timed_excitation_dict_schema)
+
+timed_excitation_f_schema = api.model("TimedExcitation", timed_excitation_dict_schema)
 timed_excitation_ma_schema = TimedExcitationSchema()
 timed_excitation_json_schema = JSONSchema().dump(timed_excitation_ma_schema)
