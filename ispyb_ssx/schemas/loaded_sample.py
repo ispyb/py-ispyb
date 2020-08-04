@@ -31,8 +31,7 @@ from app.extensions.api import api_v1 as api
 
 loaded_sample_dict_schema = {
         'loadedSampleId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description='to be used as part of the image and processing file names
-'),
+        'name': f_fields.String(required=False, description='to be used as part of the image and processing file names'),
         'sampleStockId': f_fields.Integer(required=False, description=''),
         'sampleDeliveryDevice': f_fields.Integer(required=False, description=''),
         'loadingPattern': f_fields.Integer(required=False, description=''),

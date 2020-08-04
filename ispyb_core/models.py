@@ -22,10 +22,10 @@ class AbInitioModel(db.Model):
     comments = db.Column(db.String(512))
     creationTime = db.Column(db.DateTime)
 
-    Model = db.relationship('Model', primaryjoin='AbInitioModel.averagedModelId == Model.modelId', backref='model_model_ab_initio_models')
-    ModelList = db.relationship('ModelList', primaryjoin='AbInitioModel.modelListId == ModelList.modelListId', backref='ab_initio_models')
-    Model1 = db.relationship('Model', primaryjoin='AbInitioModel.rapidShapeDeterminationModelId == Model.modelId', backref='model_model_ab_initio_models_0')
-    Model2 = db.relationship('Model', primaryjoin='AbInitioModel.shapeDeterminationModelId == Model.modelId', backref='model_model_ab_initio_models')
+    Model = db.relationship('Model', primaryjoin='AbInitioModel.averagedModelId == Model.modelId', backref='ab_initio_models_01')
+    ModelList = db.relationship('ModelList', primaryjoin='AbInitioModel.modelListId == ModelList.modelListId', backref='ab_initio_models_02')
+    Model1 = db.relationship('Model', primaryjoin='AbInitioModel.rapidShapeDeterminationModelId == Model.modelId', backref='ab_initio_models_03')
+    Model2 = db.relationship('Model', primaryjoin='AbInitioModel.shapeDeterminationModelId == Model.modelId', backref='ab_initio_models_04')
 
 
 

@@ -34,8 +34,11 @@ sudo pip install -r requirements.txt
 
 ## Available scripts
 
-- `generate_db_models.sh` : generates sqlalchemy db models.
-- `generate_modules.py` :  generates flask api models and marshmallow schemas. Generates a simple resource.py if it does not exist.
+- `run_all.sh`: generates all sqlalchemy db models, flask api and marshmallow schemas. 
+- `generate_core_models.sh` : generates ispyb core db models.
+- `generate_ssx_models.sh` : generates ispyb ssx db models.
+- `generate_core_modules.py` :  generates ispyb core flask api models and marshmallow schemas.
+- `generate_ssx_modules.py` :  generates ispyb ssx flask api models and marshmallow schemas.
 - `format_code.sh`: formats code based on autopep and black.
 
 ## Authentication
@@ -44,8 +47,5 @@ JWT (Jason web tokens) are used to authenticate requests. See jwt.io to test the
 Status codes: https://www.flaskapi.org/api-guide/status-codes/
 
 ## Format code
-```bash
-autopep8 -a -r -j 0 -i --max-line-length 88 ./
-black --safe ./
-```
+`scripts/fomat_code.sh . `
 
