@@ -44,7 +44,7 @@ db_name = uri.split("/")[-1]
 gen_tables = (
     "CrystalSizeDistribution",
     "CrystalSlurry",
-    "DataAcquisition",
+    "SsxDataAcquisition",
     "DataSet",
     "ExperimentalPlan",
     "LoadedSample",
@@ -62,7 +62,7 @@ gen_tables = (
 gen_modules = (
     "crystal_size_distribution",
     "crystal_slurry",
-    "data_acquisition",
+    "ssx_data_acquisition",
     "data_set",
     "experimental_plan",
     "loaded_sample",

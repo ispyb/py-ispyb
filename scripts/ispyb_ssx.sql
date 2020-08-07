@@ -35,8 +35,7 @@ CREATE TABLE `Micrograph` (
 
 CREATE TABLE `LoadedSample` (
   `loadedSampleId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255) COMMENT 'to be used as part of the image and processing file names
-',
+  `name` varchar(255) COMMENT 'Used for image and processing file names',
   `sampleStockId` int,
   `sampleDeliveryDevice` int,
   `loadingPattern` int,
