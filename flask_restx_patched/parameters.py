@@ -12,7 +12,6 @@ log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 class Parameters(Schema):
-
     class Meta:
         ordered = True
 
@@ -21,7 +20,7 @@ class Parameters(Schema):
         # This is an add-hoc implementation of the feature which didn't make
         # into Marshmallow upstream:
         # https://github.com/marshmallow-code/marshmallow/issues/344
-        for required_field_name in getattr(self.Meta, 'required', []):
+        for required_field_name in getattr(self.Meta, "required", []):
             self.fields[required_field_name].required = True
 
     def __contains__(self, field):
@@ -39,14 +38,13 @@ class Parameters(Schema):
 
 
 class PostFormParameters(Parameters):
-
     def __init__(self, *args, **kwargs):
         super(PostFormParameters, self).__init__(*args, **kwargs)
         for field in itervalues(self.fields):
             if field.dump_only:
                 continue
-            if not field.metadata.get('location'):
-                field.metadata['location'] = 'form'
+            if not field.metadata.get("location"):
+                field.metadata["location"] = "form"
 
 
 class PatchJSONParameters(Parameters):
@@ -55,12 +53,12 @@ class PatchJSONParameters(Parameters):
     """
 
     # All operations described in RFC 6902
-    OP_ADD = 'add'
-    OP_REMOVE = 'remove'
-    OP_REPLACE = 'replace'
-    OP_MOVE = 'move'
-    OP_COPY = 'copy'
-    OP_TEST = 'test'
+    OP_ADD = "add"
+    OP_REMOVE = "remove"
+    OP_REPLACE = "replace"
+    OP_MOVE = "move"
+    OP_COPY = "copy"
+    OP_TEST = "test"
 
     # However, we use only those which make sense in RESTful API
     OPERATION_CHOICES = (
@@ -80,18 +78,20 @@ class PatchJSONParameters(Parameters):
     value = base_fields.Raw(required=False)
 
     def __init__(self, *args, **kwargs):
-        if 'many' in kwargs:
-            assert kwargs['many'], "PATCH Parameters must be marked as 'many'"
-        kwargs['many'] = True
+        if "many" in kwargs:
+            assert kwargs["many"], "PATCH Parameters must be marked as 'many'"
+        kwargs["many"] = True
         super(PatchJSONParameters, self).__init__(*args, **kwargs)
         if not self.PATH_CHOICES:
             raise ValueError("%s.PATH_CHOICES has to be set" % self.__class__.__name__)
         # Make a copy of `validators` as otherwise we will modify the behaviour
         # of all `marshmallow.Schema`-based classes
-        self.fields['op'].validators = \
-            self.fields['op'].validators + [validate.OneOf(self.OPERATION_CHOICES)]
-        self.fields['path'].validators = \
-            self.fields['path'].validators + [validate.OneOf(self.PATH_CHOICES)]
+        self.fields["op"].validators = self.fields["op"].validators + [
+            validate.OneOf(self.OPERATION_CHOICES)
+        ]
+        self.fields["path"].validators = self.fields["path"].validators + [
+            validate.OneOf(self.PATH_CHOICES)
+        ]
 
     @validates_schema
     def validate_patch_structure(self, data):
@@ -105,13 +105,13 @@ class PatchJSONParameters(Parameters):
         is prepended with '/'.
         Removing '/' in the beginning to simplify usage in resource.
         """
-        if data['op'] not in self.NO_VALUE_OPERATIONS and 'value' not in data:
-            raise ValidationError('value is required')
+        if data["op"] not in self.NO_VALUE_OPERATIONS and "value" not in data:
+            raise ValidationError("value is required")
 
-        if 'path' not in data:
-            raise ValidationError('Path is required and must always begin with /')
+        if "path" not in data:
+            raise ValidationError("Path is required and must always begin with /")
         else:
-            data['field_name'] = data['path'][1:]
+            data["field_name"] = data["path"][1:]
 
     @classmethod
     def perform_patch(cls, operations, obj, state=None):
@@ -126,13 +126,11 @@ class PatchJSONParameters(Parameters):
                 log.info(
                     "%s patching has been stopped because of unknown operation %s",
                     obj.__class__.__name__,
-                    operation
+                    operation,
                 )
                 raise ValidationError(
-                    "Failed to update %s details. Operation %s could not succeed." % (
-                        obj.__class__.__name__,
-                        operation
-                    )
+                    "Failed to update %s details. Operation %s could not succeed."
+                    % (obj.__class__.__name__, operation)
                 )
         return True
 
@@ -147,25 +145,35 @@ class PatchJSONParameters(Parameters):
         Returns:
             processing_status (bool): True if operation was handled, otherwise False.
         """
-        field_operaion = operation['op']
+        field_operaion = operation["op"]
 
         if field_operaion == cls.OP_REPLACE:
-            return cls.replace(obj, operation['field_name'], operation['value'], state=state)
+            return cls.replace(
+                obj, operation["field_name"], operation["value"], state=state
+            )
 
         elif field_operaion == cls.OP_TEST:
-            return cls.test(obj, operation['field_name'], operation['value'], state=state)
+            return cls.test(
+                obj, operation["field_name"], operation["value"], state=state
+            )
 
         elif field_operaion == cls.OP_ADD:
-            return cls.add(obj, operation['field_name'], operation['value'], state=state)
+            return cls.add(
+                obj, operation["field_name"], operation["value"], state=state
+            )
 
         elif field_operaion == cls.OP_MOVE:
-            return cls.move(obj, operation['field_name'], operation['value'], state=state)
+            return cls.move(
+                obj, operation["field_name"], operation["value"], state=state
+            )
 
         elif field_operaion == cls.OP_COPY:
-            return cls.copy(obj, operation['field_name'], operation['value'], state=state)
+            return cls.copy(
+                obj, operation["field_name"], operation["value"], state=state
+            )
 
         elif field_operaion == cls.OP_REMOVE:
-            return cls.remove(obj, operation['field_name'], state=state)
+            return cls.remove(obj, operation["field_name"], state=state)
 
         return False
 
@@ -185,7 +193,9 @@ class PatchJSONParameters(Parameters):
             processing_status (bool): True
         """
         if not hasattr(obj, field):
-            raise ValidationError("Field '%s' does not exist, so it cannot be patched" % field)
+            raise ValidationError(
+                "Field '%s' does not exist, so it cannot be patched" % field
+            )
         setattr(obj, field, value)
         return True
 

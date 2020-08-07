@@ -68,6 +68,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         kwargs["session_options"]["autocommit"] = False
         # Configure Constraint Naming Conventions:
         # http://docs.sqlalchemy.org/en/latest/core/constraints.html#constraint-naming-conventions
+        """
         kwargs["metadata"] = MetaData(
             naming_convention={
                 "pk": "pk_%(table_name)s",
@@ -77,6 +78,7 @@ class SQLAlchemy(BaseSQLAlchemy):
                 "ck": "ck_%(table_name)s_%(constraint_name)s",
             }
         )
+        """
         super(SQLAlchemy, self).__init__(*args, **kwargs)
 
     def init_app(self, app):

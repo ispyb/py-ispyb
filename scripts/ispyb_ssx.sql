@@ -35,16 +35,15 @@ CREATE TABLE `Micrograph` (
 
 CREATE TABLE `LoadedSample` (
   `loadedSampleId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255) COMMENT 'to be used as part of the image and processing file names
-',
+  `name` varchar(255) COMMENT 'Used for image and processing file names',
   `sampleStockId` int,
   `sampleDeliveryDevice` int,
   `loadingPattern` int,
   `description` text
 );
 
-CREATE TABLE `DataAcquisition` (
-  `dataAcquisitionId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE `SsxDataAcquisition` (
+  `ssxDataAcquisitionId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
   `loadedSampleId` int NOT NULL,
   `dataCollectionId` int NOT NULL COMMENT 'reference to DataCollection.dataCollectionId',
   `experimentalPlanId` int NOT NULL,
@@ -55,7 +54,7 @@ CREATE TABLE `DataAcquisition` (
 CREATE TABLE `DataSet` (
   `dataSetId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `dataAcquisitionId` int,
+  `ssxDataAcquisitionId` int,
   `mergedResults` varchar(255)
 );
 
@@ -129,11 +128,11 @@ ALTER TABLE `SampleStock` ADD FOREIGN KEY (`crystalSlurryId`) REFERENCES `Crysta
 
 ALTER TABLE `LoadedSample` ADD FOREIGN KEY (`sampleStockId`) REFERENCES `SampleStock` (`sampleStockId`);
 
-ALTER TABLE `DataAcquisition` ADD FOREIGN KEY (`loadedSampleId`) REFERENCES `LoadedSample` (`loadedSampleId`);
+ALTER TABLE `SsxDataAcquisition` ADD FOREIGN KEY (`loadedSampleId`) REFERENCES `LoadedSample` (`loadedSampleId`);
 
-ALTER TABLE `DataAcquisition` ADD FOREIGN KEY (`experimentalPlanId`) REFERENCES `ExperimentalPlan` (`experimentalPlanId`);
+ALTER TABLE `SsxDataAcquisition` ADD FOREIGN KEY (`experimentalPlanId`) REFERENCES `ExperimentalPlan` (`experimentalPlanId`);
 
-ALTER TABLE `DataSet` ADD FOREIGN KEY (`dataAcquisitionId`) REFERENCES `DataAcquisition` (`dataAcquisitionId`);
+ALTER TABLE `DataSet` ADD FOREIGN KEY (`ssxDataAcquisitionId`) REFERENCES `SsxDataAcquisition` (`ssxDataAcquisitionId`);
 
 ALTER TABLE `ExperimentalPlan` ADD FOREIGN KEY (`masterTriggerId`) REFERENCES `MasterTrigger` (`masterTriggerId`);
 

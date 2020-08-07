@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -25,6 +25,6 @@ def test_ssx(ispyb_ssx_app, ispyb_ssx_token):
 
     return
     headers = {"Authorization": "Bearer " + ispyb_ssx_token}
-    response = client.get(api_root + "/main", headers=headers)
+    response = client.get(api_root + "/sample", headers=headers)
     assert response.status_code == 200, "Wrong status code"
-    assert len(response.json) > 0, "No schemas returned"
+    #assert len(response.json) > 0, "No schemas returned"

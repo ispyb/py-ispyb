@@ -35,7 +35,6 @@ CONFIG_NAME_MAPPER = {
     "ispyb_core_dev": "ispyb_core_config.DevelopmentConfig",
     "ispyb_core_test": "ispyb_core_config.TestingConfig",
     "ispyb_core_prod": "ispyb_core_config.ProductionConfig",
-
     "ispyb_ssx_dev": "ispyb_ssx_config.DevelopmentConfig",
     "ispyb_ssx_test": "ispyb_ssx_config.TestingConfig",
     "ispyb_ssx_prod": "ispyb_ssx_config.ProductionConfig",
@@ -78,8 +77,8 @@ def create_app(flask_config_name=None, **kwargs):
 
     routes.init_app(app)
 
-    #import ispyb_service_connector
-    #ispyb_service_connector.check_service_connection(app.config["SERVICE_CONNECTIONS"])
+    # import ispyb_service_connector
+    # ispyb_service_connector.check_service_connection(app.config["SERVICE_CONNECTIONS"])
 
     app.logger.debug("ISPyB server started")
     return app

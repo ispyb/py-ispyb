@@ -8,9 +8,10 @@ from flask_restx._http import HTTPStatus
 from webargs.flaskparser import parser as webargs_parser
 from werkzeug import exceptions as http_exceptions
 
-#from .model import Model, DefaultHTTPErrorSchema
+# from .model import Model, DefaultHTTPErrorSchema
 
 from flask_restx.model import Model
+
 
 class Namespace(OriginalNamespace):
 
@@ -20,17 +21,17 @@ class Namespace(OriginalNamespace):
         if doc is False:
             cls.__apidoc__ = False
             return
-        ##unshortcut_params_description(doc)
-        ##handle_deprecations(doc)
-        ##for key in 'get', 'post', 'put', 'delete', 'options', 'head', 'patch':
-        ##    if key in doc:
-        ##        if doc[key] is False:
-        ##            continue
-        ##        unshortcut_params_description(doc[key])
-        ##        handle_deprecations(doc[key])
-        ##        if 'expect' in doc[key] and not isinstance(doc[key]['expect'], (list, tuple)):
+        # unshortcut_params_description(doc)
+        # handle_deprecations(doc)
+        # for key in 'get', 'post', 'put', 'delete', 'options', 'head', 'patch':
+        # if key in doc:
+        # if doc[key] is False:
+        # continue
+        # unshortcut_params_description(doc[key])
+        # handle_deprecations(doc[key])
+        # if 'expect' in doc[key] and not isinstance(doc[key]['expect'], (list, tuple)):
         ##            doc[key]['expect'] = [doc[key]['expect']]
-        cls.__apidoc__ = merge(getattr(cls, '__apidoc__', {}), doc)
+        cls.__apidoc__ = merge(getattr(cls, "__apidoc__", {}), doc)
 
     def resolve_object(self, object_arg_name, resolver):
         """
@@ -46,6 +47,7 @@ class Namespace(OriginalNamespace):
         ...    def get(self, user):
         ...        # user is a User instance here
         """
+
         def decorator(func_or_class):
             if isinstance(func_or_class, type):
                 # Handle Resource classes decoration
@@ -57,14 +59,18 @@ class Namespace(OriginalNamespace):
             def wrapper(*args, **kwargs):
                 kwargs[object_arg_name] = resolver(kwargs)
                 return func_or_class(*args, **kwargs)
+
             return wrapper
+
         return decorator
 
     def model(self, name=None, model=None, mask=None, **kwargs):
         """
         Model registration decorator.
         """
-        if isinstance(model, (flask_marshmallow.Schema, flask_marshmallow.base_fields.FieldABC)):
+        if isinstance(
+            model, (flask_marshmallow.Schema, flask_marshmallow.base_fields.FieldABC)
+        ):
             if not name:
                 name = model.__class__.__name__
             api_model = Model(name, model, mask=mask)
@@ -76,31 +82,31 @@ class Namespace(OriginalNamespace):
         """
         Endpoint parameters registration decorator.
         """
+
         def decorator(func):
             if locations is None and parameters.many:
-                _locations = ('json', )
+                _locations = ("json",)
             else:
                 _locations = locations
             if _locations is not None:
-                parameters.context['in'] = _locations
+                parameters.context["in"] = _locations
 
             return self.doc(params=parameters)(
                 self.response(code=HTTPStatus.UNPROCESSABLE_ENTITY)(
-                    self.WEBARGS_PARSER.use_args(parameters, locations=_locations)(
-                        func
-                    )
+                    self.WEBARGS_PARSER.use_args(parameters, locations=_locations)(func)
                 )
             )
 
         return decorator
 
     def preflight_options_handler(self, func):
-
         @wraps(func)
         def wrapper(self, *args, **kwargs):
-            if 'Access-Control-Request-Method' in flask.request.headers:
+            if "Access-Control-Request-Method" in flask.request.headers:
                 response = flask.Response(status=HTTPStatus.OK)
-                response.headers['Access-Control-Allow-Methods'] = ", ".join(self.methods)
+                response.headers["Access-Control-Allow-Methods"] = ", ".join(
+                    self.methods
+                )
                 return response
             return func(self, *args, **kwargs)
 
@@ -110,7 +116,7 @@ class Namespace(OriginalNamespace):
         base_wrapper = super(Namespace, self).route(*args, **kwargs)
 
         def wrapper(cls):
-            if 'OPTIONS' in cls.methods:
+            if "OPTIONS" in cls.methods:
                 cls.options = self.preflight_options_handler(
                     self.response(code=HTTPStatus.NO_CONTENT)(cls.options)
                 )
