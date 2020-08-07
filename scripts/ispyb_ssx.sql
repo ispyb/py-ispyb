@@ -128,9 +128,9 @@ ALTER TABLE `SampleStock` ADD FOREIGN KEY (`crystalSlurryId`) REFERENCES `Crysta
 
 ALTER TABLE `LoadedSample` ADD FOREIGN KEY (`sampleStockId`) REFERENCES `SampleStock` (`sampleStockId`);
 
-ALTER TABLE `DataAcquisition` ADD FOREIGN KEY (`loadedSampleId`) REFERENCES `LoadedSample` (`loadedSampleId`);
+ALTER TABLE `SsxDataAcquisition` ADD FOREIGN KEY (`loadedSampleId`) REFERENCES `LoadedSample` (`loadedSampleId`);
 
-ALTER TABLE `DataAcquisition` ADD FOREIGN KEY (`experimentalPlanId`) REFERENCES `ExperimentalPlan` (`experimentalPlanId`);
+ALTER TABLE `SsxDataAcquisition` ADD FOREIGN KEY (`experimentalPlanId`) REFERENCES `ExperimentalPlan` (`experimentalPlanId`);
 
 ALTER TABLE `DataSet` ADD FOREIGN KEY (`ssxDataAcquisitionId`) REFERENCES `SsxDataAcquisition` (`ssxDataAcquisitionId`);
 
