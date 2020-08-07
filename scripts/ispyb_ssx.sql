@@ -43,8 +43,8 @@ CREATE TABLE `LoadedSample` (
   `description` text
 );
 
-CREATE TABLE `DataAcquisition` (
-  `dataAcquisitionId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE `SsxDataAcquisition` (
+  `ssxDataAcquisitionId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
   `loadedSampleId` int NOT NULL,
   `dataCollectionId` int NOT NULL COMMENT 'reference to DataCollection.dataCollectionId',
   `experimentalPlanId` int NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE `DataAcquisition` (
 CREATE TABLE `DataSet` (
   `dataSetId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `dataAcquisitionId` int,
+  `ssxDataAcquisitionId` int,
   `mergedResults` varchar(255)
 );
 
@@ -133,7 +133,7 @@ ALTER TABLE `DataAcquisition` ADD FOREIGN KEY (`loadedSampleId`) REFERENCES `Loa
 
 ALTER TABLE `DataAcquisition` ADD FOREIGN KEY (`experimentalPlanId`) REFERENCES `ExperimentalPlan` (`experimentalPlanId`);
 
-ALTER TABLE `DataSet` ADD FOREIGN KEY (`dataAcquisitionId`) REFERENCES `DataAcquisition` (`dataAcquisitionId`);
+ALTER TABLE `DataSet` ADD FOREIGN KEY (`ssxDataAcquisitionId`) REFERENCES `SsxDataAcquisition` (`ssxDataAcquisitionId`);
 
 ALTER TABLE `ExperimentalPlan` ADD FOREIGN KEY (`masterTriggerId`) REFERENCES `MasterTrigger` (`masterTriggerId`);
 

@@ -29,7 +29,7 @@ ispyb_root = "/" + os.path.join(*ispyb_root[1:-1])
 sys.path.insert(0, ispyb_root)
 
 
-from ispyb_core_config import BaseConfig
+from ispyb_ssx_config import BaseConfig
 
 
 config = BaseConfig()
