@@ -19,9 +19,6 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-__license__ = "LGPLv3+"
-
-
 import os
 import re
 import sys
@@ -31,7 +28,10 @@ ispyb_root = os.path.dirname(os.path.abspath(__file__)).split(os.sep)
 ispyb_root = "/" + os.path.join(*ispyb_root[1:-1])
 sys.path.insert(0, ispyb_root)
 
-from ispyb_ssx_config import BaseConfig
+
+from ispyb_core_config import BaseConfig
+
+
 config = BaseConfig()
 
 uri = config.SQLALCHEMY_DATABASE_URI
@@ -42,39 +42,39 @@ host = uri.split("@")[1].split("/")[0]
 db_name = uri.split("/")[-1]
 
 gen_tables = (
-    'CrystalSizeDistribution',
-    'CrystalSlurry',
-    'DataAcquisition',
-    'DataSet',
-    'ExperimentalPlan',
-    'LoadedSample',
-    'MasterTrigger',
-    'Micrograph',
-    'RepeatedSequence',
-    'RepeatedSequenceHasAction',
-    'SampleStock',
-    'TimedExcitation',
-    'TimedSequence',
-    'TimedXrayDetection',
-    'TimedXrayExposure'
+    "CrystalSizeDistribution",
+    "CrystalSlurry",
+    "DataAcquisition",
+    "DataSet",
+    "ExperimentalPlan",
+    "LoadedSample",
+    "MasterTrigger",
+    "Micrograph",
+    "RepeatedSequence",
+    "RepeatedSequenceHasAction",
+    "SampleStock",
+    "TimedExcitation",
+    "TimedSequence",
+    "TimedXrayDetection",
+    "TimedXrayExposure",
 )
 
 gen_modules = (
-    'crystal_size_distribution',
-    'crystal_slurry',
-    'data_acquisition',
-    'data_set',
-    'experimental_plan',
-    'loaded_sample',
-    'master_trigger',
-    'micrograph',
-    'repeated_sequence',
-    'repeated_sequence_has_action',
-    'sample_stock',
-    'timed_excitation',
-    'timed_sequence',
-    'timed_xray_detection',
-    'timed_xray_exposure'
+    "crystal_size_distribution",
+    "crystal_slurry",
+    "data_acquisition",
+    "data_set",
+    "experimental_plan",
+    "loaded_sample",
+    "master_trigger",
+    "micrograph",
+    "repeated_sequence",
+    "repeated_sequence_has_action",
+    "sample_stock",
+    "timed_excitation",
+    "timed_sequence",
+    "timed_xray_detection",
+    "timed_xray_exposure",
 )
 
 connection = MySQLdb.connect(host=host, user=user, passwd=passwd)
@@ -83,9 +83,9 @@ cursor.execute("USE %s" % db_name)
 cursor.execute("SHOW TABLES")
 tables = cursor.fetchall()
 
-schema_file_header = ''
+schema_file_header = ""
 
-licence_header_file = open(ispyb_root + '/py_file_header.txt', "r")
+licence_header_file = open(ispyb_root + "/py_file_header.txt", "r")
 schema_file_header = licence_header_file.read()
 licence_header_file.close()
 
@@ -156,7 +156,10 @@ for table in tables:
             schema_name,
         )
         class_text += "%s_ma_schema = %sSchema()\n" % (schema_name, table_name)
-        json_text = "%s_json_schema = JSONSchema().dump(%s_ma_schema)\n" % (schema_name, schema_name)
+        json_text = "%s_json_schema = JSONSchema().dump(%s_ma_schema)\n" % (
+            schema_name,
+            schema_name,
+        )
 
         schema_file_path = "%s/ispyb_ssx/schemas/%s.py" % (ispyb_root, schema_name)
         if not os.path.exists(os.path.dirname(schema_file_path)):

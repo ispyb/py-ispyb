@@ -27,25 +27,25 @@ import csv
 import sys
 
 
-class BaseConfig():
+class BaseConfig:
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-    STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+    STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
 
-    SERVICE = 'ispyb_core'
+    SERVICE = "ispyb_core"
 
     API_ROOT = "/ispyb/api/v1"
     SECRET_KEY = os.urandom(16)
-    SQLALCHEMY_DATABASE_URI = 'mysql://mxuser:mxpass@localhost/pydb_test'
+    SQLALCHEMY_DATABASE_URI = "mysql://mxuser:mxpass@localhost/pydb_test"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
-    #SQLALCHEMY_POOL_RECYCLE = 2999
-    #SQLALCHEMY_POOL_TIMEOUT = 20
+    # SQLALCHEMY_POOL_RECYCLE = 2999
+    # SQLALCHEMY_POOL_TIMEOUT = 20
     PAGINATION_ITEMS_LIMIT = 20
 
     DEBUG = True
     ERROR_404_HELP = False
-    REVERSE_PROXY_SETUP = os.getenv('EXAMPLE_API_REVERSE_PROXY_SETUP', False)
+    REVERSE_PROXY_SETUP = os.getenv("EXAMPLE_API_REVERSE_PROXY_SETUP", False)
 
     AUTHORIZATIONS = {
         "apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}
@@ -53,45 +53,43 @@ class BaseConfig():
 
     AUTH_MODULE = "app.extensions.auth.DummyAuth"
     AUTH_CLASS = "DummyAuth"
-    JWT_CODING_ALGORITHM = 'HS256'
+    JWT_CODING_ALGORITHM = "HS256"
     TOKEN_EXP_TIME = 60  # in minutes
     MASTER_TOKEN = "MasterToken"
 
-    MODULES = (
-        'api',
-    )
+    MODULES = ("api",)
 
     DB_MODULES = []
 
-    with open('%s/enabled_db_modules.csv' % PROJECT_ROOT) as csvfile:
+    with open("%s/enabled_db_modules.csv" % PROJECT_ROOT) as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
             if not row[0].startswith("#"):
                 DB_MODULES.append(row[0])
 
     ROUTES = [
-        'auto_proc',
-        'data_collection',
-        'proposal',
-	'sample',
-        'session',
-        'schemas',
+        "auto_proc",
+        "data_collection",
+        "proposal",
+        "sample",
+        "session",
+        "schemas",
     ]
 
     SWAGGER_UI_JSONEDITOR = True
-    SWAGGER_UI_OAUTH_CLIENT_ID = 'documentation'
+    SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
     SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB Flask-RESTx server documentation"
     SWAGGER_UI_OAUTH_APP_NAME = "ISPyB Flask-RESTx server documentation"
 
     CSRF_ENABLED = True
 
     LOG_FILENAME = "/tmp/ispyb_server.log"
-    #LOG_FORMAT = "%(asctime)s |%(levelname)-5s| %(message)s"
+    # LOG_FORMAT = "%(asctime)s |%(levelname)-5s| %(message)s"
 
 
 class ProductionConfig(BaseConfig):
-    SECRET_KEY = os.getenv('EXAMPLE_API_SERVER_SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.getenv('EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI')
+    SECRET_KEY = os.getenv("EXAMPLE_API_SERVER_SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.getenv("EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI")
     MASTER_TOKEN = None
 
 

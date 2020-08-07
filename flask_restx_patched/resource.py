@@ -44,14 +44,14 @@ class Resource(OriginalResource):
         # use.
         method_funcs = [getattr(self, m.lower()) for m in self.methods]
         allowed_methods = []
-        request_oauth_backup = getattr(flask.request, 'oauth', None)
+        request_oauth_backup = getattr(flask.request, "oauth", None)
         for method_func in method_funcs:
-            if getattr(method_func, '_access_restriction_decorators', None):
-                if not hasattr(method_func, '_cached_fake_method_func'):
+            if getattr(method_func, "_access_restriction_decorators", None):
+                if not hasattr(method_func, "_cached_fake_method_func"):
                     fake_method_func = lambda *args, **kwargs: True
                     # `__name__` is used in `login_required` decorator, so it
                     # is required to fake this also
-                    fake_method_func.__name__ = 'options'
+                    fake_method_func.__name__ = "options"
 
                     # Decorate the fake method with the registered access
                     # restriction decorators
@@ -60,7 +60,7 @@ class Resource(OriginalResource):
 
                     # Cache the `fake_method_func` to avoid redoing this over
                     # and over again
-                    method_func.__dict__['_cached_fake_method_func'] = fake_method_func
+                    method_func.__dict__["_cached_fake_method_func"] = fake_method_func
                 else:
                     fake_method_func = method_func._cached_fake_method_func
 
@@ -75,6 +75,5 @@ class Resource(OriginalResource):
         flask.request.oauth = request_oauth_backup
 
         return flask.Response(
-            status=HTTPStatus.NO_CONTENT,
-            headers={'Allow': ", ".join(allowed_methods)}
+            status=HTTPStatus.NO_CONTENT, headers={"Allow": ", ".join(allowed_methods)}
         )
