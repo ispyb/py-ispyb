@@ -26,7 +26,7 @@ from tests.data import test_proposal
 
 def test_get(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
+    route_root = ispyb_core_app.config["API_ROOT"] + "/proposal"
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
     response = client.get(route_root, headers=headers)
@@ -49,7 +49,7 @@ def test_get(ispyb_core_app, ispyb_core_token):
 
 def test_put(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
+    route_root = ispyb_core_app.config["API_ROOT"] + "/proposal"
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
     response = client.post(route_root, data=test_proposal, headers=headers)
