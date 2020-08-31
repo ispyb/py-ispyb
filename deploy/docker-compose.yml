@@ -11,4 +11,4 @@ api:
   build: ../
   environment:
     EXAMPLE_API_REVERSE_PROXY_SETUP: 'true'
-    FLASK_CONFIG: 'production'
+    FLASK_CONFIG: 'ispyb-core-production'

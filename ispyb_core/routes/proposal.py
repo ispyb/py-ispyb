@@ -50,7 +50,7 @@ __license__ = "LGPLv3+"
 
 
 log = logging.getLogger(__name__)
-api = Namespace("Proposal", description="Proposal related namespace", path="/proposals")
+api = Namespace("Proposal", description="Proposal related namespace", path="/proposal")
 api_v1.add_namespace(api)
 
 
@@ -184,7 +184,7 @@ class ProposalById(Resource):
             api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
 
 
-@api.route("/<string:login_name>")
+@api.route("/login_name/<string:login_name>")
 # @api.param("login_name", "Login name as str")
 @api.doc(security="apikey")
 class ProposalByLogin(Resource):
@@ -192,7 +192,7 @@ class ProposalByLogin(Resource):
 
     @api.doc(description="login_name should be a string")
     @api.marshal_with(proposal_schemas.proposal_f_schema)
-    @token_required
+    #@token_required
     def get(self, login_name):
         """Returns a proposal by login"""
         # app.logger.info("Returns all proposals for user with login name %s" % login_name)

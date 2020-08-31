@@ -18,34 +18,81 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+import logging
 
+from flask import request
 from flask_restx_patched import Resource, HTTPStatus
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required
+from app.extensions.auth import token_required, write_permission_required
 
+from ispyb_core.models import BLSession as Session
+from ispyb_core.schemas import session as session_schemas
 from ispyb_core.modules import session
 
 
 __license__ = "LGPLv3+"
 
-
-api = Namespace("Sessions", description="Session related namespace", path="/sessions")
+log = logging.getLogger(__name__)
+api = Namespace("Session", description="Session related namespace", path="/session")
 api_v1.add_namespace(api)
 
-
 @api.route("")
+@api.doc(security="apikey")
 class Sessions(Resource):
-    @api.doc(security="apikey")
+    """Allows to get all sessions and insert a new one"""
+
+    #@api.marshal_list_with(_schemas.session_f_schema, skip_none=True, code=HTTPStatus.OK)
+    #TODO Define model with JSON Schema 
+    @token_required
     def get(self):
-        return session.get_all_sessions()
+        """Returns list of sessions
+
+        /ispyb/api/v1/sessions: returns all sessions
+        /ispyb/api/v1/sessions?limit=10: returns first 10 sessions
+        /ispyb/api/v1/sessions?offset=10: returns sessions 10..30
+        (default limit defined in config.py)
+        /ispyb/api/v1/sessions?offset=10&limit=10: returns 10 sessions
+        starting from index 10
+
+        Returns:
+            list: list of sessions.
+        """
+        offset = request.args.get("offset", type=int)
+        limit = request.args.get("limit", type=int)
+
+        # TODO add decorator @paginate
+        return session.get_sessions(offset, limit), HTTPStatus.OK
+
+    @api.expect(session_schemas.session_f_schema)
+    @api.marshal_with(session_schemas.session_f_schema, code=201)
+    #@api.errorhandler(FakeException)
+    #TODO add custom exception handling
+    @token_required
+    @write_permission_required
+    def post(self):
+        """Adds a new session"""
+        log.info("Inserts a new session")
+
+        #with 
+        result = session.add_session(api.payload)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            return
+            {"message": "Unable to add new session"},
+            HTTPStatus.NOT_ACCEPTABLE     
 
 
-@api.route("<int:proposal_id>")
-@api.param("proposal_id", "Proposal id (integer)")
-@api.doc(description="proposal_id should be an integer ")
-# @token_required
-class SessionsByProposalList(Resource):
-    def get(self, proposal_id):
-        """Returns all proposal shippings"""
-        return session.get_proposal_sessions(proposal_id)
+@api.route("/params")
+@api.doc(security="apikey")
+class SessionssByParams(Resource):
+    """Allows to get sessions by query parametes"""
+
+    @api.marshal_with(session_schemas.session_f_schema)
+    @token_required
+    def get(self):
+        """Returns sessions by query parameters"""
+        return session.get_sessions_by_params(request.args)
+
+
