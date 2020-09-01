@@ -65,7 +65,8 @@ def get_session_by_id(session_id):
     Returns:
         dict: info about session as dict
     """
-    return db.get_db_item_by_id(SessionModel, session_ma_schema, {"sessionId": session_id})
+    id_dict = {"sessionId": session_id}
+    return db.get_db_item_by_id(SessionModel, session_ma_schema, id_dict)
 
 
 def get_session_info_by_id(session_id):

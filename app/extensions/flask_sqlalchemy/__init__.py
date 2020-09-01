@@ -197,7 +197,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         else:
             for key, value in item_update_dict.items():
                 if hasattr(db_item, key):
-                    setattr(db_iem, key, value)
+                    setattr(db_item, key, value)
                 else:
                     print("Attribute %s not defined in the item model" % key)
             self.session.commit()
@@ -215,6 +215,6 @@ class SQLAlchemy(BaseSQLAlchemy):
                 return True
             except Exception as ex:
                 print(ex)
-                log.exception(str(ex))
+                #log.exception(str(ex))
                 self.session.rollback()
 

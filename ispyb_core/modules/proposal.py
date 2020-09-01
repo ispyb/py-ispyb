@@ -24,10 +24,6 @@ __license__ = "LGPLv3+"
 
 import logging
 
-from flask import current_app
-
-from sqlalchemy.exc import InvalidRequestError
-
 from app.extensions import db
 from ispyb_core.models import Proposal as ProposalModel
 from ispyb_core.modules import person, session
@@ -60,7 +56,8 @@ def get_proposal_by_id(proposal_id):
     Returns:
         dict: info about proposal as dict
     """
-    return db.get_db_item_by_id(ProposalModel, proposal_ma_schema, {"proposalId": proposal_id})
+    id_dict = {"proposalId": proposal_id}
+    return db.get_db_item_by_id(ProposalModel, proposal_ma_schema, id_dict)
 
 
 def get_proposal_info_by_id(proposal_id):
@@ -74,7 +71,7 @@ def get_proposal_info_by_id(proposal_id):
     """
     proposal_json = get_proposal_by_id(proposal_id)
 
-    person_json = person.get_person_by_id(proposal.personId)
+    person_json = person.get_person_by_id(proposal_json["personId"])
     proposal_json["person"] = person_json
 
     sessions_json = session.get_sessions({"proposalId": proposal_id})
@@ -88,11 +85,13 @@ def add_proposal(proposal_dict):
 
 
 def update_proposal(proposal_id, proposal_dict):
-    return db.update_db_item(ProposalModel, {"proposalId": proposal_id}, proposal_dict)
+    id_dict = {"proposalId": proposal_id}
+    return db.update_db_item(ProposalModel, id_dict, proposal_dict)
 
 
 def patch_proposal(proposal_id, proposal_dict):
-    return db.patch_db_item(ProposalModel, {"proposalId": proposal_id}, proposal_dict)
+    id_dict = {"proposalId": proposal_id}
+    return db.patch_db_item(ProposalModel, id_dict, proposal_dict)
 
 
 def delete_proposal(proposal_id):
@@ -105,4 +104,5 @@ def delete_proposal(proposal_id):
         bool: True if the proposal exists and deleted successfully,
         otherwise return False
     """
-    return db.delete_db_item(ProposalModel, {"proposalId": proposal_id})
+    id_dict = {"proposalId": proposal_id}
+    return db.delete_db_item(ProposalModel, id_dict)
