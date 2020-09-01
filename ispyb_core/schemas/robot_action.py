@@ -1,5 +1,5 @@
 # encoding: utf-8
-#
+# 
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,6 +22,7 @@
 __license__ = "LGPLv3+"
 
 
+
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -29,26 +30,20 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 robot_action_dict_schema = {
-    "robotActionId": f_fields.Integer(required=True, description=""),
-    "blsessionId": f_fields.Integer(required=True, description=""),
-    "blsampleId": f_fields.Integer(required=False, description=""),
-    "actionType": f_fields.String(
-        required=False, description="enum(LOAD,UNLOAD,DISPOSE,STORE,WASH,ANNEAL)"
-    ),
-    "startTimestamp": f_fields.DateTime(required=True, description=""),
-    "endTimestamp": f_fields.DateTime(required=True, description=""),
-    "status": f_fields.String(
-        required=False,
-        description="enum(SUCCESS,ERROR,CRITICAL,WARNING,COMMANDNOTSENT)",
-    ),
-    "message": f_fields.String(required=False, description=""),
-    "containerLocation": f_fields.Integer(required=False, description=""),
-    "dewarLocation": f_fields.Integer(required=False, description=""),
-    "sampleBarcode": f_fields.String(required=False, description=""),
-    "xtalSnapshotBefore": f_fields.String(required=False, description=""),
-    "xtalSnapshotAfter": f_fields.String(required=False, description=""),
-}
-
+        'robotActionId': f_fields.Integer(required=True, description=''),
+        'blsessionId': f_fields.Integer(required=True, description=''),
+        'blsampleId': f_fields.Integer(required=False, description=''),
+        'actionType': f_fields.String(required=False, description='enum(LOAD,UNLOAD,DISPOSE,STORE,WASH,ANNEAL)'),
+        'startTimestamp': f_fields.DateTime(required=True, description=''),
+        'endTimestamp': f_fields.DateTime(required=True, description=''),
+        'status': f_fields.String(required=False, description='enum(SUCCESS,ERROR,CRITICAL,WARNING,EPICSFAIL,COMMANDNOTSENT)'),
+        'message': f_fields.String(required=False, description=''),
+        'containerLocation': f_fields.Integer(required=False, description=''),
+        'dewarLocation': f_fields.Integer(required=False, description=''),
+        'sampleBarcode': f_fields.String(required=False, description=''),
+        'xtalSnapshotBefore': f_fields.String(required=False, description=''),
+        'xtalSnapshotAfter': f_fields.String(required=False, description=''),
+        }
 
 class RobotActionSchema(Schema):
     """Marshmallows schema class representing RobotAction table"""
@@ -67,7 +62,6 @@ class RobotActionSchema(Schema):
     xtalSnapshotBefore = ma_fields.String()
     xtalSnapshotAfter = ma_fields.String()
 
-
-robot_action_f_schema = api.model("RobotAction", robot_action_dict_schema)
+robot_action_f_schema = api.model('RobotAction', robot_action_dict_schema)
 robot_action_ma_schema = RobotActionSchema()
 robot_action_json_schema = JSONSchema().dump(robot_action_ma_schema)

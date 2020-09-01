@@ -25,27 +25,105 @@ __license__ = "LGPLv3+"
 import logging
 
 from app.extensions import db
+
 from ispyb_core.models import DataCollection as DataCollectionModel
+from ispyb_core.models import DataCollectionGroup as DataCollectionGroupModel
 from ispyb_core.schemas.data_collection import (
-    data_collection_f_schema,
     data_collection_ma_schema,
+    data_collection_dict_schema,
+)
+from ispyb_core.schemas.data_collection_group import (
+    data_collection_group_ma_schema,
+    data_collection_group_dict_schema,
 )
 
 
 log = logging.getLogger(__name__)
 
 
-def get_all_data_collections():
-    data_collections = DataCollectionModel.query.all()
-    return data_collection_ma_schema.dump(data_collections, many=True)
+def get_data_collections(query_params):
+    """Returns data collection items based on query parameters
+
+    Args:
+        query_params ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.get_db_items(
+        DataCollectionModel,
+        data_collection_dict_schema,
+        data_collection_ma_schema,
+        query_params,
+    )
 
 
 def add_data_collection(data_collection_dict):
-    try:
-        data_collection = DataCollectionModel(data_collection_dict)
-        db.session.add(data_collection)
-        db.session.commit()
-    except Exception as ex:
-        print(ex)
-        # app.logger.exception(str(ex))
-        db.session.rollback()
+    """Adds data collection item
+
+    Args:
+        data_collection_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(DataCollectionModel, data_collection_dict)
+
+def get_data_collection_by_id(data_collection_id):
+    """Returns data_collection by its id
+
+    Args:
+        data_collection_id (int): corresponds to dataCollectionId in db
+
+    Returns:
+        dict: info about data_collection as dict
+    """
+    id_dict = {"dataCollectionId" : data_collection_id}
+    return db.get_db_item_by_id(
+        DataCollectionModel,
+        data_collection_ma_schema,
+        id_dict
+        )
+    
+def get_data_collection_groups(query_params):
+    """Returns data collection group items based on query parameters
+
+    Args:
+        query_params ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.get_db_items(
+        DataCollectionGroupModel,
+        data_collection_group_ma_schema,
+        query_params,
+    )
+
+
+def add_data_collection_group(data_collection_group_dict):
+    """Adds data collection item
+
+    Args:
+        data_collection_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(DataCollectionGroupModel, data_collection_group_dict)
+
+def get_data_collection_group_by_id(data_collection_group_id):
+    """Returns data collection group by its id
+
+    Args:
+        data_collection_group_id (int): corresponds to dataCollectionGroupId in db
+
+    Returns:
+        dict: info about data collection group as dict
+    """
+    id_dict = {"dataCollectionGroupId" : data_collection_group_id}
+    return db.get_db_item_by_id(
+        DataCollectionGroupModel,
+        data_collection_group_ma_schema,
+        id_dict
+        )

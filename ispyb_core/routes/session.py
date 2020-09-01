@@ -34,17 +34,19 @@ from ispyb_core.modules import session
 __license__ = "LGPLv3+"
 
 log = logging.getLogger(__name__)
-api = Namespace("Session", description="Session related namespace", path="/session")
+api = Namespace("Sessions", description="Session related namespace", path="/sessions")
 api_v1.add_namespace(api)
+
+session_desc_f_schema = session_schemas.session_f_schema
+
+
 
 @api.route("")
 @api.doc(security="apikey")
 class Sessions(Resource):
     """Allows to get all sessions and insert a new one"""
 
-    #@api.marshal_list_with(_schemas.session_f_schema, skip_none=True, code=HTTPStatus.OK)
-    #TODO Define model with JSON Schema 
-    @token_required
+    #@token_required
     def get(self):
         """Returns list of sessions
 
@@ -58,11 +60,9 @@ class Sessions(Resource):
         Returns:
             list: list of sessions.
         """
-        offset = request.args.get("offset", type=int)
-        limit = request.args.get("limit", type=int)
 
         # TODO add decorator @paginate
-        return session.get_sessions(offset, limit), HTTPStatus.OK
+        return session.get_sessions(request.args), HTTPStatus.OK
 
     @api.expect(session_schemas.session_f_schema)
     @api.marshal_with(session_schemas.session_f_schema, code=201)
@@ -84,15 +84,44 @@ class Sessions(Resource):
             HTTPStatus.NOT_ACCEPTABLE     
 
 
-@api.route("/params")
+
+@api.route("/<int:session_id>")
+@api.param("session_id", "Session id (integer)")
 @api.doc(security="apikey")
-class SessionssByParams(Resource):
-    """Allows to get sessions by query parametes"""
+@api.response(
+    code=HTTPStatus.NOT_FOUND, description="Session not found.",
+)
+class SessionById(Resource):
+    """Allows to get/set/delete a session"""
 
-    @api.marshal_with(session_schemas.session_f_schema)
+    @api.doc(description="session_id should be an integer ")
+    @api.marshal_with(session_schemas.session_f_schema, skip_none=True, code=HTTPStatus.OK)
+    #@token_required
+    def get(self, session_id):
+        """Returns a session by sessionId"""
+        result = session.get_session_by_id(session_id)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            api.abort(HTTPStatus.NOT_FOUND, "Session not found")
+
+@api.route("/<int:session_id>/info")
+@api.param("session_id", "session id (integer)")
+@api.doc(security="apikey")
+@api.response(
+    code=HTTPStatus.NOT_FOUND, description="session not found.",
+)
+class SessionInfoById(Resource):
+    """Returns full information of a session"""
+
+    @api.doc(description="session_id should be an integer ")
+    #@api.marshal_with(session_desc_f_schema)
     @token_required
-    def get(self):
-        """Returns sessions by query parameters"""
-        return session.get_sessions_by_params(request.args)
-
+    def get(self, session_id):
+        """Returns a full description of a session by sessionId"""
+        result = session.get_session_info_by_id(session_id)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            api.abort(HTTPStatus.NOT_FOUND, "session not found")
 

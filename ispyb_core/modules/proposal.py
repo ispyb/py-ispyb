@@ -24,41 +24,27 @@ __license__ = "LGPLv3+"
 
 import logging
 
-from flask import current_app
-
 from app.extensions import db
 from ispyb_core.models import Proposal as ProposalModel
-from ispyb_core.modules import person
+from ispyb_core.modules import person, session
 from ispyb_core.schemas.proposal import proposal_ma_schema, proposal_dict_schema
 
 
 log = logging.getLogger(__name__)
 
 
-def get_proposals(offset, limit):
-    """Returns proposals defined by pagination offset and limit
+def get_proposals(query_params):
+    """Returns proposals by query parameters"""
 
-    Args:
-        offset (int): pagination offset
-        limit (int): if not passed then limit is defined as
-        PAGINATION_ITEMS_LIMIT in config.py
+    if "login_name" in query_params:
+        query_params = query_params.to_dict()
+        query_params["personId"] = person.get_person_id_by_login(
+            query_params.get("login_name")
+        )
 
-    Returns:
-        list: list of proposals
-    """
-
-    if not offset:
-        offset = 1
-    if not limit:
-        limit = current_app.config["PAGINATION_ITEMS_LIMIT"]
-
-    total = ProposalModel.query.count()
-    query = ProposalModel.query.limit(limit).offset(offset)
-    proposals = proposal_ma_schema.dump(query, many=True)[
-        0
-    ]  # Why this is a list of list???
-
-    return {"total": total, "rows": proposals}
+    return db.get_db_items(
+        ProposalModel, proposal_dict_schema, proposal_ma_schema, query_params
+    )
 
 
 def get_proposal_by_id(proposal_id):
@@ -70,83 +56,44 @@ def get_proposal_by_id(proposal_id):
     Returns:
         dict: info about proposal as dict
     """
-    proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
-    return proposal_ma_schema.dump(proposal)[0]  # Again this...
+    id_dict = {"proposalId": proposal_id}
+    return db.get_db_item_by_id(ProposalModel, proposal_ma_schema, id_dict)
 
 
-def get_proposals_by_params(params):
-    """Returns list of proposals defined by query parameters
-
-    Args:
-        params (dict): query parameters
-
-    Returns:
-        list: list of proposals
-    """
-    query_params = {}
-    for key in params.keys():
-        if key in proposal_dict_schema.keys():
-            query_params[key] = params[key]
-
-    proposal = ProposalModel.query.filter_by(**query_params)
-    return proposal_ma_schema.dump(proposal, many=True)[0]
-
-
-def get_proposal_item_by_id(proposal_id):
-    """Returns proposal by proposalId
+def get_proposal_info_by_id(proposal_id):
+    """Returns proposal by its proposalId
 
     Args:
-        proposal_id ([type]): [description]
+        proposal_id (int): corresponds to proposalId in db
 
     Returns:
-        [type]: [description]
+        dict: info about proposal as dict
     """
-    return ProposalModel.query.filter_by(proposalId=proposal_id).first()
+    proposal_json = get_proposal_by_id(proposal_id)
 
+    person_json = person.get_person_by_id(proposal_json["personId"])
+    proposal_json["person"] = person_json
 
-def get_proposals_by_login_name(login_name):
-    """Returns proposals by a login name
-    """
-    person_id = person.get_person_id_by_login(login_name)
-    # TODO this is not nice...
-    proposal = ProposalModel.query.filter_by(personId=person_id)
-    return proposal_ma_schema.dump(proposal, many=True)
+    sessions_json = session.get_sessions({"proposalId": proposal_id})
+    proposal_json["sessions"] = sessions_json
 
-
-def get_proposal_from_dict(proposal_dict):
-    return ProposalModel(**proposal_dict)
+    return proposal_json
 
 
 def add_proposal(proposal_dict):
-    try:
-        proposal_item = ProposalModel(**proposal_dict)
-        db.session.add(proposal_item)
-        db.session.commit()
-        return proposal_item.proposalId
-    except BaseException:
-        return
-        
+    return db.add_db_item(ProposalModel, proposal_dict)
+
+
 def update_proposal(proposal_id, proposal_dict):
-    proposal_item = get_proposal_item_by_id(proposal_id)
-    if not proposal_item:
-        return None
-    else:
-        #Do something
-        return True
+    id_dict = {"proposalId": proposal_id}
+    return db.update_db_item(ProposalModel, id_dict, proposal_dict)
+
 
 def patch_proposal(proposal_id, proposal_dict):
-    proposal_item = get_proposal_item_by_id(proposal_id)
-    if not proposal_item:
-        return None
-    else:
-        for key, value in proposal_dict.items():
-            if hasattr(proposal_item, key):
-                setattr(proposal_item, key, value)
-            else:
-                print('Attribute %s not defined in the Proposal model' % key)
-        db.session.commit()
-        return True
-    
+    id_dict = {"proposalId": proposal_id}
+    return db.patch_db_item(ProposalModel, id_dict, proposal_dict)
+
+
 def delete_proposal(proposal_id):
     """Deletes proposal item from db
 
@@ -157,15 +104,5 @@ def delete_proposal(proposal_id):
         bool: True if the proposal exists and deleted successfully,
         otherwise return False
     """
-    try:
-        proposal_item = get_proposal_item_by_id(proposal_id)
-        if not proposal_item:
-            return None
-        else:
-            db.session.delete(proposal_item)
-            db.session.commit()
-            return True
-    except Exception as ex:
-        print(ex)
-        log.exception(str(ex))
-        db.session.rollback()
+    id_dict = {"proposalId": proposal_id}
+    return db.delete_db_item(ProposalModel, id_dict)

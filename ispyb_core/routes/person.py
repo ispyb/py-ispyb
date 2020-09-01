@@ -32,7 +32,7 @@ from ispyb_core.modules import person
 __license__ = "LGPLv3+"
 
 
-api = Namespace("Person", description="Person", path="/person")
+api = Namespace("Person", description="Person", path="/persons")
 api_v1.add_namespace(api)
 
 
@@ -41,7 +41,7 @@ class PersonList(Resource):
     """Allows to get all persons"""
 
     @api.doc(security="apikey")
-    # @token_required
+    @token_required
     def get(self):
         """Returns all persons"""
         # app.logger.info("Return all person")
@@ -59,17 +59,7 @@ class Person(Resource):
 
     @api.doc(description="person_id should be an integer ")
     @api.marshal_with(person_schemas.person_f_schema)
-    # @token_required
+    @token_required
     def get(self, person_id):
         """Returns a person by personId"""
         return person.get_person_by_id(person_id)
-
-    """
-    #@ns.doc(parser=parser)
-    @ns.expect(f_proposal_schema)
-    def post(self, prop_id):
-        json_data = request.form['data']
-        print(json_data)
-        data = proposal_ma_schema.load(json_data)
-
-    """

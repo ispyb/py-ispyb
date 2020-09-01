@@ -22,15 +22,70 @@
 __license__ = "LGPLv3+"
 
 
+from app.extensions import db
+
 from ispyb_core.models import BLSession as SessionModel
-from ispyb_core.schemas.session import session_f_schema, session_ma_schema
+from ispyb_core.schemas.session import session_ma_schema, session_dict_schema
+
+from ispyb_core.modules import beamline_setup, data_collection, proposal
 
 
-def get_all_sessions():
-    session_list = SessionModel.query.all()
-    return session_ma_schema.dump(session_list, many=True)
+def get_sessions(query_params):
+    """Returns session based on query parameters
+
+    Args:
+        query_params ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.get_db_items(
+        SessionModel, session_dict_schema, session_ma_schema, query_params
+    )
 
 
-def get_proposal_sessions(proposal_id):
-    session_list = SessionModel.query.filter_by(proposalId=proposal_id)
-    return session_ma_schema.dump(session_list, many=True)
+def add_session(session_dict):
+    """Adds new session
+
+    Args:
+        session_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(SessionModel, session_dict)
+
+
+def get_session_by_id(session_id):
+    """Returns session info by its sessionId
+
+    Args:
+        session_id (int): corresponds to sessionId in db
+
+    Returns:
+        dict: info about session as dict
+    """
+    id_dict = {"sessionId": session_id}
+    return db.get_db_item_by_id(SessionModel, session_ma_schema, id_dict)
+
+
+def get_session_info_by_id(session_id):
+    """Returns session info by its sessionId
+
+    Args:
+        session_id (int): corresponds to sessionId in db
+
+    Returns:
+        dict: info about session as dict
+    """
+    session_json = get_session_by_id(session_id)
+    if session_json:
+        session_json["proposal"] = proposal.get_proposal_by_id(
+            session_json["proposalId"]
+        )
+        session_json["beamline_setup"] = beamline_setup.get_beamline_setup_by_id(
+            session_json["beamLineSetupId"]
+        )
+        # session_json["data_collections_groups"] = data_collection.get_data_collection_groups({"sessionId" : session_id})["data"]["rows"]
+
+    return session_json

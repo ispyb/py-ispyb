@@ -30,6 +30,7 @@ def get_sample_list():
     sample_list = SampleModel.query.all()
     return sample_ma_schema.dump(sample_list, many=True)
 
+
 def get_sample_by_id(sample_id):
     """Returns sample by its sampleId
 

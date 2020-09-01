@@ -32,7 +32,7 @@ from app.extensions.api import api_v1 as api
 data_set_dict_schema = {
         'dataSetId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=True, description=''),
-        'dataAcquisitionId': f_fields.Integer(required=False, description=''),
+        'ssxDataAcquisitionId': f_fields.Integer(required=False, description=''),
         'mergedResults': f_fields.String(required=False, description=''),
         }
 
@@ -41,7 +41,7 @@ class DataSetSchema(Schema):
 
     dataSetId = ma_fields.Integer()
     name = ma_fields.String()
-    dataAcquisitionId = ma_fields.Integer()
+    ssxDataAcquisitionId = ma_fields.Integer()
     mergedResults = ma_fields.String()
 
 data_set_f_schema = api.model('DataSet', data_set_dict_schema)

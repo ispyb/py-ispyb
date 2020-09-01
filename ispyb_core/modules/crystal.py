@@ -30,6 +30,7 @@ def get_crystal_list():
     crystal_list = CrystalModel.query.all()
     return crystal_ma_schema.dump(crystal_list, many=True)
 
+
 def get_crystal_by_id(crystal_id):
     """Returns crystal by its crystalId
 

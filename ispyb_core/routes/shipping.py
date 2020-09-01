@@ -31,7 +31,9 @@ from ispyb_core.modules import shipping
 __license__ = "LGPLv3+"
 
 
-api = Namespace("Shipping", description="Shipping related namespace", path="/shipping")
+api = Namespace(
+    "Shippings", description="Shipping related namespace", path="/shippings"
+)
 api_v1.add_namespace(api)
 
 

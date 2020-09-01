@@ -81,11 +81,11 @@ from app.extensions.api import api_v1 as api
 for table in tables:
     table_name = table[0]
     if table_name in gen_tables:
-        print("Generting flask and marshmallow models for table %s" % table_name)
+        schema_name = gen_modules[gen_tables.index(table_name)]
+        print("Generting flask and marshmallow models for table %s in %s.py" % (table_name, schema_name))
         cursor.execute("SHOW FULL COLUMNS FROM %s" % table)
         columns = cursor.fetchall()
         table_name = table_name.replace("BF_", "").replace("BL", "")
-        schema_name = "_".join(re.findall("[A-Z][^A-Z]*", table_name)).lower()
         dict_text = "%s_dict_schema = {\n" % schema_name
         ma_text = "class %sSchema(Schema):\n" % table_name
         ma_text += (
