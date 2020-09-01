@@ -24,7 +24,7 @@ __license__ = "LGPLv3+"
 
 import logging
 
-from app.extensions import get_db_items, get_db_item_by_id, add_db_item
+from app.extensions import get_db_items, get_db_item_by_id, add_db_item, patch_db_item, update_db_item, delete_db_item
 
 from ispyb_core.models import DataCollection as DataCollectionModel
 from ispyb_core.models import DataCollectionGroup as DataCollectionGroupModel
@@ -70,7 +70,7 @@ def add_data_collection(data_collection_dict):
     return add_db_item(DataCollectionModel, data_collection_dict)
 
 def get_data_collection_by_id(data_collection_id):
-    """Returns data_collection by its data_collectionId
+    """Returns data_collection by its id
 
     Args:
         data_collection_id (int): corresponds to dataCollectionId in db
@@ -78,11 +78,12 @@ def get_data_collection_by_id(data_collection_id):
     Returns:
         dict: info about data_collection as dict
     """
-    data_collection = DataCollectionModel.query.filter_by(dataCollectionId=data_collection_id).first()
-    data_collection_json = data_collection_ma_schema.dump(data_collection)[0]
-
-    return data_collection_json
-
+    return get_db_item_by_id(
+        DataCollectionModel,
+        data_collection_ma_schema,
+        {"dataCollectionId" : data_collection_id}
+        )
+    
 def get_data_collection_groups(query_params):
     """Returns data collection group items based on query parameters
 
@@ -92,9 +93,8 @@ def get_data_collection_groups(query_params):
     Returns:
         [type]: [description]
     """
-    return get_resource(
+    return get_db_item_by_id(
         DataCollectionGroupModel,
-        data_collection_group_dict_schema,
         data_collection_group_ma_schema,
         query_params,
     )
@@ -109,4 +109,19 @@ def add_data_collection_group(data_collection_group_dict):
     Returns:
         [type]: [description]
     """
-    return add_resource(DataCollectionGroupModel, data_collection_group_dict)
+    return add_db_item(DataCollectionGroupModel, data_collection_group_dict)
+
+def get_data_collection_group_by_id(data_collection_group_id):
+    """Returns data collection group by its id
+
+    Args:
+        data_collection_group_id (int): corresponds to dataCollectionGroupId in db
+
+    Returns:
+        dict: info about data collection group as dict
+    """
+    return get_db_item_by_id(
+        DataCollectionGroupModel,
+        data_collection_group_ma_schema,
+        {"dataCollectionGroupId" : data_collection_group_id}
+        )

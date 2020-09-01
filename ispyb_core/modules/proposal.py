@@ -28,7 +28,7 @@ from flask import current_app
 
 from sqlalchemy.exc import InvalidRequestError
 
-from app.extensions import get_db_items, get_db_item_by_id, add_db_item
+from app.extensions import get_db_items, get_db_item_by_id, add_db_item, patch_db_item, update_db_item, delete_db_item
 from ispyb_core.models import Proposal as ProposalModel
 from ispyb_core.modules import person, session
 from ispyb_core.schemas.proposal import proposal_ma_schema, proposal_dict_schema
@@ -72,12 +72,12 @@ def get_proposal_info_by_id(proposal_id):
     Returns:
         dict: info about proposal as dict
     """
-    proposal = get_proposal_by_id(proposal_id)
+    proposal_json = get_proposal_by_id(proposal_id)
 
     person_json = person.get_person_by_id(proposal.personId)
     proposal_json["person"] = person_json
 
-    sessions_json = session.get_sessions_by_params({"proposalId": proposal_id})
+    sessions_json = session.get_sessions({"proposalId": proposal_id})
     proposal_json["sessions"] = sessions_json
 
     return proposal_json
@@ -87,26 +87,10 @@ def add_proposal(proposal_dict):
     return add_db_item(ProposalModel, proposal_dict)
 
 def update_proposal(proposal_id, proposal_dict):
-    proposal_item = get_proposal_item_by_id(proposal_id)
-    if not proposal_item:
-        return None
-    else:
-        # Do something
-        return True
-
+    return update_db_item(ProposalModel, {"proposalId": proposal_id}, proposal_dict)
 
 def patch_proposal(proposal_id, proposal_dict):
-    proposal_item = get_proposal_item_by_id(proposal_id)
-    if not proposal_item:
-        return None
-    else:
-        for key, value in proposal_dict.items():
-            if hasattr(proposal_item, key):
-                setattr(proposal_item, key, value)
-            else:
-                print("Attribute %s not defined in the Proposal model" % key)
-        db.session.commit()
-        return True
+    return patch_db_item(ProposalModel, {"proposalId": proposal_id}, proposal_dict)
 
 
 def delete_proposal(proposal_id):
@@ -119,15 +103,4 @@ def delete_proposal(proposal_id):
         bool: True if the proposal exists and deleted successfully,
         otherwise return False
     """
-    try:
-        proposal_item = get_proposal_item_by_id(proposal_id)
-        if not proposal_item:
-            return None
-        else:
-            db.session.delete(proposal_item)
-            db.session.commit()
-            return True
-    except Exception as ex:
-        print(ex)
-        log.exception(str(ex))
-        db.session.rollback()
+    return delete_db_item(ProposalModel, {"proposalId": proposal_id})

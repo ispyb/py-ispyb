@@ -137,3 +137,40 @@ def add_db_item(sql_alchemy_model, data):
         # app.logger.exception(str(ex))
         db.session.rollback()
     return item
+
+def update_db_item(sql_alchemy_model, item_id_dict, item_update_dict):
+    db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
+    if not db_item:
+        return None
+    else:
+        # Do something
+        return True
+
+
+def patch_db_item(sql_alchemy_model, item_id_dict, item_update_dict):
+    db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
+    if not db_item:
+        return None
+    else:
+        for key, value in item_update_dict.items():
+            if hasattr(db_item, key):
+                setattr(db_iem, key, value)
+            else:
+                print("Attribute %s not defined in the item model" % key)
+        db.session.commit()
+        return True
+
+
+def delete_db_item(sql_alchemy_model, item_id_dict):
+    db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
+    if not db_item:
+        return None
+    else:
+        try:
+            db.session.delete(db_item)
+            db.session.commit()
+            return True
+        except Exception as ex:
+            print(ex)
+            log.exception(str(ex))
+            db.session.rollback()
