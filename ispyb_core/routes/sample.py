@@ -83,7 +83,7 @@ class SampleById(Resource):
             api.abort(HTTPStatus.NOT_FOUND, "Sample with id %d not found" % sample_id)
 
 
-@api.route("/crystal")
+@api.route("/crystals")
 @api.doc(security="apikey")
 class Crystal(Resource):
     """Crystal resource"""
@@ -102,7 +102,7 @@ class Crystal(Resource):
         return
 
 
-@api.route("/crystal/<int:crystal_id>")
+@api.route("/crystals/<int:crystal_id>")
 @api.param("crystal_id", "Crystal id (integer)")
 @api.doc(security="apikey")
 @api.response(

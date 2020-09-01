@@ -65,8 +65,6 @@ api_v1.add_namespace(api)
 class Proposals(Resource):
     """Allows to get all proposals"""
 
-    # @api.marshal_list_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
-    # TODO Define model with JSON Schema
     @token_required
     def get(self):
         """Returns list of proposals
@@ -83,7 +81,6 @@ class Proposals(Resource):
         Returns:
             list: list of proposals.
         """
-        # TODO add decorator @paginate
         return proposal.get_proposals(request.args), HTTPStatus.OK
 
     @api.expect(proposal_schemas.proposal_f_schema)
@@ -162,7 +159,6 @@ class ProposalById(Resource):
             proposal_id (int): corresponds to proposalId in db
         """
         log.info("Patch proposal %d" % proposal_id)
-        print(proposal_id, api.payload)
         result = proposal.patch_proposal(proposal_id, api.payload)
         if result:
             return (

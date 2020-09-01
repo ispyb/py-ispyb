@@ -22,37 +22,42 @@
 __license__ = "LGPLv3+"
 
 
-from flask import current_app
+from app.extensions import get_db_items, get_db_item_by_id, add_db_item
 
 from ispyb_core.models import BeamLineSetup as BeamLineSetupModel
 from ispyb_core.schemas.beamline_setup import (
+    beamline_setup_dict_schema,
     beamline_setup_f_schema,
     beamline_setup_ma_schema,
 )
 
 
-def get_beamline_setups(offset, limit):
-    """Returns beamline_setups defined by pagination offset and limit
+def get_beamline_setups(query_params):
+    """Returns beamline_setup items based on query parameters
 
     Args:
-        offset (int): pagination offset
-        limit (int): if not passed then limit is defined as
-        PAGINATION_ITEMS_LIMIT in config.py
+        query_params (dict): [description]
 
     Returns:
-        list: list of beamline_setups
+        [type]: [description]
     """
+    return get_db_items(
+        BeamLineSetupModel,
+        beamline_setup_dict_schema,
+        beamline_setup_ma_schema,
+        query_params,
+    )
 
-    if not offset:
-        offset = 1
-    if not limit:
-        limit = current_app.config["PAGINATION_ITEMS_LIMIT"]
+def add_beamline_setup(beamline_setup_dict):
+    """Adds data collection item
 
-    total = BeamLineSetupModel.query.count()
-    query = BeamLineSetupModel.query.limit(limit).offset(offset)
-    beamline_setups = beamline_setup_ma_schema.dump(query, many=True)[0]
+    Args:
+        beamline_setup_dict ([type]): [description]
 
-    return {"total": total, "rows": beamline_setups}
+    Returns:
+        [type]: [description]
+    """
+    return add_db_item(BeamLineSetupModel, beamline_setup_dict)
 
 
 def get_beamline_setup_by_id(beamline_setup_id):

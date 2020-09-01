@@ -21,21 +21,21 @@
 
 import json
 
-from tests.data import test_proposal
+from tests.data import test_data_collection
 
 
 def test_get(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
+    route_root = ispyb_core_app.config["API_ROOT"] + "/data_collections"
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
     response = client.get(route_root, headers=headers)
     data = response.json
     assert response.status_code == 200, "Wrong status code"
-    assert len(data["data"]["rows"]) > 0, "No proposal returned"
+    assert len(data["data"]["rows"]) > 0, "No data collection returned"
 
-    proposal_id = data["data"]["rows"][0]["proposalId"]
-    path = route_root + "/" + str(proposal_id)
+    data_collection_id = data["data"]["rows"][0]["dataCollectionId"]
+    path = route_root + "/" + str(data_collection_id)
     response = client.get(path, headers=headers)
     assert response.status_code == 200, "Wrong status code"
 
@@ -44,22 +44,9 @@ def test_get(ispyb_core_app, ispyb_core_token):
     assert response.status_code == 200, "Wrong status code"
     assert len(data) == 1
 
-    path = route_root + "?proposalType=MX"
+    path = route_root + "?numberOfImages=3600"
     response = client.get(path, headers=headers)
     data = response.json["data"]["rows"][0]
 
     assert response.status_code == 200, "Wrong status code"
-    assert data["proposalType"] == "MX"
-
-
-def test_put(ispyb_core_app, ispyb_core_token):
-    client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
-
-    headers = {"Authorization": "Bearer " + ispyb_core_token}
-    response = client.post(route_root, data=test_proposal, headers=headers)
-
-
-    assert response.status_code == 200, "Wrong status code"
-
-
+    assert data["numberOfImages"] == 3600

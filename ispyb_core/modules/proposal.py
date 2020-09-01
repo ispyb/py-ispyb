@@ -28,7 +28,7 @@ from flask import current_app
 
 from sqlalchemy.exc import InvalidRequestError
 
-from app.extensions import db, get_resource, add_resource
+from app.extensions import get_db_items, get_db_item_by_id, add_db_item
 from ispyb_core.models import Proposal as ProposalModel
 from ispyb_core.modules import person, session
 from ispyb_core.schemas.proposal import proposal_ma_schema, proposal_dict_schema
@@ -47,7 +47,7 @@ def get_proposals(query_params):
             query_params.get("login_name")
         )
 
-    return get_resource(
+    return get_db_items(
         ProposalModel, proposal_dict_schema, proposal_ma_schema, query_params
     )
 
@@ -61,14 +61,7 @@ def get_proposal_by_id(proposal_id):
     Returns:
         dict: info about proposal as dict
     """
-    proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
-    proposal_json = proposal_ma_schema.dump(proposal)[0]
-
-    return proposal_json
-
-
-# TODO maybe keep just get_proposal_info_by_id and filter results based on api.mode
-
+    return get_db_item_by_id(ProposalModel, proposal_ma_schema, {"proposalId": proposal_id})
 
 def get_proposal_info_by_id(proposal_id):
     """Returns proposal by its proposalId
@@ -79,8 +72,7 @@ def get_proposal_info_by_id(proposal_id):
     Returns:
         dict: info about proposal as dict
     """
-    proposal = ProposalModel.query.filter_by(proposalId=proposal_id).first()
-    proposal_json = proposal_ma_schema.dump(proposal)[0]
+    proposal = get_proposal_by_id(proposal_id)
 
     person_json = person.get_person_by_id(proposal.personId)
     proposal_json["person"] = person_json
@@ -91,33 +83,8 @@ def get_proposal_info_by_id(proposal_id):
     return proposal_json
 
 
-def get_proposal_item_by_id(proposal_id):
-    """Returns proposal by proposalId
-
-    Args:
-        proposal_id ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    return ProposalModel.query.filter_by(proposalId=proposal_id).first()
-
-
-def get_proposal_from_dict(proposal_dict):
-    return ProposalModel(**proposal_dict)
-
-
 def add_proposal(proposal_dict):
-    try:
-        proposal_item = ProposalModel(**proposal_dict)
-        db.session.add(proposal_item)
-        db.session.commit()
-        return proposal_item.proposalId
-    except BaseException as ex:
-        print(ex)
-        log.exception(str(ex))
-        db.session.rollback()
-
+    return add_db_item(ProposalModel, proposal_dict)
 
 def update_proposal(proposal_id, proposal_dict):
     proposal_item = get_proposal_item_by_id(proposal_id)

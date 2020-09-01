@@ -1,5 +1,5 @@
 # encoding: utf-8
-#
+# 
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,6 +22,7 @@
 __license__ = "LGPLv3+"
 
 
+
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -29,45 +30,38 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 shipping_dict_schema = {
-    "shippingId": f_fields.Integer(required=True, description=""),
-    "proposalId": f_fields.Integer(required=True, description=""),
-    "shippingName": f_fields.String(required=False, description=""),
-    "deliveryAgent_agentName": f_fields.String(required=False, description=""),
-    "deliveryAgent_shippingDate": f_fields.String(required=False, description=""),
-    "deliveryAgent_deliveryDate": f_fields.String(required=False, description=""),
-    "deliveryAgent_agentCode": f_fields.String(required=False, description=""),
-    "deliveryAgent_flightCode": f_fields.String(required=False, description=""),
-    "shippingStatus": f_fields.String(required=False, description=""),
-    "bltimeStamp": f_fields.DateTime(required=False, description=""),
-    "laboratoryId": f_fields.Integer(required=False, description=""),
-    "isStorageShipping": f_fields.Integer(required=False, description=""),
-    "creationDate": f_fields.DateTime(required=False, description=""),
-    "comments": f_fields.String(required=False, description=""),
-    "sendingLabContactId": f_fields.Integer(required=False, description=""),
-    "returnLabContactId": f_fields.Integer(required=False, description=""),
-    "returnCourier": f_fields.String(required=False, description=""),
-    "dateOfShippingToUser": f_fields.DateTime(required=False, description=""),
-    "shippingType": f_fields.String(required=False, description=""),
-    "safetyLevel": f_fields.String(required=False, description=""),
-    "deliveryAgent_label": f_fields.String(required=False, description=""),
-    "readyByTime": f_fields.String(required=False, description=""),
-    "closeTime": f_fields.String(required=False, description=""),
-    "physicalLocation": f_fields.String(required=False, description=""),
-    "deliveryAgent_pickupConfirmationTimestamp": f_fields.DateTime(
-        required=False, description=""
-    ),
-    "deliveryAgent_pickupConfirmation": f_fields.String(required=False, description=""),
-    "deliveryAgent_readyByTime": f_fields.String(required=False, description=""),
-    "deliveryAgent_callinTime": f_fields.String(required=False, description=""),
-    "deliveryAgent_productcode": f_fields.String(required=False, description=""),
-    "deliveryAgent_flightCodePersonId": f_fields.Integer(
-        required=False, description=""
-    ),
-    "deliveryAgent_flightCodeTimestamp": f_fields.DateTime(
-        required=False, description=""
-    ),
-}
-
+        'shippingId': f_fields.Integer(required=True, description=''),
+        'proposalId': f_fields.Integer(required=True, description=''),
+        'shippingName': f_fields.String(required=False, description=''),
+        'deliveryAgent_agentName': f_fields.String(required=False, description=''),
+        'deliveryAgent_shippingDate': f_fields.String(required=False, description=''),
+        'deliveryAgent_deliveryDate': f_fields.String(required=False, description=''),
+        'deliveryAgent_agentCode': f_fields.String(required=False, description=''),
+        'deliveryAgent_flightCode': f_fields.String(required=False, description=''),
+        'shippingStatus': f_fields.String(required=False, description=''),
+        'bltimeStamp': f_fields.DateTime(required=False, description=''),
+        'laboratoryId': f_fields.Integer(required=False, description=''),
+        'isStorageShipping': f_fields.Integer(required=False, description=''),
+        'creationDate': f_fields.DateTime(required=False, description=''),
+        'comments': f_fields.String(required=False, description=''),
+        'sendingLabContactId': f_fields.Integer(required=False, description=''),
+        'returnLabContactId': f_fields.Integer(required=False, description=''),
+        'returnCourier': f_fields.String(required=False, description=''),
+        'dateOfShippingToUser': f_fields.DateTime(required=False, description=''),
+        'shippingType': f_fields.String(required=False, description=''),
+        'SAFETYLEVEL': f_fields.String(required=False, description=''),
+        'deliveryAgent_flightCodeTimestamp': f_fields.DateTime(required=False, description='Date flight code created, if automatic'),
+        'deliveryAgent_label': f_fields.String(required=False, description='Base64 encoded pdf of airway label'),
+        'readyByTime': f_fields.String(required=False, description='Time shipment will be ready'),
+        'closeTime': f_fields.String(required=False, description='Time after which shipment cannot be picked up'),
+        'physicalLocation': f_fields.String(required=False, description='Where shipment can be picked up from: i.e. Stores'),
+        'deliveryAgent_pickupConfirmationTimestamp': f_fields.DateTime(required=False, description='Date picked confirmed'),
+        'deliveryAgent_pickupConfirmation': f_fields.String(required=False, description='Confirmation number of requested pickup'),
+        'deliveryAgent_readyByTime': f_fields.String(required=False, description='Confirmed ready-by time'),
+        'deliveryAgent_callinTime': f_fields.String(required=False, description='Confirmed courier call-in time'),
+        'deliveryAgent_productcode': f_fields.String(required=False, description='A code that identifies which shipment service was used'),
+        'deliveryAgent_flightCodePersonId': f_fields.Integer(required=False, description='The person who created the AWB (for auditing)'),
+        }
 
 class ShippingSchema(Schema):
     """Marshmallows schema class representing Shipping table"""
@@ -91,7 +85,8 @@ class ShippingSchema(Schema):
     returnCourier = ma_fields.String()
     dateOfShippingToUser = ma_fields.DateTime()
     shippingType = ma_fields.String()
-    safetyLevel = ma_fields.String()
+    SAFETYLEVEL = ma_fields.String()
+    deliveryAgent_flightCodeTimestamp = ma_fields.DateTime()
     deliveryAgent_label = ma_fields.String()
     readyByTime = ma_fields.String()
     closeTime = ma_fields.String()
@@ -102,9 +97,7 @@ class ShippingSchema(Schema):
     deliveryAgent_callinTime = ma_fields.String()
     deliveryAgent_productcode = ma_fields.String()
     deliveryAgent_flightCodePersonId = ma_fields.Integer()
-    deliveryAgent_flightCodeTimestamp = ma_fields.DateTime()
 
-
-shipping_f_schema = api.model("Shipping", shipping_dict_schema)
+shipping_f_schema = api.model('Shipping', shipping_dict_schema)
 shipping_ma_schema = ShippingSchema()
 shipping_json_schema = JSONSchema().dump(shipping_ma_schema)

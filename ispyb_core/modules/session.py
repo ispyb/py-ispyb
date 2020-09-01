@@ -22,7 +22,7 @@
 __license__ = "LGPLv3+"
 
 
-from app.extensions import get_resource, add_resource
+from app.extensions import get_db_items, get_db_item_by_id, add_db_item
 
 from ispyb_core.models import BLSession as SessionModel
 from ispyb_core.schemas.session import session_ma_schema, session_dict_schema
@@ -39,7 +39,7 @@ def get_sessions(query_params):
     Returns:
         [type]: [description]
     """
-    return get_resource(
+    return get_db_items(
         SessionModel, session_dict_schema, session_ma_schema, query_params
     )
 
@@ -53,7 +53,7 @@ def add_session(session_dict):
     Returns:
         [type]: [description]
     """
-    return add_resource(SessionModel, session_dict)
+    return add_db_item(SessionModel, session_dict)
 
 
 def get_session_by_id(session_id):
@@ -65,14 +65,7 @@ def get_session_by_id(session_id):
     Returns:
         dict: info about session as dict
     """
-    result = None
-    try:
-        session = SessionModel.query.filter_by(sessionId=session_id).first()
-        result = session_ma_schema.dump(session)[0]
-    except BaseException as ex:
-        print(ex)
-    finally:
-        return result
+    return get_db_item_by_id(SessionModel, session_ma_schema, {"sessionId": session_id})
 
 
 def get_session_info_by_id(session_id):

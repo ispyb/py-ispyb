@@ -9,10 +9,11 @@ if response.status_code == 200:
     roles = response.json()["roles"]
     token = response.json()["token"]
     print("Token: %s" % token)
+    print(type(token))
     headers = {"Authorization": "Bearer " + token}
 
     print("-----------------------------------------")
-    path = "/proposals"
+    path = "/proposals?login_name=Boaty"
     print("Request: %s%s" % (root_url, path))
     response = get(root_url + path, headers=headers)
     print("Status code: %d" % response.status_code)

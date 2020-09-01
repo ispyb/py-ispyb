@@ -40,12 +40,13 @@ api_v1.add_namespace(api)
 session_desc_f_schema = session_schemas.session_f_schema
 
 
+
 @api.route("")
 @api.doc(security="apikey")
 class Sessions(Resource):
     """Allows to get all sessions and insert a new one"""
 
-    # @token_required
+    #@token_required
     def get(self):
         """Returns list of sessions
 
@@ -65,51 +66,37 @@ class Sessions(Resource):
 
     @api.expect(session_schemas.session_f_schema)
     @api.marshal_with(session_schemas.session_f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
+    #@api.errorhandler(FakeException)
+    #TODO add custom exception handling
     @token_required
     @write_permission_required
     def post(self):
         """Adds a new session"""
         log.info("Inserts a new session")
 
-        # with
+        #with 
         result = session.add_session(api.payload)
         if result:
             return result, HTTPStatus.OK
         else:
             return
             {"message": "Unable to add new session"},
-            HTTPStatus.NOT_ACCEPTABLE
+            HTTPStatus.NOT_ACCEPTABLE     
 
-
-@api.route("/params")
-@api.doc(security="apikey")
-class SessionssByParams(Resource):
-    """Allows to get sessions by query parametes"""
-
-    @api.marshal_with(session_schemas.session_f_schema)
-    @token_required
-    def get(self):
-        """Returns sessions by query parameters"""
-        return session.get_sessions_by_params(request.args)
 
 
 @api.route("/<int:session_id>")
 @api.param("session_id", "Session id (integer)")
 @api.doc(security="apikey")
 @api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="Session not found.",
+    code=HTTPStatus.NOT_FOUND, description="Session not found.",
 )
 class SessionById(Resource):
     """Allows to get/set/delete a session"""
 
     @api.doc(description="session_id should be an integer ")
-    @api.marshal_with(
-        session_schemas.session_f_schema, skip_none=True, code=HTTPStatus.OK
-    )
-    # @token_required
+    @api.marshal_with(session_schemas.session_f_schema, skip_none=True, code=HTTPStatus.OK)
+    #@token_required
     def get(self, session_id):
         """Returns a session by sessionId"""
         result = session.get_session_by_id(session_id)
@@ -118,19 +105,17 @@ class SessionById(Resource):
         else:
             api.abort(HTTPStatus.NOT_FOUND, "Session not found")
 
-
 @api.route("/<int:session_id>/info")
 @api.param("session_id", "session id (integer)")
 @api.doc(security="apikey")
 @api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="session not found.",
+    code=HTTPStatus.NOT_FOUND, description="session not found.",
 )
 class SessionInfoById(Resource):
     """Returns full information of a session"""
 
     @api.doc(description="session_id should be an integer ")
-    # @api.marshal_with(session_desc_f_schema)
+    #@api.marshal_with(session_desc_f_schema)
     @token_required
     def get(self, session_id):
         """Returns a full description of a session by sessionId"""
@@ -139,3 +124,4 @@ class SessionInfoById(Resource):
             return result, HTTPStatus.OK
         else:
             api.abort(HTTPStatus.NOT_FOUND, "session not found")
+

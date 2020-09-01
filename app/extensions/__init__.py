@@ -53,7 +53,7 @@ def init_app(app):
     ):
         extension.init_app(app)
 
-def get_resource(sql_alchemy_model, dict_schema, ma_schema, query_params):
+def get_db_items(sql_alchemy_model, dict_schema, ma_schema, query_params):
     """Returns resource based on the passed models and query parameter
 
     Args:
@@ -69,7 +69,7 @@ def get_resource(sql_alchemy_model, dict_schema, ma_schema, query_params):
                 }
     """
     offset = 0
-    limit = current_app.config["PAGINATION_ITEMS_LIMIT"]
+    limit = current_app.config.get("PAGINATION_ITEMS_LIMIT")
     info_msg = ""
     error_msg = ""
 
@@ -103,7 +103,31 @@ def get_resource(sql_alchemy_model, dict_schema, ma_schema, query_params):
         "error": error_msg
     }
 
-def add_resource(sql_alchemy_model, data):
+def get_db_item_by_id(sql_alchemy_model, ma_schema, item_id_dict):
+    """Returns data base item by its Id
+
+    Args:
+        item_id (int): 
+
+    Returns:
+        dict: info dict
+    """
+    db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
+    db_item_json = ma_schema.dump(db_item)[0]
+
+    return db_item_json
+
+def add_db_item(sql_alchemy_model, data):
+    """Adds item to db
+
+    Args:
+        sql_alchemy_model ([type]): [description]
+        data (dict): [description]
+
+    Returns:
+        SQLAlchemy db item: [description]
+    """
+    item = None
     try:
         item = sql_alchemy_model(data)
         db.session.add(item)
@@ -112,3 +136,4 @@ def add_resource(sql_alchemy_model, data):
         print(ex)
         # app.logger.exception(str(ex))
         db.session.rollback()
+    return item

@@ -30,23 +30,8 @@ class CrystalSlurry(db.Model):
     bufferId = db.Column(db.Float, info='reference to Buffer.bufferId')
     micrographId = db.Column(db.ForeignKey('Micrograph.micrographId'), nullable=False, index=True)
 
-    CrystalSizeDistribution = db.relationship('CrystalSizeDistribution', primaryjoin='CrystalSlurry.crystalSizeDistributionId == CrystalSizeDistribution.crystalSizeDistributionId', backref='crystal_slurries')
-    Micrograph = db.relationship('Micrograph', primaryjoin='CrystalSlurry.micrographId == Micrograph.micrographId', backref='crystal_slurries')
-
-
-
-class DataAcquisition(db.Model):
-    __tablename__ = 'DataAcquisition'
-
-    dataAcquisitionId = db.Column(db.Integer, primary_key=True, unique=True)
-    loadedSampleId = db.Column(db.ForeignKey('LoadedSample.loadedSampleId'), nullable=False, index=True)
-    dataCollectionId = db.Column(db.Integer, nullable=False, info='reference to DataCollection.dataCollectionId')
-    experimentalPlanId = db.Column(db.ForeignKey('ExperimentalPlan.experimentalPlanId'), nullable=False, index=True)
-    shortList = db.Column(db.String(255), nullable=False, info='url to shorlist file')
-    autoprocessingProgrammId = db.Column(db.Integer, info='reference to AutoProcProgram.autoProcProgramId')
-
-    ExperimentalPlan = db.relationship('ExperimentalPlan', primaryjoin='DataAcquisition.experimentalPlanId == ExperimentalPlan.experimentalPlanId', backref='data_acquisitions')
-    LoadedSample = db.relationship('LoadedSample', primaryjoin='DataAcquisition.loadedSampleId == LoadedSample.loadedSampleId', backref='data_acquisitions')
+    CrystalSizeDistribution = db.relationship('CrystalSizeDistribution', primaryjoin='CrystalSlurry.crystalSizeDistributionId == CrystalSizeDistribution.crystalSizeDistributionId')
+    Micrograph = db.relationship('Micrograph', primaryjoin='CrystalSlurry.micrographId == Micrograph.micrographId')
 
 
 
@@ -55,10 +40,10 @@ class DataSet(db.Model):
 
     dataSetId = db.Column(db.Integer, primary_key=True, unique=True)
     name = db.Column(db.String(255), nullable=False)
-    dataAcquisitionId = db.Column(db.ForeignKey('DataAcquisition.dataAcquisitionId'), index=True)
+    ssxDataAcquisitionId = db.Column(db.ForeignKey('SsxDataAcquisition.ssxDataAcquisitionId'), index=True)
     mergedResults = db.Column(db.String(255))
 
-    DataAcquisition = db.relationship('DataAcquisition', primaryjoin='DataSet.dataAcquisitionId == DataAcquisition.dataAcquisitionId', backref='data_sets')
+    SsxDataAcquisition = db.relationship('SsxDataAcquisition', primaryjoin='DataSet.ssxDataAcquisitionId == SsxDataAcquisition.ssxDataAcquisitionId')
 
 
 
@@ -72,8 +57,8 @@ class ExperimentalPlan(db.Model):
     masterTriggerId = db.Column(db.ForeignKey('MasterTrigger.masterTriggerId'), index=True)
     repeatedSequenceId = db.Column(db.ForeignKey('RepeatedSequence.repeatedSequenceId'), nullable=False, index=True)
 
-    MasterTrigger = db.relationship('MasterTrigger', primaryjoin='ExperimentalPlan.masterTriggerId == MasterTrigger.masterTriggerId', backref='experimental_plans')
-    RepeatedSequence = db.relationship('RepeatedSequence', primaryjoin='ExperimentalPlan.repeatedSequenceId == RepeatedSequence.repeatedSequenceId', backref='experimental_plans')
+    MasterTrigger = db.relationship('MasterTrigger', primaryjoin='ExperimentalPlan.masterTriggerId == MasterTrigger.masterTriggerId')
+    RepeatedSequence = db.relationship('RepeatedSequence', primaryjoin='ExperimentalPlan.repeatedSequenceId == RepeatedSequence.repeatedSequenceId')
 
 
 
@@ -81,13 +66,13 @@ class LoadedSample(db.Model):
     __tablename__ = 'LoadedSample'
 
     loadedSampleId = db.Column(db.Integer, primary_key=True, unique=True)
-    name = db.Column(db.String(255), info='to be used as part of the image and processing file names\\n')
+    name = db.Column(db.String(255), info='Used for image and processing file names')
     sampleStockId = db.Column(db.ForeignKey('SampleStock.sampleStockId'), index=True)
     sampleDeliveryDevice = db.Column(db.Integer)
     loadingPattern = db.Column(db.Integer)
     description = db.Column(db.Text)
 
-    SampleStock = db.relationship('SampleStock', primaryjoin='LoadedSample.sampleStockId == SampleStock.sampleStockId', backref='loaded_samples')
+    SampleStock = db.relationship('SampleStock', primaryjoin='LoadedSample.sampleStockId == SampleStock.sampleStockId')
 
 
 
@@ -128,10 +113,10 @@ class RepeatedSequenceHasAction(db.Model):
     timedXrayExposureId = db.Column(db.ForeignKey('TimedXrayExposure.timedXrayExposureId'), index=True)
     timedXrayDetectionId = db.Column(db.ForeignKey('TimedXrayDetection.timedXrayDetectionId'), index=True)
 
-    RepeatedSequence = db.relationship('RepeatedSequence', primaryjoin='RepeatedSequenceHasAction.repeatedSequenceId == RepeatedSequence.repeatedSequenceId', backref='repeated_sequence_has_actions')
-    TimedExcitation = db.relationship('TimedExcitation', primaryjoin='RepeatedSequenceHasAction.timedExcitationId == TimedExcitation.timedExcitationId', backref='repeated_sequence_has_actions')
-    TimedXrayDetection = db.relationship('TimedXrayDetection', primaryjoin='RepeatedSequenceHasAction.timedXrayDetectionId == TimedXrayDetection.timedXrayDetectionId', backref='repeated_sequence_has_actions')
-    TimedXrayExposure = db.relationship('TimedXrayExposure', primaryjoin='RepeatedSequenceHasAction.timedXrayExposureId == TimedXrayExposure.timedXrayExposureId', backref='repeated_sequence_has_actions')
+    RepeatedSequence = db.relationship('RepeatedSequence', primaryjoin='RepeatedSequenceHasAction.repeatedSequenceId == RepeatedSequence.repeatedSequenceId')
+    TimedExcitation = db.relationship('TimedExcitation', primaryjoin='RepeatedSequenceHasAction.timedExcitationId == TimedExcitation.timedExcitationId')
+    TimedXrayDetection = db.relationship('TimedXrayDetection', primaryjoin='RepeatedSequenceHasAction.timedXrayDetectionId == TimedXrayDetection.timedXrayDetectionId')
+    TimedXrayExposure = db.relationship('TimedXrayExposure', primaryjoin='RepeatedSequenceHasAction.timedXrayExposureId == TimedXrayExposure.timedXrayExposureId')
 
 
 
@@ -146,7 +131,22 @@ class SampleStock(db.Model):
     additiveId = db.Column(db.Integer, info='reference to Additive.additiveId')
     note = db.Column(db.String(255))
 
-    CrystalSlurry = db.relationship('CrystalSlurry', primaryjoin='SampleStock.crystalSlurryId == CrystalSlurry.crystalSlurryId', backref='sample_stocks')
+    CrystalSlurry = db.relationship('CrystalSlurry', primaryjoin='SampleStock.crystalSlurryId == CrystalSlurry.crystalSlurryId')
+
+
+
+class SsxDataAcquisition(db.Model):
+    __tablename__ = 'SsxDataAcquisition'
+
+    ssxDataAcquisitionId = db.Column(db.Integer, primary_key=True, unique=True)
+    loadedSampleId = db.Column(db.ForeignKey('LoadedSample.loadedSampleId'), nullable=False, index=True)
+    dataCollectionId = db.Column(db.Integer, nullable=False, info='reference to DataCollection.dataCollectionId')
+    experimentalPlanId = db.Column(db.ForeignKey('ExperimentalPlan.experimentalPlanId'), nullable=False, index=True)
+    shortList = db.Column(db.String(255), nullable=False, info='url to shorlist file')
+    autoprocessingProgrammId = db.Column(db.Integer, info='reference to AutoProcProgram.autoProcProgramId')
+
+    ExperimentalPlan = db.relationship('ExperimentalPlan', primaryjoin='SsxDataAcquisition.experimentalPlanId == ExperimentalPlan.experimentalPlanId')
+    LoadedSample = db.relationship('LoadedSample', primaryjoin='SsxDataAcquisition.loadedSampleId == LoadedSample.loadedSampleId')
 
 
 
@@ -158,7 +158,7 @@ class TimedExcitation(db.Model):
     timedSequenceId = db.Column(db.ForeignKey('TimedSequence.timedSequenceId'), index=True)
     ssxExcitation = db.Column(db.String(255))
 
-    TimedSequence = db.relationship('TimedSequence', primaryjoin='TimedExcitation.timedSequenceId == TimedSequence.timedSequenceId', backref='timed_excitations')
+    TimedSequence = db.relationship('TimedSequence', primaryjoin='TimedExcitation.timedSequenceId == TimedSequence.timedSequenceId')
 
 
 
@@ -184,7 +184,7 @@ class TimedXrayDetection(db.Model):
     internalTriggerPeriod = db.Column(db.Integer)
     internalGateDuration = db.Column(db.Integer)
 
-    TimedSequence = db.relationship('TimedSequence', primaryjoin='TimedXrayDetection.timedSequenceId == TimedSequence.timedSequenceId', backref='timed_xray_detections')
+    TimedSequence = db.relationship('TimedSequence', primaryjoin='TimedXrayDetection.timedSequenceId == TimedSequence.timedSequenceId')
 
 
 
@@ -197,4 +197,4 @@ class TimedXrayExposure(db.Model):
     timedBunches = db.Column(db.String(255))
     shutter = db.Column(db.String(255))
 
-    TimedSequence = db.relationship('TimedSequence', primaryjoin='TimedXrayExposure.timedSequenceId == TimedSequence.timedSequenceId', backref='timed_xray_exposures')
+    TimedSequence = db.relationship('TimedSequence', primaryjoin='TimedXrayExposure.timedSequenceId == TimedSequence.timedSequenceId')

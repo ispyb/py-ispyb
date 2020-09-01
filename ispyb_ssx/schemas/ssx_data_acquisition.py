@@ -29,25 +29,25 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-loaded_sample_dict_schema = {
+ssx_data_acquisition_dict_schema = {
+        'ssxDataAcquisitionId': f_fields.Integer(required=True, description=''),
         'loadedSampleId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description='Used for image and processing file names'),
-        'sampleStockId': f_fields.Integer(required=False, description=''),
-        'sampleDeliveryDevice': f_fields.Integer(required=False, description=''),
-        'loadingPattern': f_fields.Integer(required=False, description=''),
-        'description': f_fields.String(required=False, description=''),
+        'dataCollectionId': f_fields.Integer(required=True, description='reference to DataCollection.dataCollectionId'),
+        'experimentalPlanId': f_fields.Integer(required=True, description=''),
+        'shortList': f_fields.String(required=True, description='url to shorlist file'),
+        'autoprocessingProgrammId': f_fields.Integer(required=False, description='reference to AutoProcProgram.autoProcProgramId'),
         }
 
-class LoadedSampleSchema(Schema):
-    """Marshmallows schema class representing LoadedSample table"""
+class SsxDataAcquisitionSchema(Schema):
+    """Marshmallows schema class representing SsxDataAcquisition table"""
 
+    ssxDataAcquisitionId = ma_fields.Integer()
     loadedSampleId = ma_fields.Integer()
-    name = ma_fields.String()
-    sampleStockId = ma_fields.Integer()
-    sampleDeliveryDevice = ma_fields.Integer()
-    loadingPattern = ma_fields.Integer()
-    description = ma_fields.String()
+    dataCollectionId = ma_fields.Integer()
+    experimentalPlanId = ma_fields.Integer()
+    shortList = ma_fields.String()
+    autoprocessingProgrammId = ma_fields.Integer()
 
-loaded_sample_f_schema = api.model('LoadedSample', loaded_sample_dict_schema)
-loaded_sample_ma_schema = LoadedSampleSchema()
-loaded_sample_json_schema = JSONSchema().dump(loaded_sample_ma_schema)
+ssx_data_acquisition_f_schema = api.model('SsxDataAcquisition', ssx_data_acquisition_dict_schema)
+ssx_data_acquisition_ma_schema = SsxDataAcquisitionSchema()
+ssx_data_acquisition_json_schema = JSONSchema().dump(ssx_data_acquisition_ma_schema)

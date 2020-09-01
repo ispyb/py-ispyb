@@ -25,7 +25,7 @@ from flask_restx_patched import Resource, HTTPStatus
 
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required
+from app.extensions.auth import token_required, write_permission_required
 
 from ispyb_core.schemas import data_collection as data_collection_schemas
 from ispyb_core.schemas import data_collection_group as data_collection_group_schema
@@ -64,8 +64,98 @@ class DataColletions(Resource):
         Returns:
             list: list of data_collections.
         """
-        # TODO add decorator @paginate
         return data_collection.get_data_collections(request.args), HTTPStatus.OK
+
+@api.route("/<int:data_collection_id>")
+@api.param("data_collection_id", "data_collection id (integer)")
+@api.doc(security="apikey")
+@api.response(
+    code=HTTPStatus.NOT_FOUND,
+    description="data collection not found.",
+)
+class DataCollectionById(Resource):
+    """Allows to get/set/delete a data_collection"""
+
+    @api.doc(description="data_collection_id should be an integer ")
+    @api.marshal_with(
+        data_collection_schemas.data_collection_f_schema, skip_none=True, code=HTTPStatus.OK
+    )
+    @token_required
+    def get(self, data_collection_id):
+        """Returns a data_collection by data_collectionId"""
+        result = data_collection.get_data_collection_by_id(data_collection_id)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            api.abort(HTTPStatus.NOT_FOUND, "data_collection not found")
+ 
+
+    @api.expect(data_collection_schemas.data_collection_f_schema)
+    @api.marshal_with(data_collection_schemas.data_collection_f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @write_permission_required
+    def put(self, data_collection_id):
+        """Fully updates data_collection with id data_collection_id
+
+        Args:
+            data_collection_id (int): corresponds to data_collectionId in db
+        """
+        log.info("Update data_collection %d" % data_collection_id)
+        result = data_collection.update_data_collection(data_collection_id, api.payload)
+        if result:
+            return (
+                {"message": "data_collection with id %d updated" % data_collection_id},
+                HTTPStatus.OK,
+            )
+        else:
+            api.abort(
+                HTTPStatus.NOT_FOUND, "data_collection with id %d not found" % data_collection_id
+            )
+
+    @api.expect(data_collection_schemas.data_collection_f_schema)
+    @api.marshal_with(data_collection_schemas.data_collection_f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @write_permission_required
+    def patch(self, data_collection_id):
+        """Partially updates data_collection with id data_collection_id
+
+        Args:
+            data_collection_id (int): corresponds to data_collectionId in db
+        """
+        log.info("Patch data_collection %d" % data_collection_id)
+        result = data_collection.patch_data_collection(data_collection_id, api.payload)
+        if result:
+            return (
+                {"message": "data_collection with id %d updated" % data_collection_id},
+                HTTPStatus.OK,
+            )
+        else:
+            api.abort(
+                HTTPStatus.NOT_FOUND, "data_collection with id %d not found" % data_collection_id
+            )
+
+    @token_required
+    @write_permission_required
+    def delete(self, data_collection_id):
+        """Deletes data_collection by data_collection_id
+
+        Args:
+            data_collection_id (int): corresponds to data_collectionId in db
+
+        Returns:
+            json, status_code:
+        """
+        result = data_collection.delete_data_collection(data_collection_id)
+        if result:
+            return (
+                {"message": "data_collection with id %d deleted" % data_collection_id},
+                HTTPStatus.OK,
+            )
+        else:
+            api.abort(
+                HTTPStatus.NOT_FOUND, "data_collection with id %d not found" % data_collection_id
+            )
+
 
 
 @api.route("/groups")
@@ -89,5 +179,4 @@ class DataCollectionGroups(Resource):
         Returns:
             list: list of data_collections.
         """
-        # TODO add decorator @paginate
         return data_collection.get_data_collection_groups(request.args), HTTPStatus.OK

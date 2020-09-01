@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 
 from app import create_app
 
@@ -25,5 +26,12 @@ from app import create_app
 __license__ = "LGPLv3+"
 
 
-app = create_app("ispyb_core_dev")
-app.run(port=5000, debug=True)
+if len(sys.argv) > 2:
+    config_name = sys.argv[1]
+    port = sys.argv[2]
+else:
+    config_name = "ispyb_core_dev"
+    port = 5000
+
+app = create_app(config_name)
+app.run(port=port, debug=True)
