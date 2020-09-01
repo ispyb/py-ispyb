@@ -24,28 +24,76 @@ __license__ = "LGPLv3+"
 
 import logging
 
-from app.extensions import db
+from app.extensions import get_resource, add_resource
+
 from ispyb_core.models import DataCollection as DataCollectionModel
+from ispyb_core.models import DataCollectionGroup as DataCollectionGroupModel
 from ispyb_core.schemas.data_collection import (
-    data_collection_f_schema,
     data_collection_ma_schema,
+    data_collection_dict_schema,
+)
+from ispyb_core.schemas.data_collection_group import (
+    data_collection_group_ma_schema,
+    data_collection_group_dict_schema,
 )
 
 
 log = logging.getLogger(__name__)
 
 
-def get_all_data_collections():
-    data_collections = DataCollectionModel.query.all()
-    return data_collection_ma_schema.dump(data_collections, many=True)
+def get_data_collections(query_params):
+    """Returns data collection items based on query parameters
+
+    Args:
+        query_params ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return get_resource(
+        DataCollectionModel,
+        data_collection_dict_schema,
+        data_collection_ma_schema,
+        query_params,
+    )
 
 
 def add_data_collection(data_collection_dict):
-    try:
-        data_collection = DataCollectionModel(data_collection_dict)
-        db.session.add(data_collection)
-        db.session.commit()
-    except Exception as ex:
-        print(ex)
-        # app.logger.exception(str(ex))
-        db.session.rollback()
+    """Adds data collection item
+
+    Args:
+        data_collection_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return add_resource(DataCollectionModel, data_collection_dict)
+
+
+def get_data_collection_groups(query_params):
+    """Returns data collection group items based on query parameters
+
+    Args:
+        query_params ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return get_resource(
+        DataCollectionGroupModel,
+        data_collection_group_dict_schema,
+        data_collection_group_ma_schema,
+        query_params,
+    )
+
+
+def add_data_collection_group(data_collection_group_dict):
+    """Adds data collection item
+
+    Args:
+        data_collection_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return add_resource(DataCollectionGroupModel, data_collection_group_dict)

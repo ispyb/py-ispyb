@@ -8,11 +8,11 @@ auto_proc,AutoProc
 #auto_proc_status,AutoProcStatus
 sample,BLSample
 session,BLSession
-beam_line_setup,BeamLineSetup
+beamline_setup,BeamLineSetup
 container,Container
 crystal,Crystal
 data_collection,DataCollection
-data_collection_group,DataCollectionGroup
+#data_collection_group,DataCollectionGroup
 detector,Detector
 energy_scan,EnergyScan
 image_quality_indicators,ImageQualityIndicators

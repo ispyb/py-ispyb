@@ -43,6 +43,7 @@ from app.extensions.auth import token_required, write_permission_required
 
 from ispyb_core.models import Proposal
 from ispyb_core.schemas import proposal as proposal_schemas
+from ispyb_core.schemas import person as person_schemas
 from ispyb_core.modules import proposal
 
 
@@ -50,8 +51,13 @@ __license__ = "LGPLv3+"
 
 
 log = logging.getLogger(__name__)
-api = Namespace("Proposal", description="Proposal related namespace", path="/proposal")
+api = Namespace(
+    "Proposals", description="Proposal related namespace", path="/proposals"
+)
 api_v1.add_namespace(api)
+
+# proposal_desc_f_schema = proposal_schemas.proposal_f_schema
+# proposal_desc_f_schema['person'] = person_schemas.person_f_schema
 
 
 @api.route("")
@@ -59,8 +65,8 @@ api_v1.add_namespace(api)
 class Proposals(Resource):
     """Allows to get all proposals"""
 
-    #@api.marshal_list_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
-    #TODO Define model with JSON Schema 
+    # @api.marshal_list_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
+    # TODO Define model with JSON Schema
     @token_required
     def get(self):
         """Returns list of proposals
@@ -71,27 +77,26 @@ class Proposals(Resource):
         (default limit defined in config.py)
         /ispyb/api/v1/proposals?offset=10&limit=10: returns 10 proposals
         starting from index 10
+        /ispyb/api/v1/proposals?login_name=TestUser: returns proposals associate to user TestUser
+        /ispyb/api/v1/proposals?proposalId=1
 
         Returns:
             list: list of proposals.
         """
-        offset = request.args.get("offset", type=int)
-        limit = request.args.get("limit", type=int)
-
         # TODO add decorator @paginate
-        return proposal.get_proposals(offset, limit), HTTPStatus.OK
+        return proposal.get_proposals(request.args), HTTPStatus.OK
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
-    #@api.errorhandler(FakeException)
-    #TODO add custom exception handling
+    # @api.errorhandler(FakeException)
+    # TODO add custom exception handling
     @token_required
     @write_permission_required
     def post(self):
         """Adds a new proposal"""
         log.info("Inserts a new proposal")
 
-        #with 
+        # with
         result = proposal.add_proposal(api.payload)
         if result:
             return result, HTTPStatus.OK
@@ -105,13 +110,16 @@ class Proposals(Resource):
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
 @api.response(
-    code=HTTPStatus.NOT_FOUND, description="Proposal not found.",
+    code=HTTPStatus.NOT_FOUND,
+    description="Proposal not found.",
 )
 class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
     @api.doc(description="proposal_id should be an integer ")
-    @api.marshal_with(proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(
+        proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK
+    )
     @token_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
@@ -139,7 +147,9 @@ class ProposalById(Resource):
                 HTTPStatus.OK,
             )
         else:
-            api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
+            api.abort(
+                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
+            )
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
@@ -160,8 +170,9 @@ class ProposalById(Resource):
                 HTTPStatus.OK,
             )
         else:
-            api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
-
+            api.abort(
+                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
+            )
 
     @token_required
     @write_permission_required
@@ -181,31 +192,28 @@ class ProposalById(Resource):
                 HTTPStatus.OK,
             )
         else:
-            api.abort(HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id)
+            api.abort(
+                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
+            )
 
 
-@api.route("/login_name/<string:login_name>")
-# @api.param("login_name", "Login name as str")
+@api.route("/<int:proposal_id>/info")
+@api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
-class ProposalByLogin(Resource):
-    """Allows to get proposal by person login name"""
+@api.response(
+    code=HTTPStatus.NOT_FOUND,
+    description="Proposal not found.",
+)
+class ProposalInfoById(Resource):
+    """Returns full information of a proposal"""
 
-    @api.doc(description="login_name should be a string")
-    @api.marshal_with(proposal_schemas.proposal_f_schema)
-    #@token_required
-    def get(self, login_name):
-        """Returns a proposal by login"""
-        # app.logger.info("Returns all proposals for user with login name %s" % login_name)
-        return proposal.get_proposals_by_login_name(login_name)
-
-
-@api.route("/params")
-@api.doc(security="apikey")
-class ProposalsByParams(Resource):
-    """Allows to get proposals by query parametes"""
-
-    @api.marshal_with(proposal_schemas.proposal_f_schema)
+    @api.doc(description="proposal_id should be an integer ")
+    # @api.marshal_with(proposal_desc_f_schema)
     @token_required
-    def get(self):
-        """Returns proposals by query parameters"""
-        return proposal.get_proposals_by_params(request.args)
+    def get(self, proposal_id):
+        """Returns a full description of a proposal by proposalId"""
+        result = proposal.get_proposal_info_by_id(proposal_id)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            api.abort(HTTPStatus.NOT_FOUND, "Proposal not found")

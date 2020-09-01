@@ -1,5 +1,5 @@
 USER="mxuser"
-PWD="mxpass"
+PWD="Mxpass_123456"
 HOST="localhost"
 DB_NAME="pydb_test"
 

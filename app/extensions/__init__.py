@@ -26,6 +26,8 @@ __license__ = "LGPLv3+"
 from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql.types import LONGBLOB
 
+from flask import current_app
+from sqlalchemy.exc import InvalidRequestError
 
 from . import api
 from .auth import auth_provider
@@ -50,3 +52,63 @@ def init_app(app):
         db,
     ):
         extension.init_app(app)
+
+def get_resource(sql_alchemy_model, dict_schema, ma_schema, query_params):
+    """Returns resource based on the passed models and query parameter
+
+    Args:
+        sql_alchemy_model ([type]): SQLAlchemy ORM model
+        dict_schema ([type]): dict with flask fields
+        ma_schema ([type]): marshmallows schema
+        query_params (dict): query parameters
+
+    Returns:
+        dict: {"data": {"total": int, "rows": list},
+                "message" : str,
+                "error": str
+                }
+    """
+    offset = 0
+    limit = current_app.config["PAGINATION_ITEMS_LIMIT"]
+    info_msg = ""
+    error_msg = ""
+
+    if "offset" in query_params.keys():
+        offset = query_params.get("offset")
+    if "limit" in query_params.keys():
+        limit = query_params.get("limit")
+        
+    query = sql_alchemy_model.query
+    total = query.count()
+
+    #Filter items based on schema keys    
+    schema_keys = {}
+    for key in query_params.keys():
+        if key in dict_schema.keys():
+            schema_keys[key] = query_params.get(key)
+
+    if schema_keys:
+        try:
+            query = query.filter_by(**schema_keys)
+        except InvalidRequestError as ex:
+            print(ex)
+            error_msg = "Unable to filter items based on query items (%s)" % str(ex)
+
+    query = query.limit(limit).offset(offset)
+    items = ma_schema.dump(query, many=True)[0]
+
+    return {
+        "data": {"total": total, "rows": items},
+        "message": info_msg,
+        "error": error_msg
+    }
+
+def add_resource(sql_alchemy_model, data):
+    try:
+        item = sql_alchemy_model(data)
+        db.session.add(item)
+        db.session.commit()
+    except BaseException as ex:
+        print(ex)
+        # app.logger.exception(str(ex))
+        db.session.rollback()

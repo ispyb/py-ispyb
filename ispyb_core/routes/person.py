@@ -32,7 +32,7 @@ from ispyb_core.modules import person
 __license__ = "LGPLv3+"
 
 
-api = Namespace("Person", description="Person", path="/person")
+api = Namespace("Person", description="Person", path="/persons")
 api_v1.add_namespace(api)
 
 

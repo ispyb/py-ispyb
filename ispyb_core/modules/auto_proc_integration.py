@@ -26,5 +26,3 @@ from ispyb_core.models import AutoProcIntegration as AutoProcIntegrationModel
 from ispyb_core.schemas.auto_proc_integration import (
     auto_proc_integration_ma_schema,
 )
-
-

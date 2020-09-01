@@ -35,13 +35,23 @@ def get_all_persons():
 def get_person_by_id(person_id):
     """Returns person by id"""
     person = PersonModel.query.filter_by(personId=person_id).first()
-    return person_ma_schema.dump(person)
+    return person_ma_schema.dump(person)[0]
 
 
 def get_person_id_by_login(login_name):
-    person = PersonModel.query.filter_by(login=login_name).first()
-    return person.personId
+    """Gets person id by login name
 
+    Args:
+        login_name (str): user login name
 
-def find_person_by_logn(self, login, beamline=None):
-    return
+    Returns:
+        int: int
+    """
+    person_id = None
+    try:
+        person = PersonModel.query.filter_by(login=login_name).first()
+        person_id = person.personId
+    except BaseException as ex:
+        print("Unable to get person id with login name %s (%s)" % (login_name, str(ex)))
+    finally:
+        return person_id
