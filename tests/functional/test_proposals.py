@@ -44,12 +44,12 @@ def test_get(ispyb_core_app, ispyb_core_token):
     assert response.status_code == 200, "Wrong status code"
     assert len(data) == 1
 
-    path = route_root + "?proposalType=MX"
+    path = route_root + "?proposalCode=MX"
     response = client.get(path, headers=headers)
     data = response.json["data"]["rows"][0]
 
     assert response.status_code == 200, "Wrong status code"
-    assert data["proposalType"] == "MX"
+    assert data["proposalCode"] == "MX"
 
 
 def test_put(ispyb_core_app, ispyb_core_token):

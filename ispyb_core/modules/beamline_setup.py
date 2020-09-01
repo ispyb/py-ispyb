@@ -22,7 +22,7 @@
 __license__ = "LGPLv3+"
 
 
-from app.extensions import get_db_items, get_db_item_by_id, add_db_item
+from app.extensions import db
 
 from ispyb_core.models import BeamLineSetup as BeamLineSetupModel
 from ispyb_core.schemas.beamline_setup import (
@@ -41,7 +41,7 @@ def get_beamline_setups(query_params):
     Returns:
         [type]: [description]
     """
-    return get_db_items(
+    return db.get_db_items(
         BeamLineSetupModel,
         beamline_setup_dict_schema,
         beamline_setup_ma_schema,
@@ -57,7 +57,7 @@ def add_beamline_setup(beamline_setup_dict):
     Returns:
         [type]: [description]
     """
-    return add_db_item(BeamLineSetupModel, beamline_setup_dict)
+    return db.add_db_item(BeamLineSetupModel, beamline_setup_dict)
 
 
 def get_beamline_setup_by_id(beamline_setup_id):
@@ -69,4 +69,4 @@ def get_beamline_setup_by_id(beamline_setup_id):
     Returns:
         dict: info about beamline_setup as dict
     """
-    return get_db_item_by_id(BeamLineSetupModel, beamline_setup_ma_schema, {"beamLineSetupId": beamline_setup_id})
+    return db.get_db_item_by_id(BeamLineSetupModel, beamline_setup_ma_schema, {"beamLineSetupId": beamline_setup_id})

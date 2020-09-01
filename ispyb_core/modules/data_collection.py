@@ -24,7 +24,7 @@ __license__ = "LGPLv3+"
 
 import logging
 
-from app.extensions import get_db_items, get_db_item_by_id, add_db_item, patch_db_item, update_db_item, delete_db_item
+from app.extensions import db
 
 from ispyb_core.models import DataCollection as DataCollectionModel
 from ispyb_core.models import DataCollectionGroup as DataCollectionGroupModel
@@ -50,7 +50,7 @@ def get_data_collections(query_params):
     Returns:
         [type]: [description]
     """
-    return get_db_items(
+    return db.get_db_items(
         DataCollectionModel,
         data_collection_dict_schema,
         data_collection_ma_schema,
@@ -67,7 +67,7 @@ def add_data_collection(data_collection_dict):
     Returns:
         [type]: [description]
     """
-    return add_db_item(DataCollectionModel, data_collection_dict)
+    return db.add_db_item(DataCollectionModel, data_collection_dict)
 
 def get_data_collection_by_id(data_collection_id):
     """Returns data_collection by its id
@@ -78,7 +78,7 @@ def get_data_collection_by_id(data_collection_id):
     Returns:
         dict: info about data_collection as dict
     """
-    return get_db_item_by_id(
+    return db.get_db_item_by_id(
         DataCollectionModel,
         data_collection_ma_schema,
         {"dataCollectionId" : data_collection_id}
@@ -93,7 +93,7 @@ def get_data_collection_groups(query_params):
     Returns:
         [type]: [description]
     """
-    return get_db_item_by_id(
+    return db.get_db_item_by_id(
         DataCollectionGroupModel,
         data_collection_group_ma_schema,
         query_params,
@@ -109,7 +109,7 @@ def add_data_collection_group(data_collection_group_dict):
     Returns:
         [type]: [description]
     """
-    return add_db_item(DataCollectionGroupModel, data_collection_group_dict)
+    return db.add_db_item(DataCollectionGroupModel, data_collection_group_dict)
 
 def get_data_collection_group_by_id(data_collection_group_id):
     """Returns data collection group by its id
@@ -120,7 +120,7 @@ def get_data_collection_group_by_id(data_collection_group_id):
     Returns:
         dict: info about data collection group as dict
     """
-    return get_db_item_by_id(
+    return db.get_db_item_by_id(
         DataCollectionGroupModel,
         data_collection_group_ma_schema,
         {"dataCollectionGroupId" : data_collection_group_id}

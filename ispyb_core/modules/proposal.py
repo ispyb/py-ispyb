@@ -28,7 +28,7 @@ from flask import current_app
 
 from sqlalchemy.exc import InvalidRequestError
 
-from app.extensions import get_db_items, get_db_item_by_id, add_db_item, patch_db_item, update_db_item, delete_db_item
+from app.extensions import db
 from ispyb_core.models import Proposal as ProposalModel
 from ispyb_core.modules import person, session
 from ispyb_core.schemas.proposal import proposal_ma_schema, proposal_dict_schema
@@ -41,13 +41,12 @@ def get_proposals(query_params):
     """Returns proposals by query parameters"""
 
     if "login_name" in query_params:
-        print(person.get_person_id_by_login(query_params.get("login_name")))
         query_params = query_params.to_dict()
         query_params["personId"] = person.get_person_id_by_login(
             query_params.get("login_name")
         )
 
-    return get_db_items(
+    return db.get_db_items(
         ProposalModel, proposal_dict_schema, proposal_ma_schema, query_params
     )
 
@@ -61,7 +60,8 @@ def get_proposal_by_id(proposal_id):
     Returns:
         dict: info about proposal as dict
     """
-    return get_db_item_by_id(ProposalModel, proposal_ma_schema, {"proposalId": proposal_id})
+    return db.get_db_item_by_id(ProposalModel, proposal_ma_schema, {"proposalId": proposal_id})
+
 
 def get_proposal_info_by_id(proposal_id):
     """Returns proposal by its proposalId
@@ -84,13 +84,15 @@ def get_proposal_info_by_id(proposal_id):
 
 
 def add_proposal(proposal_dict):
-    return add_db_item(ProposalModel, proposal_dict)
+    return db.add_db_item(ProposalModel, proposal_dict)
+
 
 def update_proposal(proposal_id, proposal_dict):
-    return update_db_item(ProposalModel, {"proposalId": proposal_id}, proposal_dict)
+    return db.update_db_item(ProposalModel, {"proposalId": proposal_id}, proposal_dict)
+
 
 def patch_proposal(proposal_id, proposal_dict):
-    return patch_db_item(ProposalModel, {"proposalId": proposal_id}, proposal_dict)
+    return db.patch_db_item(ProposalModel, {"proposalId": proposal_id}, proposal_dict)
 
 
 def delete_proposal(proposal_id):
@@ -103,4 +105,4 @@ def delete_proposal(proposal_id):
         bool: True if the proposal exists and deleted successfully,
         otherwise return False
     """
-    return delete_db_item(ProposalModel, {"proposalId": proposal_id})
+    return db.delete_db_item(ProposalModel, {"proposalId": proposal_id})
