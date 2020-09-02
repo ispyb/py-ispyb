@@ -70,4 +70,4 @@ def get_beamline_setup_by_id(beamline_setup_id):
         dict: info about beamline_setup as dict
     """
     id_dict = {"beamLineSetupId": beamline_setup_id}
-    return db.get_db_item_by_id(BeamLineSetupModel, beamline_setup_ma_schema, id_dict)
+    return db.get_db_item_by_params(BeamLineSetupModel, beamline_setup_ma_schema, id_dict)

@@ -18,26 +18,26 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
-
+from flask import request
 from flask_restx_patched import Resource, HTTPStatus
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required
-from app.extensions import db
+from app.extensions.auth import token_required, write_permission_required
 
 from ispyb_core.schemas import person as person_schemas
-from ispyb_core.modules import person
+from ispyb_core.schemas import lab_contact as lab_contact_schemas
+from ispyb_core.modules import contacts
 
 
 __license__ = "LGPLv3+"
 
 
-api = Namespace("Person", description="Person", path="/persons")
+api = Namespace("Contacts", description="Contact related namespace", path="/contacts")
 api_v1.add_namespace(api)
 
 
-@api.route("")
-class PersonList(Resource):
+@api.route("/persons")
+class Persons(Resource):
     """Allows to get all persons"""
 
     @api.doc(security="apikey")
@@ -45,7 +45,7 @@ class PersonList(Resource):
     def get(self):
         """Returns all persons"""
         # app.logger.info("Return all person")
-        return person.get_all_persons()
+        return contacts.get_persons(request.args)
 
     @api.expect(person_schemas.person_f_schema)
     @api.marshal_with(person_schemas.person_f_schema, code=201)
@@ -53,7 +53,7 @@ class PersonList(Resource):
         return
 
 
-@api.route("/<int:person_id>")
+@api.route("/person/<int:person_id>")
 class Person(Resource):
     """Allows to get/set/delete a person"""
 
@@ -62,4 +62,34 @@ class Person(Resource):
     @token_required
     def get(self, person_id):
         """Returns a person by personId"""
-        return person.get_person_by_id(person_id)
+        return contacts.get_person_by_id(person_id)
+
+@api.route("/lab_contacts")
+@api.doc(security="apikey")
+class LabContacts(Resource):
+    """Allows to get all local contacts"""
+
+    @token_required
+    def get(self):
+        """Returns list of local contacts
+
+        Returns:
+            list: list of local contacts.
+        """
+        return contacts.get_lab_contacts(request.args), HTTPStatus.OK
+
+    @api.expect(lab_contact_schemas.lab_contact_f_schema)
+    @api.marshal_with(lab_contact_schemas.lab_contact_f_schema, code=201)
+    # @api.errorhandler(FakeException)
+    # TODO add custom exception handling
+    @token_required
+    @write_permission_required
+    def post(self):
+        """Adds a new lab contact"""
+        result = contacts.add_lab_contact(api.payload)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            return
+            {"message": "Unable to add new lab contact"},
+            HTTPStatus.NOT_ACCEPTABLE

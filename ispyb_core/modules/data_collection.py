@@ -79,7 +79,7 @@ def get_data_collection_by_id(data_collection_id):
         dict: info about data_collection as dict
     """
     id_dict = {"dataCollectionId" : data_collection_id}
-    return db.get_db_item_by_id(
+    return db.get_db_item_by_params(
         DataCollectionModel,
         data_collection_ma_schema,
         id_dict
@@ -96,6 +96,7 @@ def get_data_collection_groups(query_params):
     """
     return db.get_db_items(
         DataCollectionGroupModel,
+        data_collection_group_dict_schema,
         data_collection_group_ma_schema,
         query_params,
     )
@@ -122,7 +123,7 @@ def get_data_collection_group_by_id(data_collection_group_id):
         dict: info about data collection group as dict
     """
     id_dict = {"dataCollectionGroupId" : data_collection_group_id}
-    return db.get_db_item_by_id(
+    return db.get_db_item_by_params(
         DataCollectionGroupModel,
         data_collection_group_ma_schema,
         id_dict

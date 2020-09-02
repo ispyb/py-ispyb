@@ -16,6 +16,7 @@ data_collection,DataCollection
 detector,Detector
 energy_scan,EnergyScan
 image_quality_indicators,ImageQualityIndicators
+#lab_contact,LabContact
 person,Person
 proposal,Proposal
 protein,Protein

@@ -26,7 +26,7 @@ import logging
 
 from app.extensions import db
 from ispyb_core.models import Proposal as ProposalModel
-from ispyb_core.modules import person, session
+from ispyb_core.modules import contacts, session
 from ispyb_core.schemas.proposal import proposal_ma_schema, proposal_dict_schema
 
 
@@ -38,7 +38,7 @@ def get_proposals(query_params):
 
     if "login_name" in query_params:
         query_params = query_params.to_dict()
-        query_params["personId"] = person.get_person_id_by_login(
+        query_params["personId"] = contacts.get_person_id_by_login(
             query_params.get("login_name")
         )
 
@@ -57,7 +57,7 @@ def get_proposal_by_id(proposal_id):
         dict: info about proposal as dict
     """
     id_dict = {"proposalId": proposal_id}
-    return db.get_db_item_by_id(ProposalModel, proposal_ma_schema, id_dict)
+    return db.get_db_item_by_params(ProposalModel, proposal_ma_schema, id_dict)
 
 
 def get_proposal_info_by_id(proposal_id):
@@ -71,7 +71,7 @@ def get_proposal_info_by_id(proposal_id):
     """
     proposal_json = get_proposal_by_id(proposal_id)
 
-    person_json = person.get_person_by_id(proposal_json["personId"])
+    person_json = contacts.get_person_by_id(proposal_json["personId"])
     proposal_json["person"] = person_json
 
     sessions_json = session.get_sessions({"proposalId": proposal_id})
@@ -81,7 +81,7 @@ def get_proposal_info_by_id(proposal_id):
 
 
 def add_proposal(proposal_dict):
-    return db.add_db_item(ProposalModel, proposal_dict)
+    return db.add_db_item(ProposalModel, proposal_ma_schema, proposal_dict)
 
 
 def update_proposal(proposal_id, proposal_dict):

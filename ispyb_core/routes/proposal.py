@@ -37,13 +37,10 @@ from flask_restx._http import HTTPStatus
 
 from flask_restx_patched import Resource
 
-from app.extensions import db
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, write_permission_required
 
-from ispyb_core.models import Proposal
 from ispyb_core.schemas import proposal as proposal_schemas
-from ispyb_core.schemas import person as person_schemas
 from ispyb_core.modules import proposal
 
 
