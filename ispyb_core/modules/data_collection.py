@@ -67,7 +67,7 @@ def add_data_collection(data_collection_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(DataCollectionModel, data_collection_dict)
+    return db.add_db_item(DataCollectionModel, data_collection_ma_schema, data_collection_dict)
 
 def get_data_collection_by_id(data_collection_id):
     """Returns data_collection by its id
@@ -111,7 +111,7 @@ def add_data_collection_group(data_collection_group_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(DataCollectionGroupModel, data_collection_group_dict)
+    return db.add_db_item(DataCollectionGroupModel, data_collection_group_ma_schema, data_collection_group_dict)
 
 def get_data_collection_group_by_id(data_collection_group_id):
     """Returns data collection group by its id

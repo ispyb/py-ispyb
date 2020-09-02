@@ -57,7 +57,7 @@ def add_beamline_setup(beamline_setup_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(BeamLineSetupModel, beamline_setup_dict)
+    return db.add_db_item(BeamLineSetupModel, beamline_setup_ma_schema, beamline_setup_dict)
 
 
 def get_beamline_setup_by_id(beamline_setup_id):

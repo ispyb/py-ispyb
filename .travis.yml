@@ -20,7 +20,7 @@ script:
         - bash create_db.sh
         - bash run_all.sh
         - cd ..
-        - pylint -E app ispyb_core, ispyb_ssx
+        - pylint -E app ispyb_core ispyb_ssx
         - coverage run -m pytest
         
 
