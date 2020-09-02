@@ -94,7 +94,7 @@ test_shippment = {
   "comments": "Comment",
   "sendingLabContactId": 1,
   "returnLabContactId": 1,
-  "returnCourier": "DHL"
+  "returnCourier": "DHL",
   "deliveryAgent_label": "Label",
   "physicalLocation": "Store"
 }
