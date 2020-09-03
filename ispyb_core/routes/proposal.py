@@ -53,8 +53,6 @@ api = Namespace(
 )
 api_v1.add_namespace(api)
 
-# proposal_desc_f_schema = proposal_schemas.proposal_f_schema
-# proposal_desc_f_schema['person'] = person_schemas.person_f_schema
 
 
 @api.route("")
@@ -66,25 +64,18 @@ class Proposals(Resource):
     def get(self):
         """Returns list of proposals
 
-        /ispyb/api/v1/proposals: returns all proposals
-        /ispyb/api/v1/proposals?limit=10: returns first 10 proposals
-        /ispyb/api/v1/proposals?offset=10: returns proposals 10..30
-        (default limit defined in config.py)
-        /ispyb/api/v1/proposals?offset=10&limit=10: returns 10 proposals
-        starting from index 10
-        /ispyb/api/v1/proposals?login_name=TestUser: returns proposals associate to user TestUser
-        /ispyb/api/v1/proposals?proposalId=1
-
         Returns:
             list: list of proposals.
         """
-        return proposal.get_proposals(request.args), HTTPStatus.OK
+
+        return proposal.get_proposals(request)
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
+    
     @write_permission_required
     def post(self):
         """Adds a new proposal"""

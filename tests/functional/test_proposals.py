@@ -19,8 +19,6 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-import json
-
 from tests.data import test_proposal
 
 
@@ -44,12 +42,12 @@ def test_get(ispyb_core_app, ispyb_core_token):
     assert response.status_code == 200, "Wrong status code"
     assert len(data) == 1
 
-    path = route_root + "?proposalCode=MX"
+    path = route_root + "?proposalCode=cm"
     response = client.get(path, headers=headers)
     data = response.json["data"]["rows"][0]
 
     assert response.status_code == 200, "Wrong status code"
-    assert data["proposalCode"] == "MX"
+    assert data["proposalCode"] == "cm"
 
 
 def test_put(ispyb_core_app, ispyb_core_token):

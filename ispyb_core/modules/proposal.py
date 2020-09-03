@@ -23,8 +23,10 @@ __license__ = "LGPLv3+"
 
 
 import logging
+from flask_restx._http import HTTPStatus
 
-from app.extensions import db
+from app.extensions import db, auth_provider, create_response
+
 from ispyb_core.models import Proposal as ProposalModel
 from ispyb_core.modules import contacts, session
 from ispyb_core.schemas.proposal import proposal_ma_schema, proposal_dict_schema
@@ -33,20 +35,35 @@ from ispyb_core.schemas.proposal import proposal_ma_schema, proposal_dict_schema
 log = logging.getLogger(__name__)
 
 
-def get_proposals(query_params):
+def get_proposals(request):
     """Returns proposals by query parameters"""
+    
+    query_params = request.args.to_dict()
+    user_info = auth_provider.get_user_info_by_auth_header(request.headers.get("Authorization"))
+    run_query = True
 
-    if "login_name" in query_params:
-        query_params = query_params.to_dict()
-        query_params["personId"] = contacts.get_person_id_by_login(
-            query_params.get("login_name")
-        )
+    print(user_info)
 
-    return db.get_db_items(
-        ProposalModel, proposal_dict_schema, proposal_ma_schema, query_params
-    )
+    if not user_info["is_admin"]:
+        #If the user is not admin or manager then proposals associated to the user login name are returned
+        person_id = contacts.get_person_id_by_login(user_info["username"])
+        run_query = person_id is not None
+    else:
+        print(query_params.get("login_name"))
+        person_id = contacts.get_person_id_by_login(query_params.get("login_name"))
 
+    if person_id:    
+        query_params["personId"] = person_id
 
+    print(query_params)
+    if run_query:
+        return db.get_db_items(
+            ProposalModel, proposal_dict_schema, proposal_ma_schema, query_params
+        ), HTTPStatus.OK
+    else:
+        msg = "No proposals associated to the username %s" % user_info["username"]
+        return create_response(info_msg=msg), HTTPStatus.OK
+    
 def get_proposal_by_id(proposal_id):
     """Returns proposal by its proposalId
 
@@ -71,7 +88,8 @@ def get_proposal_info_by_id(proposal_id):
     """
     proposal_json = get_proposal_by_id(proposal_id)
 
-    person_json = contacts.get_person_by_id(proposal_json["personId"])
+
+    person_json = contacts.get_person_by_params({"personId" : proposal_json["personId"]})
     proposal_json["person"] = person_json
 
     sessions_json = session.get_sessions({"proposalId": proposal_id})

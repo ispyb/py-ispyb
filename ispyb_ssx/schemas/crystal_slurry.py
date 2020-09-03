@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,14 +29,19 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 crystal_slurry_dict_schema = {
-        'crystalSlurryId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'crystalId': f_fields.Integer(required=True, description='refers to BLSample.Crystal'),
-        'crystalSizeDistributionId': f_fields.Integer(required=False, description=''),
-        'crystalDensity': f_fields.Float(required=False, description='1/mm3'),
-        'bufferId': f_fields.Float(required=False, description='reference to Buffer.bufferId'),
-        'micrographId': f_fields.Integer(required=True, description=''),
-        }
+    "crystalSlurryId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(required=False, description=""),
+    "crystalId": f_fields.Integer(
+        required=True, description="refers to BLSample.Crystal"
+    ),
+    "crystalSizeDistributionId": f_fields.Integer(required=False, description=""),
+    "crystalDensity": f_fields.Float(required=False, description="1/mm3"),
+    "bufferId": f_fields.Float(
+        required=False, description="reference to Buffer.bufferId"
+    ),
+    "micrographId": f_fields.Integer(required=True, description=""),
+}
+
 
 class CrystalSlurrySchema(Schema):
     """Marshmallows schema class representing CrystalSlurry table"""
@@ -50,6 +54,7 @@ class CrystalSlurrySchema(Schema):
     bufferId = ma_fields.Float()
     micrographId = ma_fields.Integer()
 
-crystal_slurry_f_schema = api.model('CrystalSlurry', crystal_slurry_dict_schema)
+
+crystal_slurry_f_schema = api.model("CrystalSlurry", crystal_slurry_dict_schema)
 crystal_slurry_ma_schema = CrystalSlurrySchema()
 crystal_slurry_json_schema = JSONSchema().dump(crystal_slurry_ma_schema)

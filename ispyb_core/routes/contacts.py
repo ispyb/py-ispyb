@@ -62,7 +62,8 @@ class Person(Resource):
     @token_required
     def get(self, person_id):
         """Returns a person by personId"""
-        return contacts.get_person_by_id(person_id)
+        params = {"personId" : person_id}
+        return contacts.get_person_by_params(params)
 
 @api.route("/lab_contacts")
 @api.doc(security="apikey")

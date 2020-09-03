@@ -36,7 +36,7 @@ def get_persons(query_params):
     )
 
 
-def get_person_by_id(person_id):
+def get_person_by_params(param_dict):
     """Returns person by its id
 
     Args:
@@ -45,12 +45,13 @@ def get_person_by_id(person_id):
     Returns:
         dict: info about person as dict
     """
-    param_dict = {"personId": person_id}
     return db.get_db_item_by_params(Person, person_ma_schema, param_dict)
 
 def get_person_id_by_login(login_name):
-    param_dict = {"loginName": login_name}
-    return db.get_db_item_by_params(Person, person_ma_schema, param_dict)
+    if login_name:
+        person_item = get_person_by_params({"login" : login_name})
+        if person_item:
+            return person_item["personId"]
 
 def add_person(person_dict):
     return db.add_db_item(Person, person_ma_schema, person_dict)

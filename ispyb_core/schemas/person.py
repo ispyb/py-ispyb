@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,21 +29,24 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 person_dict_schema = {
-        'personId': f_fields.Integer(required=True, description=''),
-        'laboratoryId': f_fields.Integer(required=False, description=''),
-        'siteId': f_fields.Integer(required=False, description=''),
-        'personUUID': f_fields.String(required=False, description=''),
-        'familyName': f_fields.String(required=False, description=''),
-        'givenName': f_fields.String(required=False, description=''),
-        'title': f_fields.String(required=False, description=''),
-        'emailAddress': f_fields.String(required=False, description=''),
-        'phoneNumber': f_fields.String(required=False, description=''),
-        'login': f_fields.String(required=False, description=''),
-        'faxNumber': f_fields.String(required=False, description=''),
-        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
-        'cache': f_fields.String(required=False, description=''),
-        'externalId': f_fields.Integer(required=False, description=''),
-        }
+    "personId": f_fields.Integer(required=True, description=""),
+    "laboratoryId": f_fields.Integer(required=False, description=""),
+    "siteId": f_fields.Integer(required=False, description=""),
+    "personUUID": f_fields.String(required=False, description=""),
+    "familyName": f_fields.String(required=False, description=""),
+    "givenName": f_fields.String(required=False, description=""),
+    "title": f_fields.String(required=False, description=""),
+    "emailAddress": f_fields.String(required=False, description=""),
+    "phoneNumber": f_fields.String(required=False, description=""),
+    "login": f_fields.String(required=False, description=""),
+    "faxNumber": f_fields.String(required=False, description=""),
+    "recordTimeStamp": f_fields.DateTime(
+        required=True, description="Creation or last update date/time"
+    ),
+    "cache": f_fields.String(required=False, description=""),
+    "externalId": f_fields.Integer(required=False, description=""),
+}
+
 
 class PersonSchema(Schema):
     """Marshmallows schema class representing Person table"""
@@ -64,6 +66,7 @@ class PersonSchema(Schema):
     cache = ma_fields.String()
     externalId = ma_fields.Integer()
 
-person_f_schema = api.model('Person', person_dict_schema)
+
+person_f_schema = api.model("Person", person_dict_schema)
 person_ma_schema = PersonSchema()
 person_json_schema = JSONSchema().dump(person_ma_schema)

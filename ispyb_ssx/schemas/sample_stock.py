@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,14 +29,17 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 sample_stock_dict_schema = {
-        'sampleStockId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=True, description=''),
-        'crystalSlurryId': f_fields.Integer(required=True, description=''),
-        'concentrationFactor': f_fields.Float(required=True, description=''),
-        'crystalDensity': f_fields.Float(required=True, description=''),
-        'additiveId': f_fields.Integer(required=False, description='reference to Additive.additiveId'),
-        'note': f_fields.String(required=False, description=''),
-        }
+    "sampleStockId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(required=True, description=""),
+    "crystalSlurryId": f_fields.Integer(required=True, description=""),
+    "concentrationFactor": f_fields.Float(required=True, description=""),
+    "crystalDensity": f_fields.Float(required=True, description=""),
+    "additiveId": f_fields.Integer(
+        required=False, description="reference to Additive.additiveId"
+    ),
+    "note": f_fields.String(required=False, description=""),
+}
+
 
 class SampleStockSchema(Schema):
     """Marshmallows schema class representing SampleStock table"""
@@ -50,6 +52,7 @@ class SampleStockSchema(Schema):
     additiveId = ma_fields.Integer()
     note = ma_fields.String()
 
-sample_stock_f_schema = api.model('SampleStock', sample_stock_dict_schema)
+
+sample_stock_f_schema = api.model("SampleStock", sample_stock_dict_schema)
 sample_stock_ma_schema = SampleStockSchema()
 sample_stock_json_schema = JSONSchema().dump(sample_stock_ma_schema)

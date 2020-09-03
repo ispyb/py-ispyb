@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,9 +29,10 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 repeated_sequence_dict_schema = {
-        'repeatedSequenceId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description=''),
-        }
+    "repeatedSequenceId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(required=False, description=""),
+}
+
 
 class RepeatedSequenceSchema(Schema):
     """Marshmallows schema class representing RepeatedSequence table"""
@@ -40,6 +40,9 @@ class RepeatedSequenceSchema(Schema):
     repeatedSequenceId = ma_fields.Integer()
     name = ma_fields.String()
 
-repeated_sequence_f_schema = api.model('RepeatedSequence', repeated_sequence_dict_schema)
+
+repeated_sequence_f_schema = api.model(
+    "RepeatedSequence", repeated_sequence_dict_schema
+)
 repeated_sequence_ma_schema = RepeatedSequenceSchema()
 repeated_sequence_json_schema = JSONSchema().dump(repeated_sequence_ma_schema)

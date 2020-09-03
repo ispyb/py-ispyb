@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,13 +29,14 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 timed_sequence_dict_schema = {
-        'timedSequenceId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'timeOn': f_fields.Float(required=False, description='sec'),
-        'timeOff': f_fields.Float(required=False, description='sec'),
-        'nameInShortlist': f_fields.String(required=False, description=''),
-        'triggerDevice': f_fields.String(required=False, description=''),
-        }
+    "timedSequenceId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(required=False, description=""),
+    "timeOn": f_fields.Float(required=False, description="sec"),
+    "timeOff": f_fields.Float(required=False, description="sec"),
+    "nameInShortlist": f_fields.String(required=False, description=""),
+    "triggerDevice": f_fields.String(required=False, description=""),
+}
+
 
 class TimedSequenceSchema(Schema):
     """Marshmallows schema class representing TimedSequence table"""
@@ -48,6 +48,7 @@ class TimedSequenceSchema(Schema):
     nameInShortlist = ma_fields.String()
     triggerDevice = ma_fields.String()
 
-timed_sequence_f_schema = api.model('TimedSequence', timed_sequence_dict_schema)
+
+timed_sequence_f_schema = api.model("TimedSequence", timed_sequence_dict_schema)
 timed_sequence_ma_schema = TimedSequenceSchema()
 timed_sequence_json_schema = JSONSchema().dump(timed_sequence_ma_schema)
