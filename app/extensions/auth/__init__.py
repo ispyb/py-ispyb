@@ -204,12 +204,12 @@ def write_permission_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
             
-        roles = auth_provider.get_roles_by_auth_header(request.headers.get("Authorization"))
-        if "admin" in roles:
+        user_info = auth_provider.get_user_info_by_auth_header(request.headers.get("Authorization"))
+        if "admin" in user_info["roles"]:
             return f(*args, **kwargs)
         else:
             print(
-                "No permission to write in db. Current permissions are %s" % str(roles)
+                "No permission to write in db. Current permissions are %s" % str(user_info["roles"])
             )
             return (
                 {"message": "User has no write permission"},
