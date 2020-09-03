@@ -56,7 +56,7 @@ def get_all_crystal_slurry():
     return crystal_slurry_ma_schema.dump(crystal_slurry_list, many=True)
 
 def add_crystal_slurry(crystal_slurry_dict):
-    status_code, result = ispyb_service_connector.get_ispyb_resource("ispyb_core", "/sample/crystal/%d" % crystal_id)
+    status_code, result = ispyb_service_connector.get_ispyb_resource("ispyb_core", "/sample/crystal/%d" % crystal_slurry_dict["crystalId"])
     if status_code == 200:
         crystal_id = crystal_slurry_dict.get("crystalId")
         if crystal_id is None:

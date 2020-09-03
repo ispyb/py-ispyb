@@ -78,6 +78,8 @@ from app.extensions.api import api_v1 as api
 
 """
 
+print("Generating ispyb core schemas")
+
 for table in tables:
     table_name = table[0]
     if table_name in gen_tables:
@@ -151,3 +153,5 @@ for table in tables:
         schema_file.write(class_text)
         schema_file.write(json_text)
         schema_file.close()
+
+print("done")

@@ -70,3 +70,31 @@ test_data_collection = {
     "exposureTime": 0.02,
     "startTime": "2016-01-14 12:40:34",
 }
+
+test_local_contact = {
+  "personId": 1,
+  "cardName": "Card",
+  "proposalId": 37027,
+  "defaultCourrierCompany": "DHL",
+  "courierAccount": "01",
+  "billingReference": "02",
+  "dewarAvgCustomsValue": 0,
+  "dewarAvgTransportValue": 0
+}
+
+test_shippment = {
+  "proposalId": 37027,
+  "shippingName": "Test shipment",
+  "deliveryAgent_agentName": "DHL",
+  "deliveryAgent_agentCode": "Code",
+  "deliveryAgent_flightCode": "Code",
+  "shippingStatus": "Open",
+  "laboratoryId": 1,
+  "isStorageShipping": 0,
+  "comments": "Comment",
+  "sendingLabContactId": 1,
+  "returnLabContactId": 1,
+  "returnCourier": "DHL",
+  "deliveryAgent_label": "Label",
+  "physicalLocation": "Store"
+}

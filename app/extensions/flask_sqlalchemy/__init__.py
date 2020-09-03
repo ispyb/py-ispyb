@@ -146,7 +146,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         }
 
     
-    def get_db_item_by_id(self, sql_alchemy_model, ma_schema, item_id_dict):
+    def get_db_item_by_params(self, sql_alchemy_model, ma_schema, item_id_dict):
         """Returns data base item by its Id
 
         Args:
@@ -160,7 +160,7 @@ class SQLAlchemy(BaseSQLAlchemy):
 
         return db_item_json
 
-    def add_db_item(self, sql_alchemy_model, data):
+    def add_db_item(self, sql_alchemy_model, ma_schema, data):
         """Adds item to db
 
         Args:
@@ -170,16 +170,18 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             SQLAlchemy db item: [description]
         """
-        item = None
+        print(sql_alchemy_model, data)
+        db_item = None
         try:
-            item = sql_alchemy_model(data)
-            self.session.add(item)
+            db_item = sql_alchemy_model(**data)
+            self.session.add(db_item)
             self.session.commit()
         except BaseException as ex:
             print(ex)
             # app.logger.exception(str(ex))
             self.session.rollback()
-        return item
+        if db_item: 
+            return  ma_schema.dump(db_item)[0]
 
     def update_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):
         db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()

@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,11 +29,12 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 master_trigger_dict_schema = {
-        'masterTriggerId': f_fields.Integer(required=True, description=''),
-        'nameInShortlist': f_fields.String(required=False, description=''),
-        'triggerDevice': f_fields.Integer(required=False, description=''),
-        'description': f_fields.String(required=False, description=''),
-        }
+    "masterTriggerId": f_fields.Integer(required=True, description=""),
+    "nameInShortlist": f_fields.String(required=False, description=""),
+    "triggerDevice": f_fields.Integer(required=False, description=""),
+    "description": f_fields.String(required=False, description=""),
+}
+
 
 class MasterTriggerSchema(Schema):
     """Marshmallows schema class representing MasterTrigger table"""
@@ -44,6 +44,7 @@ class MasterTriggerSchema(Schema):
     triggerDevice = ma_fields.Integer()
     description = ma_fields.String()
 
-master_trigger_f_schema = api.model('MasterTrigger', master_trigger_dict_schema)
+
+master_trigger_f_schema = api.model("MasterTrigger", master_trigger_dict_schema)
 master_trigger_ma_schema = MasterTriggerSchema()
 master_trigger_json_schema = JSONSchema().dump(master_trigger_ma_schema)

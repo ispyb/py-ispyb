@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,18 +29,37 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 auto_proc_program_dict_schema = {
-        'autoProcProgramId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'processingCommandLine': f_fields.String(required=False, description='Command line for running the automatic processing'),
-        'processingPrograms': f_fields.String(required=False, description='Processing programs (comma separated)'),
-        'processingStatus': f_fields.Integer(required=False, description='success (1) / fail (0)'),
-        'processingMessage': f_fields.String(required=False, description='warning, error,...'),
-        'processingStartTime': f_fields.DateTime(required=False, description='Processing start time'),
-        'processingEndTime': f_fields.DateTime(required=False, description='Processing end time'),
-        'processingEnvironment': f_fields.String(required=False, description='Cpus, Nodes,...'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
-        'processingJobId': f_fields.Integer(required=False, description=''),
-        'dataCollectionId': f_fields.Integer(required=False, description=''),
-        }
+    "autoProcProgramId": f_fields.Integer(
+        required=True, description="Primary key (auto-incremented)"
+    ),
+    "processingCommandLine": f_fields.String(
+        required=False, description="Command line for running the automatic processing"
+    ),
+    "processingPrograms": f_fields.String(
+        required=False, description="Processing programs (comma separated)"
+    ),
+    "processingStatus": f_fields.Integer(
+        required=False, description="success (1) / fail (0)"
+    ),
+    "processingMessage": f_fields.String(
+        required=False, description="warning, error,..."
+    ),
+    "processingStartTime": f_fields.DateTime(
+        required=False, description="Processing start time"
+    ),
+    "processingEndTime": f_fields.DateTime(
+        required=False, description="Processing end time"
+    ),
+    "processingEnvironment": f_fields.String(
+        required=False, description="Cpus, Nodes,..."
+    ),
+    "recordTimeStamp": f_fields.DateTime(
+        required=False, description="Creation or last update date/time"
+    ),
+    "processingJobId": f_fields.Integer(required=False, description=""),
+    "dataCollectionId": f_fields.Integer(required=False, description=""),
+}
+
 
 class AutoProcProgramSchema(Schema):
     """Marshmallows schema class representing AutoProcProgram table"""
@@ -58,6 +76,7 @@ class AutoProcProgramSchema(Schema):
     processingJobId = ma_fields.Integer()
     dataCollectionId = ma_fields.Integer()
 
-auto_proc_program_f_schema = api.model('AutoProcProgram', auto_proc_program_dict_schema)
+
+auto_proc_program_f_schema = api.model("AutoProcProgram", auto_proc_program_dict_schema)
 auto_proc_program_ma_schema = AutoProcProgramSchema()
 auto_proc_program_json_schema = JSONSchema().dump(auto_proc_program_ma_schema)

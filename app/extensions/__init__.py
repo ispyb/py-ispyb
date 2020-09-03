@@ -39,8 +39,10 @@ db.LONGBLOB = LONGBLOB
 
 
 def init_app(app):
-    """
-    Application extensions initialization.
+    """Initializes app extensions
+
+    Args:
+        app (flask app): Flask application
     """
     for extension in (
         api,
@@ -49,3 +51,27 @@ def init_app(app):
         db,
     ):
         extension.init_app(app)
+
+def create_response(info_msg="", error_msg="", data=None):
+    """Creates response dict
+
+    Args:
+        info_msg (str, optional): Info message. Defaults to "".
+        error_msg (str, optional): Error message. Defaults to "".
+        data (list, optional): Data as a list of values. Defaults to None.
+
+    Returns:
+        dict: response dict
+    """
+    response_dict = {
+        "message": info_msg,
+        "error": error_msg,
+        "data": {
+            "total": None,
+            "rows": []
+        }
+    }
+    if data is not None:
+        response_dict["data"]["rows"]
+
+    return response_dict

@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,13 +29,18 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 ssx_data_acquisition_dict_schema = {
-        'ssxDataAcquisitionId': f_fields.Integer(required=True, description=''),
-        'loadedSampleId': f_fields.Integer(required=True, description=''),
-        'dataCollectionId': f_fields.Integer(required=True, description='reference to DataCollection.dataCollectionId'),
-        'experimentalPlanId': f_fields.Integer(required=True, description=''),
-        'shortList': f_fields.String(required=True, description='url to shorlist file'),
-        'autoprocessingProgrammId': f_fields.Integer(required=False, description='reference to AutoProcProgram.autoProcProgramId'),
-        }
+    "ssxDataAcquisitionId": f_fields.Integer(required=True, description=""),
+    "loadedSampleId": f_fields.Integer(required=True, description=""),
+    "dataCollectionId": f_fields.Integer(
+        required=True, description="reference to DataCollection.dataCollectionId"
+    ),
+    "experimentalPlanId": f_fields.Integer(required=True, description=""),
+    "shortList": f_fields.String(required=True, description="url to shorlist file"),
+    "autoprocessingProgrammId": f_fields.Integer(
+        required=False, description="reference to AutoProcProgram.autoProcProgramId"
+    ),
+}
+
 
 class SsxDataAcquisitionSchema(Schema):
     """Marshmallows schema class representing SsxDataAcquisition table"""
@@ -48,6 +52,9 @@ class SsxDataAcquisitionSchema(Schema):
     shortList = ma_fields.String()
     autoprocessingProgrammId = ma_fields.Integer()
 
-ssx_data_acquisition_f_schema = api.model('SsxDataAcquisition', ssx_data_acquisition_dict_schema)
+
+ssx_data_acquisition_f_schema = api.model(
+    "SsxDataAcquisition", ssx_data_acquisition_dict_schema
+)
 ssx_data_acquisition_ma_schema = SsxDataAcquisitionSchema()
 ssx_data_acquisition_json_schema = JSONSchema().dump(ssx_data_acquisition_ma_schema)

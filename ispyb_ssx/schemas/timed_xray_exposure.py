@@ -1,5 +1,5 @@
 # encoding: utf-8
-# 
+#
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
 #
@@ -22,7 +22,6 @@
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,12 +29,13 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 timed_xray_exposure_dict_schema = {
-        'timedXrayExposureId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'timedSequenceId': f_fields.Integer(required=False, description=''),
-        'timedBunches': f_fields.String(required=False, description=''),
-        'shutter': f_fields.String(required=False, description=''),
-        }
+    "timedXrayExposureId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(required=False, description=""),
+    "timedSequenceId": f_fields.Integer(required=False, description=""),
+    "timedBunches": f_fields.String(required=False, description=""),
+    "shutter": f_fields.String(required=False, description=""),
+}
+
 
 class TimedXrayExposureSchema(Schema):
     """Marshmallows schema class representing TimedXrayExposure table"""
@@ -46,6 +46,9 @@ class TimedXrayExposureSchema(Schema):
     timedBunches = ma_fields.String()
     shutter = ma_fields.String()
 
-timed_xray_exposure_f_schema = api.model('TimedXrayExposure', timed_xray_exposure_dict_schema)
+
+timed_xray_exposure_f_schema = api.model(
+    "TimedXrayExposure", timed_xray_exposure_dict_schema
+)
 timed_xray_exposure_ma_schema = TimedXrayExposureSchema()
 timed_xray_exposure_json_schema = JSONSchema().dump(timed_xray_exposure_ma_schema)

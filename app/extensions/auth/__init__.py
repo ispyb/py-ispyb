@@ -21,18 +21,127 @@
 
 __license__ = "LGPLv3+"
 
-
+import datetime
+import importlib
 from functools import wraps
 
 import jwt
 from flask import current_app, request
 from flask_restx._http import HTTPStatus
 
-from .auth_provider import AuthProvider
 
+class AuthProvider:
+    """Allows to authentificate users and create tokens"""
+
+    def __init__(self):
+        self.tokens = []
+        self.site_auth = None
+
+
+    def init_app(self, app):
+        module_name = app.config["AUTH_MODULE"]
+        class_name = app.config["AUTH_CLASS"]
+        cls = getattr(importlib.import_module(module_name), class_name)
+        self.site_auth = cls()
+
+        assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
+
+        if app.config.get("MASTER_TOKEN"):
+            self.tokens.append({
+                "username": "admin",
+                "token": app.config.get("MASTER_TOKEN"),
+                "roles": ["admin"]
+                }
+                )
+
+    def get_roles(self, username, password):
+        """Returns roles associated to user.
+        Basically this is the main authentification method where site_auth
+        is site specific authentication class.
+
+        Args:
+            username (str): username
+            password (str): password
+
+        Returns:
+            tuple or list: tuple or list with roles associated to the username
+        """
+        return self.site_auth.get_roles(username, password)
+
+    def get_roles_by_token(self, token):
+        """Returns roles associated with the token
+
+        Args:
+            token (str): jwt token
+
+        Returns:
+            tuple: tuple with roles associated to the token, user
+        """
+        roles = []
+        if current_app.config.get("MASTER_TOKEN") == token:
+            roles.append("admin")
+        else:
+            for user_token in self.tokens:
+                if user_token["token"] == token:
+                    roles = user_token["roles"]
+        return roles
+
+    def get_user_info_by_auth_header(self, auth_header):
+        user_info = {}
+        token = None
+
+        try:
+            parts = auth_header.split()
+            token = parts[1]
+        except BaseException as ex:
+            print("Unable to extract token from Authorization header (%s)" % str(ex))
+
+        for token_info in self.tokens:
+            if token_info["token"] == token:
+                user_info = token_info
+        user_info["is_admin"] = any(x in ['manager', "admin"] for x in user_info.get("roles"))
+        
+        return user_info
+
+    def generate_token(self, username, roles):
+        """Generates token
+
+        Args:
+            username (string): username
+            roles (list): list of roles associated to the user
+
+        Returns:
+            str: token
+        """
+        if username in self.tokens:
+            # Check if the previously generated token is still valid
+            try:
+                jwt.decode(
+                    self.tokens[username]["token"],
+                    current_app.config["SECRET_KEY"],
+                    algorithms=current_app.config["JWT_CODING_ALGORITHM"],
+                )
+                return self.tokens[username]["token"]
+            except jwt.ExpiredSignatureError:
+                pass
+
+        token = jwt.encode(
+            {
+                "sub": username,
+                "iat": datetime.datetime.utcnow(),
+                "exp": datetime.datetime.utcnow()
+                + datetime.timedelta(minutes=current_app.config["TOKEN_EXP_TIME"]),
+            },
+            current_app.config["SECRET_KEY"],
+            algorithm=current_app.config["JWT_CODING_ALGORITHM"],
+        )
+        dec_token = token.decode("UTF-8")
+
+        self.tokens.append({"username": username, "token": dec_token, "roles": roles})
+
+        return dec_token
 
 auth_provider = AuthProvider()
-
 
 def token_required(f):
     @wraps(f)
@@ -94,21 +203,13 @@ def token_required(f):
 def write_permission_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-
-        roles = ()
-        try:
-            auth = request.headers.get("Authorization", None)
-            parts = auth.split()
-            token = parts[1]
-            roles = auth_provider.get_roles_by_token(token)
-        except BaseException:
-            pass
-
-        if "admin" in roles:
+            
+        user_info = auth_provider.get_user_info_by_auth_header(request.headers.get("Authorization"))
+        if "admin" in user_info["roles"]:
             return f(*args, **kwargs)
         else:
             print(
-                "No permission to write in db. Current permissions are %s" % str(roles)
+                "No permission to write in db. Current permissions are %s" % str(user_info["roles"])
             )
             return (
                 {"message": "User has no write permission"},
@@ -116,3 +217,4 @@ def write_permission_required(f):
             )
 
     return decorated
+

@@ -22,15 +22,70 @@
 __license__ = "LGPLv3+"
 
 
+from app.extensions import db
+
 from ispyb_core.models import Shipping as ShippingModel
-from ispyb_core.schemas.shipping import shipping_f_schema, shipping_ma_schema
+from ispyb_core.schemas.shipping import shipping_dict_schema, shipping_ma_schema
 
 
-def get_all_shippings():
-    shipping_list = ShippingModel.query.all()
-    return shipping_ma_schema.dump(shipping_list, many=True)
+def get_shipments(query_params):
+    """Returns shipments by query parameters"""
+
+    return db.get_db_items(
+        ShippingModel, shipping_dict_schema, shipping_ma_schema, query_params
+    )
 
 
-def get_proposal_shippings(proposal_id):
-    shipping_list = ShippingModel.query.filter_by(proposalId=proposal_id)
-    return shipping_ma_schema.dump(shipping_list, many=True)
+def get_shipment_by_id(shipment_id):
+    """Returns shipment by its shipmentId
+
+    Args:
+        shipment_id (int): corresponds to shipmentId in db
+
+    Returns:
+        dict: info about shipment as dict
+    """
+    id_dict = {"shippingId": shipment_id}
+    return db.get_db_item_by_params(ShippingModel, shipping_ma_schema, id_dict)
+
+
+def get_shipment_info_by_id(shipment_id):
+    """Returns shipment by its shipmentId
+
+    Args:
+        shipment_id (int): corresponds to shipmentId in db
+
+    Returns:
+        dict: info about shipment as dict
+    """
+    shipment_json = get_shipment_by_id(shipment_id)
+
+    return shipment_json
+
+
+def add_shipment(shipment_dict):
+    return db.add_db_item(ShippingModel, shipping_ma_schema, shipment_dict)
+
+
+def update_shipment(shipment_id, shipment_dict):
+    id_dict = {"shippingId": shipment_id}
+    return db.update_db_item(ShippingModel, id_dict, shipment_dict)
+
+
+def patch_shipment(shipment_id, shipment_dict):
+    id_dict = {"shippingId": shipment_id}
+    return db.patch_db_item(ShippingModel, id_dict, shipment_dict)
+
+
+def delete_shipment(shipment_id):
+    """Deletes shipment item from db
+
+    Args:
+        shipment_id (int): shipmentId column in db
+
+    Returns:
+        bool: True if the shipment exists and deleted successfully,
+        otherwise return False
+    """
+    id_dict = {"shippingId": shipment_id}
+    return db.delete_db_item(ShippingModel, id_dict)

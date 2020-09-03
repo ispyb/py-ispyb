@@ -142,6 +142,9 @@ class Namespace(BaseNamespace):
             decorator_to_register
         )  # pylint: disable=protected-access
 
+    def roles_allowed(self, roles):
+        print(roles)
+
     @contextmanager
     def commit_or_abort(
         self, session, default_error_message="The operation failed to complete"
