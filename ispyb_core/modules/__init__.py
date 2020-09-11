@@ -23,7 +23,7 @@ __license__ = "LGPLv3+"
 
 import os
 import logging
-
+from importlib import import_module
 
 log = logging.getLogger(__name__)
 
@@ -34,7 +34,6 @@ def init_app(app, **kwargs):
     Args:
         app (Flask app): [description]
     """
-    from importlib import import_module
 
     for module_name in os.listdir(os.path.dirname(__file__)):
         if not module_name.startswith("__") and module_name.endswith(".py"):

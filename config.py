@@ -54,17 +54,6 @@ class BaseConfig:
     TOKEN_EXP_TIME = 60  # in minutes
     MASTER_TOKEN = "MasterToken"
 
-    ROUTES = [
-        "auto_proc",
-        "contacts",
-        "data_collection",
-        "proposal",
-        "sample",
-        "session",
-        "shipment",
-        "schemas",
-    ]
-
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
     SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB server documentation"
@@ -86,9 +75,12 @@ class ProductionConfig(BaseConfig):
     Args:
         BaseConfig ([type]): [description]
     """
-    SECRET_KEY = os.getenv("EXAMPLE_API_SERVER_SECRET_KEY")
-    SQLALCHEMY_DATABASE_URI = os.getenv("EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI")
-    MASTER_TOKEN = None
+    def __init__(self, config_filename=None):
+        super().__init__(config_filename)
+
+        SECRET_KEY = os.getenv("EXAMPLE_API_SERVER_SECRET_KEY")
+        SQLALCHEMY_DATABASE_URI = os.getenv("EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI")
+        MASTER_TOKEN = None
 
 
 class DevelopmentConfig(BaseConfig):
@@ -109,4 +101,7 @@ class TestingConfig(BaseConfig):
     Args:
         BaseConfig ([type]): [description]
     """
-    TESTING = True
+    def __init__(self, config_filename=None):
+        super().__init__(config_filename)
+    
+        TESTING = True
