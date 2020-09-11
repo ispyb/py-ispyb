@@ -36,14 +36,14 @@ sys.path.insert(0, ROOT_DIR)
 
 @pytest.fixture(scope="session")
 def ispyb_core_app():
-    app = create_app("ispyb_core_test")
+    app = create_app("ispyb_core_config.yml", "test")
     with app.app_context():
         yield app
 
 
 @pytest.fixture(scope="session")
 def ispyb_ssx_app():
-    ssx_app = create_app("ispyb_ssx_test")
+    ssx_app = create_app("ispyb_ssx_config.yml", "test")
     with ssx_app.app_context():
         yield ssx_app
 

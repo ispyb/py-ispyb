@@ -26,12 +26,14 @@ from app import create_app
 __license__ = "LGPLv3+"
 
 
-if len(sys.argv) > 2:
-    config_name = sys.argv[1]
-    port = sys.argv[2]
+if len(sys.argv) > 3:
+    config_filename = sys.argv[1]
+    run_mode = sys.argv[2]
+    port = sys.argv[3]
 else:
-    config_name = "ispyb_core_dev"
+    config_filename = "ispyb_core_config.yml"
+    run_mode = "dev"
     port = 5000
 
-app = create_app(config_name)
+app = create_app(config_filename, run_mode)
 app.run(port=port, debug=True)

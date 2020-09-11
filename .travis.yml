@@ -16,6 +16,8 @@ install:
         - pip install -r tests/requirements.txt 
 
 script:
+        - cp ispyb_core_config_example.yml ispyb_core_config.yml
+        - cp ispyb_ssx_config_example.yml ispyb_ssx_config.yml
         - cd scripts
         - bash create_db.sh
         - bash run_all.sh

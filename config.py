@@ -23,30 +23,25 @@ __license__ = "LGPLv3+"
 
 
 import os
-import csv
-import sys
-
+import ruamel.yaml
 
 class BaseConfig:
+    """Base config class
+    """
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
 
-    SERVICE = "ispyb_ssx"
-    SERVICE_CONNECTIONS = {"ispyb_core": "http://localhost:5000/ispyb/api/v1"}
-
-    API_ROOT = "/ispyb/api/v1/ssx"
+    API_ROOT = "/ispyb/api/v1"
     SECRET_KEY = os.urandom(16)
-    SQLALCHEMY_DATABASE_URI = "mysql://mxuser:mxpass@localhost/ispyb_ssx"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-
     # SQLALCHEMY_POOL_RECYCLE = 2999
     # SQLALCHEMY_POOL_TIMEOUT = 20
     PAGINATION_ITEMS_LIMIT = 20
 
     DEBUG = True
     ERROR_404_HELP = False
-    REVERSE_PROXY_SETUP = os.getenv("EXAMPLE_API_REVERSE_PROXY_SETUP", False)
+    REVERSE_PROXY_SETUP = bool(os.getenv("EXAMPLE_API_REVERSE_PROXY_SETUP", ""))
 
     AUTHORIZATIONS = {
         "apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}
@@ -58,40 +53,53 @@ class BaseConfig:
     TOKEN_EXP_TIME = 60  # in minutes
     MASTER_TOKEN = "MasterToken"
 
-    MODULES = ("api",)
-
-    DB_MODULES = []
-
-    with open("%s/enabled_db_modules.csv" % PROJECT_ROOT) as csvfile:
-        reader = csv.reader(csvfile)
-        for row in reader:
-            if not row[0].startswith("#"):
-                DB_MODULES.append(row[0])
-
-    ROUTES = [
-        "sample",
-    ]
-
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
-    SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB Flask-RESTx server documentation"
-    SWAGGER_UI_OAUTH_APP_NAME = "ISPyB Flask-RESTx server documentation"
+    SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB server documentation"
+    SWAGGER_UI_OAUTH_APP_NAME = "ISPyB server documentation"
 
     CSRF_ENABLED = True
 
-    LOG_FILENAME = "/tmp/ispyb_server.log"
-    # LOG_FORMAT = "%(asctime)s |%(levelname)-5s| %(message)s"
+    def __init__(self, config_filename=None):
+        with open(config_filename) as f:
+            config = ruamel.yaml.load(f.read(), ruamel.yaml.RoundTripLoader)
 
+            for key, value in config["server"].items():
+                setattr(self, key, value)
 
 class ProductionConfig(BaseConfig):
-    SECRET_KEY = os.getenv("EXAMPLE_API_SERVER_SECRET_KEY")
-    SQLALCHEMY_DATABASE_URI = os.getenv("EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI")
-    MASTER_TOKEN = None
+    """Production config
+
+    Args:
+        BaseConfig ([type]): [description]
+    """
+    def __init__(self, config_filename=None):
+        super().__init__(config_filename)
+
+        SECRET_KEY = os.getenv("EXAMPLE_API_SERVER_SECRET_KEY")
+        SQLALCHEMY_DATABASE_URI = os.getenv("EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI")
+        MASTER_TOKEN = None
 
 
 class DevelopmentConfig(BaseConfig):
-    DEBUG = True
+    """Dev config
+
+    Args:
+        BaseConfig ([type]): [description]
+    """
+    def __init__(self, config_filename=None):
+        super().__init__(config_filename)
+
+        DEBUG = True
 
 
 class TestingConfig(BaseConfig):
-    TESTING = True
+    """Testing config
+
+    Args:
+        BaseConfig ([type]): [description]
+    """
+    def __init__(self, config_filename=None):
+        super().__init__(config_filename)
+    
+        TESTING = True

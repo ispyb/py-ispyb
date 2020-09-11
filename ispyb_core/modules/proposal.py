@@ -42,8 +42,6 @@ def get_proposals(request):
     user_info = auth_provider.get_user_info_by_auth_header(request.headers.get("Authorization"))
     run_query = True
 
-    print(user_info)
-
     if not user_info["is_admin"]:
         #If the user is not admin or manager then proposals associated to the user login name are returned
         person_id = contacts.get_person_id_by_login(user_info["username"])

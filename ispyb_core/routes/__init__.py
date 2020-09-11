@@ -18,13 +18,17 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+import os
+from importlib import import_module
+
 
 __license__ = "LGPLv3+"
 
 
 def init_app(app, **kwargs):
 
-    from importlib import import_module
-
-    for module_name in app.config["ROUTES"]:
-        import_module(".%s" % module_name, package=__name__)
+    for module_name in os.listdir(os.path.dirname(__file__)):
+        if not module_name.startswith("__") and module_name.endswith(".py"):
+            module = import_module(".%s" % module_name[:-3], package=__name__)
+            if hasattr(module, "init_app"):
+                module.init_app(app, **kwargs)

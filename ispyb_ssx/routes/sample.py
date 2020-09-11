@@ -25,12 +25,11 @@ Example routes:
 """
 
 import logging
-from flask import request, current_app
+from flask import request
 from flask_restx._http import HTTPStatus
 
 from flask_restx_patched import Resource
 
-#from app.extensions import db
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, write_permission_required
 
@@ -59,7 +58,7 @@ class LoadedSample(Resource):
     def get(self):
         """Returns all loaded samples"""
         # app.logger.info("Return all data collections")
-        return loaded_sample.get_all_loaded_samples()
+        return loaded_sample.get_loaded_samples(request)
 
     #@token_required
     @api.expect(loaded_sample_schemas.loaded_sample_f_schema)
@@ -67,7 +66,21 @@ class LoadedSample(Resource):
     def post(self):
         """Adds a new loaded sample"""
         # app.logger.info("Insert new data collection")
-        loaded_sample.add_loaded_sample(api.payload)
+        loaded_sample.add_loaded_sample(request)
+
+
+@api.route("/test")
+@api.doc(security="apikey")
+class Test(Resource):
+    """Loaded sample resource"""
+
+    #@token_required
+    def get(self):
+        """Returns all loaded samples"""
+        # app.logger.info("Return all data collections")
+        data, status_code = get_ispyb_resource("ispyb_core", "/proposals")
+        print(data)
+        return "This is a test. %s" % (status_code["data"]["rows"])
 
 @api.route("/crystal_slurry")
 @api.doc(security="apikey")

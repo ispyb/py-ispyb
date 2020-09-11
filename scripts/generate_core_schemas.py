@@ -20,7 +20,6 @@
 
 
 import os
-import re
 import sys
 import csv
 import MySQLdb
@@ -30,10 +29,10 @@ ispyb_root = "/" + os.path.join(*ispyb_root[1:-1])
 sys.path.insert(0, ispyb_root)
 
 
-from ispyb_core_config import BaseConfig
+from config import BaseConfig
 
 
-config = BaseConfig()
+config = BaseConfig(os.path.join(ispyb_root, "ispyb_core_config.yml"))
 
 uri = config.SQLALCHEMY_DATABASE_URI
 # mysql://ispyb_api:password_1234@localhost/ispyb_test
