@@ -8,8 +8,6 @@
 
 ISPyB backend server based on python flask-restx.
 
-<p align="center"><img src="https://github.com/ispyb/py-ispyb/blob/master/docs/ispyb_doc.png"/></p>
-
 
 ## Dependencies
 
@@ -19,29 +17,40 @@ ISPyB backend server based on python flask-restx.
 * [**sqlalchemy**](http://www.sqlalchemy.org/) (+
   [*flask-sqlalchemy*](http://flask-sqlalchemy.pocoo.org/)) - Database ORM.
 * [**marshmallow**](http://marshmallow.rtfd.org/)
+* [**ruamel.yaml**] (https://pypi.org/project/ruamel.yaml/)
 
+
+## How to run py-ispyb
+
+Install requirements:
 
 ```bash
 sudo pip install -r requirements.txt
 ```
 
-## Deployment
+Copy and edit yaml configuration file:
+```bash
+cp ispyb_core_config_example.yml ispyb_core_config.yml
+```
 
-- `flask run`
-- `python3 wsgi.py`
-- `gunicorn wsgi.py`
+Regenerate data base models and schemas:
+```bash
+cd scripts
+./generate_core_models.sh
+python3 generate_core_schemas.py
+cd ..
+```
 
-
-## Available scripts
-
-- `generate_db_models.sh` : generates sqlalchemy db models.
-- `generate_modules.py` :  generates flask api models and marshmallow schemas. Generates a simple resource.py if it does not exist.
-- `format_code.sh`: formats code based on autopep and black.
+Run application in debug mode:
+```bash
+python3 wsgi.py
+```
 
 ## Authentication
 JWT (Jason web tokens) are used to authenticate requests. See jwt.io to test the token.
 
-Status codes: https://www.flaskapi.org/api-guide/status-codes/
+## Status codes
+https://www.flaskapi.org/api-guide/status-codes/
 
 ## Format code
 ```bash
