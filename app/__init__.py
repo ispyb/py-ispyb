@@ -32,16 +32,13 @@ __license__ = "LGPLv3+"
 
 
 CONFIG_NAME_MAPPER = {
-    "ispyb_core_dev": "ispyb_core_config.DevelopmentConfig",
-    "ispyb_core_test": "ispyb_core_config.TestingConfig",
-    "ispyb_core_prod": "ispyb_core_config.ProductionConfig",
-    "ispyb_ssx_dev": "ispyb_ssx_config.DevelopmentConfig",
-    "ispyb_ssx_test": "ispyb_ssx_config.TestingConfig",
-    "ispyb_ssx_prod": "ispyb_ssx_config.ProductionConfig",
+    "dev": "DevelopmentConfig",
+    "test": "TestingConfig",
+    "prod": "ProductionConfig",
 }
 
 
-def create_app(flask_config_name=None, **kwargs):
+def create_app(config_path=None, run_mode="dev", **kwargs):
     """
     Entry point to the Flask RESTful Server application.
     """
@@ -49,20 +46,23 @@ def create_app(flask_config_name=None, **kwargs):
     CORS(app)
     # TODO configure CORS via config file
 
-    env_flask_config_name = os.getenv("FLASK_CONFIG")
-    if flask_config_name is None:
-        flask_config_name = env_flask_config_name
-    if flask_config_name is None:
-        flask_config_name = "ispyb_core_test"
+    env_config_path = os.getenv("ISPYB_CONFIG")
+    if config_path is None:
+        config_path = env_config_path
+    if config_path is None:
+        config_path = "ispyb_core_config.cfg"
 
-    app.logger.debug("Starting ISPyB server in %s mode" % flask_config_name)
+    app.logger.debug("Starting ISPyB server in %s mode" % run_mode)
+
     try:
-        app.config.from_object(CONFIG_NAME_MAPPER[flask_config_name])
-    except ImportError:
+        config_obj = getattr(importlib.import_module("config"), CONFIG_NAME_MAPPER[run_mode])
+        app.config.from_object(config_obj(config_path))
+    except ImportError as ex:
         app.logger.error(  # pylint: disable=no-member
             "Unabled to start the ISPyB server with configuration %s"
-            % flask_config_name
+            % config_path
         )
+        app.logger.error(str(ex))
         sys.exit(1)
         raise
 
@@ -70,7 +70,7 @@ def create_app(flask_config_name=None, **kwargs):
 
     extensions.init_app(app)
 
-    service_module = importlib.import_module(app.config["SERVICE"])
+    service_module = importlib.import_module(app.config["SERVICE_NAME"])
     service_module.init_app(app)
 
     from . import routes

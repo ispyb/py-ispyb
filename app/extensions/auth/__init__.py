@@ -31,7 +31,7 @@ from flask_restx._http import HTTPStatus
 
 
 class AuthProvider:
-    """Allows to authentificate users and create tokens"""
+    """Allows to authentificate users and create tokens."""
 
     def __init__(self):
         self.tokens = []
@@ -55,9 +55,9 @@ class AuthProvider:
                 )
 
     def get_roles(self, username, password):
-        """Returns roles associated to user.
-        Basically this is the main authentification method where site_auth
-        is site specific authentication class.
+        """Returns roles associated to user. Basically this is the main
+        authentification method where site_auth is site specific authentication
+        class.
 
         Args:
             username (str): username
@@ -69,7 +69,7 @@ class AuthProvider:
         return self.site_auth.get_roles(username, password)
 
     def get_roles_by_token(self, token):
-        """Returns roles associated with the token
+        """Returns roles associated with the token.
 
         Args:
             token (str): jwt token
@@ -87,6 +87,14 @@ class AuthProvider:
         return roles
 
     def get_user_info_by_auth_header(self, auth_header):
+        """Returns dict with user info based on auth header.
+
+        Args:
+            auth_header ([type]): [description]
+
+        Returns:
+            dict: {"username": "", "roles": [], "is_admin": bool}
+        """
         user_info = {}
         token = None
 
@@ -104,7 +112,7 @@ class AuthProvider:
         return user_info
 
     def generate_token(self, username, roles):
-        """Generates token
+        """Generates token.
 
         Args:
             username (string): username
@@ -143,9 +151,24 @@ class AuthProvider:
 
 auth_provider = AuthProvider()
 
-def token_required(f):
-    @wraps(f)
+def token_required(func):
+    """Token required decorator.
+
+    Checks if the token is valid
+
+    Args:
+        func (method): python method
+
+    Returns:
+        func: if success
+    """
+    @wraps(func)
     def decorated(*args, **kwargs):
+        """Actual decorator function
+
+        Returns:
+            [type]: [description]
+        """
         token = None
 
         auth = request.headers.get("Authorization", None)
@@ -175,7 +198,7 @@ def token_required(f):
         if current_app.config.get("MASTER_TOKEN"):
             if current_app.config["MASTER_TOKEN"] == token:
                 current_app.logger.info("Master token validated")
-                return f(*args, **kwargs)
+                return func(*args, **kwargs)
         try:
             jwt.decode(
                 token,
@@ -195,21 +218,37 @@ def token_required(f):
                 {"message": "Invalid token. Please log in again"},
                 HTTPStatus.UNAUTHORIZED,
             )
-        return f(*args, **kwargs)
+        return func(*args, **kwargs)
 
     return decorated
 
 
-def write_permission_required(f):
-    @wraps(f)
+def write_permission_required(func):
+    """Checks if user has write permissions
+
+    Args:
+        f ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    @wraps(func)
     def decorated(*args, **kwargs):
+        """Actual decorator method
+
+        Returns:
+            [type]: [description]
+        """
             
-        user_info = auth_provider.get_user_info_by_auth_header(request.headers.get("Authorization"))
+        user_info = auth_provider.get_user_info_by_auth_header(
+            request.headers.get("Authorization")
+            )
         if "admin" in user_info["roles"]:
-            return f(*args, **kwargs)
+            return func(*args, **kwargs)
         else:
             print(
-                "No permission to write in db. Current permissions are %s" % str(user_info["roles"])
+                "No permission to write in db. " +
+                "Current permissions are %s" % str(user_info["roles"])
             )
             return (
                 {"message": "User has no write permission"},

@@ -29,6 +29,11 @@ log = logging.getLogger(__name__)
 
 
 def init_app(app, **kwargs):
+    """Inits extensions.
+
+    Args:
+        app (Flask app): [description]
+    """
     from importlib import import_module
 
     for module_name in os.listdir(os.path.dirname(__file__)):

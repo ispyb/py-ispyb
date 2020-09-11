@@ -22,22 +22,27 @@
 __license__ = "LGPLv3+"
 
 
+import sys
 import sqlite3
 
 from flask import current_app
-from sqlalchemy import engine, MetaData
+from sqlalchemy import engine
 from sqlalchemy.exc import InvalidRequestError
 from flask_sqlalchemy import SQLAlchemy as BaseSQLAlchemy
 
 
 def set_sqlite_pragma(dbapi_connection, connection_record):
     # pylint: disable=unused-argument
-    """
-    SQLite supports FOREIGN KEY syntax when emitting CREATE statements for
-    tables, however by default these constraints have no effect on the
+    """SQLite supports FOREIGN KEY syntax when emitting CREATE statements for tables.
+    
+    By default these constraints have no effect on the
     operation of the table.
 
     http://docs.sqlalchemy.org/en/latest/dialects/sqlite.html#foreign-key-support
+
+    Args:
+        dbapi_connection ([type]): [description]
+        connection_record ([type]): [description]
     """
     if not isinstance(dbapi_connection, sqlite3.Connection):
         return
@@ -46,10 +51,11 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.close()
 
 
-class AlembicDatabaseMigrationConfig(object):
-    """
-    Helper config holder that provides missing functions of Flask-Alembic
-    package since we use custom invoke tasks instead.
+class AlembicDatabaseMigrationConfig():
+    """Helper config holder that provides missing functions of Flask-Alembic.
+
+    Args:
+        object ([type]): [description]
     """
 
     def __init__(self, database, directory="migrations", **kwargs):
@@ -59,17 +65,23 @@ class AlembicDatabaseMigrationConfig(object):
 
 
 class SQLAlchemy(BaseSQLAlchemy):
-    """
-    Customized Flask-SQLAlchemy adapter with enabled autocommit, constraints
-    auto-naming conventions and ForeignKey constraints for SQLite.
+    """Customized Flask-SQLAlchemy adapter
+
+    Args:
+        BaseSQLAlchemy ([type]): [description]
     """
 
     def __init__(self, *args, **kwargs):
+        """
+        Init method
+        """
+
         if "session_options" not in kwargs:
             kwargs["session_options"] = {}
         kwargs["session_options"]["autocommit"] = False
         # Configure Constraint Naming Conventions:
-        # http://docs.sqlalchemy.org/en/latest/core/constraints.html#constraint-naming-conventions
+        # http://docs.sqlalchemy.org/en/latest/core/constraints.html
+        # #constraint-naming-conventions
         """
         kwargs["metadata"] = MetaData(
             naming_convention={
@@ -81,13 +93,20 @@ class SQLAlchemy(BaseSQLAlchemy):
             }
         )
         """
-        super(SQLAlchemy, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def init_app(self, app):
-        super(SQLAlchemy, self).init_app(app)
+        """Called to init extension.
+
+        Args:
+            app ([type]): [description]
+        """
+        super().init_app(app)
 
         database_uri = app.config["SQLALCHEMY_DATABASE_URI"]
-        assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
+        if not database_uri or database_uri == "sqlite:///:memory:":
+            raise Exception("SQLALCHEMY_DATABASE_URI must be configured!")
+        #assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
         if database_uri.startswith("sqlite:"):
             self.event.listens_for(engine.Engine, "connect")(set_sqlite_pragma)
 
@@ -123,7 +142,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         query = sql_alchemy_model.query
         total = query.count()
 
-        #Filter items based on schema keys    
+        #Filter items based on schema keys
         schema_keys = {}
         for key in query_params.keys():
             if key in dict_schema.keys():
@@ -145,12 +164,11 @@ class SQLAlchemy(BaseSQLAlchemy):
             "error": error_msg
         }
 
-    
     def get_db_item_by_params(self, sql_alchemy_model, ma_schema, item_id_dict):
-        """Returns data base item by its Id
+        """Returns data base item by its Id.
 
         Args:
-            item_id (int): 
+            item_id (int):
 
         Returns:
             dict: info dict
@@ -161,7 +179,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         return db_item_json
 
     def add_db_item(self, sql_alchemy_model, ma_schema, data):
-        """Adds item to db
+        """Adds item to db.
 
         Args:
             sql_alchemy_model ([type]): [description]
@@ -184,29 +202,60 @@ class SQLAlchemy(BaseSQLAlchemy):
             return  ma_schema.dump(db_item)[0]
 
     def update_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):
+        """Updates item in db
+
+        Args:
+            sql_alchemy_model ([type]): [description]
+            item_id_dict ([type]): [description]
+            item_update_dict ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        result = None
         db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
-        if not db_item:
-            return None
-        else:
-            # Do something
-            return True
+        if db_item:
+            print(item_update_dict)
+            result = True
+
+        return result
 
 
     def patch_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):
+        """Patch db item
+
+        Args:
+            sql_alchemy_model ([type]): [description]
+            item_id_dict ([type]): [description]
+            item_update_dict ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        result = None
         db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
-        if not db_item:
-            return None
-        else:
+        if  db_item:
             for key, value in item_update_dict.items():
                 if hasattr(db_item, key):
                     setattr(db_item, key, value)
                 else:
                     print("Attribute %s not defined in the item model" % key)
             self.session.commit()
-            return True
+            result = True
+
+        return result
 
 
     def delete_db_item(self, sql_alchemy_model, item_id_dict):
+        """Deletes db item
+
+        Args:
+            sql_alchemy_model ([type]): [description]
+            item_id_dict ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
         if not db_item:
             return None
@@ -215,7 +264,7 @@ class SQLAlchemy(BaseSQLAlchemy):
                 self.session.delete(db_item)
                 self.session.commit()
                 return True
-            except Exception as ex:
+            except BaseException as ex:
                 print(ex)
                 #log.exception(str(ex))
                 self.session.rollback()

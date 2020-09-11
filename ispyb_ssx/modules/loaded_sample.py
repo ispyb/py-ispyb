@@ -24,13 +24,17 @@ __license__ = "LGPLv3+"
 
 import logging
 
+from flask_restx._http import HTTPStatus
+
+
 import ispyb_service_connector
-from app.extensions import db
+from app.extensions import db, auth_provider, create_response
 
-
+#from ispyb_core
 from ispyb_ssx.models import LoadedSample as LoadedSampleModel
 from ispyb_ssx.models import CrystalSlurry as CrystalSlurryModel
 from ispyb_ssx.schemas.loaded_sample import (
+    loaded_sample_dict_schema,
     loaded_sample_f_schema,
     loaded_sample_ma_schema,
 )
@@ -43,13 +47,49 @@ from ispyb_ssx.schemas.crystal_slurry import (
 log = logging.getLogger(__name__)
 
 
-def get_all_loaded_samples():
-    loaded_samples = LoadedSampleModel.query.all()
-    return loaded_sample_ma_schema.dump(loaded_samples, many=True)
+def get_loaded_samples(request):
+    """Returns loaded_samples by query parameters"""
+    
+    query_params = request.args.to_dict()
+    user_info = auth_provider.get_user_info_by_auth_header(request.headers.get("Authorization"))
+    run_query = True
+
+    """
+    if not user_info["is_admin"]:
+        #If the user is not admin or manager then loaded_samples associated to the user login name are returned
+        person_id = contacts.get_person_id_by_login(user_info["username"])
+        run_query = person_id is not None
+    else:
+        print(query_params.get("login_name"))
+        person_id = contacts.get_person_id_by_login(query_params.get("login_name"))
+
+    if person_id:    
+        query_params["personId"] = person_id
+    """
+    print(ispyb_service_connector.get_ispyb_resource("ispyb_core", "/schemas/available_names"))
+    if run_query:
+        return db.get_db_items(
+            LoadedSampleModel, loaded_sample_dict_schema, loaded_sample_ma_schema, query_params
+        ), HTTPStatus.OK
+    else:
+        msg = "No loaded_samples associated to the username %s" % user_info["username"]
+        return create_response(info_msg=msg), HTTPStatus.OK
+    
+def get_loaded_sample_by_id(loaded_sample_id):
+    """Returns loaded_sample by its loaded_sampleId
+
+    Args:
+        loaded_sample_id (int): corresponds to loaded_sampleId in db
+
+    Returns:
+        dict: info about loaded_sample as dict
+    """
+    id_dict = {"loaded_sampleId": loaded_sample_id}
+    return db.get_db_item_by_params(loaded_sampleModel, loaded_sample_ma_schema, id_dict)
+
 
 def add_loaded_sample(loaded_sample_dict):
-    print(loaded_sample_dict)
-    return
+    return db.add_db_item(loaded_sampleModel, loaded_sample_ma_schema, loaded_sample_dict)
 
 def get_all_crystal_slurry():
     crystal_slurry_list = CrystalSlurryModel.query.all()
