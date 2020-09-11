@@ -85,11 +85,11 @@ def get_loaded_sample_by_id(loaded_sample_id):
         dict: info about loaded_sample as dict
     """
     id_dict = {"loaded_sampleId": loaded_sample_id}
-    return db.get_db_item_by_params(loaded_sampleModel, loaded_sample_ma_schema, id_dict)
+    return db.get_db_item_by_params(LoadedSampleModel, loaded_sample_ma_schema, id_dict)
 
 
 def add_loaded_sample(loaded_sample_dict):
-    return db.add_db_item(loaded_sampleModel, loaded_sample_ma_schema, loaded_sample_dict)
+    return db.add_db_item(LoadedSampleModel, loaded_sample_ma_schema, loaded_sample_dict)
 
 def get_all_crystal_slurry():
     crystal_slurry_list = CrystalSlurryModel.query.all()
