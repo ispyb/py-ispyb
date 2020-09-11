@@ -23,8 +23,7 @@ __license__ = "LGPLv3+"
 
 
 import os
-import configparser
-
+import ruamel.yaml
 
 class BaseConfig:
     """Base config class
@@ -62,12 +61,11 @@ class BaseConfig:
     CSRF_ENABLED = True
 
     def __init__(self, config_filename=None):
-        config = configparser.RawConfigParser()
-        config.read(config_filename)
+        with open(config_filename) as f:
+            config = ruamel.yaml.load(f.read(), ruamel.yaml.RoundTripLoader)
 
-        for key, value in config["server"].items():
-            setattr(self, key.upper(), value)
-
+            for key, value in config["server"].items():
+                setattr(self, key, value)
 
 class ProductionConfig(BaseConfig):
     """Production config

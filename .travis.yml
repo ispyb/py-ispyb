@@ -20,8 +20,8 @@ script:
         - bash create_db.sh
         - bash run_all.sh
         - cd ..
-        - cp ispyb_core_config_example.cfg ispyb_core_config.cfg
-        - cp ispyb_ssx_config_example.cfg ispyb_ssx_config.cfg
+        - cp ispyb_core_config_example.yml ispyb_core_config.yml
+        - cp ispyb_ssx_config_example.yml ispyb_ssx_config.yml
         - pylint -E app ispyb_core ispyb_ssx
         - coverage run -m pytest
         

@@ -1,0 +1,7 @@
+server:
+    SERVICE_NAME : "ispyb_core"
+    SQLALCHEMY_DATABASE_URI : "mysql://mxuser:Mxpass_123456@localhost/pydb_test"
+
+    AUTH_MODULE : "app.extensions.auth.DummyAuth"
+    AUTH_CLASS : "DummyAuth"
+    MASTER_TOKEN : "MasterToken"

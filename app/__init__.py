@@ -50,7 +50,7 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
     if config_path is None:
         config_path = env_config_path
     if config_path is None:
-        config_path = "ispyb_core_config.cfg"
+        config_path = "ispyb_core_config.yml"
 
     app.logger.debug("Starting ISPyB server in %s mode" % run_mode)
 

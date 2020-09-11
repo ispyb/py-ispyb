@@ -12,6 +12,6 @@ marshmallow-sqlalchemy>=0.12,<0.13
 marshmallow_jsonschema
 webargs>=1.4.0,<2
 
-gunicorn
 pyjwt
 mysqlclient
+ruamel.yaml

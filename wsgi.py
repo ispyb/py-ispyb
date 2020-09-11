@@ -31,7 +31,7 @@ if len(sys.argv) > 3:
     run_mode = sys.argv[2]
     port = sys.argv[3]
 else:
-    config_filename = "ispyb_core_config.cfg"
+    config_filename = "ispyb_core_config.yml"
     run_mode = "dev"
     port = 5000
 
