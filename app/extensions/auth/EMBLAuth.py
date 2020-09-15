@@ -1,4 +1,5 @@
 # encoding: utf-8
+# pylint: skip-file
 #
 #  Project: py-ispyb
 #  https://github.com/ispyb/py-ispyb
