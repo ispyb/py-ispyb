@@ -29,6 +29,14 @@ class AbstractAuth(object):
 
     __metaclass__ = abc.ABCMeta
 
+    def init_app(self, app):
+        """Initializes auth class
+
+        Args:
+            app (flask app): Flask app
+        """
+        return
+
     @abc.abstractmethod
     def get_roles(self, username, password):
         """Returns roles associated to the user

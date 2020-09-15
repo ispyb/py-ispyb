@@ -44,7 +44,7 @@ db_name = uri.split("/")[-1]
 gen_tables = []
 gen_modules = []
 
-with open("%s/enabled_db_modules.csv" % ispyb_root) as csvfile:
+with open("%s/scripts/core_db_mapping.csv" % ispyb_root) as csvfile:
     reader = csv.reader(csvfile)
     """
     If the module name starts with # then the schema file is generated
