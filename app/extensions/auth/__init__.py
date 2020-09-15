@@ -18,9 +18,7 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
-
-__license__ = "LGPLv3+"
-
+import logging
 import datetime
 import importlib
 from functools import wraps
@@ -28,6 +26,12 @@ from functools import wraps
 import jwt
 from flask import current_app, request
 from flask_restx._http import HTTPStatus
+
+
+__license__ = "LGPLv3+"
+
+
+log = logging.getLogger(__name__)
 
 
 class AuthProvider:
@@ -43,6 +47,7 @@ class AuthProvider:
         class_name = app.config["AUTH_CLASS"]
         cls = getattr(importlib.import_module(module_name), class_name)
         self.site_auth = cls()
+        self.site_auth.init_app(app)
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 

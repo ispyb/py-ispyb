@@ -1,7 +1,7 @@
-USER="mxuser"
-PWD="mxpass"
-HOST="localhost"
-DB_NAME="pydb_test"
+USER="pydbusr"
+PWD="pydbpwd"
+HOST="ispyb.embl-hamburg.de"
+DB_NAME="pydb"
 
 flask-sqlacodegen --flask --nobackrefs --outfile ../ispyb_core/models.py mysql://$USER:$PWD@$HOST/$DB_NAME
 
