@@ -57,7 +57,7 @@ class AuthProvider:
                 "token": app.config.get("MASTER_TOKEN"),
                 "roles": ["admin"]
                 }
-                )
+            )
 
     def get_roles(self, username, password):
         """Returns roles associated to user. Basically this is the main
@@ -227,9 +227,8 @@ def token_required(func):
 
     return decorated
 
-
-def write_permission_required(func):
-    """Checks if user has write permissions
+def roles_required(roles):
+    """Checks if user has role required to get/post a resource.
 
     Args:
         f ([type]): [description]
@@ -237,28 +236,32 @@ def write_permission_required(func):
     Returns:
         [type]: [description]
     """
-    @wraps(func)
-    def decorated(*args, **kwargs):
-        """Actual decorator method
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            """Actual decorator method
 
-        Returns:
-            [type]: [description]
-        """
+            Returns:
+                [type]: [description]
+            """
             
-        user_info = auth_provider.get_user_info_by_auth_header(
-            request.headers.get("Authorization")
-            )
-        if "admin" in user_info["roles"]:
-            return func(*args, **kwargs)
-        else:
-            print(
-                "No permission to write in db. " +
-                "Current permissions are %s" % str(user_info["roles"])
-            )
-            return (
-                {"message": "User has no write permission"},
-                HTTPStatus.UNAUTHORIZED,
-            )
-
-    return decorated
+            user_info = auth_provider.get_user_info_by_auth_header(
+                request.headers.get("Authorization")
+                )
+            print(roles, user_info)
+            if any(role in list(roles) for role in list(user_info.get("roles"))):
+                return func(*args, **kwargs)
+            else:
+                msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (
+                    user_info.get("username"),
+                    str(user_info.get("roles")),
+                    str(roles)
+                )
+                msg += " to execute method."
+                print(msg)
+                return (
+                    {"message": msg},
+                    HTTPStatus.UNAUTHORIZED,
+                )
+        return wrapper
+    return decorator
 
