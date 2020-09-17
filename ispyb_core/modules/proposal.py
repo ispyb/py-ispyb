@@ -42,18 +42,16 @@ def get_proposals(request):
     user_info = auth_provider.get_user_info_by_auth_header(request.headers.get("Authorization"))
     run_query = True
 
-    if not user_info["is_admin"]:
+    if not user_info.get("is_admin"):
         #If the user is not admin or manager then proposals associated to the user login name are returned
         person_id = contacts.get_person_id_by_login(user_info["username"])
         run_query = person_id is not None
     else:
-        print(query_params.get("login_name"))
         person_id = contacts.get_person_id_by_login(query_params.get("login_name"))
 
     if person_id:    
         query_params["personId"] = person_id
 
-    print(query_params)
     if run_query:
         return db.get_db_items(
             ProposalModel, proposal_dict_schema, proposal_ma_schema, query_params

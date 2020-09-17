@@ -25,7 +25,7 @@ from flask_restx_patched import Resource, HTTPStatus
 
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required, write_permission_required
+from app.extensions.auth import token_required, roles_required
 
 from ispyb_core.schemas import data_collection as data_collection_schemas
 from ispyb_core.schemas import data_collection_group as data_collection_group_schema

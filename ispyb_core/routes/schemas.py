@@ -21,10 +21,11 @@
 
 import importlib
 
+from flask import current_app
 from flask_restx_patched import Resource, HTTPStatus
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required
+#from app.extensions.auth import token_required
 
 from ispyb_core import schemas
 
@@ -46,7 +47,7 @@ class SchemasList(Resource):
         Returns:
             list: list of names
         """
-
+        current_app.logger.info("Get all schemas")
         # TODO I guess there is oneliner fancy code that can do this...
         result = []
         for item in dir(schemas):

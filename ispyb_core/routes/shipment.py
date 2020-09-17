@@ -38,7 +38,7 @@ from flask_restx._http import HTTPStatus
 from flask_restx_patched import Resource
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required, write_permission_required
+from app.extensions.auth import token_required, roles_required
 
 from ispyb_core.schemas import shipping as shipping_schemas
 from ispyb_core.modules import shipping
@@ -74,7 +74,6 @@ class Shipments(Resource):
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
-    @write_permission_required
     def post(self):
         """Adds a new shipment"""
         result = shipping.add_shipment(api.payload)
@@ -112,7 +111,6 @@ class ShipmentById(Resource):
     @api.expect(shipping_schemas.shipping_f_schema)
     @api.marshal_with(shipping_schemas.shipping_f_schema, code=HTTPStatus.CREATED)
     @token_required
-    @write_permission_required
     def put(self, shipment_id):
         """Fully updates shipment with id shipment_id
 
@@ -134,7 +132,6 @@ class ShipmentById(Resource):
     @api.expect(shipping_schemas.shipping_f_schema)
     @api.marshal_with(shipping_schemas.shipping_f_schema, code=HTTPStatus.CREATED)
     @token_required
-    @write_permission_required
     def patch(self, shipment_id):
         """Partially updates shipment with id shipment_id
 
@@ -154,7 +151,7 @@ class ShipmentById(Resource):
             )
 
     @token_required
-    @write_permission_required
+    @roles_required(["manager", "admin"])
     def delete(self, shipment_id):
         """Deletes shipment by shipment_id
 

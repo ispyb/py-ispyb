@@ -24,7 +24,7 @@ from flask import request
 from flask_restx_patched import Resource, HTTPStatus
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required, write_permission_required
+from app.extensions.auth import token_required, roles_required
 
 from ispyb_core.models import BLSession as Session
 from ispyb_core.schemas import session as session_schemas
@@ -69,7 +69,7 @@ class Sessions(Resource):
     #@api.errorhandler(FakeException)
     #TODO add custom exception handling
     @token_required
-    @write_permission_required
+    @roles_required(["manager", "admin"])
     def post(self):
         """Adds a new session"""
         log.info("Inserts a new session")
@@ -96,7 +96,7 @@ class SessionById(Resource):
 
     @api.doc(description="session_id should be an integer ")
     @api.marshal_with(session_schemas.session_f_schema, skip_none=True, code=HTTPStatus.OK)
-    #@token_required
+    @token_required
     def get(self, session_id):
         """Returns a session by sessionId"""
         result = session.get_session_by_id(session_id)
