@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -21,7 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 def create_response_item(info_msg, error_msg, num_items, data):
     """
-    Creates response dictionary
+    Creates response dictionary.
 
     Args:
         info_msg ([type]): [description]

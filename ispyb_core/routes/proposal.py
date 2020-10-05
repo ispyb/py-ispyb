@@ -1,13 +1,6 @@
-from ispyb_core.modules import proposal
-from ispyb_core.schemas import proposal as proposal_schemas
-from app.extensions.auth import token_required, roles_required
-from app.extensions.api import api_v1, Namespace
-from flask_restx_patched import Resource
-from flask_restx._http import HTTPStatus
-from flask import request, current_app
-
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -24,9 +17,9 @@ GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-"""
 
-"""
+
+
 Proposal namespace with enpoint allowing to manipulate proposal items.
 
 Example routes:
@@ -42,6 +35,17 @@ Example routes:
 
 __license__ = "LGPLv3+"
 
+from flask import request, current_app
+
+from flask_restx_patched import Resource
+from flask_restx._http import HTTPStatus
+
+from ispyb_core.modules import proposal
+from ispyb_core.schemas import proposal as proposal_schemas
+from app.extensions.auth import token_required, roles_required
+from app.extensions.api import api_v1, Namespace
+
+
 
 api = Namespace(
     "Proposals", description="Proposal related namespace", path="/proposals"
@@ -56,7 +60,8 @@ class Proposals(Resource):
 
     @token_required
     def get(self):
-        """Returns list of proposals
+        """
+        Returns list of proposals
 
         Returns:
             list: list of proposals.
