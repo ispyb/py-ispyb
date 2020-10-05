@@ -1,5 +1,4 @@
-"""
-Project: py-ispyb.
+"""Project: py-ispyb.
 
 https://github.com/ispyb/py-ispyb
 
@@ -28,10 +27,16 @@ import abc
 
 class AbstractAuth(object):
 
+    """
+    Abstract authentication class.
+
+    Base class for all site specific authentication classes
+    """
+
     __metaclass__ = abc.ABCMeta
 
     def init_app(self, app):
-        """Initializes auth class
+        """Initializes auth class.
 
         Args:
             app (flask app): Flask app
@@ -40,7 +45,7 @@ class AbstractAuth(object):
 
     @abc.abstractmethod
     def get_roles(self, username, password):
-        """Returns roles associated to the user
+        """Returns roles associated to the user.
 
         Args:
             username (str): username
