@@ -1,3 +1,11 @@
+from ispyb_core.modules import proposal
+from ispyb_core.schemas import proposal as proposal_schemas
+from app.extensions.auth import token_required, roles_required
+from app.extensions.api import api_v1, Namespace
+from flask_restx_patched import Resource
+from flask_restx._http import HTTPStatus
+from flask import request, current_app
+
 """
 Project: py-ispyb
 https://github.com/ispyb/py-ispyb
@@ -31,17 +39,6 @@ Example routes:
 [DELETE]/ispyb/api/v1//proposals/1  - Deletes proposal #1
 """
 
-from flask import request, current_app
-from flask_restx._http import HTTPStatus
-
-from flask_restx_patched import Resource
-
-from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required, roles_required
-
-from ispyb_core.schemas import proposal as proposal_schemas
-from ispyb_core.modules import proposal
-
 
 __license__ = "LGPLv3+"
 
@@ -50,7 +47,6 @@ api = Namespace(
     "Proposals", description="Proposal related namespace", path="/proposals"
 )
 api_v1.add_namespace(api)
-
 
 
 @api.route("")
@@ -90,10 +86,7 @@ class Proposals(Resource):
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="Proposal not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
 class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
@@ -180,10 +173,7 @@ class ProposalById(Resource):
 @api.route("/<int:proposal_id>/info")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="Proposal not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
 class ProposalInfoById(Resource):
     """Returns full information of a proposal"""
 

@@ -25,7 +25,8 @@ from flask import current_app
 from flask_restx_patched import Resource, HTTPStatus
 
 from app.extensions.api import api_v1, Namespace
-#from app.extensions.auth import token_required
+
+# from app.extensions.auth import token_required
 
 from ispyb_core import schemas
 

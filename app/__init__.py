@@ -55,12 +55,13 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
     app.logger.debug("Starting ISPyB server in %s mode" % run_mode)
 
     try:
-        config_obj = getattr(importlib.import_module("config"), CONFIG_NAME_MAPPER[run_mode])
+        config_obj = getattr(
+            importlib.import_module("config"), CONFIG_NAME_MAPPER[run_mode]
+        )
         app.config.from_object(config_obj(config_path))
     except ImportError as ex:
         app.logger.error(  # pylint: disable=no-member
-            "Unabled to start the ISPyB server with configuration %s"
-            % config_path
+            "Unabled to start the ISPyB server with configuration %s" % config_path
         )
         app.logger.error(str(ex))
         sys.exit(1)

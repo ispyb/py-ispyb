@@ -1,3 +1,12 @@
+from ispyb_core.modules import shipping
+from ispyb_core.schemas import shipping as shipping_schemas
+from app.extensions.auth import token_required, roles_required
+from app.extensions.api import api_v1, Namespace
+from flask_restx_patched import Resource
+from flask_restx._http import HTTPStatus
+from flask import request
+import logging
+
 """
 Project: py-ispyb
 https://github.com/ispyb/py-ispyb
@@ -31,18 +40,6 @@ Example routes:
 [DELETE]/ispyb/api/v1//shipments/1  - Deletes shipment #1
 """
 
-import logging
-from flask import request
-from flask_restx._http import HTTPStatus
-
-from flask_restx_patched import Resource
-
-from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required, roles_required
-
-from ispyb_core.schemas import shipping as shipping_schemas
-from ispyb_core.modules import shipping
-
 
 __license__ = "LGPLv3+"
 
@@ -52,7 +49,6 @@ api = Namespace(
     "Shipments", description="Shipment related namespace", path="/shipments"
 )
 api_v1.add_namespace(api)
-
 
 
 @api.route("")
@@ -88,10 +84,7 @@ class Shipments(Resource):
 @api.route("/<int:shipment_id>")
 @api.param("shipment_id", "shipment id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="shipment not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="shipment not found.")
 class ShipmentById(Resource):
     """Allows to get/set/delete a shipment"""
 
@@ -176,10 +169,7 @@ class ShipmentById(Resource):
 @api.route("/<int:shipment_id>/info")
 @api.param("shipment_id", "shipment id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="shipment not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="shipment not found.")
 class ShipmentInfoById(Resource):
     """Returns full information of a shipment"""
 

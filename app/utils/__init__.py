@@ -18,9 +18,23 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from ispyb_core import models, schemas
 
+def create_response_item(info_msg, error_msg, num_items, data):
+    """
+    Creates response dictionary
 
-def get_auto_proc_list():
-    auto_proc_list = models.AutoProc.query.all()
-    return schemas.auto_proc.auto_proc_ma_schema.dump(auto_proc_list)
+    Args:
+        info_msg ([type]): [description]
+        error_msg ([type]): [description]
+        num_items ([type]): [description]
+        data ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+
+    return {
+        "data": {"total": num_items, "rows": data},
+        "message": info_msg,
+        "error": error_msg,
+    }

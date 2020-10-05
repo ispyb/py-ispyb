@@ -66,19 +66,19 @@ class DataColletions(Resource):
         """
         return data_collection.get_data_collections(request.args), HTTPStatus.OK
 
+
 @api.route("/<int:data_collection_id>")
 @api.param("data_collection_id", "data_collection id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="data collection not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="data collection not found.")
 class DataCollectionById(Resource):
     """Allows to get/set/delete a data_collection"""
 
     @api.doc(description="data_collection_id should be an integer ")
     @api.marshal_with(
-        data_collection_schemas.data_collection_f_schema, skip_none=True, code=HTTPStatus.OK
+        data_collection_schemas.data_collection_f_schema,
+        skip_none=True,
+        code=HTTPStatus.OK,
     )
     @token_required
     def get(self, data_collection_id):
@@ -88,6 +88,7 @@ class DataCollectionById(Resource):
             return result, HTTPStatus.OK
         else:
             api.abort(HTTPStatus.NOT_FOUND, "data_collection not found")
+
 
 @api.route("/groups")
 @api.doc(security="apikey")
