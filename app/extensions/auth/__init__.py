@@ -1,22 +1,22 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 import logging
 import datetime
@@ -60,7 +60,8 @@ class AuthProvider:
             )
 
     def get_roles(self, username, password):
-        """Returns roles associated to user. Basically this is the main
+        """
+        Returns roles associated to user. Basically this is the main
         authentification method where site_auth is site specific authentication
         class.
 
@@ -74,7 +75,8 @@ class AuthProvider:
         return self.site_auth.get_roles(username, password)
 
     def get_roles_by_token(self, token):
-        """Returns roles associated with the token.
+        """
+        Returns roles associated with the token.
 
         Args:
             token (str): jwt token
@@ -92,7 +94,8 @@ class AuthProvider:
         return roles
 
     def get_user_info_by_auth_header(self, auth_header):
-        """Returns dict with user info based on auth header.
+        """
+        Returns dict with user info based on auth header.
 
         Args:
             auth_header ([type]): [description]
@@ -117,7 +120,8 @@ class AuthProvider:
         return user_info
 
     def generate_token(self, username, roles):
-        """Generates token.
+        """
+        Generates token.
 
         Args:
             username (string): username
@@ -157,7 +161,8 @@ class AuthProvider:
 auth_provider = AuthProvider()
 
 def token_required(func):
-    """Token required decorator.
+    """
+    Token required decorator.
 
     Checks if the token is valid
 
@@ -169,7 +174,8 @@ def token_required(func):
     """
     @wraps(func)
     def decorated(*args, **kwargs):
-        """Actual decorator function
+        """
+        Actual decorator function
 
         Returns:
             [type]: [description]
@@ -228,7 +234,8 @@ def token_required(func):
     return decorated
 
 def roles_required(roles):
-    """Checks if user has role required to get/post a resource.
+    """
+    Checks if user has role required to get/post a resource.
 
     Args:
         f ([type]): [description]
@@ -238,16 +245,9 @@ def roles_required(roles):
     """
     def decorator(func):
         def wrapper(*args, **kwargs):
-            """Actual decorator method
-
-            Returns:
-                [type]: [description]
-            """
-            
             user_info = auth_provider.get_user_info_by_auth_header(
                 request.headers.get("Authorization")
                 )
-            print(roles, user_info)
             if any(role in list(roles) for role in list(user_info.get("roles"))):
                 return func(*args, **kwargs)
             else:
@@ -257,11 +257,11 @@ def roles_required(roles):
                     str(roles)
                 )
                 msg += " to execute method."
-                print(msg)
                 return (
                     {"message": msg},
                     HTTPStatus.UNAUTHORIZED,
                 )
+        wrapper.__doc__ = func.__doc__
         return wrapper
     return decorator
 
