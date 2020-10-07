@@ -1,22 +1,22 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 from flask_restx_patched import Resource, HTTPStatus
@@ -32,11 +32,7 @@ from ispyb_core.modules import sample, crystal
 __license__ = "LGPLv3+"
 
 
-api = Namespace(
-    "Samples",
-    description="Sample related namespace",
-    path="/samples",
-)
+api = Namespace("Samples", description="Sample related namespace", path="/samples")
 api_v1.add_namespace(api)
 
 
@@ -62,10 +58,7 @@ class Sample(Resource):
 @api.route("/<int:sample_id>")
 @api.param("sample_id", "Sample id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="Sample not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="Sample not found.")
 class SampleById(Resource):
     """Allows to get/set/delete a sample item"""
 
@@ -105,10 +98,7 @@ class Crystal(Resource):
 @api.route("/crystals/<int:crystal_id>")
 @api.param("crystal_id", "Crystal id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="Crystal not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="Crystal not found.")
 class CrystalById(Resource):
     """Allows to get/set/delete a crystal item"""
 

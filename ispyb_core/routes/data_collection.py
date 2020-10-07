@@ -1,22 +1,22 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 from flask import request
@@ -36,7 +36,7 @@ __license__ = "LGPLv3+"
 
 
 api = Namespace(
-    "Data collection",
+    "Data collections",
     description="Data collection related namespace",
     path="/data_collections",
 )
@@ -66,19 +66,19 @@ class DataColletions(Resource):
         """
         return data_collection.get_data_collections(request.args), HTTPStatus.OK
 
+
 @api.route("/<int:data_collection_id>")
 @api.param("data_collection_id", "data_collection id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="data collection not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="data collection not found.")
 class DataCollectionById(Resource):
     """Allows to get/set/delete a data_collection"""
 
     @api.doc(description="data_collection_id should be an integer ")
     @api.marshal_with(
-        data_collection_schemas.data_collection_f_schema, skip_none=True, code=HTTPStatus.OK
+        data_collection_schemas.data_collection_f_schema,
+        skip_none=True,
+        code=HTTPStatus.OK,
     )
     @token_required
     def get(self, data_collection_id):
@@ -88,6 +88,7 @@ class DataCollectionById(Resource):
             return result, HTTPStatus.OK
         else:
             api.abort(HTTPStatus.NOT_FOUND, "data_collection not found")
+
 
 @api.route("/groups")
 @api.doc(security="apikey")

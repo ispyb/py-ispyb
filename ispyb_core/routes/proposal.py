@@ -1,24 +1,24 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""Project: py-ispyb.
 
-"""
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+
+
+
 Proposal namespace with enpoint allowing to manipulate proposal items.
 
 Example routes:
@@ -31,26 +31,25 @@ Example routes:
 [DELETE]/ispyb/api/v1//proposals/1  - Deletes proposal #1
 """
 
-from flask import request, current_app
-from flask_restx._http import HTTPStatus
-
-from flask_restx_patched import Resource
-
-from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required, roles_required
-
-from ispyb_core.schemas import proposal as proposal_schemas
-from ispyb_core.modules import proposal
-
 
 __license__ = "LGPLv3+"
+
+from flask import request, current_app
+
+from flask_restx_patched import Resource
+from flask_restx._http import HTTPStatus
+
+from ispyb_core.modules import proposal
+from ispyb_core.schemas import proposal as proposal_schemas
+from app.extensions.auth import token_required, roles_required
+from app.extensions.api import api_v1, Namespace
+
 
 
 api = Namespace(
     "Proposals", description="Proposal related namespace", path="/proposals"
 )
 api_v1.add_namespace(api)
-
 
 
 @api.route("")
@@ -60,7 +59,8 @@ class Proposals(Resource):
 
     @token_required
     def get(self):
-        """Returns list of proposals
+        """
+        Returns list of proposals
 
         Returns:
             list: list of proposals.
@@ -90,10 +90,7 @@ class Proposals(Resource):
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="Proposal not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
 class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
@@ -180,10 +177,7 @@ class ProposalById(Resource):
 @api.route("/<int:proposal_id>/info")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="Proposal not found.",
-)
+@api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
 class ProposalInfoById(Resource):
     """Returns full information of a proposal"""
 

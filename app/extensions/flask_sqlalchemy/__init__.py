@@ -1,22 +1,22 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 __license__ = "LGPLv3+"
@@ -30,11 +30,14 @@ from sqlalchemy import engine
 from sqlalchemy.exc import InvalidRequestError
 from flask_sqlalchemy import SQLAlchemy as BaseSQLAlchemy
 
+from app.utils import create_response_item
+
 
 def set_sqlite_pragma(dbapi_connection, connection_record):
     # pylint: disable=unused-argument
-    """SQLite supports FOREIGN KEY syntax when emitting CREATE statements for tables.
-    
+    """
+    SQLite supports FOREIGN KEY syntax when emitting CREATE statements for tables.
+
     By default these constraints have no effect on the
     operation of the table.
 
@@ -51,8 +54,9 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.close()
 
 
-class AlembicDatabaseMigrationConfig():
-    """Helper config holder that provides missing functions of Flask-Alembic.
+class AlembicDatabaseMigrationConfig:
+    """
+    Helper config holder that provides missing functions of Flask-Alembic.
 
     Args:
         object ([type]): [description]
@@ -65,7 +69,8 @@ class AlembicDatabaseMigrationConfig():
 
 
 class SQLAlchemy(BaseSQLAlchemy):
-    """Customized Flask-SQLAlchemy adapter
+    """
+    Customized Flask-SQLAlchemy adapter
 
     Args:
         BaseSQLAlchemy ([type]): [description]
@@ -96,7 +101,8 @@ class SQLAlchemy(BaseSQLAlchemy):
         super().__init__(*args, **kwargs)
 
     def init_app(self, app):
-        """Called to init extension.
+        """
+        Called to init extension.
 
         Args:
             app ([type]): [description]
@@ -106,7 +112,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         database_uri = app.config["SQLALCHEMY_DATABASE_URI"]
         if not database_uri or database_uri == "sqlite:///:memory:":
             raise Exception("SQLALCHEMY_DATABASE_URI must be configured!")
-        #assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
+        # assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
         if database_uri.startswith("sqlite:"):
             self.event.listens_for(engine.Engine, "connect")(set_sqlite_pragma)
 
@@ -115,7 +121,8 @@ class SQLAlchemy(BaseSQLAlchemy):
         )
 
     def get_db_items(self, sql_alchemy_model, dict_schema, ma_schema, query_params):
-        """Returns resource based on the passed models and query parameter
+        """
+        Returns resource based on the passed models and query parameter
 
         Args:
             sql_alchemy_model ([type]): SQLAlchemy ORM model
@@ -131,18 +138,18 @@ class SQLAlchemy(BaseSQLAlchemy):
         """
         offset = 0
         limit = current_app.config.get("PAGINATION_ITEMS_LIMIT")
-        info_msg = ""
-        error_msg = ""
+        info_msg = None
+        error_msg = None
 
         if "offset" in query_params.keys():
             offset = query_params.get("offset")
         if "limit" in query_params.keys():
             limit = query_params.get("limit")
-        
+
         query = sql_alchemy_model.query
         total = query.count()
 
-        #Filter items based on schema keys
+        # Filter items based on schema keys
         schema_keys = {}
         for key in query_params.keys():
             if key in dict_schema.keys():
@@ -158,14 +165,13 @@ class SQLAlchemy(BaseSQLAlchemy):
         query = query.limit(limit).offset(offset)
         items = ma_schema.dump(query, many=True)[0]
 
-        return {
-            "data": {"total": total, "rows": items},
-            "message": info_msg,
-            "error": error_msg
-        }
+        response_dict = create_response_item(info_msg, error_msg, total, items)
+
+        return response_dict
 
     def get_db_item_by_params(self, sql_alchemy_model, ma_schema, item_id_dict):
-        """Returns data base item by its Id.
+        """
+        Returns data base item by its Id.
 
         Args:
             item_id (int):
@@ -179,7 +185,8 @@ class SQLAlchemy(BaseSQLAlchemy):
         return db_item_json
 
     def add_db_item(self, sql_alchemy_model, ma_schema, data):
-        """Adds item to db.
+        """
+        Adds item to db.
 
         Args:
             sql_alchemy_model ([type]): [description]
@@ -198,11 +205,12 @@ class SQLAlchemy(BaseSQLAlchemy):
             print(ex)
             # app.logger.exception(str(ex))
             self.session.rollback()
-        if db_item: 
-            return  ma_schema.dump(db_item)[0]
+        if db_item:
+            return ma_schema.dump(db_item)[0]
 
     def update_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):
-        """Updates item in db
+        """
+        Updates item in db
 
         Args:
             sql_alchemy_model ([type]): [description]
@@ -220,9 +228,9 @@ class SQLAlchemy(BaseSQLAlchemy):
 
         return result
 
-
     def patch_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):
-        """Patch db item
+        """
+        Patch db item
 
         Args:
             sql_alchemy_model ([type]): [description]
@@ -234,7 +242,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         """
         result = None
         db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
-        if  db_item:
+        if db_item:
             for key, value in item_update_dict.items():
                 if hasattr(db_item, key):
                     setattr(db_item, key, value)
@@ -245,9 +253,9 @@ class SQLAlchemy(BaseSQLAlchemy):
 
         return result
 
-
     def delete_db_item(self, sql_alchemy_model, item_id_dict):
-        """Deletes db item
+        """
+        Deletes db item
 
         Args:
             sql_alchemy_model ([type]): [description]
@@ -266,6 +274,5 @@ class SQLAlchemy(BaseSQLAlchemy):
                 return True
             except BaseException as ex:
                 print(ex)
-                #log.exception(str(ex))
+                # log.exception(str(ex))
                 self.session.rollback()
-
