@@ -1,5 +1,4 @@
-"""
-Project: py-ispyb.
+"""Project: py-ispyb.
 
 https://github.com/ispyb/py-ispyb
 
