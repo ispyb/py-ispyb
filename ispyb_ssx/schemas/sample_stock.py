@@ -1,25 +1,26 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 __license__ = "LGPLv3+"
+
 
 
 from marshmallow import Schema, fields as ma_fields
@@ -29,17 +30,14 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 sample_stock_dict_schema = {
-    "sampleStockId": f_fields.Integer(required=True, description=""),
-    "name": f_fields.String(required=True, description=""),
-    "crystalSlurryId": f_fields.Integer(required=True, description=""),
-    "concentrationFactor": f_fields.Float(required=True, description=""),
-    "crystalDensity": f_fields.Float(required=True, description=""),
-    "additiveId": f_fields.Integer(
-        required=False, description="reference to Additive.additiveId"
-    ),
-    "note": f_fields.String(required=False, description=""),
-}
-
+        'sampleStockId': f_fields.Integer(required=True, description=''),
+        'name': f_fields.String(required=True, description=''),
+        'crystalSlurryId': f_fields.Integer(required=True, description=''),
+        'concentrationFactor': f_fields.Float(required=True, description=''),
+        'crystalDensity': f_fields.Float(required=True, description=''),
+        'additiveId': f_fields.Integer(required=False, description='reference to Additive.additiveId'),
+        'note': f_fields.String(required=False, description=''),
+        }
 
 class SampleStockSchema(Schema):
     """Marshmallows schema class representing SampleStock table"""
@@ -52,7 +50,6 @@ class SampleStockSchema(Schema):
     additiveId = ma_fields.Integer()
     note = ma_fields.String()
 
-
-sample_stock_f_schema = api.model("SampleStock", sample_stock_dict_schema)
+sample_stock_f_schema = api.model('SampleStock', sample_stock_dict_schema)
 sample_stock_ma_schema = SampleStockSchema()
 sample_stock_json_schema = JSONSchema().dump(sample_stock_ma_schema)
