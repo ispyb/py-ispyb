@@ -31,7 +31,7 @@ from flask_restx._http import HTTPStatus
 from flask_restx_patched import Resource
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required, roles_required
+from app.extensions.auth import token_required, authorization_required
 
 from ispyb_ssx.schemas import loaded_sample as loaded_sample_schemas
 from ispyb_ssx.schemas import crystal_slurry as crystal_slurry_schemas
@@ -63,7 +63,7 @@ class LoadedSample(Resource):
     #@token_required
     @api.expect(loaded_sample_schemas.loaded_sample_f_schema)
     @api.marshal_with(loaded_sample_schemas.loaded_sample_f_schema, code=201)
-    @roles_required(["manager", "admin"])
+    @authorization_required
     def post(self):
         """Adds a new loaded sample"""
         # app.logger.info("Insert new data collection")
@@ -97,7 +97,7 @@ class CrystalSlurry(Resource):
     #@token_required
     @api.expect(crystal_slurry_schemas.crystal_slurry_f_schema)
     #@api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
-    @roles_required(["manager", "admin"])
+    @authorization_required
     def post(self):
         """Adds a new crystal slury"""
         status_code, result = loaded_sample.add_crystal_slurry(api.payload)

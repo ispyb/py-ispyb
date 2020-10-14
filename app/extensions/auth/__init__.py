@@ -115,9 +115,12 @@ class AuthProvider:
         for token_info in self.tokens:
             if token_info["token"] == token:
                 user_info = token_info
-        user_info["is_admin"] = any(
-            x in ["manager", "admin"] for x in user_info.get("roles")
-        )
+        if user_info.get("roles"):
+            user_info["is_admin"] = any(
+                x in ["manager", "admin"] for x in user_info.get("roles")
+            )
+        else:
+            user_info["is_admin"] = False
 
         return user_info
 
@@ -239,7 +242,7 @@ def token_required(func):
     return decorated
 
 
-def roles_required(roles):
+def authorization_required(func):
     """
     Checks if user has role required to get/post a resource.
 
@@ -250,23 +253,36 @@ def roles_required(roles):
         [type]: [description]
     """
 
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            user_info = auth_provider.get_user_info_by_auth_header(
-                request.headers.get("Authorization")
+    @wraps(func)
+    def decorated(self, *args, **kwargs):
+        """
+        Actual decorator function
+
+        Returns:
+            [type]: [description]
+        """
+
+        user_info = auth_provider.get_user_info_by_auth_header(
+            request.headers.get("Authorization")
+        )
+
+        methods = current_app.config.get("AUTHORIZATION_RULES").get(self.endpoint, {})
+        roles = methods.get(func.__name__, [])
+        
+        print("User roles: %s" % str(user_info.get("roles")))
+        print("Endpoint [%s] %s roles: %s" % (func.__name__, self.endpoint, roles))
+
+        if any(role in list(roles) for role in list(user_info.get("roles"))):
+            return func(self, *args, **kwargs)
+        else:
+            msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (
+                user_info.get("username"),
+                str(user_info.get("roles")),
+                str(roles),
             )
-            if any(role in list(roles) for role in list(user_info.get("roles"))):
-                return func(*args, **kwargs)
-            else:
-                msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (
-                    user_info.get("username"),
-                    str(user_info.get("roles")),
-                    str(roles),
-                )
-                msg += " to execute method."
-                return ({"message": msg}, HTTPStatus.UNAUTHORIZED)
+            msg += " to execute method."
+            return ({"message": msg}, HTTPStatus.UNAUTHORIZED)
 
-        wrapper.__doc__ = func.__doc__
-        return wrapper
+        return func(self, *args, **kwargs)
 
-    return decorator
+    return decorated

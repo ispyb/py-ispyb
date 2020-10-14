@@ -47,6 +47,10 @@ class BaseConfig:
         "apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}
     }
 
+    AUTHORIZATION_RULES = {
+        "proposals": {"get": ["admin", "manager", "user"]}
+    }
+
     AUTH_MODULE = "app.extensions.auth.DummyAuth"
     AUTH_CLASS = "DummyAuth"
     JWT_CODING_ALGORITHM = "HS256"
@@ -66,6 +70,18 @@ class BaseConfig:
 
             for key, value in config["server"].items():
                 setattr(self, key, value)
+
+            if config.get("authorization_rules") is not None:
+                self.AUTHORIZATION_RULES = {}
+                for key, value in config["authorization_rules"].items():
+                    self.AUTHORIZATION_RULES[key] = value
+
+        print("Authorization rules: ")
+        print("[method] Endpoint - Allowed rules")
+        for endpoint, value in self.AUTHORIZATION_RULES.items():
+            for method, roles in value.items():
+                print("[%s] %s - %s" % (method, endpoint, str(roles)))
+
 
 class ProductionConfig(BaseConfig):
     """Production config

@@ -1,6 +1,6 @@
 from ispyb_core.modules import shipping
 from ispyb_core.schemas import shipping as shipping_schemas
-from app.extensions.auth import token_required, roles_required
+from app.extensions.auth import token_required, authorization_required
 from app.extensions.api import api_v1, Namespace
 from flask_restx_patched import Resource
 from flask_restx._http import HTTPStatus
@@ -144,7 +144,7 @@ class ShipmentById(Resource):
             )
 
     @token_required
-    @roles_required(["manager", "admin"])
+    #@authorization_required
     def delete(self, shipment_id):
         """Deletes shipment by shipment_id
 
