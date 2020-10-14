@@ -1,14 +1,6 @@
-from ispyb_core.modules import shipping
-from ispyb_core.schemas import shipping as shipping_schemas
-from app.extensions.auth import token_required, authorization_required
-from app.extensions.api import api_v1, Namespace
-from flask_restx_patched import Resource
-from flask_restx._http import HTTPStatus
-from flask import request
-import logging
-
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -40,6 +32,17 @@ Example routes:
 [DELETE]/ispyb/api/v1//shipments/1  - Deletes shipment #1
 """
 
+import logging
+from flask import request
+from flask_restx._http import HTTPStatus
+
+from flask_restx_patched import Resource
+
+from app.extensions.auth import token_required, authorization_required
+from app.extensions.api import api_v1, Namespace
+from ispyb_core.modules import shipping
+from ispyb_core.schemas import shipping as shipping_schemas
+
 
 __license__ = "LGPLv3+"
 
@@ -51,12 +54,13 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("")
+@api.route("", endpoint="shipments")
 @api.doc(security="apikey")
 class Shipments(Resource):
     """Allows to get all shipments"""
 
     @token_required
+    @authorization_required
     def get(self):
         """Returns list of shipments
 
@@ -70,6 +74,7 @@ class Shipments(Resource):
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
+    @authorization_required
     def post(self):
         """Adds a new shipment"""
         result = shipping.add_shipment(api.payload)
@@ -81,7 +86,7 @@ class Shipments(Resource):
             HTTPStatus.NOT_ACCEPTABLE
 
 
-@api.route("/<int:shipment_id>")
+@api.route("/<int:shipment_id>", endpoint="shipment_by_id")
 @api.param("shipment_id", "shipment id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="shipment not found.")
@@ -93,6 +98,7 @@ class ShipmentById(Resource):
         shipping_schemas.shipping_f_schema, skip_none=True, code=HTTPStatus.OK
     )
     @token_required
+    @authorization_required
     def get(self, shipment_id):
         """Returns a shipment by shipmentId"""
         result = shipping.get_shipment_by_id(shipment_id)
@@ -104,6 +110,7 @@ class ShipmentById(Resource):
     @api.expect(shipping_schemas.shipping_f_schema)
     @api.marshal_with(shipping_schemas.shipping_f_schema, code=HTTPStatus.CREATED)
     @token_required
+    @authorization_required
     def put(self, shipment_id):
         """Fully updates shipment with id shipment_id
 
@@ -125,6 +132,7 @@ class ShipmentById(Resource):
     @api.expect(shipping_schemas.shipping_f_schema)
     @api.marshal_with(shipping_schemas.shipping_f_schema, code=HTTPStatus.CREATED)
     @token_required
+    @authorization_required
     def patch(self, shipment_id):
         """Partially updates shipment with id shipment_id
 
@@ -144,7 +152,7 @@ class ShipmentById(Resource):
             )
 
     @token_required
-    #@authorization_required
+    @authorization_required
     def delete(self, shipment_id):
         """Deletes shipment by shipment_id
 
@@ -166,7 +174,7 @@ class ShipmentById(Resource):
             )
 
 
-@api.route("/<int:shipment_id>/info")
+@api.route("/<int:shipment_id>/info", endpoint="shipment_info_by_id")
 @api.param("shipment_id", "shipment id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="shipment not found.")
@@ -176,6 +184,7 @@ class ShipmentInfoById(Resource):
     @api.doc(description="shipment_id should be an integer ")
     # @api.marshal_with(shipment_desc_f_schema)
     @token_required
+    @authorization_required
     def get(self, shipment_id):
         """Returns a full description of a shipment by shipmentId"""
         result = shipping.get_shipment_info_by_id(shipment_id)

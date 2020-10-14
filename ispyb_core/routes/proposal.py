@@ -34,8 +34,8 @@ Example routes:
 
 __license__ = "LGPLv3+"
 
+import logging
 from flask import request, current_app
-
 from flask_restx_patched import Resource
 from flask_restx._http import HTTPStatus
 
@@ -43,7 +43,6 @@ from ispyb_core.modules import proposal
 from ispyb_core.schemas import proposal as proposal_schemas
 from app.extensions.auth import token_required, authorization_required
 from app.extensions.api import api_v1, Namespace
-
 
 
 api = Namespace(
@@ -67,14 +66,14 @@ class Proposals(Resource):
         Returns:
             list: list of proposals.
         """
-        current_app.logger.info("Get all proposals")
+        api.logger.info("Get all proposals ---->")
         return proposal.get_proposals(request)
 
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
-    #@token_required
+    @token_required
     @authorization_required
     def post(self):
         """Adds a new proposal"""
@@ -88,7 +87,8 @@ class Proposals(Resource):
             {"message": "Unable to add new proposal"},
             HTTPStatus.NOT_ACCEPTABLE
 
-@api.route("/<int:proposal_id>")
+
+@api.route("/<int:proposal_id>", endpoint="proposal_by_id")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
@@ -100,6 +100,7 @@ class ProposalById(Resource):
         proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK
     )
     @token_required
+    @authorization_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
         result = proposal.get_proposal_by_id(proposal_id)
@@ -111,7 +112,7 @@ class ProposalById(Resource):
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
     @token_required
-    #@authorization_required
+    @authorization_required
     def put(self, proposal_id):
         """Fully updates proposal with id proposal_id
 
@@ -133,7 +134,7 @@ class ProposalById(Resource):
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
     @token_required
-    #@authorization_required
+    @authorization_required
     def patch(self, proposal_id):
         """Partially updates proposal with id proposal_id
 
@@ -153,7 +154,7 @@ class ProposalById(Resource):
             )
 
     @token_required
-    #@authorization_required
+    @authorization_required
     def delete(self, proposal_id):
         """Deletes proposal by proposal_id
 
@@ -175,7 +176,7 @@ class ProposalById(Resource):
             )
 
 
-@api.route("/<int:proposal_id>/info")
+@api.route("/<int:proposal_id>/info", endpoint="proposal_info_by_id")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
@@ -185,7 +186,7 @@ class ProposalInfoById(Resource):
     @api.doc(description="proposal_id should be an integer ")
     # @api.marshal_with(proposal_desc_f_schema)
     @token_required
-    #@authorization_required
+    @authorization_required
     def get(self, proposal_id):
         """Returns a full description of a proposal by proposalId"""
         result = proposal.get_proposal_info_by_id(proposal_id)

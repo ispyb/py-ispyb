@@ -48,7 +48,15 @@ class BaseConfig:
     }
 
     AUTHORIZATION_RULES = {
-        "proposals": {"get": ["admin", "manager", "user"]}
+        "proposals": {
+            "get": ["all"],
+            "post": ["admin"]
+        },
+        "proposal_by_id" : {
+            "get": ["all"],
+            "put": ["admin"],
+            "path": ["admin"]
+        }
     }
 
     AUTH_MODULE = "app.extensions.auth.DummyAuth"
@@ -77,7 +85,7 @@ class BaseConfig:
                     self.AUTHORIZATION_RULES[key] = value
 
         print("Authorization rules: ")
-        print("[method] Endpoint - Allowed rules")
+        print("[method] Endpoint - Allowed roles")
         for endpoint, value in self.AUTHORIZATION_RULES.items():
             for method, roles in value.items():
                 print("[%s] %s - %s" % (method, endpoint, str(roles)))

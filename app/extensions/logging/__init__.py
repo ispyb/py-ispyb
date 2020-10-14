@@ -21,11 +21,26 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
-
 import logging
+from logging.config import dictConfig
 
-DEFAULT_LOG_FORMAT = "%(asctime)s |%(levelname)-5s| %(message)s"
+DEFAULT_LOG_FORMAT = "[%(asctime)s] %(levelname)s in %(module)s: %(message)s"
 
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': DEFAULT_LOG_FORMAT,
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 class Logging(object):
     def __init__(self, app=None):
@@ -33,6 +48,16 @@ class Logging(object):
             self.init_app(app)
 
     def init_app(self, app):
+        return
+        for handler in list(app.logger.handlers):
+            app.logger.removeHandler(handler)
+        app.logger.propagate = True
+
+        if app.debug:
+            logging.getLogger('flask_oauthlib').setLevel(logging.DEBUG)
+            app.logger.setLevel(logging.DEBUG)
+
+        """
         if app.config.get("LOG_FILENAME"):
             fh = logging.FileHandler(app.config["LOG_FILENAME"])
             if app.config.get("LOG_FORMAT"):
@@ -41,3 +66,4 @@ class Logging(object):
                 log_format = DEFAULT_LOG_FORMAT
             fh.setFormatter(logging.Formatter(log_format))
             app.logger.addHandler(fh)
+        """

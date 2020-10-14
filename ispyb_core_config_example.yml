@@ -5,9 +5,3 @@ server:
     AUTH_MODULE : "app.extensions.auth.DummyAuth"
     AUTH_CLASS : "DummyAuth"
     MASTER_TOKEN : "MasterToken"
-
-authorization_rules:
-    proposals : {
-        "get": ["manager", "admin", "user"],
-        "post": ["manager", "admin"]
-    }

@@ -22,7 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 from flask_restx_patched import Resource
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required
+from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.modules import auto_proc
 
@@ -37,13 +37,14 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("")
+@api.route("", endpoint="autoproc")
+@api.doc(security="apikey")
 class AutoProcList(Resource):
     """Auto processing resource"""
 
-    @api.doc(security="apikey")
-    # @token_required
+    @token_required
+    @authorization_required
     def get(self):
         """Returns all auto processing results"""
         # app.logger.info('Returns all auto proc results')
-        auto_proc.get_auto_proc_list()
+        return auto_proc.get_auto_proc_list()
