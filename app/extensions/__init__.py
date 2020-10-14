@@ -25,13 +25,13 @@ __license__ = "LGPLv3+"
 from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql.types import LONGBLOB
 
+from .logging import Logging
+logging = Logging()
+
 from . import api
 from .auth import auth_provider
 from .flask_sqlalchemy import SQLAlchemy
-from .logging import Logging
 
-
-logging = Logging()
 db = SQLAlchemy()
 db.ENUM = ENUM
 db.LONGBLOB = LONGBLOB

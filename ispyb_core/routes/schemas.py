@@ -38,7 +38,7 @@ api = Namespace("Schemas", description="Schemas related namespace", path="/schem
 api_v1.add_namespace(api)
 
 
-@api.route("/available_names")
+@api.route("/available_names", endpoint="available_schemas_names")
 class SchemasList(Resource):
 
     # @token_required
@@ -58,7 +58,7 @@ class SchemasList(Resource):
         return result
 
 
-@api.route("/<string:name>")
+@api.route("/<string:name>", endpoint="schema_by_name")
 @api.param("name", "name (string)")
 @api.doc(description="name should be a string")
 class Schemas(Resource):

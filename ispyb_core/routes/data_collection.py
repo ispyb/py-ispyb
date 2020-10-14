@@ -51,6 +51,7 @@ class DataColletions(Resource):
     # @api.marshal_list_with(data_collection_schemas.data_collection_f_schema, skip_none=True, code=HTTPStatus.OK)
     # TODO Define model with JSON Schema
     @token_required
+    @authorization_required
     def get(self):
         """Returns list of data_collections
 
@@ -81,6 +82,7 @@ class DataCollectionById(Resource):
         code=HTTPStatus.OK,
     )
     @token_required
+    @authorization_required
     def get(self, data_collection_id):
         """Returns a data_collection by data_collectionId"""
         result = data_collection.get_data_collection_by_id(data_collection_id)
@@ -98,6 +100,7 @@ class DataCollectionGroups(Resource):
     # @api.marshal_list_with(data_collection_schemas.data_collection_f_schema, skip_none=True, code=HTTPStatus.OK)
     # TODO Define model with JSON Schema
     @token_required
+    @authorization_required
     def get(self):
         """Returns list of data_collection_groups
 

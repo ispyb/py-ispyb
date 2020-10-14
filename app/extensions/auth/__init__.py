@@ -244,13 +244,27 @@ def token_required(func):
 
 def authorization_required(func):
     """
-    Checks if user has role required to get/post a resource.
+    Checks if user has role required to access the given resource.
+
+    Authorization is done via AUTHORIZATION_RULES dictionary that contains
+    mapping of endpoints with user groups. For example: 
+
+    AUTHORIZATION_RULES = {
+        "proposals": {
+            "get": ["all"],
+            "post": ["admin"]
+        }
+    
+    define that method GET of endpoint proposals is available for all user groups
+    and method POST is accessible just for admin group.
+    If an endpoint is not defined in the AUTHORIZATION_RULES then it is available
+    for all user groups.
 
     Args:
-        f ([type]): [description]
+        func (function): function
 
     Returns:
-        [type]: [description]
+        function: [description]
     """
 
     @wraps(func)
@@ -268,11 +282,11 @@ def authorization_required(func):
 
         methods = current_app.config.get("AUTHORIZATION_RULES").get(self.endpoint, {})
         roles = methods.get(func.__name__, [])
-        
+
         print("User roles: %s" % str(user_info.get("roles")))
         print("Endpoint [%s] %s roles: %s" % (func.__name__, self.endpoint, roles))
 
-        if any(role in list(roles) for role in list(user_info.get("roles"))):
+        if not roles or "all" in roles or any(role in list(roles) for role in list(user_info.get("roles"))):
             return func(self, *args, **kwargs)
         else:
             msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (

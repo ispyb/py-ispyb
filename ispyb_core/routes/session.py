@@ -40,12 +40,13 @@ api_v1.add_namespace(api)
 session_desc_f_schema = session_schemas.session_f_schema
 
 
-@api.route("")
+@api.route("", endpoint="sessions")
 @api.doc(security="apikey")
 class Sessions(Resource):
     """Allows to get all sessions and insert a new one"""
 
-    # @token_required
+    @token_required
+    @authorization_required
     def get(self):
         """Returns list of sessions
 
@@ -68,7 +69,7 @@ class Sessions(Resource):
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
-    #@authorization_required
+    @authorization_required
     def post(self):
         """Adds a new session"""
         log.info("Inserts a new session")
@@ -83,7 +84,7 @@ class Sessions(Resource):
             HTTPStatus.NOT_ACCEPTABLE
 
 
-@api.route("/<int:session_id>")
+@api.route("/<int:session_id>", endpoint="session_by_id")
 @api.param("session_id", "Session id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="Session not found.")
@@ -95,6 +96,7 @@ class SessionById(Resource):
         session_schemas.session_f_schema, skip_none=True, code=HTTPStatus.OK
     )
     @token_required
+    @authorization_required
     def get(self, session_id):
         """Returns a session by sessionId"""
         result = session.get_session_by_id(session_id)
@@ -104,7 +106,7 @@ class SessionById(Resource):
             api.abort(HTTPStatus.NOT_FOUND, "Session not found")
 
 
-@api.route("/<int:session_id>/info")
+@api.route("/<int:session_id>/info", endpoint="session_info_by_id")
 @api.param("session_id", "session id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="session not found.")
@@ -114,6 +116,7 @@ class SessionInfoById(Resource):
     @api.doc(description="session_id should be an integer ")
     # @api.marshal_with(session_desc_f_schema)
     @token_required
+    @authorization_required
     def get(self, session_id):
         """Returns a full description of a session by sessionId"""
         result = session.get_session_info_by_id(session_id)

@@ -36,12 +36,13 @@ api = Namespace("Contacts", description="Contact related namespace", path="/cont
 api_v1.add_namespace(api)
 
 
-@api.route("/persons")
+@api.route("/persons", endpoint="persons")
+@api.doc(security="apikey")
 class Persons(Resource):
     """Allows to get all persons"""
 
-    @api.doc(security="apikey")
     @token_required
+    @authorization_required
     def get(self):
         """Returns all persons"""
         # app.logger.info("Return all person")
@@ -49,30 +50,34 @@ class Persons(Resource):
 
     @api.expect(person_schemas.person_f_schema)
     @api.marshal_with(person_schemas.person_f_schema, code=201)
-    #@authorization_required
+    @token_required
+    @authorization_required
     def post(self):
         return
 
 
-@api.route("/person/<int:person_id>")
+@api.route("/person/<int:person_id>", endpoint="person_by_id")
+@api.doc(security="apikey")
 class Person(Resource):
     """Allows to get/set/delete a person"""
 
     @api.doc(description="person_id should be an integer ")
     @api.marshal_with(person_schemas.person_f_schema)
     @token_required
+    @authorization_required
     def get(self, person_id):
         """Returns a person by personId"""
         params = {"personId": person_id}
         return contacts.get_person_by_params(params)
 
 
-@api.route("/lab_contacts")
+@api.route("/lab_contacts", endpoint="lab_contacts")
 @api.doc(security="apikey")
 class LabContacts(Resource):
     """Allows to get all local contacts"""
 
     @token_required
+    @authorization_required
     def get(self):
         """Returns list of local contacts
 
@@ -86,7 +91,7 @@ class LabContacts(Resource):
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
-    #@authorization_required
+    @authorization_required
     def post(self):
         """Adds a new lab contact"""
         result = contacts.add_lab_contact(api.payload)
