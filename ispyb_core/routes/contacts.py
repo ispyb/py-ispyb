@@ -49,7 +49,7 @@ class Persons(Resource):
 
     @api.expect(person_schemas.person_f_schema)
     @api.marshal_with(person_schemas.person_f_schema, code=201)
-    #@authorization_required(["manager", "admin"])
+    #@authorization_required
     def post(self):
         return
 
@@ -86,7 +86,7 @@ class LabContacts(Resource):
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
-    #@authorization_required(["manager", "admin"])
+    #@authorization_required
     def post(self):
         """Adds a new lab contact"""
         result = contacts.add_lab_contact(api.payload)

@@ -144,7 +144,7 @@ class ShipmentById(Resource):
             )
 
     @token_required
-    #@authorization_required(["manager", "admin"])
+    #@authorization_required
     def delete(self, shipment_id):
         """Deletes shipment by shipment_id
 

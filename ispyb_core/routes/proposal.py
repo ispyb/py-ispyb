@@ -111,7 +111,7 @@ class ProposalById(Resource):
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
     @token_required
-    #@authorization_required(["manager", "admin"])
+    #@authorization_required
     def put(self, proposal_id):
         """Fully updates proposal with id proposal_id
 
@@ -133,7 +133,7 @@ class ProposalById(Resource):
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
     @token_required
-    #@authorization_required(["manager", "admin"])
+    #@authorization_required
     def patch(self, proposal_id):
         """Partially updates proposal with id proposal_id
 
@@ -153,7 +153,7 @@ class ProposalById(Resource):
             )
 
     @token_required
-    #@authorization_required(["manager", "admin"])
+    #@authorization_required
     def delete(self, proposal_id):
         """Deletes proposal by proposal_id
 
@@ -185,7 +185,7 @@ class ProposalInfoById(Resource):
     @api.doc(description="proposal_id should be an integer ")
     # @api.marshal_with(proposal_desc_f_schema)
     @token_required
-    #@authorization_required(["manager", "admin"])
+    #@authorization_required
     def get(self, proposal_id):
         """Returns a full description of a proposal by proposalId"""
         result = proposal.get_proposal_info_by_id(proposal_id)

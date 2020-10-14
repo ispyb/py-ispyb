@@ -68,7 +68,7 @@ class Sessions(Resource):
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
-    #@authorization_required(["manager", "admin"])
+    #@authorization_required
     def post(self):
         """Adds a new session"""
         log.info("Inserts a new session")
