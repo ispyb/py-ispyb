@@ -28,7 +28,6 @@ from .api import Api
 from .namespace import Namespace
 from .http_exceptions import abort
 
-# from flask_restx import Api
 
 api_v1 = Api(
     version="1.0",

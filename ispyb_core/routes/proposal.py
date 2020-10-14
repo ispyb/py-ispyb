@@ -41,7 +41,7 @@ from flask_restx._http import HTTPStatus
 
 from ispyb_core.modules import proposal
 from ispyb_core.schemas import proposal as proposal_schemas
-from app.extensions.auth import token_required, roles_required
+from app.extensions.auth import token_required, authorization_required
 from app.extensions.api import api_v1, Namespace
 
 
@@ -52,12 +52,14 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("")
+
+@api.route("", endpoint="proposals")
 @api.doc(security="apikey")
 class Proposals(Resource):
     """Allows to get all proposals"""
 
     @token_required
+    @authorization_required
     def get(self):
         """
         Returns list of proposals
@@ -72,8 +74,8 @@ class Proposals(Resource):
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
-    @token_required
-    @roles_required(["manager", "admin"])
+    #@token_required
+    @authorization_required
     def post(self):
         """Adds a new proposal"""
         current_app.logger.info("Inserts a new proposal")
@@ -85,7 +87,6 @@ class Proposals(Resource):
             return
             {"message": "Unable to add new proposal"},
             HTTPStatus.NOT_ACCEPTABLE
-
 
 @api.route("/<int:proposal_id>")
 @api.param("proposal_id", "Proposal id (integer)")
@@ -110,7 +111,7 @@ class ProposalById(Resource):
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
     @token_required
-    @roles_required(["manager", "admin"])
+    #@authorization_required(["manager", "admin"])
     def put(self, proposal_id):
         """Fully updates proposal with id proposal_id
 
@@ -132,7 +133,7 @@ class ProposalById(Resource):
     @api.expect(proposal_schemas.proposal_f_schema)
     @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
     @token_required
-    @roles_required(["manager", "admin"])
+    #@authorization_required(["manager", "admin"])
     def patch(self, proposal_id):
         """Partially updates proposal with id proposal_id
 
@@ -152,7 +153,7 @@ class ProposalById(Resource):
             )
 
     @token_required
-    @roles_required(["manager", "admin"])
+    #@authorization_required(["manager", "admin"])
     def delete(self, proposal_id):
         """Deletes proposal by proposal_id
 
@@ -184,7 +185,7 @@ class ProposalInfoById(Resource):
     @api.doc(description="proposal_id should be an integer ")
     # @api.marshal_with(proposal_desc_f_schema)
     @token_required
-    @roles_required(["manager", "admin"])
+    #@authorization_required(["manager", "admin"])
     def get(self, proposal_id):
         """Returns a full description of a proposal by proposalId"""
         result = proposal.get_proposal_info_by_id(proposal_id)

@@ -24,7 +24,7 @@ from flask import request
 from flask_restx_patched import Resource, HTTPStatus
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required, roles_required
+from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.models import BLSession as Session
 from ispyb_core.schemas import session as session_schemas
@@ -68,7 +68,7 @@ class Sessions(Resource):
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
-    @roles_required(["manager", "admin"])
+    #@authorization_required(["manager", "admin"])
     def post(self):
         """Adds a new session"""
         log.info("Inserts a new session")

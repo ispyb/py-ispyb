@@ -22,7 +22,7 @@ from flask import request
 from flask_restx_patched import Resource, HTTPStatus
 
 from app.extensions.api import api_v1, Namespace
-from app.extensions.auth import token_required, roles_required
+from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.schemas import person as person_schemas
 from ispyb_core.schemas import lab_contact as lab_contact_schemas
@@ -49,7 +49,7 @@ class Persons(Resource):
 
     @api.expect(person_schemas.person_f_schema)
     @api.marshal_with(person_schemas.person_f_schema, code=201)
-    @roles_required(["manager", "admin"])
+    #@authorization_required(["manager", "admin"])
     def post(self):
         return
 
@@ -86,7 +86,7 @@ class LabContacts(Resource):
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
-    @roles_required(["manager", "admin"])
+    #@authorization_required(["manager", "admin"])
     def post(self):
         """Adds a new lab contact"""
         result = contacts.add_lab_contact(api.payload)
