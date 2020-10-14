@@ -48,7 +48,7 @@ class BaseConfig:
     }
 
     AUTHORIZATION_RULES = {
-        "proposals": {"get": ["admin", "manager"]}
+        "proposals": {"get": ["admin", "manager", "user"]}
     }
 
     AUTH_MODULE = "app.extensions.auth.DummyAuth"
