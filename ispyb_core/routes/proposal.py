@@ -1,4 +1,5 @@
-"""Project: py-ispyb.
+"""
+Project: py-ispyb.
 
 https://github.com/ispyb/py-ispyb
 
@@ -34,11 +35,10 @@ Example routes:
 
 __license__ = "LGPLv3+"
 
-import logging
 from flask import request, current_app
-from flask_restx_patched import Resource
 from flask_restx._http import HTTPStatus
 
+from flask_restx_patched import Resource
 from ispyb_core.modules import proposal
 from ispyb_core.schemas import proposal as proposal_schemas
 from app.extensions.auth import token_required, authorization_required
@@ -55,13 +55,14 @@ api_v1.add_namespace(api)
 @api.route("", endpoint="proposals")
 @api.doc(security="apikey")
 class Proposals(Resource):
+
     """Allows to get all proposals"""
 
     @token_required
     @authorization_required
     def get(self):
         """
-        Returns list of proposals
+        Returns list of proposals.
 
         Returns:
             list: list of proposals.
@@ -93,6 +94,7 @@ class Proposals(Resource):
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
 class ProposalById(Resource):
+
     """Allows to get/set/delete a proposal"""
 
     @api.doc(description="proposal_id should be an integer ")
@@ -114,7 +116,8 @@ class ProposalById(Resource):
     @token_required
     @authorization_required
     def put(self, proposal_id):
-        """Fully updates proposal with id proposal_id
+        """
+        Fully updates proposal with id proposal_id.
 
         Args:
             proposal_id (int): corresponds to proposalId in db
@@ -136,7 +139,8 @@ class ProposalById(Resource):
     @token_required
     @authorization_required
     def patch(self, proposal_id):
-        """Partially updates proposal with id proposal_id
+        """
+        Partially updates proposal with id proposal_id.
 
         Args:
             proposal_id (int): corresponds to proposalId in db
@@ -156,7 +160,8 @@ class ProposalById(Resource):
     @token_required
     @authorization_required
     def delete(self, proposal_id):
-        """Deletes proposal by proposal_id
+        """
+        Deletes proposal by proposal_id.
 
         Args:
             proposal_id (int): corresponds to proposalId in db
@@ -181,6 +186,7 @@ class ProposalById(Resource):
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
 class ProposalInfoById(Resource):
+
     """Returns full information of a proposal"""
 
     @api.doc(description="proposal_id should be an integer ")
