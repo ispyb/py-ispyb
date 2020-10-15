@@ -116,7 +116,8 @@ class ProposalById(Resource):
     @token_required
     @authorization_required
     def put(self, proposal_id):
-        """Fully updates proposal with id proposal_id.
+        """
+        Fully updates proposal with id proposal_id.
 
         Args:
             proposal_id (int): corresponds to proposalId in db
@@ -138,7 +139,8 @@ class ProposalById(Resource):
     @token_required
     @authorization_required
     def patch(self, proposal_id):
-        """Partially updates proposal with id proposal_id.
+        """
+        Partially updates proposal with id proposal_id.
 
         Args:
             proposal_id (int): corresponds to proposalId in db
@@ -158,7 +160,8 @@ class ProposalById(Resource):
     @token_required
     @authorization_required
     def delete(self, proposal_id):
-        """Deletes proposal by proposal_id.
+        """
+        Deletes proposal by proposal_id.
 
         Args:
             proposal_id (int): corresponds to proposalId in db
@@ -183,7 +186,7 @@ class ProposalById(Resource):
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
 class ProposalInfoById(Resource):
-    
+
     """Returns full information of a proposal"""
 
     @api.doc(description="proposal_id should be an integer ")
