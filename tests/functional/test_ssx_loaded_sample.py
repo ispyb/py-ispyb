@@ -19,12 +19,26 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-def test_ssx(ispyb_ssx_app, ispyb_ssx_token):
+
+from tests.ssx_data import sample_delivery_device_list
+
+def test_ssx_loaded_samples(ispyb_ssx_app, ispyb_ssx_token):
     client = ispyb_ssx_app.test_client()
     api_root = ispyb_ssx_app.config["API_ROOT"]
 
-    return
     headers = {"Authorization": "Bearer " + ispyb_ssx_token}
-    response = client.get(api_root + "/sample", headers=headers)
+    response = client.get(api_root + "/samples", headers=headers)
     assert response.status_code == 200, "Wrong status code"
     #assert len(response.json) > 0, "No schemas returned"
+
+def test_sample_delivery_devices(ispyb_ssx_app, ispyb_ssx_token):
+    client = ispyb_ssx_app.test_client()
+    route = ispyb_ssx_app.config["API_ROOT"] + "/samples/delivery_devices"
+
+    headers = {"Authorization": "Bearer " + ispyb_ssx_token}
+
+    for sample_deliver_device in sample_delivery_device_list:
+        response = client.post(route, data=sample_deliver_device, headers=headers)
+        assert response.status_code == 200, "Wrong status code"
+        assert response.json
+

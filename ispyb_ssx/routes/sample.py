@@ -25,7 +25,7 @@ Example routes:
 """
 
 import logging
-from flask import request
+from flask import request, current_app
 from flask_restx._http import HTTPStatus
 
 from flask_restx_patched import Resource
@@ -35,6 +35,7 @@ from app.extensions.auth import token_required, authorization_required
 
 from ispyb_ssx.schemas import loaded_sample as loaded_sample_schemas
 from ispyb_ssx.schemas import crystal_slurry as crystal_slurry_schemas
+from ispyb_ssx.schemas import sample_delivery_device as sample_delivery_device_schemas
 from ispyb_ssx.modules import loaded_sample
 
 from ispyb_service_connector import get_ispyb_resource
@@ -44,12 +45,12 @@ __license__ = "LGPLv3+"
 
 
 log = logging.getLogger(__name__)
-api = Namespace("Sample", description="Sample related namespace", path="/sample")
+api = Namespace("Samples", description="Samples related namespace", path="/samples")
 api_v1.add_namespace(api)
 
 
 
-@api.route("")
+@api.route("", endpoint="loaded_samples")
 @api.doc(security="apikey")
 class LoadedSample(Resource):
     """Loaded sample resource"""
@@ -62,28 +63,20 @@ class LoadedSample(Resource):
 
     #@token_required
     @api.expect(loaded_sample_schemas.loaded_sample_f_schema)
-    @api.marshal_with(loaded_sample_schemas.loaded_sample_f_schema, code=201)
-    @authorization_required
+    #@api.marshal_with(loaded_sample_schemas.loaded_sample_f_schema, code=201)
+    #@authorization_required
     def post(self):
         """Adds a new loaded sample"""
-        # app.logger.info("Insert new data collection")
-        loaded_sample.add_loaded_sample(request)
+        result = loaded_sample.add_loaded_sample(api.payload)
+        if result is not None:
+            return result, HTTPStatus.OK
+        else:
+            api.abort(
+                HTTPStatus.NOT_ACCEPTABLE,
+                "Unable to add new loaded sample"
+                )
 
-
-@api.route("/test")
-@api.doc(security="apikey")
-class Test(Resource):
-    """Loaded sample resource"""
-
-    #@token_required
-    def get(self):
-        """Returns all loaded samples"""
-        # app.logger.info("Return all data collections")
-        data, status_code = get_ispyb_resource("ispyb_core", "/proposals")
-        print(data)
-        return "This is a test. %s" % (status_code["data"]["rows"])
-
-@api.route("/crystal_slurry")
+@api.route("/crystal_slurry", endpoint="crystal_slurry")
 @api.doc(security="apikey")
 class CrystalSlurry(Resource):
     """Crystal slurry resource"""
@@ -105,6 +98,41 @@ class CrystalSlurry(Resource):
             api.abort(HTTPStatus.NOT_ACCEPTABLE, result)
         #return status_code, result
 
+@api.route("/delivery_devices", endpoint="sample_delivery_devices")
+@api.doc(security="apikey")
+class SamplDeliveryDevices(Resource):
+
+    """SampleDeliveryDevice resource"""
+
+    @token_required
+    @authorization_required
+    def get(self):
+        """
+        Returns sample delivery devices.
+
+        Returns:
+            dict: response dict.
+        """
+        return loaded_sample.get_sample_delivery_devices(request)
+
+    @api.expect(sample_delivery_device_schemas.sample_delivery_device_f_schema)
+    @api.marshal_with(sample_delivery_device_schemas.sample_delivery_device_f_schema, code=201)
+    # @api.errorhandler(FakeException)
+    # TODO add custom exception handling
+    @token_required
+    #@authorization_required
+    def post(self):
+        """Adds a new sample delivery device"""
+        current_app.logger.info("Inserts a new sample delivery device")
+
+        result = loaded_sample.add_sample_delivery_device(api.payload)
+        if result:
+            return result, HTTPStatus.OK
+        else:
+            api.abort(
+                HTTPStatus.NOT_ACCEPTABLE,
+                "Unable to add a new sample delivery device"
+                )
 
 
 #return get_ispyb_resource("ispyb_core", "schemas/available_names")
