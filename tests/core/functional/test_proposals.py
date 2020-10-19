@@ -19,23 +19,21 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-import json
-
-from tests.data import test_data_collection
+from tests.core.data import test_proposal
 
 
 def test_get(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"] + "/data_collections"
+    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
     response = client.get(route_root, headers=headers)
     data = response.json
     assert response.status_code == 200, "Wrong status code"
-    assert len(data["data"]["rows"]) > 0, "No data collection returned"
+    assert len(data["data"]["rows"]) > 0, "No proposal returned"
 
-    data_collection_id = data["data"]["rows"][0]["dataCollectionId"]
-    path = route_root + "/" + str(data_collection_id)
+    proposal_id = data["data"]["rows"][0]["proposalId"]
+    path = route_root + "/" + str(proposal_id)
     response = client.get(path, headers=headers)
     assert response.status_code == 200, "Wrong status code"
 
@@ -44,9 +42,25 @@ def test_get(ispyb_core_app, ispyb_core_token):
     assert response.status_code == 200, "Wrong status code"
     assert len(data) == 1
 
-    path = route_root + "?numberOfImages=3600"
+    path = route_root + "?proposalCode=cm"
     response = client.get(path, headers=headers)
     data = response.json["data"]["rows"][0]
 
     assert response.status_code == 200, "Wrong status code"
-    assert data["numberOfImages"] == 3600
+    assert data["proposalCode"] == "cm"
+
+
+def test_put(ispyb_core_app, ispyb_core_token):
+    client = ispyb_core_app.test_client()
+    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
+    ispyb_core_token = "MasterToken"
+
+    #TODO Insert all data before posting a new proposal
+    return
+    headers = {"Authorization": "Bearer " + ispyb_core_token}
+    response = client.post(route_root, data=test_proposal, headers=headers)
+
+
+    assert response.status_code == 200, "Wrong status code"
+
+

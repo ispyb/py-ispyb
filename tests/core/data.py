@@ -5,7 +5,6 @@ test_proposal = {
     "title": "Test proposal",
     "proposalType": "MX",
     "personId": 1,
-    "externalId": None,
     "proposalNumber": "111",
     "bltimeStamp": "2015-12-21 16:20:43",
     "state": "Open",

@@ -110,6 +110,8 @@ class SQLAlchemy(BaseSQLAlchemy):
         super().init_app(app)
 
         database_uri = app.config["SQLALCHEMY_DATABASE_URI"]
+        print("-------------------")
+        print(database_uri)
         if not database_uri or database_uri == "sqlite:///:memory:":
             raise Exception("SQLALCHEMY_DATABASE_URI must be configured!")
         # assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"

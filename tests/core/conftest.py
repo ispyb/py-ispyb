@@ -26,13 +26,12 @@ import os
 import sys
 import pytest
 
-from app import create_app
-
 
 TESTS_DIR = os.path.abspath(os.path.dirname(__file__))
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, ROOT_DIR)
 
+from app import create_app
 
 @pytest.fixture(scope="session")
 def ispyb_core_app():
@@ -41,14 +40,8 @@ def ispyb_core_app():
         yield app
 
 
-@pytest.fixture(scope="session")
-def ispyb_ssx_app():
-    ssx_app = create_app("ispyb_ssx_config.yml", "test")
-    with ssx_app.app_context():
-        yield ssx_app
 
-
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def ispyb_core_token(ispyb_core_app):
     client = ispyb_core_app.test_client()
     api_root = ispyb_core_app.config["API_ROOT"]
@@ -57,16 +50,3 @@ def ispyb_core_token(ispyb_core_app):
         api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
     )
     return response.json["token"]
-
-
-@pytest.fixture(scope="session")
-def ispyb_ssx_token(ispyb_ssx_app):
-    client = ispyb_ssx_app.test_client()
-    api_root = ispyb_ssx_app.config["API_ROOT"]
-
-    response = client.get(
-        api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
-    )
-    #return response.json["token"]
-    #TODO fix this!
-    return 'MasterToken'

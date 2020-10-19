@@ -1,4 +1,4 @@
-from tests import data
+from tests.core import data
 
 from ispyb_core.schemas.data_collection import DataCollectionSchema
 from ispyb_core.schemas.proposal import ProposalSchema
