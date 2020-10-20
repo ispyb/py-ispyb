@@ -33,6 +33,7 @@ from app.extensions import db, auth_provider, create_response
 #from ispyb_core
 from ispyb_ssx.models import LoadedSample as LoadedSampleModel
 from ispyb_ssx.models import CrystalSlurry as CrystalSlurryModel
+from ispyb_ssx.models import SampleDeliveryDevice as SampleDeliveryDeviceModel
 from ispyb_ssx.schemas.loaded_sample import (
     loaded_sample_dict_schema,
     loaded_sample_f_schema,
@@ -42,7 +43,10 @@ from ispyb_ssx.schemas.crystal_slurry import (
     crystal_slurry_f_schema,
     crystal_slurry_ma_schema,
 )
-
+from ispyb_ssx.schemas.sample_delivery_device import (
+    sample_delivery_device_f_schema,
+    sample_delivery_device_ma_schema
+)
 
 log = logging.getLogger(__name__)
 
@@ -66,17 +70,18 @@ def get_loaded_samples(request):
     if person_id:    
         query_params["personId"] = person_id
     """
-    print(ispyb_service_connector.get_ispyb_resource("ispyb_core", "/schemas/available_names"))
     if run_query:
         return db.get_db_items(
-            LoadedSampleModel, loaded_sample_dict_schema, loaded_sample_ma_schema, query_params
+            LoadedSampleModel,
+            loaded_sample_dict_schema,
+            loaded_sample_ma_schema, query_params
         ), HTTPStatus.OK
     else:
         msg = "No loaded_samples associated to the username %s" % user_info["username"]
         return create_response(info_msg=msg), HTTPStatus.OK
     
 def get_loaded_sample_by_id(loaded_sample_id):
-    """Returns loaded_sample by its loaded_sampleId
+    """Returns loaded_sample by its loaded_sampleId.
 
     Args:
         loaded_sample_id (int): corresponds to loaded_sampleId in db
@@ -85,17 +90,46 @@ def get_loaded_sample_by_id(loaded_sample_id):
         dict: info about loaded_sample as dict
     """
     id_dict = {"loaded_sampleId": loaded_sample_id}
-    return db.get_db_item_by_params(LoadedSampleModel, loaded_sample_ma_schema, id_dict)
+    return db.get_db_item_by_params(
+        LoadedSampleModel,
+        loaded_sample_ma_schema,
+        id_dict
+        )
 
 
 def add_loaded_sample(loaded_sample_dict):
-    return db.add_db_item(LoadedSampleModel, loaded_sample_ma_schema, loaded_sample_dict)
+    """Adds a new ssx loaded sample.
+
+    Args:
+        loaded_sample_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(
+        LoadedSampleModel,
+        loaded_sample_ma_schema,
+        loaded_sample_dict
+        )
 
 def get_all_crystal_slurry():
+    """Returns all crystal slurry db items.
+
+    Returns:
+        [type]: [description]
+    """
     crystal_slurry_list = CrystalSlurryModel.query.all()
     return crystal_slurry_ma_schema.dump(crystal_slurry_list, many=True)
 
 def add_crystal_slurry(crystal_slurry_dict):
+    """Adds a new crystal slurry item.
+
+    Args:
+        crystal_slurry_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     status_code, result = ispyb_service_connector.get_ispyb_resource("ispyb_core", "/sample/crystal/%d" % crystal_slurry_dict["crystalId"])
     if status_code == 200:
         crystal_id = crystal_slurry_dict.get("crystalId")
@@ -116,3 +150,36 @@ def add_crystal_slurry(crystal_slurry_dict):
                 result = "Unable to store item in db (%s)" % str(ex)
     
     return status_code, result["message"]
+
+def get_sample_delivery_devices(request):
+    """Returns all sample delivery devices.
+
+    Args:
+        query_params ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    query_params = request.args.to_dict()
+
+    return db.get_db_items(
+        SampleDeliveryDeviceModel,
+        sample_delivery_device_f_schema,
+        sample_delivery_device_ma_schema,
+        query_params
+    ), HTTPStatus.OK
+
+def add_sample_delivery_device(sample_delivery_dict):
+    """Adds a new sample delivery device.
+
+    Args:
+        sample_delivery_device ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(
+        SampleDeliveryDeviceModel,
+        sample_delivery_device_ma_schema,
+        sample_delivery_dict)
+

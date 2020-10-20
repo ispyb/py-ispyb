@@ -19,12 +19,34 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-def test_ssx(ispyb_ssx_app, ispyb_ssx_token):
-    client = ispyb_ssx_app.test_client()
-    api_root = ispyb_ssx_app.config["API_ROOT"]
+__license__ = "LGPLv3+"
 
-    return
-    headers = {"Authorization": "Bearer " + ispyb_ssx_token}
-    response = client.get(api_root + "/sample", headers=headers)
-    assert response.status_code == 200, "Wrong status code"
-    #assert len(response.json) > 0, "No schemas returned"
+
+import os
+import sys
+import pytest
+
+
+TESTS_DIR = os.path.abspath(os.path.dirname(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.insert(0, ROOT_DIR)
+
+from app import create_app
+
+@pytest.fixture(scope="session")
+def ispyb_core_app():
+    app = create_app("ispyb_core_config.yml", "test")
+    with app.app_context():
+        yield app
+
+
+
+@pytest.fixture()
+def ispyb_core_token(ispyb_core_app):
+    client = ispyb_core_app.test_client()
+    api_root = ispyb_core_app.config["API_ROOT"]
+
+    response = client.get(
+        api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
+    )
+    return response.json["token"]

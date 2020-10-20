@@ -19,21 +19,23 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-from tests.data import test_proposal
+import json
+
+from tests.core.data import test_session
 
 
 def test_get(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
+    route_root = ispyb_core_app.config["API_ROOT"] + "/sessions"
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
     response = client.get(route_root, headers=headers)
     data = response.json
     assert response.status_code == 200, "Wrong status code"
-    assert len(data["data"]["rows"]) > 0, "No proposal returned"
+    assert len(data["data"]["rows"]) > 0, "No session returned"
 
-    proposal_id = data["data"]["rows"][0]["proposalId"]
-    path = route_root + "/" + str(proposal_id)
+    session_id = data["data"]["rows"][0]["sessionId"]
+    path = route_root + "/" + str(session_id)
     response = client.get(path, headers=headers)
     assert response.status_code == 200, "Wrong status code"
 
@@ -42,22 +44,19 @@ def test_get(ispyb_core_app, ispyb_core_token):
     assert response.status_code == 200, "Wrong status code"
     assert len(data) == 1
 
-    path = route_root + "?proposalCode=cm"
+    path = route_root + "?beamLineName=i03"
     response = client.get(path, headers=headers)
     data = response.json["data"]["rows"][0]
 
     assert response.status_code == 200, "Wrong status code"
-    assert data["proposalCode"] == "cm"
+    assert data["beamLineName"] == "i03"
 
 
 def test_put(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
+    route_root = ispyb_core_app.config["API_ROOT"] + "/sessions"
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
-    response = client.post(route_root, data=test_proposal, headers=headers)
-
+    response = client.post(route_root, data=test_session, headers=headers)
 
     assert response.status_code == 200, "Wrong status code"
-
-

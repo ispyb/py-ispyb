@@ -19,7 +19,6 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 Proposal namespace with enpoint allowing to manipulate proposal items.
 
 Example routes:
@@ -84,9 +83,7 @@ class Proposals(Resource):
         if result:
             return result, HTTPStatus.OK
         else:
-            return
-            {"message": "Unable to add new proposal"},
-            HTTPStatus.NOT_ACCEPTABLE
+            api.abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add new proposal")
 
 
 @api.route("/<int:proposal_id>", endpoint="proposal_by_id")

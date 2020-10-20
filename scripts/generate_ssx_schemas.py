@@ -41,18 +41,22 @@ passwd = uri.split("//")[1].split(":")[1].split("@")[0]
 host = uri.split("@")[1].split("/")[0]
 db_name = uri.split("/")[-1]
 
+#TODO make this automatic: convert CamelCase to snake_case
+
 gen_tables = (
     "CrystalSizeDistribution",
     "CrystalSlurry",
-    "SsxDataAcquisition",
+    "CrystalSlurryHasCrystal",
     "DataSet",
+    "EventTrain",
     "ExperimentalPlan",
     "LoadedSample",
     "MasterTrigger",
     "Micrograph",
     "RepeatedSequence",
-    "RepeatedSequenceHasAction",
+    "SampleDeliveryDevice",
     "SampleStock",
+    "SsxDataAcquisition",
     "TimedExcitation",
     "TimedSequence",
     "TimedXrayDetection",
@@ -62,15 +66,17 @@ gen_tables = (
 gen_modules = (
     "crystal_size_distribution",
     "crystal_slurry",
-    "ssx_data_acquisition",
+    "crystal_slurry_has_crystal",
     "data_set",
+    "event_train",
     "experimental_plan",
     "loaded_sample",
     "master_trigger",
     "micrograph",
     "repeated_sequence",
-    "repeated_sequence_has_action",
+    "sample_delivery_device",
     "sample_stock",
+    "ssx_data_aquisition",
     "timed_excitation",
     "timed_sequence",
     "timed_xray_detection",

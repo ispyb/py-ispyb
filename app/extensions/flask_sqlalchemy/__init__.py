@@ -110,6 +110,8 @@ class SQLAlchemy(BaseSQLAlchemy):
         super().init_app(app)
 
         database_uri = app.config["SQLALCHEMY_DATABASE_URI"]
+        print("-------------------")
+        print(database_uri)
         if not database_uri or database_uri == "sqlite:///:memory:":
             raise Exception("SQLALCHEMY_DATABASE_URI must be configured!")
         # assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
@@ -195,18 +197,18 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             SQLAlchemy db item: [description]
         """
-        print(sql_alchemy_model, data)
-        db_item = None
+        db_item_json = None
         try:
             db_item = sql_alchemy_model(**data)
             self.session.add(db_item)
             self.session.commit()
-        except BaseException as ex:
+            db_item_json = ma_schema.dump(db_item)[0]
+        except Exception as ex:
             print(ex)
             # app.logger.exception(str(ex))
             self.session.rollback()
-        if db_item:
-            return ma_schema.dump(db_item)[0]
+        return db_item_json
+            
 
     def update_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):
         """
