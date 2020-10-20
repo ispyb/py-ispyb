@@ -11,14 +11,14 @@ test_proposal = {
 }
 
 test_session = {
-    "bltimeStamp": "2015-12-21T16:20:44+00:00",
+    "bltimeStamp": "2015-12-21 16:20:44",
     "proposalId": 37027,
     "beamLineName": "i03",
     "visit_number": 2,
     "archived": 0,
     "beamLineSetupId": 1,
-    "endDate": "2016-03-11T17:00:00+00:00",
-    "startDate": "2016-03-11T09:00:00+00:00",
+    "endDate": "2016-03-11 17:00:00",
+    "startDate": "2016-03-11 09:00:00",
 }
 
 

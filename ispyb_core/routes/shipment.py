@@ -69,22 +69,15 @@ class Shipments(Resource):
         """
         return shipping.get_shipments(request.args), HTTPStatus.OK
 
-    @api.expect(shipping_schemas.shipping_f_schema)
-    @api.marshal_with(shipping_schemas.shipping_f_schema, code=201)
+    @api.expect(shipping_schemas.f_schema)
+    @api.marshal_with(shipping_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
         """Adds a new shipment"""
-        result = shipping.add_shipment(api.payload)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            return
-            {"message": "Unable to add new shipment"},
-            HTTPStatus.NOT_ACCEPTABLE
-
+        return shipping.add_shipment(api.payload)
 
 @api.route("/<int:shipment_id>", endpoint="shipment_by_id")
 @api.param("shipment_id", "shipment id (integer)")
@@ -95,20 +88,18 @@ class ShipmentById(Resource):
 
     @api.doc(description="shipment_id should be an integer ")
     @api.marshal_with(
-        shipping_schemas.shipping_f_schema, skip_none=True, code=HTTPStatus.OK
+        shipping_schemas.f_schema,
+        skip_none=True,
+        code=HTTPStatus.OK
     )
     @token_required
     @authorization_required
     def get(self, shipment_id):
         """Returns a shipment by shipmentId"""
-        result = shipping.get_shipment_by_id(shipment_id)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(HTTPStatus.NOT_FOUND, "shipment not found")
+        return shipping.get_shipment_by_id(shipment_id)
 
-    @api.expect(shipping_schemas.shipping_f_schema)
-    @api.marshal_with(shipping_schemas.shipping_f_schema, code=HTTPStatus.CREATED)
+    @api.expect(shipping_schemas.f_schema)
+    @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
     def put(self, shipment_id):
@@ -118,19 +109,10 @@ class ShipmentById(Resource):
             shipment_id (int): corresponds to shipmentId in db
         """
         log.info("Update shipment %d" % shipment_id)
-        result = shipping.update_shipment(shipment_id, api.payload)
-        if result:
-            return (
-                {"message": "shipment with id %d updated" % shipment_id},
-                HTTPStatus.OK,
-            )
-        else:
-            api.abort(
-                HTTPStatus.NOT_FOUND, "shipment with id %d not found" % shipment_id
-            )
+        return shipping.update_shipment(shipment_id, api.payload)
 
-    @api.expect(shipping_schemas.shipping_f_schema)
-    @api.marshal_with(shipping_schemas.shipping_f_schema, code=HTTPStatus.CREATED)
+    @api.expect(shipping_schemas.f_schema)
+    @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
     def patch(self, shipment_id):
@@ -140,16 +122,7 @@ class ShipmentById(Resource):
             shipment_id (int): corresponds to shipmentId in db
         """
         log.info("Patch shipment %d" % shipment_id)
-        result = shipping.patch_shipment(shipment_id, api.payload)
-        if result:
-            return (
-                {"message": "shipment with id %d updated" % shipment_id},
-                HTTPStatus.OK,
-            )
-        else:
-            api.abort(
-                HTTPStatus.NOT_FOUND, "shipment with id %d not found" % shipment_id
-            )
+        return shipping.patch_shipment(shipment_id, api.payload)
 
     @token_required
     @authorization_required
@@ -162,16 +135,7 @@ class ShipmentById(Resource):
         Returns:
             json, status_code:
         """
-        result = shipping.delete_shipment(shipment_id)
-        if result:
-            return (
-                {"message": "shipment with id %d deleted" % shipment_id},
-                HTTPStatus.OK,
-            )
-        else:
-            api.abort(
-                HTTPStatus.NOT_FOUND, "shipment with id %d not found" % shipment_id
-            )
+        return shipping.delete_shipment(shipment_id)
 
 
 @api.route("/<int:shipment_id>/info", endpoint="shipment_info_by_id")
@@ -187,8 +151,4 @@ class ShipmentInfoById(Resource):
     @authorization_required
     def get(self, shipment_id):
         """Returns a full description of a shipment by shipmentId"""
-        result = shipping.get_shipment_info_by_id(shipment_id)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(HTTPStatus.NOT_FOUND, "shipment not found")
+        return shipping.get_shipment_info_by_id(shipment_id)

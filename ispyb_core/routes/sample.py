@@ -45,15 +45,14 @@ class Sample(Resource):
     @authorization_required
     def get(self):
         """Returns all sample items"""
-        return sample.get_sample_list()
+        return sample.get_samples()
 
     @token_required
-    @api.expect(sample_schemas.sample_f_schema)
-    @api.marshal_with(sample_schemas.sample_f_schema, code=201)
+    @api.expect(sample_schemas.f_schema)
+    @api.marshal_with(sample_schemas.f_schema, code=201)
     def post(self):
         """Adds a new sample item"""
-        # sample_module.(**api.payload)
-        return
+        sample.add_sample(api)
 
 
 @api.route("/<int:sample_id>", endpoint="sample_by_id")
@@ -65,18 +64,16 @@ class SampleById(Resource):
 
     @api.doc(description="sample_id should be an integer ")
     @api.marshal_with(
-        sample_schemas.sample_f_schema, skip_none=True, code=HTTPStatus.OK
+        sample_schemas.f_schema,
+        skip_none=True,
+        code=HTTPStatus.OK
     )
     @token_required
     @authorization_required
     def get(self, sample_id):
         """Returns a sample by sampleId"""
-        result = sample.get_sample_by_id(sample_id)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(HTTPStatus.NOT_FOUND, "Sample with id %d not found" % sample_id)
-
+        return sample.get_sample_by_id(sample_id)
+        
 
 @api.route("/crystals", endpoint="crystals")
 @api.doc(security="apikey")
@@ -87,17 +84,16 @@ class Crystal(Resource):
     @authorization_required
     def get(self):
         """Returns all crystal items"""
-        return crystal.get_crystal_list()
+        return crystal.get_crystals()
 
     
-    @api.expect(crystal_schemas.crystal_f_schema)
-    @api.marshal_with(crystal_schemas.crystal_f_schema, code=201)
+    @api.expect(crystal_schemas.f_schema)
+    @api.marshal_with(crystal_schemas.f_schema, code=201)
     @token_required
     @authorization_required
     def post(self):
         """Adds a new crystal item"""
-        # sample_module.(**api.payload)
-        return
+        crystal.add_crystal(api)
 
 
 @api.route("/crystals/<int:crystal_id>", endpoint="crystal_by_id")
@@ -109,16 +105,12 @@ class CrystalById(Resource):
 
     @api.doc(description="crystal_id should be an integer ")
     @api.marshal_with(
-        crystal_schemas.crystal_f_schema, skip_none=True, code=HTTPStatus.OK
+        crystal_schemas.f_schema,
+        skip_none=True,
+        code=HTTPStatus.OK
     )
     @token_required
     @authorization_required
     def get(self, crystal_id):
         """Returns a crystal by crystalId"""
-        result = crystal.get_crystal_by_id(crystal_id)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(
-                HTTPStatus.NOT_FOUND, "Crystal with id %s not found" % str(crystal_id)
-            )
+        return crystal.get_crystal_by_id(crystal_id)

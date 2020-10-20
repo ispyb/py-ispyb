@@ -25,6 +25,10 @@ __license__ = "LGPLv3+"
 import sys
 import sqlite3
 
+from flask_restx import abort
+from flask_restx._http import HTTPStatus
+
+
 from flask import current_app
 from sqlalchemy import engine
 from sqlalchemy.exc import InvalidRequestError
@@ -110,8 +114,6 @@ class SQLAlchemy(BaseSQLAlchemy):
         super().init_app(app)
 
         database_uri = app.config["SQLALCHEMY_DATABASE_URI"]
-        print("-------------------")
-        print(database_uri)
         if not database_uri or database_uri == "sqlite:///:memory:":
             raise Exception("SQLALCHEMY_DATABASE_URI must be configured!")
         # assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
@@ -140,8 +142,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         """
         offset = 0
         limit = current_app.config.get("PAGINATION_ITEMS_LIMIT")
-        info_msg = None
-        error_msg = None
+        msg = None
 
         if "offset" in query_params.keys():
             offset = query_params.get("offset")
@@ -162,12 +163,12 @@ class SQLAlchemy(BaseSQLAlchemy):
                 query = query.filter_by(**schema_keys)
             except InvalidRequestError as ex:
                 print(ex)
-                error_msg = "Unable to filter items based on query items (%s)" % str(ex)
+                msg = "Unable to filter items based on query items (%s)" % str(ex)
 
         query = query.limit(limit).offset(offset)
         items = ma_schema.dump(query, many=True)[0]
 
-        response_dict = create_response_item(info_msg, error_msg, total, items)
+        response_dict = create_response_item(msg, total, items)
 
         return response_dict
 
@@ -197,17 +198,17 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             SQLAlchemy db item: [description]
         """
-        db_item_json = None
         try:
             db_item = sql_alchemy_model(**data)
             self.session.add(db_item)
             self.session.commit()
-            db_item_json = ma_schema.dump(db_item)[0]
+            json_data = ma_schema.dump(db_item)[0]
+            return HTTPStatus.OK, create_response_item(data=json_data)
         except Exception as ex:
             print(ex)
             # app.logger.exception(str(ex))
             self.session.rollback()
-        return db_item_json
+            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add database item (%s)" % str(ex))
             
 
     def update_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):

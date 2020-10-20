@@ -19,29 +19,31 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 from tests.ssx.data import sample_delivery_device_list
 
 def test_ssx_loaded_samples(ispyb_ssx_app, ispyb_ssx_token):
     client = ispyb_ssx_app.test_client()
     api_root = ispyb_ssx_app.config["API_ROOT"]
-    
-    
-    headers = {"Authorization": "Bearer " + ispyb_ssx_token}
-    print(2222)
-    print(api_root)
+    headers = {
+        "Authorization": "Bearer " + ispyb_ssx_token
+        }
     response = client.get(api_root + "/samples", headers=headers)
     assert response.status_code == 200, "Wrong status code"
-    #assert len(response.json) > 0, "No schemas returned"
+    assert response.json
 
 def test_sample_delivery_devices(ispyb_ssx_app, ispyb_ssx_token):
     client = ispyb_ssx_app.test_client()
     route = ispyb_ssx_app.config["API_ROOT"] + "/samples/delivery_devices"
-    return
-    headers = {"Authorization": "Bearer " + ispyb_ssx_token}
+    mimetype = "application/json"
+    headers = {
+        "Authorization": "Bearer " + ispyb_ssx_token,
+        "Content-Type":  mimetype
+        }
 
     for sample_deliver_device in sample_delivery_device_list:
-        response = client.post(route, data=sample_deliver_device, headers=headers)
+        response = client.post(route, json=sample_deliver_device, headers=headers)
         assert response.status_code == 200, "Wrong status code"
         assert response.json
+        assert response.json["type"] == sample_deliver_device["type"]
+        assert response.content_type == mimetype
 

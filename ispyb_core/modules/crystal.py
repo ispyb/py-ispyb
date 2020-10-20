@@ -21,20 +21,19 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
+from app.extensions import db
+from ispyb_core import models, schemas
 
-from ispyb_core.models import Crystal as CrystalModel
-from ispyb_core.schemas.crystal import crystal_f_schema, crystal_ma_schema
 
-
-def get_crystal_list():
+def get_crystals():
     """
     Returns crystal entries
 
     Returns:
         [type]: [description]
     """
-    crystal_list = CrystalModel.query.all()
-    return crystal_ma_schema.dump(crystal_list, many=True)
+    crystal_list = models.Crystal.query.all()
+    return schemas.crystal.ma_schema.dump(crystal_list, many=True)
 
 
 def get_crystal_by_id(crystal_id):
@@ -47,5 +46,21 @@ def get_crystal_by_id(crystal_id):
     Returns:
         dict: info about crystal as dict
     """
-    crystal_item = CrystalModel.query.filter_by(crystalId=crystal_id).first()
-    return crystal_ma_schema.dump(crystal_item)[0]
+    crystal_item = models.Crystal.query.filter_by(crystalId=crystal_id).first()
+    return schemas.crystal.ma_schema.dump(crystal_item)[0]
+
+def add_crystal(data_dict):
+    """
+    Adds a crystal to db
+
+    Args:
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(
+        models.Crystal,
+        schemas.crystal.ma_schema,
+        data_dict
+        )

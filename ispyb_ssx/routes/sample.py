@@ -33,9 +33,7 @@ from flask_restx_patched import Resource
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
 
-from ispyb_ssx.schemas import loaded_sample as loaded_sample_schemas
-from ispyb_ssx.schemas import crystal_slurry as crystal_slurry_schemas
-from ispyb_ssx.schemas import sample_delivery_device as sample_delivery_device_schemas
+from ispyb_ssx import schemas
 from ispyb_ssx.modules import loaded_sample
 
 from ispyb_service_connector import get_ispyb_resource
@@ -93,10 +91,52 @@ class CrystalSlurry(Resource):
     @authorization_required
     def post(self):
         """Adds a new crystal slury"""
-        status_code, result = loaded_sample.add_crystal_slurry(api.payload)
+        return loaded_sample.add_crystal_slurry(api)
+
+
+@api.route("/crystal_size_distribution", endpoint="crystal_size_distribution")
+@api.doc(security="apikey")
+class CrystalSizeDistribution(Resource):
+    """Crystal size distribution resource"""
+
+    #@token_required
+    def get(self):
+        """Returns all crystal size distributions"""
+        # app.logger.info("Return all data collections")
+        return loaded_sample.get_crystal_size_distributions()
+
+    #@token_required
+    @api.expect(crystal_size_distribution_schemas.crystal_size_distribution_f_schema)
+    #@api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
+    @authorization_required
+    def post(self):
+        """Adds a new crystal slury"""
+        return loaded_sample.add_crystal_size_distribution(api)
+
+@api.route("/sample_stocks", endpoint="sample_stocks")
+@api.doc(security="apikey")
+class SampleStocks(Resource):
+    """Sample stocks resource"""
+
+    #@token_required
+    def get(self):
+        """Returns all sample stocks"""
+        # app.logger.info("Return all data collections")
+        return loaded_sample.get_sample_stocks()
+
+    #@token_required
+    @api.expect(sample_stock_schemas.sample_stock_f_schema)
+    #@api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
+    @authorization_required
+    def post(self):
+        """Adds a new sample stock"""
+        status_code, result = loaded_sample.add_sample_stock(api.payload)
         if status_code >= 400:
-            api.abort(HTTPStatus.NOT_ACCEPTABLE, result)
-        #return status_code, result
+            api.abort(
+                HTTPStatus.NOT_ACCEPTABLE,
+                result)
+        else:
+            return status_code, result
 
 @api.route("/delivery_devices", endpoint="sample_delivery_devices")
 @api.doc(security="apikey")

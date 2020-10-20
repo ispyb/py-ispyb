@@ -28,7 +28,6 @@ from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.schemas import data_collection as data_collection_schemas
-from ispyb_core.schemas import data_collection_group as data_collection_group_schema
 from ispyb_core.modules import data_collection
 
 
@@ -55,18 +54,10 @@ class DataColletions(Resource):
     def get(self):
         """Returns list of data_collections
 
-        /ispyb/api/v1/data_collections: returns all data_collections
-        /ispyb/api/v1/data_collections?limit=10: returns first 10 data_collections
-        /ispyb/api/v1/data_collections?offset=10: returns data_collections 10..30
-        (default limit defined in config.py)
-        /ispyb/api/v1/data_collections?offset=10&limit=10: returns 10 data_collections
-        starting from index 10
-
         Returns:
             list: list of data_collections.
         """
-        return data_collection.get_data_collections(request.args), HTTPStatus.OK
-
+        return data_collection.get_data_collections(request)
 
 @api.route("/<int:data_collection_id>")
 @api.param("data_collection_id", "data_collection id (integer)")
@@ -77,7 +68,7 @@ class DataCollectionById(Resource):
 
     @api.doc(description="data_collection_id should be an integer ")
     @api.marshal_with(
-        data_collection_schemas.data_collection_f_schema,
+        data_collection_schemas.f_schema,
         skip_none=True,
         code=HTTPStatus.OK,
     )
@@ -85,11 +76,7 @@ class DataCollectionById(Resource):
     @authorization_required
     def get(self, data_collection_id):
         """Returns a data_collection by data_collectionId"""
-        result = data_collection.get_data_collection_by_id(data_collection_id)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(HTTPStatus.NOT_FOUND, "data_collection not found")
+        return data_collection.get_data_collection_by_id(data_collection_id)
 
 
 @api.route("/groups")
@@ -104,14 +91,7 @@ class DataCollectionGroups(Resource):
     def get(self):
         """Returns list of data_collection_groups
 
-        /ispyb/api/v1/data_collection/group: returns all data collection groups
-        /ispyb/api/v1/data_collection/group?limit=10: returns first 10 data collection groups
-        /ispyb/api/v1/data_collection/group?offset=10: returns data collection groups 10..30
-        (default limit defined in config.py)
-        /ispyb/api/v1/data_collection/groups?offset=10&limit=10: returns 10 data collection groups
-        starting from index 10
-
         Returns:
             list: list of data_collections.
         """
-        return data_collection.get_data_collection_groups(request.args), HTTPStatus.OK
+        return data_collection.get_data_collection_groups(request)

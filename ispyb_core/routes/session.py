@@ -26,7 +26,6 @@ from flask_restx_patched import Resource, HTTPStatus
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
 
-from ispyb_core.models import BLSession as Session
 from ispyb_core.schemas import session as session_schemas
 from ispyb_core.modules import session
 
@@ -36,8 +35,6 @@ __license__ = "LGPLv3+"
 log = logging.getLogger(__name__)
 api = Namespace("Sessions", description="Session related namespace", path="/sessions")
 api_v1.add_namespace(api)
-
-session_desc_f_schema = session_schemas.session_f_schema
 
 
 @api.route("", endpoint="sessions")
@@ -62,10 +59,10 @@ class Sessions(Resource):
         """
 
         # TODO add decorator @paginate
-        return session.get_sessions(request.args), HTTPStatus.OK
+        return session.get_sessions(request)
 
-    @api.expect(session_schemas.session_f_schema)
-    @api.marshal_with(session_schemas.session_f_schema, code=201)
+    @api.expect(session_schemas.f_schema)
+    @api.marshal_with(session_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
@@ -74,14 +71,7 @@ class Sessions(Resource):
         """Adds a new session"""
         log.info("Inserts a new session")
 
-        # with
-        result = session.add_session(api.payload)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            return
-            {"message": "Unable to add new session"},
-            HTTPStatus.NOT_ACCEPTABLE
+        return session.add_session(api.payload)
 
 
 @api.route("/<int:session_id>", endpoint="session_by_id")
@@ -93,17 +83,15 @@ class SessionById(Resource):
 
     @api.doc(description="session_id should be an integer ")
     @api.marshal_with(
-        session_schemas.session_f_schema, skip_none=True, code=HTTPStatus.OK
+        session_schemas.f_schema,
+        skip_none=True,
+        code=HTTPStatus.OK
     )
     @token_required
     @authorization_required
     def get(self, session_id):
         """Returns a session by sessionId"""
-        result = session.get_session_by_id(session_id)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(HTTPStatus.NOT_FOUND, "Session not found")
+        return session.get_session_by_id(session_id)
 
 
 @api.route("/<int:session_id>/info", endpoint="session_info_by_id")
@@ -119,8 +107,4 @@ class SessionInfoById(Resource):
     @authorization_required
     def get(self, session_id):
         """Returns a full description of a session by sessionId"""
-        result = session.get_session_info_by_id(session_id)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(HTTPStatus.NOT_FOUND, "session not found")
+        return session.get_session_info_by_id(session_id)

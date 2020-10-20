@@ -1,25 +1,26 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 __license__ = "LGPLv3+"
+
 
 
 from marshmallow import Schema, fields as ma_fields
@@ -28,73 +29,54 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-beamline_setup_dict_schema = {
-    "beamLineSetupId": f_fields.Integer(required=True, description=""),
-    "detectorId": f_fields.Integer(required=False, description=""),
-    "synchrotronMode": f_fields.String(required=False, description=""),
-    "undulatorType1": f_fields.String(required=False, description=""),
-    "undulatorType2": f_fields.String(required=False, description=""),
-    "undulatorType3": f_fields.String(required=False, description=""),
-    "focalSpotSizeAtSample": f_fields.Float(required=False, description=""),
-    "focusingOptic": f_fields.String(required=False, description=""),
-    "beamDivergenceHorizontal": f_fields.Float(required=False, description=""),
-    "beamDivergenceVertical": f_fields.Float(required=False, description=""),
-    "polarisation": f_fields.Float(required=False, description=""),
-    "monochromatorType": f_fields.String(required=False, description=""),
-    "setupDate": f_fields.DateTime(required=False, description=""),
-    "synchrotronName": f_fields.String(required=False, description=""),
-    "maxExpTimePerDataCollection": f_fields.String(required=False, description=""),
-    "maxExposureTimePerImage": f_fields.Float(
-        required=False, description="unit: seconds"
-    ),
-    "minExposureTimePerImage": f_fields.String(required=False, description=""),
-    "goniostatMaxOscillationSpeed": f_fields.String(required=False, description=""),
-    "goniostatMaxOscillationWidth": f_fields.String(
-        required=False, description="unit: degrees"
-    ),
-    "goniostatMinOscillationWidth": f_fields.String(required=False, description=""),
-    "maxTransmission": f_fields.String(required=False, description="unit: percentage"),
-    "minTransmission": f_fields.String(required=False, description=""),
-    "recordTimeStamp": f_fields.DateTime(
-        required=True, description="Creation or last update date/time"
-    ),
-    "CS": f_fields.Float(
-        required=False, description="Spherical Aberration, Units: mm?"
-    ),
-    "beamlineName": f_fields.String(
-        required=False, description="Beamline that this setup relates to"
-    ),
-    "beamSizeXMin": f_fields.Float(required=False, description="unit: um"),
-    "beamSizeXMax": f_fields.Float(required=False, description="unit: um"),
-    "beamSizeYMin": f_fields.Float(required=False, description="unit: um"),
-    "beamSizeYMax": f_fields.Float(required=False, description="unit: um"),
-    "energyMin": f_fields.Float(required=False, description="unit: eV"),
-    "energyMax": f_fields.Float(required=False, description="unit: eV"),
-    "omegaMin": f_fields.Float(required=False, description="unit: degrees"),
-    "omegaMax": f_fields.Float(required=False, description="unit: degrees"),
-    "kappaMin": f_fields.Float(required=False, description="unit: degrees"),
-    "kappaMax": f_fields.Float(required=False, description="unit: degrees"),
-    "phiMin": f_fields.Float(required=False, description="unit: degrees"),
-    "phiMax": f_fields.Float(required=False, description="unit: degrees"),
-    "active": f_fields.Integer(required=True, description=""),
-    "numberOfImagesMax": f_fields.Integer(required=False, description=""),
-    "numberOfImagesMin": f_fields.Integer(required=False, description=""),
-    "boxSizeXMin": f_fields.String(
-        required=False, description="For gridscans, unit: um"
-    ),
-    "boxSizeXMax": f_fields.String(
-        required=False, description="For gridscans, unit: um"
-    ),
-    "boxSizeYMin": f_fields.String(
-        required=False, description="For gridscans, unit: um"
-    ),
-    "boxSizeYMax": f_fields.String(
-        required=False, description="For gridscans, unit: um"
-    ),
-    "monoBandwidthMin": f_fields.String(required=False, description="unit: percentage"),
-    "monoBandwidthMax": f_fields.String(required=False, description="unit: percentage"),
-}
-
+dict_schema = {
+        'beamLineSetupId': f_fields.Integer(required=True, description=''),
+        'detectorId': f_fields.Integer(required=False, description=''),
+        'synchrotronMode': f_fields.String(required=False, description=''),
+        'undulatorType1': f_fields.String(required=False, description=''),
+        'undulatorType2': f_fields.String(required=False, description=''),
+        'undulatorType3': f_fields.String(required=False, description=''),
+        'focalSpotSizeAtSample': f_fields.Float(required=False, description=''),
+        'focusingOptic': f_fields.String(required=False, description=''),
+        'beamDivergenceHorizontal': f_fields.Float(required=False, description=''),
+        'beamDivergenceVertical': f_fields.Float(required=False, description=''),
+        'polarisation': f_fields.Float(required=False, description=''),
+        'monochromatorType': f_fields.String(required=False, description=''),
+        'setupDate': f_fields.DateTime(required=False, description=''),
+        'synchrotronName': f_fields.String(required=False, description=''),
+        'maxExpTimePerDataCollection': f_fields.String(required=False, description=''),
+        'maxExposureTimePerImage': f_fields.Float(required=False, description='unit: seconds'),
+        'minExposureTimePerImage': f_fields.String(required=False, description=''),
+        'goniostatMaxOscillationSpeed': f_fields.String(required=False, description=''),
+        'goniostatMaxOscillationWidth': f_fields.String(required=False, description='unit: degrees'),
+        'goniostatMinOscillationWidth': f_fields.String(required=False, description=''),
+        'maxTransmission': f_fields.String(required=False, description='unit: percentage'),
+        'minTransmission': f_fields.String(required=False, description=''),
+        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
+        'CS': f_fields.Float(required=False, description='Spherical Aberration, Units: mm?'),
+        'beamlineName': f_fields.String(required=False, description='Beamline that this setup relates to'),
+        'beamSizeXMin': f_fields.Float(required=False, description='unit: um'),
+        'beamSizeXMax': f_fields.Float(required=False, description='unit: um'),
+        'beamSizeYMin': f_fields.Float(required=False, description='unit: um'),
+        'beamSizeYMax': f_fields.Float(required=False, description='unit: um'),
+        'energyMin': f_fields.Float(required=False, description='unit: eV'),
+        'energyMax': f_fields.Float(required=False, description='unit: eV'),
+        'omegaMin': f_fields.Float(required=False, description='unit: degrees'),
+        'omegaMax': f_fields.Float(required=False, description='unit: degrees'),
+        'kappaMin': f_fields.Float(required=False, description='unit: degrees'),
+        'kappaMax': f_fields.Float(required=False, description='unit: degrees'),
+        'phiMin': f_fields.Float(required=False, description='unit: degrees'),
+        'phiMax': f_fields.Float(required=False, description='unit: degrees'),
+        'active': f_fields.Integer(required=True, description=''),
+        'numberOfImagesMax': f_fields.Integer(required=False, description=''),
+        'numberOfImagesMin': f_fields.Integer(required=False, description=''),
+        'boxSizeXMin': f_fields.String(required=False, description='For gridscans, unit: um'),
+        'boxSizeXMax': f_fields.String(required=False, description='For gridscans, unit: um'),
+        'boxSizeYMin': f_fields.String(required=False, description='For gridscans, unit: um'),
+        'boxSizeYMax': f_fields.String(required=False, description='For gridscans, unit: um'),
+        'monoBandwidthMin': f_fields.String(required=False, description='unit: percentage'),
+        'monoBandwidthMax': f_fields.String(required=False, description='unit: percentage'),
+        }
 
 class BeamLineSetupSchema(Schema):
     """Marshmallows schema class representing BeamLineSetup table"""
@@ -146,7 +128,6 @@ class BeamLineSetupSchema(Schema):
     monoBandwidthMin = ma_fields.String()
     monoBandwidthMax = ma_fields.String()
 
-
-beamline_setup_f_schema = api.model("BeamLineSetup", beamline_setup_dict_schema)
-beamline_setup_ma_schema = BeamLineSetupSchema()
-beamline_setup_json_schema = JSONSchema().dump(beamline_setup_ma_schema)
+f_schema = api.model('BeamLineSetup', dict_schema)
+ma_schema = BeamLineSetupSchema()
+json_schema = JSONSchema().dump(ma_schema)

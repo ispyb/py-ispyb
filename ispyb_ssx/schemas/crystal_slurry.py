@@ -37,6 +37,8 @@ crystal_slurry_dict_schema = {
         'bufferId': f_fields.Float(required=False, description='reference to Buffer.bufferId'),
         }
 
+crystal_slurry_dict_schema["crystalId"] = f_fields.Integer(reuired=True)
+
 class CrystalSlurrySchema(Schema):
     """Marshmallows schema class representing CrystalSlurry table"""
 

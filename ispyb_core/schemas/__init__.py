@@ -1,7 +1,4 @@
 """
-Project: py-ispyb
-https://github.com/ispyb/py-ispyb
-
 This file is part of py-ispyb software.
 
 py-ispyb is free software: you can redistribute it and/or modify
@@ -17,31 +14,3 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
-
-
-__license__ = "LGPLv3+"
-
-
-from sqlalchemy.dialects.mysql.enumerated import ENUM
-from sqlalchemy.dialects.mysql.types import LONGBLOB
-
-from .logging import Logging
-logging = Logging()
-
-from . import api
-from .auth import auth_provider
-from .flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
-db.ENUM = ENUM
-db.LONGBLOB = LONGBLOB
-
-
-def init_app(app):
-    """Initializes app extensions
-
-    Args:
-        app (flask app): Flask application
-    """
-    for extension in (api, auth_provider, logging, db):
-        extension.init_app(app)

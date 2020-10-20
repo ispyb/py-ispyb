@@ -22,10 +22,9 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from ispyb_core.models import Protein as ProteinModel
-from ispyb_core.schemas.protein import protein_f_schema, protein_ma_schema
+from ispyb_core import models, schemas
 
 
 def get_protein_list():
-    protein_list = ProteinModel.query.all()
-    return protein_ma_schema.dump(protein_list)
+    protein_list = models.Protein.query.all()
+    return schemas.protein.ma_schema.dump(protein_list)

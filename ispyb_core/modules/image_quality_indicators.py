@@ -22,19 +22,16 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from ispyb_core.models import ImageQualityIndicator as ImageQualityIndicatorsModel
-from ispyb_core.schemas.image_quality_indicators import (
-    image_quality_indicators_f_schema,
-    image_quality_indicators_ma_schema,
-)
+from ispyb_core import models, schemas
 
 
-def get_image_quality_indicators_list():
+def get_image_quality_indicators():
     """
     Returns image quality indicators
 
     Returns:
         [type]: [description]
     """
-    image_quality_indicators_list = ImageQualityIndicatorsModel.query.all()
-    return image_quality_indicators_ma_schema.dump(image_quality_indicators_list)
+    image_quality_indicators_list = models.ImageQualityIndicator.query.all()
+    return schemas.image_quality_indicators.ma_schema.dump(
+        image_quality_indicators_list)

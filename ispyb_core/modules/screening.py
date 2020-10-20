@@ -24,8 +24,7 @@ __license__ = "LGPLv3+"
 
 import logging
 
-from ispyb_core.models import Screening as ScreeningModel
-from ispyb_core.schemas.screening import screening_f_schema, screening_ma_schema
+from ispyb_core import models, schemas
 
 
 log = logging.getLogger(__name__)

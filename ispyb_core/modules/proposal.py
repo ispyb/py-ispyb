@@ -25,11 +25,11 @@ __license__ = "LGPLv3+"
 import logging
 from flask_restx._http import HTTPStatus
 
-from app.extensions import db, auth_provider, create_response
+from app.extensions import db, auth_provider
+from app.utils import create_response_item
 
-from ispyb_core.models import Proposal as ProposalModel
+from ispyb_core import models, schemas
 from ispyb_core.modules import contacts, session
-from ispyb_core.schemas.proposal import proposal_ma_schema, proposal_dict_schema
 
 
 log = logging.getLogger(__name__)
@@ -54,11 +54,14 @@ def get_proposals(request):
 
     if run_query:
         return db.get_db_items(
-            ProposalModel, proposal_dict_schema, proposal_ma_schema, query_params
+            models.Proposal,
+            schemas.proposal.dict_schema,
+            schemas.proposal.ma_schema,
+            query_params
         ), HTTPStatus.OK
     else:
         msg = "No proposals associated to the username %s" % user_info["username"]
-        return create_response(info_msg=msg), HTTPStatus.OK
+        return create_response_item(msg=msg), HTTPStatus.OK
     
 def get_proposal_by_id(proposal_id):
     """
@@ -71,7 +74,11 @@ def get_proposal_by_id(proposal_id):
         dict: info about proposal as dict
     """
     id_dict = {"proposalId": proposal_id}
-    return db.get_db_item_by_params(ProposalModel, proposal_ma_schema, id_dict)
+    return db.get_db_item_by_params(
+        models.Proposal,
+        schemas.proposal.ma_schema,
+        id_dict
+        )
 
 
 def get_proposal_info_by_id(proposal_id):
@@ -96,7 +103,7 @@ def get_proposal_info_by_id(proposal_id):
     return proposal_json
 
 
-def add_proposal(proposal_dict):
+def add_proposal(data_dict):
     """
     Adds a proposal
 
@@ -106,10 +113,14 @@ def add_proposal(proposal_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(ProposalModel, proposal_ma_schema, proposal_dict)
+    return db.add_db_item(
+        models.Proposal,
+        schemas.proposal.ma_schema,
+        data_dict
+        )
 
 
-def update_proposal(proposal_id, proposal_dict):
+def update_proposal(proposal_id, data_dict):
     """
     Updates proposal
 
@@ -121,7 +132,11 @@ def update_proposal(proposal_id, proposal_dict):
         [type]: [description]
     """
     id_dict = {"proposalId": proposal_id}
-    return db.update_db_item(ProposalModel, id_dict, proposal_dict)
+    return db.update_db_item(
+        models.Proposal,
+        id_dict,
+        data_dict
+        )
 
 
 def patch_proposal(proposal_id, proposal_dict):
@@ -136,7 +151,11 @@ def patch_proposal(proposal_id, proposal_dict):
         [type]: [description]
     """
     id_dict = {"proposalId": proposal_id}
-    return db.patch_db_item(ProposalModel, id_dict, proposal_dict)
+    return db.patch_db_item(
+        models.Proposal,
+        id_dict,
+        proposal_dict
+        )
 
 
 def delete_proposal(proposal_id):
@@ -150,4 +169,7 @@ def delete_proposal(proposal_id):
         otherwise return False
     """
     id_dict = {"proposalId": proposal_id}
-    return db.delete_db_item(ProposalModel, id_dict)
+    return db.delete_db_item(
+        models.Proposal,
+        id_dict
+        )

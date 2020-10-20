@@ -22,16 +22,15 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from ispyb_core.models import EnergyScan as EnergyScanModel
-from ispyb_core.schemas.energy_scan import energy_scan_f_schema, energy_scan_ma_schema
+from ispyb_core import models, schemas
 
 
-def get_energy_scan_list():
+def get_energy_scans():
     """
     Returns list of energy scans
 
     Returns:
         [type]: [description]
     """
-    energy_scan_list = EnergyScanModel.query.all()
-    return energy_scan_ma_schema.dump(energy_scan_list)
+    energy_scan_list = models.EnergyScan.query.all()
+    return schemas.energy_scan.ma_schema.dump(energy_scan_list)
