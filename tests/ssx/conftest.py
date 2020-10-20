@@ -47,11 +47,7 @@ def ispyb_ssx_token(ispyb_ssx_app):
     client = ispyb_ssx_app.test_client()
     api_root = ispyb_ssx_app.config["API_ROOT"]
 
-    print(99999)
-    print(client)
     resp = client.get(
         api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
     )
-    print(resp)
-    #return resp.json["token"]
-    return "MasterToken"
+    return resp.json["token"]
