@@ -22,6 +22,7 @@
 import os
 import re
 import sys
+import csv
 import MySQLdb
 
 ispyb_root = os.path.dirname(os.path.abspath(__file__)).split(os.sep)
@@ -41,48 +42,15 @@ passwd = uri.split("//")[1].split(":")[1].split("@")[0]
 host = uri.split("@")[1].split("/")[0]
 db_name = uri.split("/")[-1]
 
-#TODO make this automatic: convert CamelCase to snake_case
+gen_tables = []
+gen_modules = []
 
-gen_tables = (
-    "CrystalSizeDistribution",
-    "CrystalSlurry",
-    "CrystalSlurryHasCrystal",
-    "DataSet",
-    "EventTrain",
-    "ExperimentalPlan",
-    "LoadedSample",
-    "MasterTrigger",
-    "Micrograph",
-    "RepeatedSequence",
-    "SampleDeliveryDevice",
-    "SampleStock",
-    "SsxDataAcquisition",
-    "TimedExcitation",
-    "TimedSequence",
-    "TimedXrayDetection",
-    "TimedXrayExposure",
-)
-
-gen_modules = (
-    "crystal_size_distribution",
-    "crystal_slurry",
-    "crystal_slurry_has_crystal",
-    "data_set",
-    "event_train",
-    "experimental_plan",
-    "loaded_sample",
-    "master_trigger",
-    "micrograph",
-    "repeated_sequence",
-    "sample_delivery_device",
-    "sample_stock",
-    "ssx_data_aquisition",
-    "timed_excitation",
-    "timed_sequence",
-    "timed_xray_detection",
-    "timed_xray_exposure",
-)
-
+with open("%s/scripts/ssx_db_mapping.csv" % ispyb_root) as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+        gen_modules.append(row[0])
+        gen_tables.append(row[1])
+print(gen_modules, gen_tables)
 connection = MySQLdb.connect(host=host, user=user, passwd=passwd)
 cursor = connection.cursor()
 cursor.execute("USE %s" % db_name)
@@ -110,12 +78,12 @@ print("Generating ssx schemas..")
 for table in tables:
     table_name = table[0]
     if table_name in gen_tables:
-        print("Generting flask and marshmallow models for table %s" % table_name)
         cursor.execute("SHOW FULL COLUMNS FROM %s" % table)
         columns = cursor.fetchall()
         table_name = table_name.replace("BF_", "").replace("BL", "")
         schema_name = "_".join(re.findall("[A-Z][^A-Z]*", table_name)).lower()
-        dict_text = "%s_dict_schema = {\n" % schema_name
+        print("Generting flask and marshmallow models for table %s in %s" % (table_name, schema_name))
+        dict_text = "dict_schema = {\n"
         ma_text = "class %sSchema(Schema):\n" % table_name
         ma_text += (
             '    """Marshmallows schema class representing %s table"""\n\n' % table_name
@@ -158,16 +126,11 @@ for table in tables:
             ma_text += "    %s = ma_fields.%s()\n" % (name, data_type)
         dict_text += "        }\n\n"
 
-        class_text = "%s_f_schema = api.model('%s', %s_dict_schema)\n" % (
-            schema_name,
+        class_text = "f_schema = api.model('%s', dict_schema)\n" % (
             table_name,
-            schema_name,
         )
-        class_text += "%s_ma_schema = %sSchema()\n" % (schema_name, table_name)
-        json_text = "%s_json_schema = JSONSchema().dump(%s_ma_schema)\n" % (
-            schema_name,
-            schema_name,
-        )
+        class_text += "ma_schema = %sSchema()\n" % (table_name)
+        json_text = "json_schema = JSONSchema().dump(ma_schema)\n"
 
         schema_file_path = "%s/ispyb_ssx/schemas/%s.py" % (ispyb_root, schema_name)
         if not os.path.exists(os.path.dirname(schema_file_path)):

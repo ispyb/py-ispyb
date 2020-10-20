@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-sample_delivery_device_dict_schema = {
+dict_schema = {
         'sampleDeliveryDeviceId': f_fields.Integer(required=True, description=''),
         'type': f_fields.String(required=False, description='enum(photoChip,microFluidics,viscoousJet,tapeDevice)'),
         'descriptionJson': f_fields.String(required=False, description=''),
@@ -42,6 +42,6 @@ class SampleDeliveryDeviceSchema(Schema):
     type = ma_fields.String()
     descriptionJson = ma_fields.String()
 
-sample_delivery_device_f_schema = api.model('SampleDeliveryDevice', sample_delivery_device_dict_schema)
-sample_delivery_device_ma_schema = SampleDeliveryDeviceSchema()
-sample_delivery_device_json_schema = JSONSchema().dump(sample_delivery_device_ma_schema)
+f_schema = api.model('SampleDeliveryDevice', dict_schema)
+ma_schema = SampleDeliveryDeviceSchema()
+json_schema = JSONSchema().dump(ma_schema)

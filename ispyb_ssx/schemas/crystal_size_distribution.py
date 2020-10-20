@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-crystal_size_distribution_dict_schema = {
+dict_schema = {
         'crystalSizeDistributionId': f_fields.Integer(required=True, description=''),
         'crystalHabit': f_fields.String(required=False, description=''),
         'characteristicDimensions': f_fields.String(required=False, description=''),
@@ -46,6 +46,6 @@ class CrystalSizeDistributionSchema(Schema):
     minDimension = ma_fields.String()
     maxDimension = ma_fields.String()
 
-crystal_size_distribution_f_schema = api.model('CrystalSizeDistribution', crystal_size_distribution_dict_schema)
-crystal_size_distribution_ma_schema = CrystalSizeDistributionSchema()
-crystal_size_distribution_json_schema = JSONSchema().dump(crystal_size_distribution_ma_schema)
+f_schema = api.model('CrystalSizeDistribution', dict_schema)
+ma_schema = CrystalSizeDistributionSchema()
+json_schema = JSONSchema().dump(ma_schema)

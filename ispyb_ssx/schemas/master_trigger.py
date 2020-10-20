@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-master_trigger_dict_schema = {
+dict_schema = {
         'masterTriggerId': f_fields.Integer(required=True, description=''),
         'nameInEventLog': f_fields.String(required=False, description=''),
         'triggerDevice': f_fields.Integer(required=False, description=''),
@@ -44,6 +44,6 @@ class MasterTriggerSchema(Schema):
     triggerDevice = ma_fields.Integer()
     descriptionJson = ma_fields.String()
 
-master_trigger_f_schema = api.model('MasterTrigger', master_trigger_dict_schema)
-master_trigger_ma_schema = MasterTriggerSchema()
-master_trigger_json_schema = JSONSchema().dump(master_trigger_ma_schema)
+f_schema = api.model('MasterTrigger', dict_schema)
+ma_schema = MasterTriggerSchema()
+json_schema = JSONSchema().dump(ma_schema)

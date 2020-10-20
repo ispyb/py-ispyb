@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-sample_stock_dict_schema = {
+dict_schema = {
         'sampleStockId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=True, description=''),
         'crystalSlurryId': f_fields.Integer(required=True, description=''),
@@ -50,6 +50,6 @@ class SampleStockSchema(Schema):
     additiveId = ma_fields.Integer()
     note = ma_fields.String()
 
-sample_stock_f_schema = api.model('SampleStock', sample_stock_dict_schema)
-sample_stock_ma_schema = SampleStockSchema()
-sample_stock_json_schema = JSONSchema().dump(sample_stock_ma_schema)
+f_schema = api.model('SampleStock', dict_schema)
+ma_schema = SampleStockSchema()
+json_schema = JSONSchema().dump(ma_schema)

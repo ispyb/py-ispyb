@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-experimental_plan_dict_schema = {
+dict_schema = {
         'experimentalPlanId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=False, description=''),
         'numberOfRepetitions': f_fields.Integer(required=False, description='for micro-fluidic, jet, tape but not for chip'),
@@ -48,6 +48,6 @@ class ExperimentalPlanSchema(Schema):
     masterTriggerId = ma_fields.Integer()
     repeatedSequenceId = ma_fields.Integer()
 
-experimental_plan_f_schema = api.model('ExperimentalPlan', experimental_plan_dict_schema)
-experimental_plan_ma_schema = ExperimentalPlanSchema()
-experimental_plan_json_schema = JSONSchema().dump(experimental_plan_ma_schema)
+f_schema = api.model('ExperimentalPlan', dict_schema)
+ma_schema = ExperimentalPlanSchema()
+json_schema = JSONSchema().dump(ma_schema)

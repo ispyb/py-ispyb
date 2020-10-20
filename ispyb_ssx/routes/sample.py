@@ -33,7 +33,11 @@ from flask_restx_patched import Resource
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
 
-from ispyb_ssx import schemas
+from ispyb_ssx.schemas import loaded_sample as loaded_sample_schemas
+from ispyb_ssx.schemas import crystal_slurry as crystal_slurry_schemas
+from ispyb_ssx.schemas import crystal_size_distribution as crystal_size_distribution_schemas
+from ispyb_ssx.schemas import sample_stock as sample_stock_schemas
+from ispyb_ssx.schemas import sample_delivery_device as sample_delivery_device_schemas
 from ispyb_ssx.modules import loaded_sample
 
 from ispyb_service_connector import get_ispyb_resource
@@ -60,19 +64,13 @@ class LoadedSample(Resource):
         return loaded_sample.get_loaded_samples(request)
 
     #@token_required
-    @api.expect(loaded_sample_schemas.loaded_sample_f_schema)
-    #@api.marshal_with(loaded_sample_schemas.loaded_sample_f_schema, code=201)
+    @api.expect(loaded_sample_schemas.f_schema)
+    #@api.marshal_with(loaded_sample_schemas.f_schema, code=201)
     #@authorization_required
     def post(self):
         """Adds a new loaded sample"""
-        result = loaded_sample.add_loaded_sample(api.payload)
-        if result is not None:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(
-                HTTPStatus.NOT_ACCEPTABLE,
-                "Unable to add new loaded sample"
-                )
+        return loaded_sample.add_loaded_sample(api.payload)
+    
 
 @api.route("/crystal_slurry", endpoint="crystal_slurry")
 @api.doc(security="apikey")
@@ -86,12 +84,12 @@ class CrystalSlurry(Resource):
         return loaded_sample.get_all_crystal_slurry()
 
     #@token_required
-    @api.expect(crystal_slurry_schemas.crystal_slurry_f_schema)
-    #@api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
+    @api.expect(crystal_slurry_schemas.f_schema)
+    #@api.marshal_with(crystal_slurry_schemas.f_schema, code=201)
     @authorization_required
     def post(self):
         """Adds a new crystal slury"""
-        return loaded_sample.add_crystal_slurry(api)
+        return loaded_sample.add_crystal_slurry(api.payload)
 
 
 @api.route("/crystal_size_distribution", endpoint="crystal_size_distribution")
@@ -106,12 +104,12 @@ class CrystalSizeDistribution(Resource):
         return loaded_sample.get_crystal_size_distributions()
 
     #@token_required
-    @api.expect(crystal_size_distribution_schemas.crystal_size_distribution_f_schema)
+    @api.expect(crystal_size_distribution_schemas.f_schema)
     #@api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
     @authorization_required
     def post(self):
         """Adds a new crystal slury"""
-        return loaded_sample.add_crystal_size_distribution(api)
+        return loaded_sample.add_crystal_size_distribution(api.payload)
 
 @api.route("/sample_stocks", endpoint="sample_stocks")
 @api.doc(security="apikey")
@@ -125,18 +123,13 @@ class SampleStocks(Resource):
         return loaded_sample.get_sample_stocks()
 
     #@token_required
-    @api.expect(sample_stock_schemas.sample_stock_f_schema)
+    @api.expect(sample_stock_schemas.f_schema)
     #@api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
     @authorization_required
     def post(self):
         """Adds a new sample stock"""
-        status_code, result = loaded_sample.add_sample_stock(api.payload)
-        if status_code >= 400:
-            api.abort(
-                HTTPStatus.NOT_ACCEPTABLE,
-                result)
-        else:
-            return status_code, result
+        return loaded_sample.add_sample_stock(api.payload)
+        
 
 @api.route("/delivery_devices", endpoint="sample_delivery_devices")
 @api.doc(security="apikey")
@@ -155,24 +148,15 @@ class SamplDeliveryDevices(Resource):
         """
         return loaded_sample.get_sample_delivery_devices(request)
 
-    @api.expect(sample_delivery_device_schemas.sample_delivery_device_f_schema)
-    @api.marshal_with(sample_delivery_device_schemas.sample_delivery_device_f_schema, code=201)
+    @api.expect(sample_delivery_device_schemas.f_schema)
+    @api.marshal_with(sample_delivery_device_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
     #@authorization_required
     def post(self):
         """Adds a new sample delivery device"""
+
         current_app.logger.info("Inserts a new sample delivery device")
-
-        result = loaded_sample.add_sample_delivery_device(api.payload)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(
-                HTTPStatus.NOT_ACCEPTABLE,
-                "Unable to add a new sample delivery device"
-                )
-
-
-#return get_ispyb_resource("ispyb_core", "schemas/available_names")
+        return loaded_sample.add_sample_delivery_device(api.payload)
+        

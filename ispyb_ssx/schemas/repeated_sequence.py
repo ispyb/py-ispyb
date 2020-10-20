@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-repeated_sequence_dict_schema = {
+dict_schema = {
         'repeatedSequenceId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=False, description=''),
         }
@@ -40,6 +40,6 @@ class RepeatedSequenceSchema(Schema):
     repeatedSequenceId = ma_fields.Integer()
     name = ma_fields.String()
 
-repeated_sequence_f_schema = api.model('RepeatedSequence', repeated_sequence_dict_schema)
-repeated_sequence_ma_schema = RepeatedSequenceSchema()
-repeated_sequence_json_schema = JSONSchema().dump(repeated_sequence_ma_schema)
+f_schema = api.model('RepeatedSequence', dict_schema)
+ma_schema = RepeatedSequenceSchema()
+json_schema = JSONSchema().dump(ma_schema)
