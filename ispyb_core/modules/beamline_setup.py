@@ -27,7 +27,8 @@ from ispyb_core import models, schemas
 
 
 def get_beamline_setups(request):
-    """Returns beamline_setup items based on query parameters
+    """
+    Returns beamline_setup items based on query parameters.
 
     Args:
         query_params (dict): [description]
@@ -46,7 +47,8 @@ def get_beamline_setups(request):
 
 
 def add_beamline_setup(data_dict):
-    """Adds data collection item
+    """
+    Adds data collection item.
 
     Args:
         beamline_setup_dict ([type]): [description]
@@ -60,7 +62,8 @@ def add_beamline_setup(data_dict):
 
 
 def get_beamline_setup_by_id(beamline_setup_id):
-    """Returns beamline_setup by its beamline_setupId
+    """
+    Returns beamline_setup by its beamline_setupId.
 
     Args:
         beamline_setup_id (int): corresponds to beamlineSetupId in db

@@ -41,7 +41,7 @@ def get_persons(request):
 
 
 def get_person_by_params(param_dict):
-    """Returns person by its id
+    """Returns person by its id.
 
     Args:
         person_id (int): corresponds to personId in db
