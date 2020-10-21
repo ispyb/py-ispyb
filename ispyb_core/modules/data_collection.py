@@ -63,10 +63,9 @@ def add_data_collection(data_dict):
         [type]: [description]
     """
     return db.add_db_item(
-        models.DataCollection,
-        schemas.data_collection.ma_schema,
-        data_dict
-        )
+        models.DataCollection, schemas.data_collection.ma_schema, data_dict
+    )
+
 
 def get_data_collection_by_id(data_collection_id):
     """
@@ -78,13 +77,12 @@ def get_data_collection_by_id(data_collection_id):
     Returns:
         dict: info about data_collection as dict
     """
-    data_dict = {"dataCollectionId" : data_collection_id}
+    data_dict = {"dataCollectionId": data_collection_id}
     return db.get_db_item_by_params(
-        models.DataCollection,
-        schemas.data_collection.ma_schema,
-        data_dict
-        )
-    
+        models.DataCollection, schemas.data_collection.ma_schema, data_dict
+    )
+
+
 def get_data_collection_groups(request):
     """
     Returns data collection group items based on query parameters
@@ -95,7 +93,7 @@ def get_data_collection_groups(request):
     Returns:
         [type]: [description]
     """
-    
+
     query_params = request.args.to_dict()
 
     return db.get_db_items(
@@ -117,10 +115,9 @@ def add_data_collection_group(data_dict):
         [type]: [description]
     """
     return db.add_db_item(
-        models.DataCollectionGroup,
-        schemas.data_collection_group.ma_schema,
-        data_dict
-        )
+        models.DataCollectionGroup, schemas.data_collection_group.ma_schema, data_dict
+    )
+
 
 def get_data_collection_group_by_id(data_collection_group_id):
     """
@@ -132,10 +129,8 @@ def get_data_collection_group_by_id(data_collection_group_id):
     Returns:
         dict: info about data collection group as dict
     """
-    data_dict = {"dataCollectionGroupId" : data_collection_group_id}
-    
+    data_dict = {"dataCollectionGroupId": data_collection_group_id}
+
     return db.get_db_item_by_params(
-        models.DataCollectionGroup,
-        schemas.data_collection_group.ma_schema,
-        data_dict
-        )
+        models.DataCollectionGroup, schemas.data_collection_group.ma_schema, data_dict
+    )

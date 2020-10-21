@@ -36,7 +36,6 @@ api = Namespace("Contacts", description="Contact related namespace", path="/cont
 api_v1.add_namespace(api)
 
 
-
 @api.route("/persons", endpoint="persons")
 @api.doc(security="apikey")
 class Persons(Resource):

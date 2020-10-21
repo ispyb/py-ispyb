@@ -29,8 +29,8 @@ from app.extensions import api
 
 def init_app(app, **kwargs):
     """
-    Inits api
-
+    Inits api.
+    
     Args:
         app ([type]): [description]
     """

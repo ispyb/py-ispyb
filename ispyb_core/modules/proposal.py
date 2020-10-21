@@ -37,32 +37,39 @@ log = logging.getLogger(__name__)
 
 def get_proposals(request):
     """Returns proposals by query parameters"""
-    
+
     query_params = request.args.to_dict()
-    user_info = auth_provider.get_user_info_by_auth_header(request.headers.get("Authorization"))
+    user_info = auth_provider.get_user_info_by_auth_header(
+        request.headers.get("Authorization")
+    )
     run_query = True
 
     if not user_info.get("is_admin"):
-        #If the user is not admin or manager then proposals associated to the user login name are returned
+        # If the user is not admin or manager then proposals associated to the
+        # user login name are returned
         person_id = contacts.get_person_id_by_login(user_info["username"])
         run_query = person_id is not None
     else:
         person_id = contacts.get_person_id_by_login(query_params.get("login_name"))
 
-    if person_id:    
+    if person_id:
         query_params["personId"] = person_id
 
     if run_query:
-        return db.get_db_items(
-            models.Proposal,
-            schemas.proposal.dict_schema,
-            schemas.proposal.ma_schema,
-            query_params
-        ), HTTPStatus.OK
+        return (
+            db.get_db_items(
+                models.Proposal,
+                schemas.proposal.dict_schema,
+                schemas.proposal.ma_schema,
+                query_params,
+            ),
+            HTTPStatus.OK,
+        )
     else:
         msg = "No proposals associated to the username %s" % user_info["username"]
         return create_response_item(msg=msg), HTTPStatus.OK
-    
+
+
 def get_proposal_by_id(proposal_id):
     """
     Returns proposal by its proposalId
@@ -75,10 +82,8 @@ def get_proposal_by_id(proposal_id):
     """
     id_dict = {"proposalId": proposal_id}
     return db.get_db_item_by_params(
-        models.Proposal,
-        schemas.proposal.ma_schema,
-        id_dict
-        )
+        models.Proposal, schemas.proposal.ma_schema, id_dict
+    )
 
 
 def get_proposal_info_by_id(proposal_id):
@@ -93,8 +98,7 @@ def get_proposal_info_by_id(proposal_id):
     """
     proposal_json = get_proposal_by_id(proposal_id)
 
-
-    person_json = contacts.get_person_by_params({"personId" : proposal_json["personId"]})
+    person_json = contacts.get_person_by_params({"personId": proposal_json["personId"]})
     proposal_json["person"] = person_json
 
     sessions_json = session.get_sessions({"proposalId": proposal_id})
@@ -113,11 +117,7 @@ def add_proposal(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Proposal,
-        schemas.proposal.ma_schema,
-        data_dict
-        )
+    return db.add_db_item(models.Proposal, schemas.proposal.ma_schema, data_dict)
 
 
 def update_proposal(proposal_id, data_dict):
@@ -132,11 +132,7 @@ def update_proposal(proposal_id, data_dict):
         [type]: [description]
     """
     id_dict = {"proposalId": proposal_id}
-    return db.update_db_item(
-        models.Proposal,
-        id_dict,
-        data_dict
-        )
+    return db.update_db_item(models.Proposal, id_dict, data_dict)
 
 
 def patch_proposal(proposal_id, proposal_dict):
@@ -151,11 +147,7 @@ def patch_proposal(proposal_id, proposal_dict):
         [type]: [description]
     """
     id_dict = {"proposalId": proposal_id}
-    return db.patch_db_item(
-        models.Proposal,
-        id_dict,
-        proposal_dict
-        )
+    return db.patch_db_item(models.Proposal, id_dict, proposal_dict)
 
 
 def delete_proposal(proposal_id):
@@ -169,7 +161,4 @@ def delete_proposal(proposal_id):
         otherwise return False
     """
     id_dict = {"proposalId": proposal_id}
-    return db.delete_db_item(
-        models.Proposal,
-        id_dict
-        )
+    return db.delete_db_item(models.Proposal, id_dict)

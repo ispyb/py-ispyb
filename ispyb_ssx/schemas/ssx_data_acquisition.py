@@ -22,7 +22,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,14 +29,21 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'ssxDataAcquisitionId': f_fields.Integer(required=True, description=''),
-        'loadedSampleId': f_fields.Integer(required=True, description=''),
-        'dataCollectionId': f_fields.Integer(required=True, description='reference to DataCollection.dataCollectionId'),
-        'experimentalPlanId': f_fields.Integer(required=True, description=''),
-        'eventLogFilename': f_fields.String(required=True, description='url to shorlist file'),
-        'dataSetId': f_fields.Integer(required=True, description=''),
-        'autoprocessingProgrammId': f_fields.Integer(required=False, description='reference to AutoProcProgram.autoProcProgramId'),
-        }
+    "ssxDataAcquisitionId": f_fields.Integer(required=True, description=""),
+    "loadedSampleId": f_fields.Integer(required=True, description=""),
+    "dataCollectionId": f_fields.Integer(
+        required=True, description="reference to DataCollection.dataCollectionId"
+    ),
+    "experimentalPlanId": f_fields.Integer(required=True, description=""),
+    "eventLogFilename": f_fields.String(
+        required=True, description="url to shorlist file"
+    ),
+    "dataSetId": f_fields.Integer(required=True, description=""),
+    "autoprocessingProgrammId": f_fields.Integer(
+        required=False, description="reference to AutoProcProgram.autoProcProgramId"
+    ),
+}
+
 
 class SsxDataAcquisitionSchema(Schema):
     """Marshmallows schema class representing SsxDataAcquisition table"""
@@ -50,6 +56,7 @@ class SsxDataAcquisitionSchema(Schema):
     dataSetId = ma_fields.Integer()
     autoprocessingProgrammId = ma_fields.Integer()
 
-f_schema = api.model('SsxDataAcquisition', dict_schema)
+
+f_schema = api.model("SsxDataAcquisition", dict_schema)
 ma_schema = SsxDataAcquisitionSchema()
 json_schema = JSONSchema().dump(ma_schema)

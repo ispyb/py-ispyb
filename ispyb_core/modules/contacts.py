@@ -36,12 +36,12 @@ def get_persons(request):
         models.Person,
         schemas.person.dict_schema,
         schemas.person.ma_schema,
-        query_params
+        query_params,
     )
 
 
 def get_person_by_params(param_dict):
-    """Returns person by its id
+    """Returns person by its id.
 
     Args:
         person_id (int): corresponds to personId in db
@@ -49,11 +49,8 @@ def get_person_by_params(param_dict):
     Returns:
         dict: info about person as dict
     """
-    return db.get_db_item_by_params(
-        models.Person,
-        schemas.person.ma_schema,
-        param_dict
-        )
+    return db.get_db_item_by_params(models.Person, schemas.person.ma_schema, param_dict)
+
 
 def get_person_id_by_login(login_name):
     """Returns person by login name.
@@ -65,9 +62,10 @@ def get_person_id_by_login(login_name):
         [type]: [description]
     """
     if login_name:
-        person_item = get_person_by_params({"login" : login_name})
+        person_item = get_person_by_params({"login": login_name})
         if person_item:
             return person_item["personId"]
+
 
 def add_person(data_dict):
     """Adds person item to db.
@@ -78,22 +76,19 @@ def add_person(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Person,
-        schemas.person.ma_schema,
-        data_dict
-        )
+    return db.add_db_item(models.Person, schemas.person.ma_schema, data_dict)
+
 
 def get_lab_contacts(request):
     """Returns shipments by query parameters"""
 
     query_params = request.args.to_dict()
-    
+
     return db.get_db_items(
         models.LabContact,
         schemas.lab_contact.dict_schema,
         schemas.lab_contact.ma_schema,
-        query_params
+        query_params,
     )
 
 
@@ -108,10 +103,8 @@ def get_lab_contact_by_id(lab_contact_id):
     """
     param_dict = {"shippingId": lab_contact_id}
     return db.get_db_item_by_params(
-        models.LabContact,
-        schemas.lab_contact.ma_schema,
-        param_dict
-        )
+        models.LabContact, schemas.lab_contact.ma_schema, param_dict
+    )
 
 
 def add_lab_contact(data_dict):
@@ -123,10 +116,4 @@ def add_lab_contact(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.LabContact,
-        schemas.lab_contact.ma_schema,
-        data_dict
-        )
-
-
+    return db.add_db_item(models.LabContact, schemas.lab_contact.ma_schema, data_dict)

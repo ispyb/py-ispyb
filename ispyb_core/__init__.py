@@ -33,5 +33,5 @@ def init_app(app):
 
     routes.init_app(app)
 
-    print('ispyb-core loaded')
-    #app.logger.debug("ISPyB server started")
+    print("ispyb-core loaded")
+    # app.logger.debug("ISPyB server started")

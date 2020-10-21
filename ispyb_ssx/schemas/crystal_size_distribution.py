@@ -22,7 +22,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,12 +29,17 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'crystalSizeDistributionId': f_fields.Integer(required=True, description=''),
-        'crystalHabit': f_fields.String(required=False, description=''),
-        'characteristicDimensions': f_fields.String(required=False, description=''),
-        'minDimension': f_fields.String(required=False, description='comma separated floats'),
-        'maxDimension': f_fields.String(required=False, description='comma separated floats'),
-        }
+    "crystalSizeDistributionId": f_fields.Integer(required=True, description=""),
+    "crystalHabit": f_fields.String(required=False, description=""),
+    "characteristicDimensions": f_fields.String(required=False, description=""),
+    "minDimension": f_fields.String(
+        required=False, description="comma separated floats"
+    ),
+    "maxDimension": f_fields.String(
+        required=False, description="comma separated floats"
+    ),
+}
+
 
 class CrystalSizeDistributionSchema(Schema):
     """Marshmallows schema class representing CrystalSizeDistribution table"""
@@ -46,6 +50,7 @@ class CrystalSizeDistributionSchema(Schema):
     minDimension = ma_fields.String()
     maxDimension = ma_fields.String()
 
-f_schema = api.model('CrystalSizeDistribution', dict_schema)
+
+f_schema = api.model("CrystalSizeDistribution", dict_schema)
 ma_schema = CrystalSizeDistributionSchema()
 json_schema = JSONSchema().dump(ma_schema)

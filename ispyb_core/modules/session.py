@@ -44,7 +44,7 @@ def get_sessions(request):
         models.BLSession,
         schemas.session.dict_schema,
         schemas.session.ma_schema,
-        query_params
+        query_params,
     )
 
 
@@ -57,11 +57,7 @@ def add_session(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.BLSession,
-        schemas.session.ma_schema,
-        data_dict
-        )
+    return db.add_db_item(models.BLSession, schemas.session.ma_schema, data_dict)
 
 
 def get_session_by_id(session_id):
@@ -75,10 +71,8 @@ def get_session_by_id(session_id):
     """
     data_dict = {"sessionId": session_id}
     return db.get_db_item_by_params(
-        models.BLSession,
-        schemas.session.ma_schema,
-        data_dict
-        )
+        models.BLSession, schemas.session.ma_schema, data_dict
+    )
 
 
 def get_session_info_by_id(session_id):

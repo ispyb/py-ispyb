@@ -58,8 +58,8 @@ def test_post(ispyb_core_app, ispyb_core_token):
 
     headers = {
         "Authorization": "Bearer " + ispyb_core_token,
-        "Content-Type": "application/json"
-        }
-    #response = client.post(route_root, json=test_session, headers=headers)
+        "Content-Type": "application/json",
+    }
+    # response = client.post(route_root, json=test_session, headers=headers)
 
-    #assert response.status_code == 200, "Wrong status code"
+    # assert response.status_code == 200, "Wrong status code"

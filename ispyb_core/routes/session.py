@@ -82,11 +82,7 @@ class SessionById(Resource):
     """Allows to get/set/delete a session"""
 
     @api.doc(description="session_id should be an integer ")
-    @api.marshal_with(
-        session_schemas.f_schema,
-        skip_none=True,
-        code=HTTPStatus.OK
-    )
+    @api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, session_id):
