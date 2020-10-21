@@ -149,7 +149,7 @@ class SamplDeliveryDevices(Resource):
         return loaded_sample.get_sample_delivery_devices(request)
 
     @api.expect(sample_delivery_device_schemas.f_schema)
-    @api.marshal_with(sample_delivery_device_schemas.f_schema, code=201)
+    #@api.marshal_with(sample_delivery_device_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required

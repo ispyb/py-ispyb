@@ -30,8 +30,7 @@ from flask_restx._http import HTTPStatus
 
 
 from flask import current_app
-from sqlalchemy import engine
-from sqlalchemy.exc import InvalidRequestError
+import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy as BaseSQLAlchemy
 
 from app.utils import create_response_item
@@ -118,7 +117,7 @@ class SQLAlchemy(BaseSQLAlchemy):
             raise Exception("SQLALCHEMY_DATABASE_URI must be configured!")
         # assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
         if database_uri.startswith("sqlite:"):
-            self.event.listens_for(engine.Engine, "connect")(set_sqlite_pragma)
+            self.event.listens_for(sqlalchemy.engine.Engine, "connect")(set_sqlite_pragma)
 
         app.extensions["migrate"] = AlembicDatabaseMigrationConfig(
             self, compare_type=True
@@ -161,7 +160,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         if schema_keys:
             try:
                 query = query.filter_by(**schema_keys)
-            except InvalidRequestError as ex:
+            except sqlalchemy.exc.InvalidRequestError as ex:
                 print(ex)
                 msg = "Unable to filter items based on query items (%s)" % str(ex)
 
@@ -203,12 +202,17 @@ class SQLAlchemy(BaseSQLAlchemy):
             self.session.add(db_item)
             self.session.commit()
             json_data = ma_schema.dump(db_item)[0]
-            return HTTPStatus.OK, create_response_item(data=json_data)
-        except Exception as ex:
-            print(ex)
-            # app.logger.exception(str(ex))
+            return json_data, HTTPStatus.OK
+        except TypeError as ex:
             self.session.rollback()
-            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add database item (%s)" % str(ex))
+            print(ex)
+            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s)" % str(ex))
+        except sqlalchemy.exc.DataError as ex:
+            self.session.rollback()
+            print(ex)
+            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s") % str(ex))
+        except Exception as ex:
+            raise Exception("Sorry I did not have enough time to fix this...")
             
 
     def update_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):

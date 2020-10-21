@@ -50,7 +50,6 @@ with open("%s/scripts/ssx_db_mapping.csv" % ispyb_root) as csvfile:
     for row in reader:
         gen_modules.append(row[0])
         gen_tables.append(row[1])
-print(gen_modules, gen_tables)
 connection = MySQLdb.connect(host=host, user=user, passwd=passwd)
 cursor = connection.cursor()
 cursor.execute("USE %s" % db_name)
