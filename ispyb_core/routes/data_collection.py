@@ -59,6 +59,7 @@ class DataColletions(Resource):
         """
         return data_collection.get_data_collections(request)
 
+
 @api.route("/<int:data_collection_id>")
 @api.param("data_collection_id", "data_collection id (integer)")
 @api.doc(security="apikey")

@@ -53,8 +53,4 @@ def add_sample(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.BLSample,
-        schemas.sample.ma_schema,
-        data_dict
-        )
+    return db.add_db_item(models.BLSample, schemas.sample.ma_schema, data_dict)

@@ -32,17 +32,15 @@ Example routes:
 [DELETE]/ispyb/api/v1//shipments/1  - Deletes shipment #1
 """
 
+
 import logging
 from flask import request
 from flask_restx._http import HTTPStatus
-
 from flask_restx_patched import Resource
-
 from app.extensions.auth import token_required, authorization_required
 from app.extensions.api import api_v1, Namespace
 from ispyb_core.modules import shipping
 from ispyb_core.schemas import shipping as shipping_schemas
-
 
 __license__ = "LGPLv3+"
 
@@ -79,6 +77,7 @@ class Shipments(Resource):
         """Adds a new shipment"""
         return shipping.add_shipment(api.payload)
 
+
 @api.route("/<int:shipment_id>", endpoint="shipment_by_id")
 @api.param("shipment_id", "shipment id (integer)")
 @api.doc(security="apikey")
@@ -87,11 +86,7 @@ class ShipmentById(Resource):
     """Allows to get/set/delete a shipment"""
 
     @api.doc(description="shipment_id should be an integer ")
-    @api.marshal_with(
-        shipping_schemas.f_schema,
-        skip_none=True,
-        code=HTTPStatus.OK
-    )
+    @api.marshal_with(shipping_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, shipment_id):

@@ -22,7 +22,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,17 +29,24 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'autoProcId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'autoProcProgramId': f_fields.Integer(required=False, description='Related program item'),
-        'spaceGroup': f_fields.String(required=False, description='Space group'),
-        'refinedCell_a': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_b': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_c': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_alpha': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_beta': f_fields.Float(required=False, description='Refined cell'),
-        'refinedCell_gamma': f_fields.Float(required=False, description='Refined cell'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
-        }
+    "autoProcId": f_fields.Integer(
+        required=True, description="Primary key (auto-incremented)"
+    ),
+    "autoProcProgramId": f_fields.Integer(
+        required=False, description="Related program item"
+    ),
+    "spaceGroup": f_fields.String(required=False, description="Space group"),
+    "refinedCell_a": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_b": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_c": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_alpha": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_beta": f_fields.Float(required=False, description="Refined cell"),
+    "refinedCell_gamma": f_fields.Float(required=False, description="Refined cell"),
+    "recordTimeStamp": f_fields.DateTime(
+        required=False, description="Creation or last update date/time"
+    ),
+}
+
 
 class AutoProcSchema(Schema):
     """Marshmallows schema class representing AutoProc table"""
@@ -56,6 +62,7 @@ class AutoProcSchema(Schema):
     refinedCell_gamma = ma_fields.Float()
     recordTimeStamp = ma_fields.DateTime()
 
-f_schema = api.model('AutoProc', dict_schema)
+
+f_schema = api.model("AutoProc", dict_schema)
 ma_schema = AutoProcSchema()
 json_schema = JSONSchema().dump(ma_schema)

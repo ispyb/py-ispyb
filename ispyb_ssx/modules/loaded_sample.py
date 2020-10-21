@@ -39,16 +39,20 @@ log = logging.getLogger(__name__)
 
 def get_loaded_samples(request):
     """Returns loaded_samples by query parameters"""
-    
+
     query_params = request.args.to_dict()
-    
-    return db.get_db_items(
-        models.LoadedSample,
-        schemas.loaded_sample.dict_schema,
-        schemas.loaded_sample.ma_schema,
-        query_params
-    ), HTTPStatus.OK
-    
+
+    return (
+        db.get_db_items(
+            models.LoadedSample,
+            schemas.loaded_sample.dict_schema,
+            schemas.loaded_sample.ma_schema,
+            query_params,
+        ),
+        HTTPStatus.OK,
+    )
+
+
 def get_loaded_sample_by_id(loaded_sample_id):
     """Returns loaded_sample by its loaded_sampleId.
 
@@ -60,10 +64,8 @@ def get_loaded_sample_by_id(loaded_sample_id):
     """
     id_dict = {"loaded_sampleId": loaded_sample_id}
     return db.get_db_item_by_params(
-        models.LoadedSample,
-        schemas.loaded_sample.ma_schema,
-        id_dict
-        )
+        models.LoadedSample, schemas.loaded_sample.ma_schema, id_dict
+    )
 
 
 def add_loaded_sample(data_dict):
@@ -76,10 +78,9 @@ def add_loaded_sample(data_dict):
         int, dict: HTTP status code and response dict
     """
     return db.add_db_item(
-        models.LoadedSample,
-        schemas.loaded_sample.ma_schema,
-        data_dict
-        )
+        models.LoadedSample, schemas.loaded_sample.ma_schema, data_dict
+    )
+
 
 def get_all_crystal_slurry():
     """Returns all crystal slurry db items.
@@ -90,6 +91,7 @@ def get_all_crystal_slurry():
     crystal_slurry_list = models.CrystalSlurry.query.all()
     return schemas.crystal_slurry.ma_schema.dump(crystal_slurry_list, many=True)
 
+
 def add_crystal_slurry(data_dict):
     """Adds a new crystal slurry item.
 
@@ -99,7 +101,9 @@ def add_crystal_slurry(data_dict):
     Returns:
         [type]: [description]
     """
-    status_code, result = ispyb_service_connector.get_ispyb_resource("ispyb_core", "/samples/crystals/%d" % data_dict["crystalId"])
+    status_code, result = ispyb_service_connector.get_ispyb_resource(
+        "ispyb_core", "/samples/crystals/%d" % data_dict["crystalId"]
+    )
     if status_code == 200:
         crystal_id = data_dict.get("crystalId")
         if crystal_id is None:
@@ -107,10 +111,9 @@ def add_crystal_slurry(data_dict):
         else:
             data_dict.pop("crystalId")
             return db.add_db_item(
-                models.CrystalSlurry,
-                schemas.crystal_slurry.ma_schema,
-                data_dict
-                )
+                models.CrystalSlurry, schemas.crystal_slurry.ma_schema, data_dict
+            )
+
 
 def get_crystal_size_distributions():
     """Returns all crystal size distribution db items.
@@ -120,6 +123,7 @@ def get_crystal_size_distributions():
     """
     crystal_slurry_list = models.CrystalSlurry.query.all()
     return schemas.crystal_slurry.ma_schema.dump(crystal_slurry_list, many=True)
+
 
 def add_crystal_size_distribution(data_dict):
     """Adds a new crystal size distribution.
@@ -133,9 +137,10 @@ def add_crystal_size_distribution(data_dict):
     return db.add_db_item(
         models.CrystalSizeDistribution,
         schemas.crystal_size_distribution.ma_schema,
-        data_dict
-        )
-    
+        data_dict,
+    )
+
+
 def get_sample_delivery_devices(request):
     """Returns all sample delivery devices.
 
@@ -147,12 +152,16 @@ def get_sample_delivery_devices(request):
     """
     query_params = request.args.to_dict()
 
-    return db.get_db_items(
-        models.SampleDeliveryDevice,
-        schemas.sample_delivery_device.f_schema,
-        schemas.sample_delivery_device.ma_schema,
-        query_params
-    ), HTTPStatus.OK
+    return (
+        db.get_db_items(
+            models.SampleDeliveryDevice,
+            schemas.sample_delivery_device.f_schema,
+            schemas.sample_delivery_device.ma_schema,
+            query_params,
+        ),
+        HTTPStatus.OK,
+    )
+
 
 def add_sample_delivery_device(data_dict):
     """Adds a new sample delivery device.
@@ -164,9 +173,9 @@ def add_sample_delivery_device(data_dict):
         [type]: [description]
     """
     return db.add_db_item(
-        models.SampleDeliveryDevice,
-        schemas.sample_delivery_device.ma_schema,
-        data_dict)
+        models.SampleDeliveryDevice, schemas.sample_delivery_device.ma_schema, data_dict
+    )
+
 
 def get_sample_stocks():
     """Returns all sample stock db items.
@@ -177,6 +186,7 @@ def get_sample_stocks():
     sample_stock_list = models.SampleStock.query.all()
     return schemas.sample_delivery_device.ma_schema.dump(sample_stock_list, many=True)
 
+
 def add_sample_stock(data_dict):
     """Adds a new crystal slurry item.
 
@@ -185,9 +195,8 @@ def add_sample_stock(data_dict):
 
     Returns:
         [type]: [description]
-        
+
     """
     return db.add_db_item(
-        models.SampleStock,
-        schemas.sample_delivery_device.ma_schema,
-        data_dict)
+        models.SampleStock, schemas.sample_delivery_device.ma_schema, data_dict
+    )

@@ -49,6 +49,7 @@ def get_crystal_by_id(crystal_id):
     crystal_item = models.Crystal.query.filter_by(crystalId=crystal_id).first()
     return schemas.crystal.ma_schema.dump(crystal_item)[0]
 
+
 def add_crystal(data_dict):
     """
     Adds a crystal to db
@@ -59,8 +60,4 @@ def add_crystal(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Crystal,
-        schemas.crystal.ma_schema,
-        data_dict
-        )
+    return db.add_db_item(models.Crystal, schemas.crystal.ma_schema, data_dict)

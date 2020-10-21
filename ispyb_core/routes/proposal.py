@@ -41,7 +41,7 @@ from flask_restx_patched import Resource
 
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
-from ispyb_core.schemas import proposal as proposal_schemas 
+from ispyb_core.schemas import proposal as proposal_schemas
 from ispyb_core.modules import proposal
 
 
@@ -49,7 +49,6 @@ api = Namespace(
     "Proposals", description="Proposal related namespace", path="/proposals"
 )
 api_v1.add_namespace(api)
-
 
 
 @api.route("", endpoint="proposals")
@@ -83,6 +82,7 @@ class Proposals(Resource):
         api.logger.info("Inserts a new proposal")
         return proposal.add_proposal(api)
 
+
 @api.route("/<int:proposal_id>", endpoint="proposal_by_id")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
@@ -92,9 +92,7 @@ class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
     @api.doc(description="proposal_id should be an integer ")
-    @api.marshal_with(
-        proposal_schemas.f_schema, skip_none=True, code=HTTPStatus.OK
-    )
+    @api.marshal_with(proposal_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, proposal_id):
@@ -149,8 +147,8 @@ class ProposalById(Resource):
         Returns:
             json, status_code:
         """
-        return  proposal.delete_proposal(proposal_id)
-    
+        return proposal.delete_proposal(proposal_id)
+
 
 @api.route("/<int:proposal_id>/info", endpoint="proposal_info_by_id")
 @api.param("proposal_id", "Proposal id (integer)")

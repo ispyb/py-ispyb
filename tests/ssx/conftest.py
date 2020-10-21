@@ -19,6 +19,8 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
+from app import create_app
+
 __license__ = "LGPLv3+"
 
 
@@ -27,14 +29,14 @@ import sys
 import pytest
 
 
-
 TESTS_DIR = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, ROOT_DIR)
 
-from app import create_app
 
 print(ROOT_DIR)
+
+
 @pytest.fixture(scope="session")
 def ispyb_ssx_app():
     ssx_app = create_app("ispyb_ssx_config.yml", "test")

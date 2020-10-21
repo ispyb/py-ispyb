@@ -63,17 +63,13 @@ class SampleById(Resource):
     """Allows to get/set/delete a sample item"""
 
     @api.doc(description="sample_id should be an integer ")
-    @api.marshal_with(
-        sample_schemas.f_schema,
-        skip_none=True,
-        code=HTTPStatus.OK
-    )
+    @api.marshal_with(sample_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, sample_id):
         """Returns a sample by sampleId"""
         return sample.get_sample_by_id(sample_id)
-        
+
 
 @api.route("/crystals", endpoint="crystals")
 @api.doc(security="apikey")
@@ -86,7 +82,6 @@ class Crystal(Resource):
         """Returns all crystal items"""
         return crystal.get_crystals()
 
-    
     @api.expect(crystal_schemas.f_schema)
     @api.marshal_with(crystal_schemas.f_schema, code=201)
     @token_required
@@ -104,11 +99,7 @@ class CrystalById(Resource):
     """Allows to get/set/delete a crystal item"""
 
     @api.doc(description="crystal_id should be an integer ")
-    @api.marshal_with(
-        crystal_schemas.f_schema,
-        skip_none=True,
-        code=HTTPStatus.OK
-    )
+    @api.marshal_with(crystal_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, crystal_id):

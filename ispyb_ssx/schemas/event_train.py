@@ -22,7 +22,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,15 +29,16 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'eventTrainId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'timeOn': f_fields.Float(required=False, description='sec'),
-        'duration': f_fields.Float(required=False, description='sec'),
-        'period': f_fields.Float(required=False, description=''),
-        'numberOfRepetitions': f_fields.Float(required=False, description=''),
-        'nameInEventLog': f_fields.String(required=False, description=''),
-        'triggerDevice': f_fields.String(required=False, description=''),
-        }
+    "eventTrainId": f_fields.Integer(required=True, description=""),
+    "name": f_fields.String(required=False, description=""),
+    "timeOn": f_fields.Float(required=False, description="sec"),
+    "duration": f_fields.Float(required=False, description="sec"),
+    "period": f_fields.Float(required=False, description=""),
+    "numberOfRepetitions": f_fields.Float(required=False, description=""),
+    "nameInEventLog": f_fields.String(required=False, description=""),
+    "triggerDevice": f_fields.String(required=False, description=""),
+}
+
 
 class EventTrainSchema(Schema):
     """Marshmallows schema class representing EventTrain table"""
@@ -52,6 +52,7 @@ class EventTrainSchema(Schema):
     nameInEventLog = ma_fields.String()
     triggerDevice = ma_fields.String()
 
-f_schema = api.model('EventTrain', dict_schema)
+
+f_schema = api.model("EventTrain", dict_schema)
 ma_schema = EventTrainSchema()
 json_schema = JSONSchema().dump(ma_schema)

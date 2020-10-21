@@ -35,7 +35,9 @@ from app.extensions.auth import token_required, authorization_required
 
 from ispyb_ssx.schemas import loaded_sample as loaded_sample_schemas
 from ispyb_ssx.schemas import crystal_slurry as crystal_slurry_schemas
-from ispyb_ssx.schemas import crystal_size_distribution as crystal_size_distribution_schemas
+from ispyb_ssx.schemas import (
+    crystal_size_distribution as crystal_size_distribution_schemas,
+)
 from ispyb_ssx.schemas import sample_stock as sample_stock_schemas
 from ispyb_ssx.schemas import sample_delivery_device as sample_delivery_device_schemas
 from ispyb_ssx.modules import loaded_sample
@@ -51,41 +53,40 @@ api = Namespace("Samples", description="Samples related namespace", path="/sampl
 api_v1.add_namespace(api)
 
 
-
 @api.route("", endpoint="loaded_samples")
 @api.doc(security="apikey")
 class LoadedSample(Resource):
     """Loaded sample resource"""
 
-    #@token_required
+    # @token_required
     def get(self):
         """Returns all loaded samples"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_loaded_samples(request)
 
-    #@token_required
+    # @token_required
     @api.expect(loaded_sample_schemas.f_schema)
-    #@api.marshal_with(loaded_sample_schemas.f_schema, code=201)
-    #@authorization_required
+    # @api.marshal_with(loaded_sample_schemas.f_schema, code=201)
+    # @authorization_required
     def post(self):
         """Adds a new loaded sample"""
         return loaded_sample.add_loaded_sample(api.payload)
-    
+
 
 @api.route("/crystal_slurry", endpoint="crystal_slurry")
 @api.doc(security="apikey")
 class CrystalSlurry(Resource):
     """Crystal slurry resource"""
 
-    #@token_required
+    # @token_required
     def get(self):
         """Returns all crystal slurry"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_all_crystal_slurry()
 
-    #@token_required
+    # @token_required
     @api.expect(crystal_slurry_schemas.f_schema)
-    #@api.marshal_with(crystal_slurry_schemas.f_schema, code=201)
+    # @api.marshal_with(crystal_slurry_schemas.f_schema, code=201)
     @authorization_required
     def post(self):
         """Adds a new crystal slury"""
@@ -97,39 +98,40 @@ class CrystalSlurry(Resource):
 class CrystalSizeDistribution(Resource):
     """Crystal size distribution resource"""
 
-    #@token_required
+    # @token_required
     def get(self):
         """Returns all crystal size distributions"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_crystal_size_distributions()
 
-    #@token_required
+    # @token_required
     @api.expect(crystal_size_distribution_schemas.f_schema)
-    #@api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
+    # @api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
     @authorization_required
     def post(self):
         """Adds a new crystal slury"""
         return loaded_sample.add_crystal_size_distribution(api.payload)
+
 
 @api.route("/sample_stocks", endpoint="sample_stocks")
 @api.doc(security="apikey")
 class SampleStocks(Resource):
     """Sample stocks resource"""
 
-    #@token_required
+    # @token_required
     def get(self):
         """Returns all sample stocks"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_sample_stocks()
 
-    #@token_required
+    # @token_required
     @api.expect(sample_stock_schemas.f_schema)
-    #@api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
+    # @api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
     @authorization_required
     def post(self):
         """Adds a new sample stock"""
         return loaded_sample.add_sample_stock(api.payload)
-        
+
 
 @api.route("/delivery_devices", endpoint="sample_delivery_devices")
 @api.doc(security="apikey")
@@ -149,14 +151,13 @@ class SamplDeliveryDevices(Resource):
         return loaded_sample.get_sample_delivery_devices(request)
 
     @api.expect(sample_delivery_device_schemas.f_schema)
-    #@api.marshal_with(sample_delivery_device_schemas.f_schema, code=201)
+    # @api.marshal_with(sample_delivery_device_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
-    #@authorization_required
+    # @authorization_required
     def post(self):
         """Adds a new sample delivery device"""
 
         current_app.logger.info("Inserts a new sample delivery device")
         return loaded_sample.add_sample_delivery_device(api.payload)
-        

@@ -22,7 +22,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -30,10 +29,17 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'autoProcScalingId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'autoProcId': f_fields.Integer(required=False, description='Related autoProc item (used by foreign key)'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
-        }
+    "autoProcScalingId": f_fields.Integer(
+        required=True, description="Primary key (auto-incremented)"
+    ),
+    "autoProcId": f_fields.Integer(
+        required=False, description="Related autoProc item (used by foreign key)"
+    ),
+    "recordTimeStamp": f_fields.DateTime(
+        required=False, description="Creation or last update date/time"
+    ),
+}
+
 
 class AutoProcScalingSchema(Schema):
     """Marshmallows schema class representing AutoProcScaling table"""
@@ -42,6 +48,7 @@ class AutoProcScalingSchema(Schema):
     autoProcId = ma_fields.Integer()
     recordTimeStamp = ma_fields.DateTime()
 
-f_schema = api.model('AutoProcScaling', dict_schema)
+
+f_schema = api.model("AutoProcScaling", dict_schema)
 ma_schema = AutoProcScalingSchema()
 json_schema = JSONSchema().dump(ma_schema)

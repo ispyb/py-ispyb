@@ -19,6 +19,7 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
+from config import BaseConfig
 import os
 import sys
 import csv
@@ -27,9 +28,6 @@ import MySQLdb
 ispyb_root = os.path.dirname(os.path.abspath(__file__)).split(os.sep)
 ispyb_root = "/" + os.path.join(*ispyb_root[1:-1])
 sys.path.insert(0, ispyb_root)
-
-
-from config import BaseConfig
 
 
 config = BaseConfig(os.path.join(ispyb_root, "ispyb_core_config.yml"))
@@ -79,7 +77,10 @@ for table in tables:
     table_name = table[0]
     if table_name in gen_tables:
         schema_name = gen_modules[gen_tables.index(table_name)]
-        print("Generting flask and marshmallow models for table %s in %s.py" % (table_name, schema_name))
+        print(
+            "Generting flask and marshmallow models for table %s in %s.py"
+            % (table_name, schema_name)
+        )
         cursor.execute("SHOW FULL COLUMNS FROM %s" % table)
         columns = cursor.fetchall()
         table_name = table_name.replace("BF_", "").replace("BL", "")
@@ -126,9 +127,7 @@ for table in tables:
             ma_text += "    %s = ma_fields.%s()\n" % (name, data_type)
         dict_text += "        }\n\n"
 
-        class_text = "f_schema = api.model('%s', dict_schema)\n" % (
-            table_name,
-        )
+        class_text = "f_schema = api.model('%s', dict_schema)\n" % (table_name,)
         class_text += "ma_schema = %sSchema()\n" % (table_name)
         json_text = "json_schema = JSONSchema().dump(ma_schema)\n"
 

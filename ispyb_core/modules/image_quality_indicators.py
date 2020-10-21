@@ -34,4 +34,5 @@ def get_image_quality_indicators():
     """
     image_quality_indicators_list = models.ImageQualityIndicator.query.all()
     return schemas.image_quality_indicators.ma_schema.dump(
-        image_quality_indicators_list)
+        image_quality_indicators_list
+    )
