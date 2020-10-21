@@ -210,9 +210,9 @@ class SQLAlchemy(BaseSQLAlchemy):
         except sqlalchemy.exc.DataError as ex:
             self.session.rollback()
             print(ex)
-            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s") % str(ex))
+            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s)" % str(ex))
         except Exception as ex:
-            raise Exception("Sorry I did not have enough time to fix this...")
+            raise Exception(str(ex))
             
 
     def update_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):
