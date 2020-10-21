@@ -38,10 +38,11 @@ from flask import request, current_app
 from flask_restx._http import HTTPStatus
 
 from flask_restx_patched import Resource
-from ispyb_core.modules import proposal
-from ispyb_core.schemas import proposal as proposal_schemas
-from app.extensions.auth import token_required, authorization_required
+
 from app.extensions.api import api_v1, Namespace
+from app.extensions.auth import token_required, authorization_required
+from ispyb_core.schemas import proposal as proposal_schemas 
+from ispyb_core.modules import proposal
 
 
 api = Namespace(
@@ -61,30 +62,26 @@ class Proposals(Resource):
     @authorization_required
     def get(self):
         """
-        Returns list of proposals.
+        Returns all proposals.
 
         Returns:
-            list: list of proposals.
+            dict: response dict.
         """
-        api.logger.info("Get all proposals ---->")
+
+        api.logger.info("Get all proposals")
         return proposal.get_proposals(request)
 
-    @api.expect(proposal_schemas.proposal_f_schema)
-    @api.marshal_with(proposal_schemas.proposal_f_schema, code=201)
+    @api.expect(proposal_schemas.f_schema)
+    @api.marshal_with(proposal_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
         """Adds a new proposal"""
-        current_app.logger.info("Inserts a new proposal")
 
-        result = proposal.add_proposal(api.payload)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add new proposal")
-
+        api.logger.info("Inserts a new proposal")
+        return proposal.add_proposal(api)
 
 @api.route("/<int:proposal_id>", endpoint="proposal_by_id")
 @api.param("proposal_id", "Proposal id (integer)")
@@ -96,20 +93,16 @@ class ProposalById(Resource):
 
     @api.doc(description="proposal_id should be an integer ")
     @api.marshal_with(
-        proposal_schemas.proposal_f_schema, skip_none=True, code=HTTPStatus.OK
+        proposal_schemas.f_schema, skip_none=True, code=HTTPStatus.OK
     )
     @token_required
     @authorization_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
-        result = proposal.get_proposal_by_id(proposal_id)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(HTTPStatus.NOT_FOUND, "Proposal not found")
+        return proposal.get_proposal_by_id(proposal_id)
 
-    @api.expect(proposal_schemas.proposal_f_schema)
-    @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
+    @api.expect(proposal_schemas.f_schema)
+    @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
     def put(self, proposal_id):
@@ -131,8 +124,8 @@ class ProposalById(Resource):
                 HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
             )
 
-    @api.expect(proposal_schemas.proposal_f_schema)
-    @api.marshal_with(proposal_schemas.proposal_f_schema, code=HTTPStatus.CREATED)
+    @api.expect(proposal_schemas.f_schema)
+    @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
     def patch(self, proposal_id):
@@ -142,17 +135,7 @@ class ProposalById(Resource):
         Args:
             proposal_id (int): corresponds to proposalId in db
         """
-        current_app.logger.info("Patch proposal %d" % proposal_id)
-        result = proposal.patch_proposal(proposal_id, api.payload)
-        if result:
-            return (
-                {"message": "Proposal with id %d updated" % proposal_id},
-                HTTPStatus.OK,
-            )
-        else:
-            api.abort(
-                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
-            )
+        return proposal.patch_proposal(proposal_id, api.payload)
 
     @token_required
     @authorization_required
@@ -166,17 +149,8 @@ class ProposalById(Resource):
         Returns:
             json, status_code:
         """
-        result = proposal.delete_proposal(proposal_id)
-        if result:
-            return (
-                {"message": "Proposal with id %d deleted" % proposal_id},
-                HTTPStatus.OK,
-            )
-        else:
-            api.abort(
-                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
-            )
-
+        return  proposal.delete_proposal(proposal_id)
+    
 
 @api.route("/<int:proposal_id>/info", endpoint="proposal_info_by_id")
 @api.param("proposal_id", "Proposal id (integer)")
@@ -192,8 +166,4 @@ class ProposalInfoById(Resource):
     @authorization_required
     def get(self, proposal_id):
         """Returns a full description of a proposal by proposalId"""
-        result = proposal.get_proposal_info_by_id(proposal_id)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            api.abort(HTTPStatus.NOT_FOUND, "Proposal not found")
+        return proposal.get_proposal_info_by_id(proposal_id)

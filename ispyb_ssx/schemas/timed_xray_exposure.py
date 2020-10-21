@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-timed_xray_exposure_dict_schema = {
+dict_schema = {
         'timedXrayExposureId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=False, description=''),
         'repeatedSequenceId': f_fields.Integer(required=False, description=''),
@@ -48,6 +48,6 @@ class TimedXrayExposureSchema(Schema):
     timedBunches = ma_fields.String()
     shutter = ma_fields.String()
 
-timed_xray_exposure_f_schema = api.model('TimedXrayExposure', timed_xray_exposure_dict_schema)
-timed_xray_exposure_ma_schema = TimedXrayExposureSchema()
-timed_xray_exposure_json_schema = JSONSchema().dump(timed_xray_exposure_ma_schema)
+f_schema = api.model('TimedXrayExposure', dict_schema)
+ma_schema = TimedXrayExposureSchema()
+json_schema = JSONSchema().dump(ma_schema)

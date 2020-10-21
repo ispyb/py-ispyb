@@ -23,15 +23,10 @@ __license__ = "LGPLv3+"
 
 from app.extensions import db
 
-from ispyb_core.models import BeamLineSetup as BeamLineSetupModel
-from ispyb_core.schemas.beamline_setup import (
-    beamline_setup_dict_schema,
-    beamline_setup_f_schema,
-    beamline_setup_ma_schema,
-)
+from ispyb_core import models, schemas
 
 
-def get_beamline_setups(query_params):
+def get_beamline_setups(request):
     """Returns beamline_setup items based on query parameters
 
     Args:
@@ -40,14 +35,16 @@ def get_beamline_setups(query_params):
     Returns:
         [type]: [description]
     """
+    query_params = request.args.to_dict()
+    
     return db.get_db_items(
-        BeamLineSetupModel,
-        beamline_setup_dict_schema,
-        beamline_setup_ma_schema,
-        query_params,
-    )
+        models.BeamLineSetup,
+        schemas.beamline_setup.dict_schema,
+        schemas.beamline_setup.ma_schema,
+        query_params
+        )
 
-def add_beamline_setup(beamline_setup_dict):
+def add_beamline_setup(data_dict):
     """Adds data collection item
 
     Args:
@@ -56,7 +53,11 @@ def add_beamline_setup(beamline_setup_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(BeamLineSetupModel, beamline_setup_ma_schema, beamline_setup_dict)
+    return db.add_db_item(
+        models.BeamLineSetup,
+        schemas.beamline_setup.ma_schema,
+        data_dict
+        )
 
 
 def get_beamline_setup_by_id(beamline_setup_id):
@@ -68,5 +69,9 @@ def get_beamline_setup_by_id(beamline_setup_id):
     Returns:
         dict: info about beamline_setup as dict
     """
-    id_dict = {"beamLineSetupId": beamline_setup_id}
-    return db.get_db_item_by_params(BeamLineSetupModel, beamline_setup_ma_schema, id_dict)
+    data_dict = {"beamLineSetupId": beamline_setup_id}
+    return db.get_db_item_by_params(
+        models.BeamLineSetup,
+        schemas.beamline_setup.ma_schema,
+        data_dict
+        )

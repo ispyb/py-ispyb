@@ -19,7 +19,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-def create_response_item(info_msg, error_msg, num_items, data):
+def create_response_item(msg=None, num_items=None, data=None):
     """
     Creates response dictionary.
 
@@ -35,6 +35,5 @@ def create_response_item(info_msg, error_msg, num_items, data):
 
     return {
         "data": {"total": num_items, "rows": data},
-        "message": info_msg,
-        "error": error_msg,
+        "message": msg,
     }

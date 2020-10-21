@@ -1,25 +1,26 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 __license__ = "LGPLv3+"
+
 
 
 from marshmallow import Schema, fields as ma_fields
@@ -28,49 +29,26 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-image_quality_indicators_dict_schema = {
-    "dataCollectionId": f_fields.Integer(required=True, description=""),
-    "imageNumber": f_fields.Integer(required=True, description=""),
-    "imageId": f_fields.Integer(required=False, description=""),
-    "autoProcProgramId": f_fields.Integer(
-        required=False, description="Foreign key to the AutoProcProgram table"
-    ),
-    "spotTotal": f_fields.Integer(required=False, description="Total number of spots"),
-    "inResTotal": f_fields.Integer(
-        required=False, description="Total number of spots in resolution range"
-    ),
-    "goodBraggCandidates": f_fields.Integer(
-        required=False, description="Total number of Bragg diffraction spots"
-    ),
-    "iceRings": f_fields.Integer(
-        required=False, description="Number of ice rings identified"
-    ),
-    "method1Res": f_fields.Float(
-        required=False, description="Resolution estimate 1 (see publication)"
-    ),
-    "method2Res": f_fields.Float(
-        required=False, description="Resolution estimate 2 (see publication)"
-    ),
-    "maxUnitCell": f_fields.Float(
-        required=False, description="Estimation of the largest possible unit cell edge"
-    ),
-    "pctSaturationTop50Peaks": f_fields.Float(
-        required=False, description="The fraction of the dynamic range being used"
-    ),
-    "inResolutionOvrlSpots": f_fields.Integer(
-        required=False, description="Number of spots overloaded"
-    ),
-    "binPopCutOffMethod2Res": f_fields.Float(
-        required=False, description="Cut off used in resolution limit calculation"
-    ),
-    "recordTimeStamp": f_fields.DateTime(
-        required=False, description="Creation or last update date/time"
-    ),
-    "totalIntegratedSignal": f_fields.String(required=False, description=""),
-    "dozor_score": f_fields.String(required=False, description="dozor_score"),
-    "driftFactor": f_fields.Float(required=False, description="EM movie drift factor"),
-}
-
+dict_schema = {
+        'dataCollectionId': f_fields.Integer(required=True, description=''),
+        'imageNumber': f_fields.Integer(required=True, description=''),
+        'imageId': f_fields.Integer(required=False, description=''),
+        'autoProcProgramId': f_fields.Integer(required=False, description='Foreign key to the AutoProcProgram table'),
+        'spotTotal': f_fields.Integer(required=False, description='Total number of spots'),
+        'inResTotal': f_fields.Integer(required=False, description='Total number of spots in resolution range'),
+        'goodBraggCandidates': f_fields.Integer(required=False, description='Total number of Bragg diffraction spots'),
+        'iceRings': f_fields.Integer(required=False, description='Number of ice rings identified'),
+        'method1Res': f_fields.Float(required=False, description='Resolution estimate 1 (see publication)'),
+        'method2Res': f_fields.Float(required=False, description='Resolution estimate 2 (see publication)'),
+        'maxUnitCell': f_fields.Float(required=False, description='Estimation of the largest possible unit cell edge'),
+        'pctSaturationTop50Peaks': f_fields.Float(required=False, description='The fraction of the dynamic range being used'),
+        'inResolutionOvrlSpots': f_fields.Integer(required=False, description='Number of spots overloaded'),
+        'binPopCutOffMethod2Res': f_fields.Float(required=False, description='Cut off used in resolution limit calculation'),
+        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
+        'totalIntegratedSignal': f_fields.String(required=False, description=''),
+        'dozor_score': f_fields.String(required=False, description='dozor_score'),
+        'driftFactor': f_fields.Float(required=False, description='EM movie drift factor'),
+        }
 
 class ImageQualityIndicatorsSchema(Schema):
     """Marshmallows schema class representing ImageQualityIndicators table"""
@@ -94,11 +72,6 @@ class ImageQualityIndicatorsSchema(Schema):
     dozor_score = ma_fields.String()
     driftFactor = ma_fields.Float()
 
-
-image_quality_indicators_f_schema = api.model(
-    "ImageQualityIndicators", image_quality_indicators_dict_schema
-)
-image_quality_indicators_ma_schema = ImageQualityIndicatorsSchema()
-image_quality_indicators_json_schema = JSONSchema().dump(
-    image_quality_indicators_ma_schema
-)
+f_schema = api.model('ImageQualityIndicators', dict_schema)
+ma_schema = ImageQualityIndicatorsSchema()
+json_schema = JSONSchema().dump(ma_schema)

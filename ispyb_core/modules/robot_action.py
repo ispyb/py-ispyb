@@ -22,13 +22,4 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from ispyb_core.models import RobotAction as RobotActionModel
-from ispyb_core.schemas.robot_action import (
-    robot_action_f_schema,
-    robot_action_ma_schema,
-)
-
-
-def get_robot_action_list():
-    robot_action_list = RobotActionModel.query.all()
-    return robot_action_ma_schema.dump(robot_action_list)
+from ispyb_core import models, schemas

@@ -24,17 +24,20 @@ __license__ = "LGPLv3+"
 
 from app.extensions import db
 
-from ispyb_core.models import Shipping as ShippingModel
-from ispyb_core.schemas.shipping import shipping_dict_schema, shipping_ma_schema
+from ispyb_core import models, schemas
 
 
-def get_shipments(query_params):
+def get_shipments(request):
     """Returns shipments by query parameters"""
 
+    query_params = request.args.to_dict()
+    
     return db.get_db_items(
-        ShippingModel, shipping_dict_schema, shipping_ma_schema, query_params
-    )
-
+        models.Shipping,
+        schemas.shipping.dict_schema,
+        schemas.shipping.ma_schema,
+        query_params
+        )
 
 def get_shipment_by_id(shipment_id):
     """
@@ -47,7 +50,11 @@ def get_shipment_by_id(shipment_id):
         dict: info about shipment as dict
     """
     id_dict = {"shippingId": shipment_id}
-    return db.get_db_item_by_params(ShippingModel, shipping_ma_schema, id_dict)
+    return db.get_db_item_by_params(
+        models.Shipping,
+        schemas.shipping.ma_schema,
+        id_dict
+        )
 
 
 def get_shipment_info_by_id(shipment_id):
@@ -65,20 +72,24 @@ def get_shipment_info_by_id(shipment_id):
     return shipment_json
 
 
-def add_shipment(shipment_dict):
+def add_shipment(data_dict):
     """
     Adds new shipment
 
     Args:
-        shipment_dict ([type]): [description]
+        data_dict ([type]): [description]
 
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(ShippingModel, shipping_ma_schema, shipment_dict)
+    return db.add_db_item(
+        models.Shipping,
+        schemas.shipping.ma_schema,
+        data_dict
+        )
 
 
-def update_shipment(shipment_id, shipment_dict):
+def update_shipment(shipment_id, data_dict):
     """Updates shipment
 
     Args:
@@ -89,10 +100,13 @@ def update_shipment(shipment_id, shipment_dict):
         [type]: [description]
     """
     id_dict = {"shippingId": shipment_id}
-    return db.update_db_item(ShippingModel, id_dict, shipment_dict)
+    return db.update_db_item(
+        models.Shipping,
+        id_dict,
+        data_dict)
 
 
-def patch_shipment(shipment_id, shipment_dict):
+def patch_shipment(shipment_id, data_dict):
     """
     Partialy updates shipment
 
@@ -104,7 +118,10 @@ def patch_shipment(shipment_id, shipment_dict):
         [type]: [description]
     """
     id_dict = {"shippingId": shipment_id}
-    return db.patch_db_item(ShippingModel, id_dict, shipment_dict)
+    return db.patch_db_item(
+        models.Shipping,
+        id_dict,
+        data_dict)
 
 
 def delete_shipment(shipment_id):
@@ -119,4 +136,7 @@ def delete_shipment(shipment_id):
         otherwise return False
     """
     id_dict = {"shippingId": shipment_id}
-    return db.delete_db_item(ShippingModel, id_dict)
+    return db.delete_db_item(
+        models.Shipping,
+        id_dict
+        )

@@ -24,15 +24,19 @@ __license__ = "LGPLv3+"
 
 from app.extensions import db
 
-from ispyb_core.models import LabContact, Laboratory, Person
-from ispyb_core.schemas.lab_contact import lab_contact_dict_schema, lab_contact_ma_schema
-from ispyb_core.schemas.person import person_f_schema, person_dict_schema, person_ma_schema
+from ispyb_core import models, schemas
 
-def get_persons(query_params):
+
+def get_persons(request):
     """Returns persons by query parameters"""
 
+    query_params = request.args.to_dict()
+
     return db.get_db_items(
-        Person, person_dict_schema, person_ma_schema, query_params
+        models.Person,
+        schemas.person.dict_schema,
+        schemas.person.ma_schema,
+        query_params
     )
 
 
@@ -45,27 +49,56 @@ def get_person_by_params(param_dict):
     Returns:
         dict: info about person as dict
     """
-    return db.get_db_item_by_params(Person, person_ma_schema, param_dict)
+    return db.get_db_item_by_params(
+        models.Person,
+        schemas.person.ma_schema,
+        param_dict
+        )
 
 def get_person_id_by_login(login_name):
+    """Returns person by login name.
+
+    Args:
+        login_name ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     if login_name:
         person_item = get_person_by_params({"login" : login_name})
         if person_item:
             return person_item["personId"]
 
-def add_person(person_dict):
-    return db.add_db_item(Person, person_ma_schema, person_dict)
+def add_person(data_dict):
+    """Adds person item to db.
 
-def get_lab_contacts(query_params):
+    Args:
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(
+        models.Person,
+        schemas.person.ma_schema,
+        data_dict
+        )
+
+def get_lab_contacts(request):
     """Returns shipments by query parameters"""
 
+    query_params = request.args.to_dict()
+    
     return db.get_db_items(
-        LabContact, lab_contact_dict_schema, lab_contact_ma_schema, query_params
+        models.LabContact,
+        schemas.lab_contact.dict_schema,
+        schemas.lab_contact.ma_schema,
+        query_params
     )
 
 
 def get_lab_contact_by_id(lab_contact_id):
-    """Returns shipment by its shipmentId
+    """Returns shipment by its shipmentId.
 
     Args:
         shipment_id (int): corresponds to shipmentId in db
@@ -74,10 +107,26 @@ def get_lab_contact_by_id(lab_contact_id):
         dict: info about shipment as dict
     """
     param_dict = {"shippingId": lab_contact_id}
-    return db.get_db_item_by_params(LabContact, lab_contact_ma_schema, param_dict)
+    return db.get_db_item_by_params(
+        models.LabContact,
+        schemas.lab_contact.ma_schema,
+        param_dict
+        )
 
 
-def add_lab_contact(lab_contact_dict):
-    return db.add_db_item(LabContact, lab_contact_ma_schema, lab_contact_dict)
+def add_lab_contact(data_dict):
+    """Adds a new lab contact.
+
+    Args:
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(
+        models.LabContact,
+        schemas.lab_contact.ma_schema,
+        data_dict
+        )
 
 

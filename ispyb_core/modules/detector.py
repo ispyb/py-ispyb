@@ -22,16 +22,15 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from ispyb_core.models import Detector as DetectorModel
-from ispyb_core.schemas.detector import detector_f_schema, detector_ma_schema
+from ispyb_core import models, schemas
 
 
-def get_detector_list():
+def get_detectors():
     """
     Returns list of detector db items
 
     Returns:
         [type]: [description]
     """
-    detector_list = DetectorModel.query.all()
-    return detector_ma_schema.dump(detector_list)
+    detector_list = models.Detector.query.all()
+    return schemas.detector.ma_schema.dump(detector_list)

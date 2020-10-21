@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-event_train_dict_schema = {
+dict_schema = {
         'eventTrainId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=False, description=''),
         'timeOn': f_fields.Float(required=False, description='sec'),
@@ -52,6 +52,6 @@ class EventTrainSchema(Schema):
     nameInEventLog = ma_fields.String()
     triggerDevice = ma_fields.String()
 
-event_train_f_schema = api.model('EventTrain', event_train_dict_schema)
-event_train_ma_schema = EventTrainSchema()
-event_train_json_schema = JSONSchema().dump(event_train_ma_schema)
+f_schema = api.model('EventTrain', dict_schema)
+ma_schema = EventTrainSchema()
+json_schema = JSONSchema().dump(ma_schema)

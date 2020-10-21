@@ -25,10 +25,6 @@ script:
         - cd ..
         - pylint -E app ispyb_core ispyb_ssx
         - coverage run -m pytest tests/core
-        - coverage run -m pytest tests/ssx
-        
-
-after_success:
-        - codecov
         - bash <(curl -s https://codecov.io/bash)
-#        - bash <(curl -Ls https://coverage.codacy.com/get.sh)
+        - coverage run -m pytest tests/ssx
+        - bash <(curl -s https://codecov.io/bash)

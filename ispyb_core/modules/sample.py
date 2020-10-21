@@ -21,14 +21,13 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
+from app.extensions import db
+from ispyb_core import models, schemas
 
-from ispyb_core.models import BLSample as SampleModel
-from ispyb_core.schemas.sample import sample_f_schema, sample_ma_schema
 
-
-def get_sample_list():
-    sample_list = SampleModel.query.all()
-    return sample_ma_schema.dump(sample_list, many=True)
+def get_samples():
+    sample_list = models.BLSample.query.all()
+    return schemas.sample.ma_schema.dump(sample_list, many=True)
 
 
 def get_sample_by_id(sample_id):
@@ -40,5 +39,22 @@ def get_sample_by_id(sample_id):
     Returns:
         dict: info about sample as dict
     """
-    sample_item = SampleModel.query.filter_by(blSampleId=sample_id).first()
-    return sample_ma_schema.dump(sample_item)[0]
+    sample_item = models.BLSample.query.filter_by(blSampleId=sample_id).first()
+    return schemas.sample.ma_schema.dump(sample_item)[0]
+
+
+def add_sample(data_dict):
+    """
+    Adds a sample to db
+
+    Args:
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(
+        models.BLSample,
+        schemas.sample.ma_schema,
+        data_dict
+        )

@@ -1,25 +1,26 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 __license__ = "LGPLv3+"
+
 
 
 from marshmallow import Schema, fields as ma_fields
@@ -28,34 +29,31 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-crystal_dict_schema = {
-    "crystalId": f_fields.Integer(required=True, description=""),
-    "diffractionPlanId": f_fields.Integer(required=False, description=""),
-    "proteinId": f_fields.Integer(required=True, description=""),
-    "crystalUUID": f_fields.String(required=False, description=""),
-    "name": f_fields.String(required=False, description=""),
-    "spaceGroup": f_fields.String(required=False, description=""),
-    "morphology": f_fields.String(required=False, description=""),
-    "color": f_fields.String(required=False, description=""),
-    "size_X": f_fields.String(required=False, description=""),
-    "size_Y": f_fields.String(required=False, description=""),
-    "size_Z": f_fields.String(required=False, description=""),
-    "cell_a": f_fields.String(required=False, description=""),
-    "cell_b": f_fields.String(required=False, description=""),
-    "cell_c": f_fields.String(required=False, description=""),
-    "cell_alpha": f_fields.String(required=False, description=""),
-    "cell_beta": f_fields.String(required=False, description=""),
-    "cell_gamma": f_fields.String(required=False, description=""),
-    "comments": f_fields.String(required=False, description=""),
-    "pdbFileName": f_fields.String(required=False, description="pdb file name"),
-    "pdbFilePath": f_fields.String(required=False, description="pdb file path"),
-    "recordTimeStamp": f_fields.DateTime(
-        required=True, description="Creation or last update date/time"
-    ),
-    "abundance": f_fields.Float(required=False, description=""),
-    "theoreticalDensity": f_fields.Float(required=False, description=""),
-}
-
+dict_schema = {
+        'crystalId': f_fields.Integer(required=True, description=''),
+        'diffractionPlanId': f_fields.Integer(required=False, description=''),
+        'proteinId': f_fields.Integer(required=True, description=''),
+        'crystalUUID': f_fields.String(required=False, description=''),
+        'name': f_fields.String(required=False, description=''),
+        'spaceGroup': f_fields.String(required=False, description=''),
+        'morphology': f_fields.String(required=False, description=''),
+        'color': f_fields.String(required=False, description=''),
+        'size_X': f_fields.String(required=False, description=''),
+        'size_Y': f_fields.String(required=False, description=''),
+        'size_Z': f_fields.String(required=False, description=''),
+        'cell_a': f_fields.String(required=False, description=''),
+        'cell_b': f_fields.String(required=False, description=''),
+        'cell_c': f_fields.String(required=False, description=''),
+        'cell_alpha': f_fields.String(required=False, description=''),
+        'cell_beta': f_fields.String(required=False, description=''),
+        'cell_gamma': f_fields.String(required=False, description=''),
+        'comments': f_fields.String(required=False, description=''),
+        'pdbFileName': f_fields.String(required=False, description='pdb file name'),
+        'pdbFilePath': f_fields.String(required=False, description='pdb file path'),
+        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
+        'abundance': f_fields.Float(required=False, description=''),
+        'theoreticalDensity': f_fields.Float(required=False, description=''),
+        }
 
 class CrystalSchema(Schema):
     """Marshmallows schema class representing Crystal table"""
@@ -84,7 +82,6 @@ class CrystalSchema(Schema):
     abundance = ma_fields.Float()
     theoreticalDensity = ma_fields.Float()
 
-
-crystal_f_schema = api.model("Crystal", crystal_dict_schema)
-crystal_ma_schema = CrystalSchema()
-crystal_json_schema = JSONSchema().dump(crystal_ma_schema)
+f_schema = api.model('Crystal', dict_schema)
+ma_schema = CrystalSchema()
+json_schema = JSONSchema().dump(ma_schema)

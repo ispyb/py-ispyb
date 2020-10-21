@@ -1,25 +1,26 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 __license__ = "LGPLv3+"
+
 
 
 from marshmallow import Schema, fields as ma_fields
@@ -28,25 +29,22 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-person_dict_schema = {
-    "personId": f_fields.Integer(required=True, description=""),
-    "laboratoryId": f_fields.Integer(required=False, description=""),
-    "siteId": f_fields.Integer(required=False, description=""),
-    "personUUID": f_fields.String(required=False, description=""),
-    "familyName": f_fields.String(required=False, description=""),
-    "givenName": f_fields.String(required=False, description=""),
-    "title": f_fields.String(required=False, description=""),
-    "emailAddress": f_fields.String(required=False, description=""),
-    "phoneNumber": f_fields.String(required=False, description=""),
-    "login": f_fields.String(required=False, description=""),
-    "faxNumber": f_fields.String(required=False, description=""),
-    "recordTimeStamp": f_fields.DateTime(
-        required=True, description="Creation or last update date/time"
-    ),
-    "cache": f_fields.String(required=False, description=""),
-    "externalId": f_fields.Integer(required=False, description=""),
-}
-
+dict_schema = {
+        'personId': f_fields.Integer(required=True, description=''),
+        'laboratoryId': f_fields.Integer(required=False, description=''),
+        'siteId': f_fields.Integer(required=False, description=''),
+        'personUUID': f_fields.String(required=False, description=''),
+        'familyName': f_fields.String(required=False, description=''),
+        'givenName': f_fields.String(required=False, description=''),
+        'title': f_fields.String(required=False, description=''),
+        'emailAddress': f_fields.String(required=False, description=''),
+        'phoneNumber': f_fields.String(required=False, description=''),
+        'login': f_fields.String(required=False, description=''),
+        'faxNumber': f_fields.String(required=False, description=''),
+        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
+        'cache': f_fields.String(required=False, description=''),
+        'externalId': f_fields.Integer(required=False, description=''),
+        }
 
 class PersonSchema(Schema):
     """Marshmallows schema class representing Person table"""
@@ -66,7 +64,6 @@ class PersonSchema(Schema):
     cache = ma_fields.String()
     externalId = ma_fields.Integer()
 
-
-person_f_schema = api.model("Person", person_dict_schema)
-person_ma_schema = PersonSchema()
-person_json_schema = JSONSchema().dump(person_ma_schema)
+f_schema = api.model('Person', dict_schema)
+ma_schema = PersonSchema()
+json_schema = JSONSchema().dump(ma_schema)

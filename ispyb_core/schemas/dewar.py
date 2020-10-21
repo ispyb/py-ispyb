@@ -1,22 +1,22 @@
-# encoding: utf-8
-# 
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 __license__ = "LGPLv3+"
@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-dewar_dict_schema = {
+dict_schema = {
         'dewarId': f_fields.Integer(required=True, description=''),
         'shippingId': f_fields.Integer(required=False, description=''),
         'code': f_fields.String(required=False, description=''),
@@ -72,6 +72,6 @@ class DewarSchema(Schema):
     weight = ma_fields.Float()
     deliveryAgent_barcode = ma_fields.String()
 
-dewar_f_schema = api.model('Dewar', dewar_dict_schema)
-dewar_ma_schema = DewarSchema()
-dewar_json_schema = JSONSchema().dump(dewar_ma_schema)
+f_schema = api.model('Dewar', dict_schema)
+ma_schema = DewarSchema()
+json_schema = JSONSchema().dump(ma_schema)

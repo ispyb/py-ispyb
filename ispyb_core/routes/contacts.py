@@ -36,6 +36,7 @@ api = Namespace("Contacts", description="Contact related namespace", path="/cont
 api_v1.add_namespace(api)
 
 
+
 @api.route("/persons", endpoint="persons")
 @api.doc(security="apikey")
 class Persons(Resource):
@@ -48,8 +49,8 @@ class Persons(Resource):
         # app.logger.info("Return all person")
         return contacts.get_persons(request.args)
 
-    @api.expect(person_schemas.person_f_schema)
-    @api.marshal_with(person_schemas.person_f_schema, code=201)
+    @api.expect(person_schemas.f_schema)
+    @api.marshal_with(person_schemas.f_schema, code=201)
     @token_required
     @authorization_required
     def post(self):
@@ -62,7 +63,7 @@ class Person(Resource):
     """Allows to get/set/delete a person"""
 
     @api.doc(description="person_id should be an integer ")
-    @api.marshal_with(person_schemas.person_f_schema)
+    @api.marshal_with(person_schemas.f_schema)
     @token_required
     @authorization_required
     def get(self, person_id):
@@ -86,18 +87,12 @@ class LabContacts(Resource):
         """
         return contacts.get_lab_contacts(request.args), HTTPStatus.OK
 
-    @api.expect(lab_contact_schemas.lab_contact_f_schema)
-    @api.marshal_with(lab_contact_schemas.lab_contact_f_schema, code=201)
+    @api.expect(lab_contact_schemas.f_schema)
+    @api.marshal_with(lab_contact_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
         """Adds a new lab contact"""
-        result = contacts.add_lab_contact(api.payload)
-        if result:
-            return result, HTTPStatus.OK
-        else:
-            return
-            {"message": "Unable to add new lab contact"},
-            HTTPStatus.NOT_ACCEPTABLE
+        return contacts.add_lab_contact(api.payload)

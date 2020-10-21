@@ -24,13 +24,12 @@ __license__ = "LGPLv3+"
 
 from app.extensions import db
 
-from ispyb_core.models import BLSession as SessionModel
-from ispyb_core.schemas.session import session_ma_schema, session_dict_schema
+from ispyb_core import models, schemas
 
 from ispyb_core.modules import beamline_setup, data_collection, proposal
 
 
-def get_sessions(query_params):
+def get_sessions(request):
     """Returns session based on query parameters
 
     Args:
@@ -39,12 +38,17 @@ def get_sessions(query_params):
     Returns:
         [type]: [description]
     """
+    query_params = request.args.to_dict()
+
     return db.get_db_items(
-        SessionModel, session_dict_schema, session_ma_schema, query_params
+        models.BLSession,
+        schemas.session.dict_schema,
+        schemas.session.ma_schema,
+        query_params
     )
 
 
-def add_session(session_dict):
+def add_session(data_dict):
     """Adds new session
 
     Args:
@@ -53,7 +57,11 @@ def add_session(session_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(SessionModel, session_ma_schema, session_dict)
+    return db.add_db_item(
+        models.BLSession,
+        schemas.session.ma_schema,
+        data_dict
+        )
 
 
 def get_session_by_id(session_id):
@@ -65,8 +73,12 @@ def get_session_by_id(session_id):
     Returns:
         dict: info about session as dict
     """
-    id_dict = {"sessionId": session_id}
-    return db.get_db_item_by_params(SessionModel, session_ma_schema, id_dict)
+    data_dict = {"sessionId": session_id}
+    return db.get_db_item_by_params(
+        models.BLSession,
+        schemas.session.ma_schema,
+        data_dict
+        )
 
 
 def get_session_info_by_id(session_id):

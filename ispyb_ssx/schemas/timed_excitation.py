@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-timed_excitation_dict_schema = {
+dict_schema = {
         'timedExcitationId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=False, description=''),
         'repeatedSequenceId': f_fields.Integer(required=False, description=''),
@@ -46,6 +46,6 @@ class TimedExcitationSchema(Schema):
     eventTrainId = ma_fields.Integer()
     ssxExcitation = ma_fields.String()
 
-timed_excitation_f_schema = api.model('TimedExcitation', timed_excitation_dict_schema)
-timed_excitation_ma_schema = TimedExcitationSchema()
-timed_excitation_json_schema = JSONSchema().dump(timed_excitation_ma_schema)
+f_schema = api.model('TimedExcitation', dict_schema)
+ma_schema = TimedExcitationSchema()
+json_schema = JSONSchema().dump(ma_schema)

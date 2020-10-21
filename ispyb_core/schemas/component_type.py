@@ -1,22 +1,22 @@
-# encoding: utf-8
-# 
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 
 __license__ = "LGPLv3+"
@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-component_type_dict_schema = {
+dict_schema = {
         'componentTypeId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=True, description=''),
         }
@@ -40,6 +40,6 @@ class ComponentTypeSchema(Schema):
     componentTypeId = ma_fields.Integer()
     name = ma_fields.String()
 
-component_type_f_schema = api.model('ComponentType', component_type_dict_schema)
-component_type_ma_schema = ComponentTypeSchema()
-component_type_json_schema = JSONSchema().dump(component_type_ma_schema)
+f_schema = api.model('ComponentType', dict_schema)
+ma_schema = ComponentTypeSchema()
+json_schema = JSONSchema().dump(ma_schema)

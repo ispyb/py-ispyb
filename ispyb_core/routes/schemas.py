@@ -75,7 +75,7 @@ class Schemas(Resource):
         """
         try:
             schemas_module = importlib.import_module("ispyb_core.schemas." + name)
-            return getattr(schemas_module, "%s_json_schema" % name)
+            return getattr(schemas_module, "json_schema")
         except Exception as ex:
             return (
                 "Unable to return schema with name %s (%s)" % (name, str(ex)),

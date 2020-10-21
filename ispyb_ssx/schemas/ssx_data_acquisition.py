@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-ssx_data_acquisition_dict_schema = {
+dict_schema = {
         'ssxDataAcquisitionId': f_fields.Integer(required=True, description=''),
         'loadedSampleId': f_fields.Integer(required=True, description=''),
         'dataCollectionId': f_fields.Integer(required=True, description='reference to DataCollection.dataCollectionId'),
@@ -50,6 +50,6 @@ class SsxDataAcquisitionSchema(Schema):
     dataSetId = ma_fields.Integer()
     autoprocessingProgrammId = ma_fields.Integer()
 
-ssx_data_acquisition_f_schema = api.model('SsxDataAcquisition', ssx_data_acquisition_dict_schema)
-ssx_data_acquisition_ma_schema = SsxDataAcquisitionSchema()
-ssx_data_acquisition_json_schema = JSONSchema().dump(ssx_data_acquisition_ma_schema)
+f_schema = api.model('SsxDataAcquisition', dict_schema)
+ma_schema = SsxDataAcquisitionSchema()
+json_schema = JSONSchema().dump(ma_schema)

@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-crystal_slurry_dict_schema = {
+dict_schema = {
         'crystalSlurryId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=False, description=''),
         'crystalSizeDistributionId': f_fields.Integer(required=False, description=''),
@@ -46,6 +46,6 @@ class CrystalSlurrySchema(Schema):
     crystalDensity = ma_fields.Float()
     bufferId = ma_fields.Float()
 
-crystal_slurry_f_schema = api.model('CrystalSlurry', crystal_slurry_dict_schema)
-crystal_slurry_ma_schema = CrystalSlurrySchema()
-crystal_slurry_json_schema = JSONSchema().dump(crystal_slurry_ma_schema)
+f_schema = api.model('CrystalSlurry', dict_schema)
+ma_schema = CrystalSlurrySchema()
+json_schema = JSONSchema().dump(ma_schema)

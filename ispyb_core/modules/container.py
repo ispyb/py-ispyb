@@ -22,5 +22,4 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from ispyb_core.models import Container as ContainerModel
-from ispyb_core.schemas.container import container_f_schema, container_ma_schema
+from ispyb_core import models, schemas

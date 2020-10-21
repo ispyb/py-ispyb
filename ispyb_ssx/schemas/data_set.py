@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-data_set_dict_schema = {
+dict_schema = {
         'dataSetId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=True, description=''),
         'mergedResultsFilename': f_fields.String(required=False, description=''),
@@ -42,6 +42,6 @@ class DataSetSchema(Schema):
     name = ma_fields.String()
     mergedResultsFilename = ma_fields.String()
 
-data_set_f_schema = api.model('DataSet', data_set_dict_schema)
-data_set_ma_schema = DataSetSchema()
-data_set_json_schema = JSONSchema().dump(data_set_ma_schema)
+f_schema = api.model('DataSet', dict_schema)
+ma_schema = DataSetSchema()
+json_schema = JSONSchema().dump(ma_schema)

@@ -29,7 +29,7 @@ from marshmallow_jsonschema import JSONSchema
 
 from app.extensions.api import api_v1 as api
 
-loaded_sample_dict_schema = {
+dict_schema = {
         'loadedSampleId': f_fields.Integer(required=True, description=''),
         'name': f_fields.String(required=False, description='to be used as part of the image and processing file names'),
         'sampleStockId': f_fields.Integer(required=False, description=''),
@@ -48,6 +48,6 @@ class LoadedSampleSchema(Schema):
     loadingPattern = ma_fields.Integer()
     descriptionJson = ma_fields.String()
 
-loaded_sample_f_schema = api.model('LoadedSample', loaded_sample_dict_schema)
-loaded_sample_ma_schema = LoadedSampleSchema()
-loaded_sample_json_schema = JSONSchema().dump(loaded_sample_ma_schema)
+f_schema = api.model('LoadedSample', dict_schema)
+ma_schema = LoadedSampleSchema()
+json_schema = JSONSchema().dump(ma_schema)
