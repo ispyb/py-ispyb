@@ -57,18 +57,20 @@ def get_proposals(request):
 
     if run_query:
         return (
-            db.get_db_items(
-                models.Proposal,
-                schemas.proposal.dict_schema,
-                schemas.proposal.ma_schema,
-                query_params,
-            ),
+            get_db_proposals(),
             HTTPStatus.OK,
         )
     else:
         msg = "No proposals associated to the username %s" % user_info["username"]
         return create_response_item(msg=msg), HTTPStatus.OK
 
+def get_db_proposals(query_params={}):
+    return db.get_db_items(
+        models.Proposal,
+        schemas.proposal.dict_schema,
+        schemas.proposal.ma_schema,
+        query_params,
+    )
 
 def get_proposal_by_id(proposal_id):
     """
