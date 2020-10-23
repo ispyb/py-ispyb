@@ -58,6 +58,6 @@ def test_put(ispyb_core_app, ispyb_core_token):
     # TODO Insert all data before posting a new proposal
     return
     headers = {"Authorization": "Bearer " + ispyb_core_token}
-    response = client.post(route_root, data=test_proposal, headers=headers)
+    response = client.post(route_root, json=test_proposal, headers=headers)
 
     assert response.status_code == 200, "Wrong status code"

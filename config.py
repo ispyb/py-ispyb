@@ -1,22 +1,23 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+"""
+Project: py-ispyb.
+
+https://github.com/ispyb/py-ispyb
+
+This file is part of py-ispyb software.
+
+py-ispyb is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+py-ispyb is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along
+"""
 
 
 __license__ = "LGPLv3+"
@@ -25,9 +26,9 @@ __license__ = "LGPLv3+"
 import os
 import ruamel.yaml
 
+
 class BaseConfig:
-    """Base config class
-    """
+    """Base config class"""
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
@@ -72,6 +73,10 @@ class BaseConfig:
 
     CSRF_ENABLED = True
 
+    USER_OFFICE_LINK_MODULE = "app.extensions.user_office_link.DummyUserOfficeLink"
+    USER_OFFICE_LINK_CLASS = "DummyUserOfficeLink"
+    USER_OFFICE_SYNC_INTERVAL = 60 * 60 * 5 #in seconds
+    
     def __init__(self, config_filename=None):
         with open(config_filename) as f:
             config = ruamel.yaml.load(f.read(), ruamel.yaml.RoundTripLoader)
