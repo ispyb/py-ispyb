@@ -27,9 +27,8 @@ import gevent
 from gevent import monkey
 monkey.patch_all()
 
-from flask import current_app, request
-from flask_restx._http import HTTPStatus
 
+from flask import current_app
 
 __license__ = "LGPLv3+"
 
@@ -50,27 +49,13 @@ class UserOfficeLink:
         self.site_user_office = cls()
         self.site_user_office.init_app(app)
 
-        self.sync_polling = gevent.spawn(
-            self.sync_with_user_office,
-            app
-        )
+        #self.sync_polling = gevent.spawn_later(
+        #    10,
+        #    self.sync_with_user_office,
+        #    app
+        #)
 
-    def sync_with_user_office(self, app):
-        while True:
-            log.info("Updating proposals from user office")
-            self.sync_lab_contacts()
-            self.sync_proposals()
-            self.sync_sessions()
-            time.sleep(app.config.get("USER_OFFICE_SYNC_INTERVAL"))
-
-    def sync_lab_contacts(self):
-        return
-    
-    def sync_proposals(self):
-        return
-
-    def sync_sessions(self):
-        return
-    
+    def sync_with_user_office(self):
+        self.site_user_office.sync()
 
 user_office_link = UserOfficeLink()
