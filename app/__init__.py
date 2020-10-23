@@ -23,7 +23,7 @@
 import os
 import sys
 import importlib
-
+from logging.config import dictConfig
 from flask import Flask
 from flask_cors import CORS
 
@@ -37,10 +37,14 @@ CONFIG_NAME_MAPPER = {
     "prod": "ProductionConfig",
 }
 
+
 def create_app(config_path=None, run_mode="dev", **kwargs):
     """
     Entry point to the Flask RESTful Server application.
     """
+
+
+
     app = Flask(__name__, **kwargs)
     CORS(app)
     # TODO configure CORS via config file

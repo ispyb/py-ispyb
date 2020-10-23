@@ -6,7 +6,7 @@ test_proposal = {
     "proposalType": "MX",
     "personId": 1,
     "proposalNumber": "111",
-    "bltimeStamp": "2015-12-21 16:20:43",
+    "bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%b %d %Y-%M%p")
     "state": "Open",
 }
 

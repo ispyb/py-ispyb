@@ -1,5 +1,5 @@
-"""
-Project: py-ispyb
+"""Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -22,27 +22,16 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from sqlalchemy.dialects.mysql.enumerated import ENUM
-from sqlalchemy.dialects.mysql.types import LONGBLOB
-
-from .logging import Logging
-logging = Logging()
-
-from . import api
-from .auth import auth_provider
-from .user_office_link import user_office_link
-from .flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
-db.ENUM = ENUM
-db.LONGBLOB = LONGBLOB
+from flask import current_app
+from app.extensions.user_office_link.AbstractUserOfficeLink import AbstractUserOfficeLink
 
 
-def init_app(app):
-    """Initializes app extensions
+class DummyUserOfficeLink(AbstractUserOfficeLink):
+    
+    def init_app(self, app):
+        """Initializes user office class.
 
-    Args:
-        app (flask app): Flask application
-    """
-    for extension in (api, auth_provider, logging, db, user_office_link):
-        extension.init_app(app)
+        Args:
+            app (flask app): Flask app
+        """
+        return
