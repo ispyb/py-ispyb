@@ -25,13 +25,12 @@ def run(
         port=5000,
         flask_config=None,
         install_dependencies=False,
-        upgrade_db=False,
         uwsgi=False,
         uwsgi_mode='http',
         uwsgi_extra_options='',
     ):
     """
-    Run Example RESTful API Server.
+    Run py-ispyb Server.
     """
     if flask_config is not None:
         os.environ['FLASK_CONFIG'] = flask_config
@@ -41,22 +40,6 @@ def run(
 
     from app import create_app
     app = create_app()
-
-    if upgrade_db:
-        # After the installed dependencies the app.db.* tasks might need to be
-        # reloaded to import all necessary dependencies.
-        from . import db as db_tasks
-        reload(db_tasks)
-
-        context.invoke_execute(context, 'app.db.upgrade', app=app)
-        if app.debug:
-            context.invoke_execute(
-                context,
-                'app.db.init_development_data',
-                app=app,
-                upgrade_db=False,
-                skip_on_failure=True
-            )
 
     use_reloader = app.debug
     if uwsgi:
@@ -73,11 +56,4 @@ def run(
             uwsgi_args += uwsgi_extra_options.split(' ')
         os.execvpe('uwsgi', uwsgi_args, os.environ)
     else:
-        if platform.system() == 'Windows':
-            warnings.warn(
-                    "Auto-reloader feature doesn't work on Windows. "
-                    "Follow the issue for more details: "
-                    "https://github.com/frol/flask-restplus-server-example/issues/16"
-                )
-            use_reloader = False
         return app.run(host=host, port=port, use_reloader=use_reloader)

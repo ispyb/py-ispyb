@@ -42,8 +42,6 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
     Entry point to the Flask RESTful Server application.
     """
 
-
-
     app = Flask(__name__, **kwargs)
     CORS(app)
     # TODO configure CORS via config file

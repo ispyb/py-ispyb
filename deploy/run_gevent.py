@@ -20,6 +20,7 @@
 
 import os
 import sys
+from gevent.pywsgi import WSGIServer
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, ROOT_DIR)
@@ -37,4 +38,5 @@ else:
 from app import create_app
 
 app = create_app(config_filename, run_mode)
-app.run(host='0.0.0.0', port=port, debug=True)
+http_server = WSGIServer(('', 5000), app)
+http_server.serve_forever()
