@@ -4,9 +4,9 @@ revproxy:
   ports:
     - "90:90"
   links:
-    - api:api
+    - ispyb-api:ispyb-api
 
-api:
+ispyb-api:
   restart: always
   build: ../
   environment:

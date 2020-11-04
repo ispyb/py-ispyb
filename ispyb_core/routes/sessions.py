@@ -104,3 +104,23 @@ class SessionInfoById(Resource):
     def get(self, session_id):
         """Returns a full description of a session by sessionId"""
         return session.get_session_info_by_id(session_id)
+
+@api.route("/<int:session_id>", endpoint="sessions_by_date")
+@api.doc(security="apikey")
+class SessionsByDate(Resource):
+    """Allows to get all sessions and insert a new one"""
+
+    @token_required
+    @authorization_required
+    def get(self):
+        """Returns list of sessions
+
+        Returns:
+            list: list of sessions.
+        """
+
+        # TODO add decorator @paginate
+        return session.get_sessions_by_date(request)
+# getSessionsByDate(startDate, endDate)
+# getSessionsByDateAndBeamline(startDate, endDate, beamline)
+# getSessionsByProposalAndDate(startDate, endDate, proposal)

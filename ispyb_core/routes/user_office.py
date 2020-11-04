@@ -40,9 +40,9 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("/sync", endpoint="user_office")
+@api.route("/sync_all", endpoint="user_office_sync_all")
 @api.doc(security="apikey")
-class UserOfficeSync(Resource):
+class SyncAll(Resource):
 
     """Sync with user office"""
 
@@ -54,3 +54,24 @@ class UserOfficeSync(Resource):
         api.logger.info("Sync with uer office")
         user_office_link.sync_with_user_office()
         return HTTPStatus.OK, {"message": "Done!"}
+
+@api.route("/update_proposal/<string:proposal_code><int:proposal_number>", endpoint="user_office_update_proposal")
+@api.param("proposal_code", "Proposal code (string)")
+@api.param("proposal_number", "Proposal number (integer)")
+@api.doc(security="apikey")
+class UpdateProposal(Resource):
+
+    """Sync with user office"""
+
+    #@token_required
+    #@authorization_required
+    @api.doc(description="proposal_code should be a string, proposal_number should be an integer")
+
+    def post(self, proposal_code, proposal_number):
+        """Sync with user office"""
+
+        api.logger.info("Updates proposal %s%d" % (proposal_code, proposal_number))
+        user_office_link.update_proposal(proposal_code, proposal_number)
+        return HTTPStatus.OK, {"message": "Done!"}
+
+

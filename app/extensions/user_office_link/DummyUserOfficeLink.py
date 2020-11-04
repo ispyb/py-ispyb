@@ -35,3 +35,16 @@ class DummyUserOfficeLink(AbstractUserOfficeLink):
             app (flask app): Flask app
         """
         return
+    
+    def sync_all(self):
+        """Main method to sync with user office"""
+        print("Sync with user office")
+
+    def update_proposal(self, code, number):
+        """Updates proposal based on the code and number.
+
+        Args:
+            code (str): MX, SAXS, mxihr, etc
+            number (int): proposals number
+        """
+        print("Update proposal %s%d" %(code, number))

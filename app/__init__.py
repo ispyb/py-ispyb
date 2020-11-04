@@ -37,7 +37,6 @@ CONFIG_NAME_MAPPER = {
     "prod": "ProductionConfig",
 }
 
-
 def create_app(config_path=None, run_mode="dev", **kwargs):
     """
     Entry point to the Flask RESTful Server application.

@@ -26,8 +26,8 @@ from app.extensions import db
 from ispyb_core import models, schemas
 
 
-def get_containers(request):
-    """Returns all containers.
+def get_dewars(request):
+    """Returns all dewars.
 
     Returns:
         dict: list with dewars]
@@ -43,26 +43,26 @@ def get_containers(request):
     )
 
 
-def get_container_by_id(container_id):
-    """Returns container by its container_id
+def get_dewar_by_id(dewar_id):
+    """Returns dewar by its dewar_id
 
     Args:
-        container_id (int): corresponds to containerId in db
+        dewar_id (int): corresponds to dewarId in db
 
     Returns:
-        dict: info about container as dict
+        dict: info about dewar as dict
     """
-    id_dict = {"containerId": container_id}
+    id_dict = {"dewarId": dewar_id}
     return db.get_db_item_by_params(
-        models.Container,
-        schemas.container.ma_schema, 
+        models.Dewar,
+        schemas.dewar.ma_schema,
         id_dict
     )
 
 
-def add_container(data_dict):
+def add_dewar(data_dict):
     """
-    Adds a container to db
+    Adds a dewar to db
 
     Args:
         data_dict ([type]): [description]
@@ -70,8 +70,4 @@ def add_container(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Container,
-        schemas.container.ma_schema,
-        data_dict
-        )
+    return db.add_db_item(models.Dewar, schemas.dewar.ma_schema, data_dict)
