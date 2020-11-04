@@ -17,7 +17,7 @@ ISPyB backend server based on python flask-restx.
 * [**sqlalchemy**](http://www.sqlalchemy.org/) (+
   [*flask-sqlalchemy*](http://flask-sqlalchemy.pocoo.org/)) - Database ORM.
 * [**marshmallow**](http://marshmallow.rtfd.org/)
-* [**ruamel.yaml**] (https://pypi.org/project/ruamel.yaml/)
+* [**ruamel.yaml**](https://pypi.org/project/ruamel.yaml/)
 
 
 ## How to run py-ispyb
@@ -42,9 +42,10 @@ cd ..
 ```
 
 Run application in debug mode:
-```bash
-python3 wsgi.py
-```
+* `python3 wsgi.py`
+* `invoke app.run`
+
+For deployment options see `deploy` directory.
 
 ## Authentication
 JWT (Jason web tokens) are used to authenticate requests. See jwt.io to test the token.

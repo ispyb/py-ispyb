@@ -1,3 +1,4 @@
+# encoding: utf-8
 """Project: py-ispyb.
 
 https://github.com/ispyb/py-ispyb
@@ -49,7 +50,7 @@ class SmisLink(AbstractUserOfficeLink):
             timeout=180
             )
 
-    def sync(self):
+    def sync_all(self):
         # Get 1 month old proposals
         print("sync proposals")
         past_str = datetime.strftime(datetime.now() - timedelta(days=30), '%d/%m/%YYYY')

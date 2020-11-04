@@ -73,8 +73,8 @@ class BaseConfig:
 
     CSRF_ENABLED = True
 
-    USER_OFFICE_LINK_MODULE = "app.extensions.user_office_link.SmisLink"
-    USER_OFFICE_LINK_CLASS = "SmisLink"
+    USER_OFFICE_LINK_MODULE = "app.extensions.user_office_link.DummyUserOfficeLink"
+    USER_OFFICE_LINK_CLASS = "DummyUserOfficeLink"
     #USER_OFFICE_SYNC_INTERVAL = 60 * 60 * 5 #in seconds
     USER_OFFICE_SYNC_INTERVAL = 30
 

@@ -6,7 +6,7 @@ test_proposal = {
     "proposalType": "MX",
     "personId": 1,
     "proposalNumber": "111",
-    "bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%b %d %Y-%M%p")
+    "bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%Y-%m-%d %H:%M:%S"),
     "state": "Open",
 }
 
@@ -46,7 +46,7 @@ test_data_collection = {
     "slitGapVertical": 0.059918,
     "beamSizeAtSampleX": 0.05,
     "omegaStart": 45,
-    "endTime": "2016-01-14 12:41:54",
+    "endTime": datetime.strptime("2016-01-14 12:41:54", "%Y-%m-%d %H:%M:%S"),
     "dataCollectionNumber": 1,
     "imagePrefix": "tlys_jan_4",
     "xtalSnapshotFullPath4": "/path/to_snapshot4",
@@ -67,7 +67,7 @@ test_data_collection = {
     "startImageNumber": 1,
     "rotationAxis": "Omega",
     "exposureTime": 0.02,
-    "startTime": "2016-01-14 12:40:34",
+    "startTime": datetime.strptime( "2016-01-14 12:40:34", "%Y-%m-%d %H:%M:%S"),
 }
 
 test_local_contact = {

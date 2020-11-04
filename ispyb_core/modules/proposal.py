@@ -57,7 +57,7 @@ def get_proposals(request):
 
     if run_query:
         return (
-            get_db_proposals(),
+            get_db_proposals(query_params),
             HTTPStatus.OK,
         )
     else:

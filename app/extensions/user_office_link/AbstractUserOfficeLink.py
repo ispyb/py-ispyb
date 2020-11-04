@@ -38,3 +38,16 @@ class AbstractUserOfficeLink(object):
             app (flask app): Flask app
         """
         return
+
+    @abc.abstractmethod
+    def sync_all(self):
+        """Main method to sync with user office"""
+
+    @abc.abstractmethod
+    def update_proposal(self, code, number):
+        """Updates proposal based on the code and number.
+
+        Args:
+            code (str): MX, SAXS, mxihr, etc
+            number (int): proposals number
+        """

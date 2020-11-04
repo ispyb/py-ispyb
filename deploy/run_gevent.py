@@ -18,22 +18,25 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import sys
+from gevent.pywsgi import WSGIServer
 
-from app import create_app
-
-
-__license__ = "LGPLv3+"
-
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, ROOT_DIR)
 
 if len(sys.argv) > 3:
     config_filename = sys.argv[1]
     run_mode = sys.argv[2]
     port = sys.argv[3]
 else:
-    config_filename = "ispyb_core_config.yml"
+    config_filename = os.path.join(ROOT_DIR, "ispyb_core_config.yml")
     run_mode = "dev"
     port = 5000
 
+
+from app import create_app
+
 app = create_app(config_filename, run_mode)
-app.run(host='0.0.0.0', port=port, debug=True)
+http_server = WSGIServer(('', 5000), app)
+http_server.serve_forever()

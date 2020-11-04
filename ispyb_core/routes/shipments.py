@@ -65,7 +65,7 @@ class Shipments(Resource):
         Returns:
             list: list of shipments.
         """
-        return shipping.get_shipments(request.args), HTTPStatus.OK
+        return shipping.get_shipments(request), HTTPStatus.OK
 
     @api.expect(shipping_schemas.f_schema)
     @api.marshal_with(shipping_schemas.f_schema, code=201)
