@@ -295,7 +295,7 @@ def authorization_required(func):
                 str(roles),
             )
             msg += " to execute method."
-            return ({"message": msg}, HTTPStatus.UNAUTHORIZED)
+            return {"message": msg}, HTTPStatus.UNAUTHORIZED
 
         return func(self, *args, **kwargs)
 

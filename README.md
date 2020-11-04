@@ -44,6 +44,10 @@ cd ..
 Run application in debug mode:
 ```bash
 python3 wsgi.py
+
+or
+
+invoke app.run
 ```
 
 ## Authentication

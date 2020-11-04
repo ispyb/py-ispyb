@@ -22,33 +22,25 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 import logging
-from logging.config import dictConfig
 
-DEFAULT_LOG_FORMAT = "[%(asctime)s] %(levelname)s in %(module)s: %(message)s"
-
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': DEFAULT_LOG_FORMAT,
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi']
-    }
-})
 
 class Logging(object):
+    """
+    This is a helper extension, which adjusts logging configuration for the
+    application.
+    """
+
     def __init__(self, app=None):
         if app:
             self.init_app(app)
 
     def init_app(self, app):
-        return
+        """
+        Common Flask interface to initialize the logging according to the
+        application configuration.
+        """
+        # We don't need the default Flask's loggers when using our invoke tasks
+        # since we set up beautiful colorful loggers globally.
         for handler in list(app.logger.handlers):
             app.logger.removeHandler(handler)
         app.logger.propagate = True
@@ -57,13 +49,12 @@ class Logging(object):
             logging.getLogger('flask_oauthlib').setLevel(logging.DEBUG)
             app.logger.setLevel(logging.DEBUG)
 
-        """
-        if app.config.get("LOG_FILENAME"):
-            fh = logging.FileHandler(app.config["LOG_FILENAME"])
-            if app.config.get("LOG_FORMAT"):
-                log_format = app.config["LOG_FORMAT"]
-            else:
-                log_format = DEFAULT_LOG_FORMAT
-            fh.setFormatter(logging.Formatter(log_format))
-            app.logger.addHandler(fh)
-        """
+        # We don't need the default SQLAlchemy loggers when using our invoke
+        # tasks since we set up beautiful colorful loggers globally.
+        # NOTE: This particular workaround is for the SQLALCHEMY_ECHO mode,
+        # when all SQL commands get printed (without these lines, they will get
+        # printed twice).
+        sqla_logger = logging.getLogger('sqlalchemy.engine.base.Engine')
+        for hdlr in list(sqla_logger.handlers):
+            sqla_logger.removeHandler(hdlr)
+        sqla_logger.addHandler(logging.NullHandler())

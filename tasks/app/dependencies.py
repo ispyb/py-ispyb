@@ -24,7 +24,7 @@ def install_python_dependencies(context, force=False):
     Install Python dependencies listed in requirements.txt.
     """
     log.info("Installing project dependencies...")
-    context.run("pip install -r requirements.txt %s" % ('--upgrade' if force else ''))
+    #context.run("pip3 install -r requirements.txt %s" % ('--upgrade' if force else ''))
     log.info("Project dependencies are installed.")
 
 @task
@@ -100,4 +100,4 @@ def install(context):
     Install project dependencies.
     """
     install_python_dependencies(context)
-    install_swagger_ui(context)
+    #install_swagger_ui(context)

@@ -56,8 +56,6 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
 
     app.logger.debug("Starting ISPyB server in %s mode" % run_mode)
 
-    print("ddddd")
-    print(config_path)
     try:
         config_obj = getattr(
             importlib.import_module("config"), CONFIG_NAME_MAPPER[run_mode]
