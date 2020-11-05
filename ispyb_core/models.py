@@ -446,7 +446,7 @@ class AutoProcScalingHasInt(db.Model):
     )
 
 
-class AutoProcStatu(db.Model):
+class AutoProcStatus(db.Model):
     __tablename__ = "AutoProcStatus"
 
     autoProcStatusId = db.Column(
@@ -478,7 +478,7 @@ class AutoProcStatu(db.Model):
 
     AutoProcIntegration = db.relationship(
         "AutoProcIntegration",
-        primaryjoin="AutoProcStatu.autoProcIntegrationId == AutoProcIntegration.autoProcIntegrationId",
+        primaryjoin="AutoProcStatus.autoProcIntegrationId == AutoProcIntegration.autoProcIntegrationId",
     )
 
 

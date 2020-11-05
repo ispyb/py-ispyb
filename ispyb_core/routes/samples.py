@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
-
+from flask import request
 from flask_restx_patched import Resource, HTTPStatus
 
 from app.extensions.api import api_v1, Namespace
@@ -26,7 +26,8 @@ from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.schemas import sample as sample_schemas
 from ispyb_core.schemas import crystal as crystal_schemas
-from ispyb_core.modules import sample, crystal
+from ispyb_core.schemas import protein as protein_schemas
+from ispyb_core.modules import sample, crystal, protein
 
 
 __license__ = "LGPLv3+"
@@ -45,7 +46,7 @@ class Sample(Resource):
     @authorization_required
     def get(self):
         """Returns all sample items"""
-        return sample.get_samples()
+        return sample.get_samples(request)
 
     @token_required
     @api.expect(sample_schemas.f_schema)
@@ -73,14 +74,14 @@ class SampleById(Resource):
 
 @api.route("/crystals", endpoint="crystals")
 @api.doc(security="apikey")
-class Crystal(Resource):
+class Crystals(Resource):
     """Crystal resource"""
 
     @token_required
     @authorization_required
     def get(self):
         """Returns all crystal items"""
-        return crystal.get_crystals()
+        return crystal.get_crystals(request)
 
     @api.expect(crystal_schemas.f_schema)
     @api.marshal_with(crystal_schemas.f_schema, code=201)
@@ -105,3 +106,22 @@ class CrystalById(Resource):
     def get(self, crystal_id):
         """Returns a crystal by crystalId"""
         return crystal.get_crystal_by_id(crystal_id)
+
+@api.route("/proteins", endpoint="proteins")
+@api.doc(security="apikey")
+class Proteins(Resource):
+    """Proteins resource"""
+
+    @token_required
+    @authorization_required
+    def get(self):
+        """Returns all protein items"""
+        return protein.get_proteins(request)
+
+    @api.expect(protein_schemas.f_schema)
+    @api.marshal_with(protein_schemas.f_schema, code=201)
+    @token_required
+    @authorization_required
+    def post(self):
+        """Adds a new protein item"""
+        protein.add_protein(api)

@@ -21,31 +21,49 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
+
 from app.extensions import db
 from ispyb_core import models, schemas
 
 
-def get_samples():
-    sample_list = models.BLSample.query.all()
-    return schemas.sample.ma_schema.dump(sample_list, many=True)
+def get_samples(request):
+    """
+    Returns sample entries.
+
+    Returns:
+        [type]: [description]
+    """
+    query_params = request.args.to_dict()
+
+    return db.get_db_items(
+        models.BLSample,
+        schemas.sample.dict_schema,
+        schemas.sample.ma_schema,
+        query_params,
+    )
 
 
 def get_sample_by_id(sample_id):
-    """Returns sample by its sampleId
+    """
+    Returns sample by its sampleId.
 
     Args:
-        sample_id (int): corresponds to sampleId in db
+        sample (int): corresponds to sampleId in db
 
     Returns:
         dict: info about sample as dict
     """
-    sample_item = models.BLSample.query.filter_by(blSampleId=sample_id).first()
-    return schemas.sample.ma_schema.dump(sample_item)[0]
+    data_dict = {"sampleId": sample_id}
+    return db.get_db_item_by_params(
+        models.BLSample,
+        schemas.sample.ma_schema,
+        data_dict
+    )
 
 
 def add_sample(data_dict):
     """
-    Adds a sample to db
+    Adds a sample to db.
 
     Args:
         data_dict ([type]): [description]
@@ -53,4 +71,8 @@ def add_sample(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(models.BLSample, schemas.sample.ma_schema, data_dict)
+    return db.add_db_item(
+        models.BLSample,
+        schemas.sample.ma_schema,
+        data_dict
+    )

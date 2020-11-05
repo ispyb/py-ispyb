@@ -36,7 +36,7 @@ api_v1.add_namespace(api)
 
 
 
-@api.route("/", endpoint="dewars")
+@api.route("", endpoint="dewars")
 @api.doc(security="apikey")
 class Dewars(Resource):
     """Dewars resource"""
