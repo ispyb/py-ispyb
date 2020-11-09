@@ -49,7 +49,11 @@ def get_person_by_params(param_dict):
     Returns:
         dict: info about person as dict
     """
-    return db.get_db_item_by_params(models.Person, schemas.person.ma_schema, param_dict)
+    return db.get_db_item_by_params(
+        models.Person,
+        schemas.person.ma_schema,
+        param_dict
+    )
 
 
 def get_person_id_by_login(login_name):
@@ -66,7 +70,6 @@ def get_person_id_by_login(login_name):
         if person_item:
             return person_item["personId"]
 
-
 def add_person(data_dict):
     """Adds person item to db.
 
@@ -76,7 +79,11 @@ def add_person(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(models.Person, schemas.person.ma_schema, data_dict)
+    return db.add_db_item(
+        models.Person,
+        schemas.person.ma_schema,
+        data_dict
+    )
 
 
 def get_lab_contacts(request):
@@ -91,7 +98,6 @@ def get_lab_contacts(request):
         query_params,
     )
 
-
 def get_lab_contact_by_id(lab_contact_id):
     """Returns shipment by its shipmentId.
 
@@ -103,7 +109,9 @@ def get_lab_contact_by_id(lab_contact_id):
     """
     param_dict = {"shippingId": lab_contact_id}
     return db.get_db_item_by_params(
-        models.LabContact, schemas.lab_contact.ma_schema, param_dict
+        models.LabContact,
+        schemas.lab_contact.ma_schema,
+        param_dict
     )
 
 
@@ -116,4 +124,87 @@ def add_lab_contact(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(models.LabContact, schemas.lab_contact.ma_schema, data_dict)
+    return db.add_db_item(
+        models.LabContact,
+        schemas.lab_contact.ma_schema,
+        data_dict
+    )
+
+def get_laboratories(request):
+    """Returns laboratories based on query parameters
+
+    Args:
+        query_params ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    query_params = request.args.to_dict()
+
+    return db.get_db_items(
+        models.Laboratory,
+        schemas.laboratory.dict_schema,
+        schemas.laboratory.ma_schema,
+        query_params,
+    )
+
+
+def add_laboratory(data_dict):
+    """Adds new laboratory
+
+    Args:
+        laboratory_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(
+        models.Laboratory,
+        schemas.laboratory.ma_schema,
+        data_dict
+    )
+
+
+def get_laboratory_by_id(laboratory_id):
+    """Returns laboratory info by its laboratoryId
+
+    Args:
+        laboratory_id (int): corresponds to laboratoryId in db
+
+    Returns:
+        dict: info about laboratory as dict
+    """
+    data_dict = {"laboratoryId": laboratory_id}
+    return db.get_db_item_by_params(
+        models.Laboratory,
+        schemas.laboratory.ma_schema,
+        data_dict
+    )
+
+def patch_laboratory(laboratory_id, laboratory_dict):
+    """
+    Patch a laboratory
+
+    Args:
+        laboratory_id ([type]): [description]
+        laboratory_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"laboratoryId": laboratory_id}
+    return db.patch_db_item(models.Laboratory, id_dict, laboratory_dict)
+
+
+def delete_laboratory(laboratory_id):
+    """Deletes laboratory item from db
+
+    Args:
+        laboratory_id (int): laboratoryId column in db
+
+    Returns:
+        bool: True if the laboratory exists and deleted successfully,
+        otherwise return False
+    """
+    id_dict = {"laboratoryId": laboratory_id}
+    return db.delete_db_item(models.Laboratory, id_dict)

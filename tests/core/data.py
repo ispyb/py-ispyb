@@ -97,3 +97,15 @@ test_shippment = {
     "deliveryAgent_label": "Label",
     "physicalLocation": "Store",
 }
+
+test_laboratory = {
+  "laboratoryUUID": "UUID",
+  "name": "Test lab",
+  "address": "Test address",
+  "city": "City",
+  "country": "Country",
+  "url": "url",
+  "organization": "Test org",
+  "laboratoryPk": 0,
+  "postcode": "Test code"
+}

@@ -26,6 +26,7 @@ from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.schemas import person as person_schemas
 from ispyb_core.schemas import lab_contact as lab_contact_schemas
+from ispyb_core.schemas import laboratory as laboratory_schemas
 from ispyb_core.modules import contacts
 
 
@@ -94,4 +95,100 @@ class LabContacts(Resource):
     @authorization_required
     def post(self):
         """Adds a new lab contact"""
-        return contacts.add_lab_contact(api)
+        return contacts.add_lab_contact(api.payload)
+
+
+@api.route("/labs", endpoint="labs")
+@api.doc(security="apikey")
+class Laboratories(Resource):
+
+    """Allows to get all laboratory items"""
+
+    @token_required
+    @authorization_required
+    def get(self):
+        """
+        Returns all laboratory entries.
+
+        Returns:
+            dict: response dict.
+        """
+
+        return contacts.get_laboratories(request)
+
+    @api.expect(laboratory_schemas.f_schema)
+    @api.marshal_with(laboratory_schemas.f_schema, code=201)
+    # @api.errorhandler(FakeException)
+    # TODO add custom exception handling
+    @token_required
+    @authorization_required
+    def post(self):
+        """Adds a new laboratory"""
+
+        return contacts.add_laboratory(api.payload)
+
+
+@api.route("/labs/<int:laboratory_id>", endpoint="laboratory_by_id")
+@api.param("laboratory_id", "laboratory_id id (integer)")
+@api.doc(security="apikey")
+@api.response(code=HTTPStatus.NOT_FOUND, description="Laboratory not found.")
+class LaboratoryById(Resource):
+
+    """Allows to get/set/delete a laboratory item"""
+
+    @api.doc(description="lab_id should be an integer ")
+    @api.marshal_with(laboratory_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
+    @token_required
+    @authorization_required
+    def get(self, laboratory_id):
+        """Returns a laboratory by laboratoryId"""
+        return contacts.get_laboratory_by_id(laboratory_id)
+
+    @api.expect(laboratory_schemas.f_schema)
+    @api.marshal_with(laboratory_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def put(self, laboratory_id):
+        """
+        Fully updates laboratory with id laboratory_id.
+
+        Args:
+            laboratory_id (int): corresponds to laboratoryId in db
+        """
+        result = contacts.update_laboratory(laboratory_id, api.payload)
+        if result:
+            return (
+                {"message": "laboratory with id %d updated" % laboratory_id},
+                HTTPStatus.OK,
+            )
+        else:
+            api.abort(
+                HTTPStatus.NOT_FOUND, "laboratory with id %d not found" % laboratory_id
+            )
+
+    @api.expect(laboratory_schemas.f_schema)
+    @api.marshal_with(laboratory_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def patch(self, laboratory_id):
+        """
+        Partially updates laboratory with id laboratory_id.
+
+        Args:
+            laboratory_id (int): corresponds to laboratoryId in db
+        """
+        return contacts.patch_laboratory(laboratory_id, api.payload)
+
+    @token_required
+    @authorization_required
+    def delete(self, laboratory_id):
+        """
+        Deletes laboratory by laboratory_id.
+
+        Args:
+            laboratory_id (int): corresponds to laboratoryId in db
+
+        Returns:
+            json, status_code:
+        """
+        return contacts.delete_laboratory(laboratory_id)
