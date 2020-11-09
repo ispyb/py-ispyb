@@ -109,12 +109,12 @@ class SessionInfoById(Resource):
 @api.route("/date", endpoint="sessions_by_date")
 @api.doc(security="apikey")
 class SessionsByDateBeamline(Resource):
-    """Allows to get all sessions and insert a new one"""
+    """Allows to get all sessions by date and beamline"""
 
     @token_required
     @authorization_required
     def get(self):
-        """Returns list of sessions
+        """Returns list of sessions by start_date, end_date and beamline.
 
         Returns:
             list: list of sessions.
@@ -148,6 +148,7 @@ class SessionsByDateBeamline(Resource):
                     HTTPStatus.NOT_ACCEPTABLE,
                     "end_date should be in YYYYMMDD format (%s)" % str(ex)
                 )
+
 
         return session.get_sessions_by_date(start_date, end_date, beamline)
 # getSessionsByDate(startDate, endDate)
