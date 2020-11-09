@@ -19,7 +19,6 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-from config import BaseConfig
 import os
 import sys
 import csv
@@ -30,6 +29,7 @@ ispyb_root = "/" + os.path.join(*ispyb_root[1:-1])
 sys.path.insert(0, ispyb_root)
 
 
+from config import BaseConfig
 config = BaseConfig(os.path.join(ispyb_root, "ispyb_core_config.yml"))
 
 uri = config.SQLALCHEMY_DATABASE_URI
