@@ -181,7 +181,9 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             dict: info dict
         """
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
+        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
+            description="There is no data with item id %s" % str(item_id_dict)
+        )
         db_item_json = ma_schema.dump(db_item)[0]
 
         return db_item_json

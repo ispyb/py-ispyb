@@ -19,9 +19,10 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import logging
+from datetime import datetime
 
 from flask import request
-from flask_restx_patched import Resource, HTTPStatus
+from flask_restx_patched import Resource, HTTPStatus, abort
 
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
@@ -105,22 +106,51 @@ class SessionInfoById(Resource):
         """Returns a full description of a session by sessionId"""
         return session.get_session_info_by_id(session_id)
 
-@api.route("/<int:session_id>", endpoint="sessions_by_date")
+@api.route("/date", endpoint="sessions_by_date")
 @api.doc(security="apikey")
-class SessionsByDate(Resource):
-    """Allows to get all sessions and insert a new one"""
+class SessionsByDateBeamline(Resource):
+    """Allows to get all sessions by date and beamline"""
 
     @token_required
     @authorization_required
     def get(self):
-        """Returns list of sessions
+        """Returns list of sessions by start_date, end_date and beamline.
 
         Returns:
             list: list of sessions.
         """
 
-        # TODO add decorator @paginate
-        return session.get_sessions_by_date(request)
+        query_params = request.args.to_dict()
+        start_date = query_params.get("start_date")
+        end_date = query_params.get("end_date")
+        beamline = query_params.get("beamline")
+
+        if start_date is None and end_date is None:
+            abort(
+                HTTPStatus.NOT_ACCEPTABLE,
+                "No start_date or end_date argument provided"
+            )
+
+        if start_date:
+            try:
+                start_date = datetime.strptime(start_date, "%Y%m%d")
+            except ValueError as ex:
+                abort(
+                    HTTPStatus.NOT_ACCEPTABLE,
+                    "start_date should be in YYYYMMDD format (%s)" % str(ex)
+                )
+        
+        if end_date:
+            try:
+                end_date = datetime.strptime(end_date, "%Y%m%d")
+            except ValueError as ex:
+                abort(
+                    HTTPStatus.NOT_ACCEPTABLE,
+                    "end_date should be in YYYYMMDD format (%s)" % str(ex)
+                )
+
+
+        return session.get_sessions_by_date(start_date, end_date, beamline)
 # getSessionsByDate(startDate, endDate)
 # getSessionsByDateAndBeamline(startDate, endDate, beamline)
 # getSessionsByProposalAndDate(startDate, endDate, proposal)

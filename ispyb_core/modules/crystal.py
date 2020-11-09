@@ -25,15 +25,21 @@ from app.extensions import db
 from ispyb_core import models, schemas
 
 
-def get_crystals():
+def get_crystals(request):
     """
     Returns crystal entries
 
     Returns:
         [type]: [description]
     """
-    crystal_list = models.Crystal.query.all()
-    return schemas.crystal.ma_schema.dump(crystal_list, many=True)
+    query_params = request.args.to_dict()
+
+    return db.get_db_items(
+        models.Crystal,
+        schemas.crystal.dict_schema,
+        schemas.crystal.ma_schema,
+        query_params,
+    )
 
 
 def get_crystal_by_id(crystal_id):
@@ -46,8 +52,12 @@ def get_crystal_by_id(crystal_id):
     Returns:
         dict: info about crystal as dict
     """
-    crystal_item = models.Crystal.query.filter_by(crystalId=crystal_id).first()
-    return schemas.crystal.ma_schema.dump(crystal_item)[0]
+    data_dict = {"crystalId": crystal_id}
+    return db.get_db_item_by_params(
+        models.Crystal,
+        schemas.crystal.ma_schema,
+        data_dict
+    )
 
 
 def add_crystal(data_dict):
@@ -60,4 +70,8 @@ def add_crystal(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(models.Crystal, schemas.crystal.ma_schema, data_dict)
+    return db.add_db_item(
+        models.Crystal,
+        schemas.crystal.ma_schema,
+        data_dict
+    )

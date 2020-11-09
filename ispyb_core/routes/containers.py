@@ -36,7 +36,7 @@ api_v1.add_namespace(api)
 
 
 
-@api.route("/", endpoint="containers")
+@api.route("", endpoint="containers")
 @api.doc(security="apikey")
 class Containers(Resource):
     """Containers resource"""

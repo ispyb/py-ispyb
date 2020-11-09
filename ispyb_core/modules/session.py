@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -57,7 +58,11 @@ def add_session(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(models.BLSession, schemas.session.ma_schema, data_dict)
+    return db.add_db_item(
+        models.BLSession,
+        schemas.session.ma_schema,
+        data_dict
+    )
 
 
 def get_session_by_id(session_id):
@@ -71,7 +76,9 @@ def get_session_by_id(session_id):
     """
     data_dict = {"sessionId": session_id}
     return db.get_db_item_by_params(
-        models.BLSession, schemas.session.ma_schema, data_dict
+        models.BLSession,
+        schemas.session.ma_schema,
+        data_dict
     )
 
 
@@ -95,3 +102,23 @@ def get_session_info_by_id(session_id):
         # session_json["data_collections_groups"] = data_collection.get_data_collection_groups({"sessionId" : session_id})["data"]["rows"]
 
     return session_json
+
+def get_sessions_by_date(start_date=None, end_date=None, beamline=None):
+    """Returns list of sessions by start_date, end_date and beamline.
+
+    Args:
+        start_date (datetime, optional): start date. Defaults to None.
+        end_date (datetime, optional): end date. Defaults to None.
+        beamline (str, optional): beamline name. Defaults to None.
+
+    Returns:
+        list: list of session dicts
+    """
+    query = models.BLSession.query
+    if start_date:
+        query = query.filter(models.BLSession.startDate >= start_date)
+    if end_date:
+        query = query.filter(models.BLSession.endDate <= end_date)
+    if beamline:
+        query = query.filter(models.BLSession.beamLineName == beamline)
+    return schemas.session.ma_schema.dump(query, many=True)

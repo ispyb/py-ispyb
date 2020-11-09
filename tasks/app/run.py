@@ -25,6 +25,7 @@ def run(
         port=5000,
         flask_config=None,
         install_dependencies=False,
+        with_gevent=False,
         uwsgi=False,
         uwsgi_mode='http',
         uwsgi_extra_options='',
@@ -55,5 +56,10 @@ def run(
         if uwsgi_extra_options:
             uwsgi_args += uwsgi_extra_options.split(' ')
         os.execvpe('uwsgi', uwsgi_args, os.environ)
+    elif with_gevent:
+        from gevent.pywsgi import WSGIServer
+        http_server = WSGIServer((host, port), app)
+        http_server.serve_forever()
+
     else:
         return app.run(host=host, port=port, use_reloader=use_reloader)

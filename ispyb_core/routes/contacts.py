@@ -46,14 +46,14 @@ class Persons(Resource):
     def get(self):
         """Returns all persons"""
         # app.logger.info("Return all person")
-        return contacts.get_persons(request.args)
+        return contacts.get_persons(request)
 
     @api.expect(person_schemas.f_schema)
     @api.marshal_with(person_schemas.f_schema, code=201)
     @token_required
     @authorization_required
     def post(self):
-        return
+        contacts.add_person(api)
 
 
 @api.route("/person/<int:person_id>", endpoint="person_by_id")
@@ -84,7 +84,7 @@ class LabContacts(Resource):
         Returns:
             list: list of local contacts.
         """
-        return contacts.get_lab_contacts(request.args), HTTPStatus.OK
+        return contacts.get_lab_contacts(request), HTTPStatus.OK
 
     @api.expect(lab_contact_schemas.f_schema)
     @api.marshal_with(lab_contact_schemas.f_schema, code=201)
@@ -94,4 +94,4 @@ class LabContacts(Resource):
     @authorization_required
     def post(self):
         """Adds a new lab contact"""
-        return contacts.add_lab_contact(api.payload)
+        return contacts.add_lab_contact(api)
