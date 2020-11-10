@@ -101,7 +101,7 @@ def update_person(person_id, data_dict):
     return db.update_db_item(
         models.Person,
         schemas.person.ma_schema,
-        id_dict, 
+        id_dict,
         data_dict
     )
 
@@ -152,37 +152,44 @@ def get_lab_contacts(request):
         query_params,
     )
 
-def get_lab_contact_by_id(lab_contact_id):
-    """Returns shipment by its shipmentId.
-
-    Args:
-        shipment_id (int): corresponds to shipmentId in db
-
-    Returns:
-        dict: info about shipment as dict
-    """
-    param_dict = {"shippingId": lab_contact_id}
+def get_lab_contact_by_params(param_dict):
     return db.get_db_item_by_params(
         models.LabContact,
         schemas.lab_contact.ma_schema,
         param_dict
     )
 
-
 def add_lab_contact(data_dict):
-    """Adds a new lab contact.
-
-    Args:
-        data_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
     return db.add_db_item(
         models.LabContact,
         schemas.lab_contact.ma_schema,
         data_dict
     )
+
+
+def update_lab_contact(lab_contact_id, data_dict):
+    id_dict = {"labContactId": lab_contact_id}
+    return db.update_db_item(
+        models.LabContact,
+        schemas.lab_contact.ma_schema,
+        id_dict,
+        data_dict
+    )
+
+
+def patch_lab_contact(lab_contact_id, data_dict):
+    id_dict = {"labContactId": lab_contact_id}
+    return db.patch_db_item(
+        models.LabContact,
+        schemas.lab_contact.ma_schema,
+        id_dict,
+        data_dict
+    )
+
+def delete_lab_contact(lab_contact_id):
+    id_dict = {"labContactId": lab_contact_id}
+    return db.delete_db_item(models.LabContact, id_dict)
+
 
 def get_laboratories(request):
     """Returns laboratories based on query parameters
@@ -235,7 +242,7 @@ def get_laboratory_by_id(laboratory_id):
         data_dict
     )
 
-def patch_laboratory(laboratory_id, laboratory_dict):
+def patch_laboratory(laboratory_id, data_dict):
     """
     Patch a laboratory
 
@@ -247,7 +254,17 @@ def patch_laboratory(laboratory_id, laboratory_dict):
         [type]: [description]
     """
     id_dict = {"laboratoryId": laboratory_id}
-    return db.patch_db_item(models.Laboratory, schemas.laboratory.ma_schema, id_dict, laboratory_dict)
+    return db.patch_db_item(models.Laboratory, schemas.laboratory.ma_schema, id_dict, data_dict)
+
+
+def update_laboratory(laboratory_id, data_dict):
+    id_dict = {"laboratoryId": laboratory_id}
+    return db.update_db_item(
+        models.Laboratory,
+        schemas.laboratory.ma_schema,
+        id_dict,
+        data_dict
+    )
 
 
 def delete_laboratory(laboratory_id):

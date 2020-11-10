@@ -19,10 +19,10 @@ def test_session_model():
 
     assert session.errors == {}
 
-def test_local_contact_model():
-    local_contact = schemas.lab_contact.LabContactSchema().dump(data.test_local_contact)
+def test_lab_contact_model():
+    lab_contact = schemas.lab_contact.LabContactSchema().dump(data.test_lab_contact)
 
-    assert local_contact.errors == {}
+    assert lab_contact.errors == {}
 
 def test_shipment():
     shipmenmt = schemas.shipping.ShippingSchema().dump(data.test_shippment)

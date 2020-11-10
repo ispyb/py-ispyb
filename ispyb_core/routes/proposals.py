@@ -100,7 +100,7 @@ class ProposalById(Resource):
     def put(self, proposal_id):
         """Fully updates proposal with id proposal_id"""
         current_app.logger.info("Update proposal %d" % proposal_id)
-        return update_proposal(proposal_id, api.payload)
+        return proposal.update_proposal(proposal_id, api.payload)
 
     @api.expect(proposal_schemas.f_schema)
     @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)

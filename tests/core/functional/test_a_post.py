@@ -42,6 +42,7 @@ def test_post(ispyb_core_app, ispyb_core_token):
     person_id = response.json["personId"]
     assert person_id
 
+    
     route = ispyb_core_app.config["API_ROOT"] + "/proposals"
     proposal_dict = data.test_proposal
     proposal_dict["personId"] = person_id
@@ -50,3 +51,13 @@ def test_post(ispyb_core_app, ispyb_core_token):
     assert response.status_code == 200, "[POST] %s failed" % route
     proposal_id = response.json["proposalId"]
     assert proposal_id
+
+    route = ispyb_core_app.config["API_ROOT"] + "/contacts/lab_contacts"
+    lab_contact_dict = data.test_lab_contact
+    lab_contact_dict["personId"] = person_id
+    lab_contact_dict["proposalId"] = proposal_id
+    response = client.post(route, json=lab_contact_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    lab_contact_id = response.json["labContactId"]
+    assert lab_contact_id

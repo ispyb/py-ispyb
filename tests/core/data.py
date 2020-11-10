@@ -71,7 +71,7 @@ test_data_collection = {
     "startTime": datetime.strptime("2016-01-14 12:40:34", "%Y-%m-%d %H:%M:%S"),
 }
 
-test_local_contact = {
+test_lab_contact = {
     "personId": 1,
     "cardName": "Card",
     "proposalId": 37027,

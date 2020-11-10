@@ -116,6 +116,42 @@ class LabContacts(Resource):
         """Adds a new lab contact"""
         return contacts.add_lab_contact(api.payload)
 
+@api.route("/lab_contacts/<int:lab_contact_id>", endpoint="lab_contact_by_id")
+@api.doc(security="apikey")
+class LabContactById(Resource):
+    """Allows to get/set/delete a lab_contact"""
+
+    @api.doc(description="lab_contact_id should be an integer ")
+    @api.marshal_with(lab_contact_schemas.f_schema)
+    @token_required
+    @authorization_required
+    def get(self, lab_contact_id):
+        """Returns a lab contact by lab_contact_id"""
+        params = {"labContactId": lab_contact_id}
+        return contacts.get_lab_contact_by_params(params)
+
+    @api.expect(lab_contact_schemas.f_schema)
+    @api.marshal_with(lab_contact_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def put(self, lab_contact_id):
+        """Fully updates person with id lab_contact_id"""
+        return contacts.update_lab_contact(lab_contact_id, api.payload)
+
+    @api.expect(lab_contact_schemas.f_schema)
+    @api.marshal_with(lab_contact_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def patch(self, lab_contact_id):
+        """Partially updates person with id lab_contact_id"""
+        return contacts.patch_lab_contact(lab_contact_id, api.payload)
+
+    @token_required
+    @authorization_required
+    def delete(self, lab_contact_id):
+        """Deletes lab contact by lab_contact_id"""
+        return contacts.delete_lab_contact(lab_contact_id)
+
 
 @api.route("/labs", endpoint="labs")
 @api.doc(security="apikey")

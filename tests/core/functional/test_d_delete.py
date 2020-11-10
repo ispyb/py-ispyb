@@ -37,4 +37,17 @@ def test_delete(ispyb_core_app, ispyb_core_token):
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/persons/" + str(person_id)
     response = client.delete(route, headers=headers)
     assert response.status_code == 200, "[DELETE] %s " % (route)
-    
+
+    route = ispyb_core_app.config["API_ROOT"] + "/contacts/lab_contacts"
+    response = client.get(route, headers=headers)
+    lab_contact_id = response.json["data"]["rows"][-1]["labContactId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/contacts/lab_contacts/" + str(lab_contact_id)
+    response = client.delete(route, headers=headers)
+    assert response.status_code == 200, "[DELETE] %s " % (route)
+
+    route = ispyb_core_app.config["API_ROOT"] + "/contacts/labs"
+    response = client.get(route, headers=headers)
+    lab_id = response.json["data"]["rows"][-1]["laboratoryId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/contacts/labs/" + str(lab_id)
+    response = client.delete(route, headers=headers)
+    assert response.status_code == 200, "[DELETE] %s " % (route)
