@@ -22,33 +22,31 @@
 from tests.core import data
 
 
-def test_laboratory(ispyb_core_app, ispyb_core_token):
+def test_post(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    headers = {
-        "Authorization": "Bearer " + ispyb_core_token
-    }
-    route = ispyb_core_app.config["API_ROOT"] + "/contacts/labs"
-    response = client.post(route, json=data.test_laboratory, headers=headers)
-
-    assert response.status_code == 200, "Wrong status code"
-
-    resp_data = response.json
-    lab_id = resp_data["laboratoryId"]
-    assert lab_id
-
-    response = client.get(route, headers=headers)
-    assert response.status_code == 200, "Wrong status code"
-
-    route = ispyb_core_app.config["API_ROOT"] + "/contacts/labs/" + str(lab_id)
-    mod_laboratory = {
-        "name": "Modified name"
-    }
-    response = client.patch(route, json=mod_laboratory, headers=headers)
-
-    assert response.status_code == 200, "Wrong status code"
-    response = client.delete(route, headers=headers)
-
-    assert response.status_code == 200, "Wrong status code"
+    headers = {"Authorization": "Bearer " + ispyb_core_token}
     
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/labs"
     response = client.post(route, json=data.test_laboratory, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    laboratory_id = response.json["laboratoryId"]
+    assert laboratory_id
+
+    route = ispyb_core_app.config["API_ROOT"] + "/contacts/persons"
+    person_dict = data.get_test_person()
+    person_dict["laboratoryId"] = laboratory_id
+    response = client.post(route, json=person_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    person_id = response.json["personId"]
+    assert person_id
+
+    route = ispyb_core_app.config["API_ROOT"] + "/proposals"
+    proposal_dict = data.test_proposal
+    proposal_dict["personId"] = person_id
+    response = client.post(route, json=proposal_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    proposal_id = response.json["proposalId"]
+    assert proposal_id

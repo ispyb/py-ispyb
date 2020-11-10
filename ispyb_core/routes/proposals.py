@@ -74,7 +74,7 @@ class Proposals(Resource):
         """Adds a new proposal"""
 
         api.logger.info("Inserts a new proposal")
-        return proposal.add_proposal(api)
+        return proposal.add_proposal(api.payload)
 
 
 @api.route("/<int:proposal_id>", endpoint="proposal_by_id")
@@ -100,16 +100,7 @@ class ProposalById(Resource):
     def put(self, proposal_id):
         """Fully updates proposal with id proposal_id"""
         current_app.logger.info("Update proposal %d" % proposal_id)
-        result = proposal.update_proposal(proposal_id, api.payload)
-        if result:
-            return (
-                {"message": "Proposal with id %d updated" % proposal_id},
-                HTTPStatus.OK,
-            )
-        else:
-            api.abort(
-                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
-            )
+        return update_proposal(proposal_id, api.payload)
 
     @api.expect(proposal_schemas.f_schema)
     @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)

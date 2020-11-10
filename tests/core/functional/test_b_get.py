@@ -22,28 +22,29 @@
 from tests.core.data import test_proposal
 
 
+
 def test_get(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"]
-    
-    rel_routes = [
-        "/autoproc",
-        "/autoproc/programs",
-        "/autoproc/programs/attachments",
+
+    endpoint_list = [
+        "/proposals",
+        "/proposals?offset=1&limit=1",
+        "/proposals?proposalCode=cm",
+        "/contacts/labs",
+        "/contacts/labs?offset=1&limit=1",
+        "/contacts/persons",
+        "/contacts/persons?offset=1&limit=1",
+        "/contacts/persons?login=boaty",
+        "/data_collections",
+        "/data_collections?offset=1&limit=1"
     ]
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
-    for rel_route in rel_routes:
-        print(route_root + rel_route)
-        response = client.get(route_root + rel_route, headers=headers)
+
+    for endpoint in endpoint_list:
+        route = ispyb_core_app.config["API_ROOT"] + endpoint
+        response = client.get(route, headers=headers)
         data = response.json
-        assert response.status_code == 200, "Wrong status code"
-        assert len(data["data"]["rows"]) > 0, "No data returned"
 
-def test_put(ispyb_core_app, ispyb_core_token):
-    client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"] + "/proposals"
-    ispyb_core_token = "MasterToken"
-
-    # TODO Insert all data before posting a new proposal
-    return
+        assert response.status_code == 200, "[GET] %s " % (route)
+        assert data["data"]["rows"], "No data returned"

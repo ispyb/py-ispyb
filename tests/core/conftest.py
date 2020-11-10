@@ -33,6 +33,9 @@ sys.path.insert(0, ROOT_DIR)
 
 from app import create_app
 
+
+
+
 @pytest.fixture(scope="session")
 def ispyb_core_app():
     app = create_app("ispyb_core_config.yml", "test")

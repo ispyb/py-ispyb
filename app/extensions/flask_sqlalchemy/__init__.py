@@ -286,15 +286,17 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             [type]: [description]
         """
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
-        if not db_item:
-            return None
-        else:
-            try:
-                self.session.delete(db_item)
-                self.session.commit()
-                return True
-            except BaseException as ex:
-                print(ex)
-                # log.exception(str(ex))
-                self.session.rollback()
+        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
+            description="There is no data with item id %s" % str(item_id_dict)
+        )
+
+        try:
+            self.session.delete(db_item)
+            self.session.commit()
+            return True
+        except Exception as ex:
+            print(ex)
+            # log.exception(str(ex))
+            self.session.rollback()
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(ex))
+

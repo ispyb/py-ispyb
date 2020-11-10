@@ -19,36 +19,22 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-from tests.core import data
-
-
-def test_person(ispyb_core_app, ispyb_core_token):
+def test_delete(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    headers = {
-        "Authorization": "Bearer " + ispyb_core_token
-    }
-    route = ispyb_core_app.config["API_ROOT"] + "/contacts/persons"
-    response = client.post(route, json=data.get_test_person(), headers=headers)
+    headers = {"Authorization": "Bearer " + ispyb_core_token}
 
-    assert response.status_code == 200, "Wrong status code"
-
-    resp_data = response.json
-    lab_id = resp_data["laboratoryId"]
-    assert lab_id
-
+    route = ispyb_core_app.config["API_ROOT"] + "/proposals"
     response = client.get(route, headers=headers)
-    assert response.status_code == 200, "Wrong status code"
+    proposal_id = response.json["data"]["rows"][-1]["proposalId"]
 
-    route = ispyb_core_app.config["API_ROOT"] + "/contacts/persons/" + str(lab_id)
-    mod_laboratory = {
-        "familyName": "Other name"
-    }
-    response = client.patch(route, json=mod_laboratory, headers=headers)
-
-    assert response.status_code == 200, "Wrong status code"
+    route = ispyb_core_app.config["API_ROOT"] + "/proposals/" + str(proposal_id)
     response = client.delete(route, headers=headers)
+    assert response.status_code == 200, "[DELTE] %s " % (route)
 
-    assert response.status_code == 200, "Wrong status code"
-    
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/persons"
-    response = client.post(route, json=data.get_test_person(), headers=headers)
+    response = client.get(route, headers=headers)
+    person_id = response.json["data"]["rows"][-1]["personId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/contacts/persons/" + str(person_id)
+    response = client.delete(route, headers=headers)
+    assert response.status_code == 200, "[DELETE] %s " % (route)
+    
