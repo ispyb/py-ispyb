@@ -32,11 +32,13 @@ def test_get(ispyb_core_app, ispyb_core_token):
         "/proposals?proposalCode=cm",
         "/contacts/labs",
         "/contacts/labs?offset=1&limit=1",
+        "/contacts/labs?city=City",
         "/contacts/persons",
         "/contacts/persons?offset=1&limit=1",
         "/contacts/persons?login=boaty",
         "/data_collections",
-        "/data_collections?offset=1&limit=1"
+        "/data_collections?offset=1&limit=1",
+
     ]
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
@@ -46,5 +48,7 @@ def test_get(ispyb_core_app, ispyb_core_token):
         response = client.get(route, headers=headers)
         data = response.json
 
+        print("[GET] %s : %s" % (route, str(data)))
+
         assert response.status_code == 200, "[GET] %s " % (route)
-        assert data["data"]["rows"], "No data returned"
+        assert data, "[GET] %s No data returned" % route
