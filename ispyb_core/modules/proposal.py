@@ -134,7 +134,12 @@ def update_proposal(proposal_id, data_dict):
         [type]: [description]
     """
     id_dict = {"proposalId": proposal_id}
-    return db.update_db_item(models.Proposal, id_dict, data_dict)
+    return db.update_db_item(
+        models.Proposal,
+        schemas.proposal.ma_schema,
+        id_dict,
+        data_dict
+    )
 
 
 def patch_proposal(proposal_id, proposal_dict):
@@ -149,7 +154,12 @@ def patch_proposal(proposal_id, proposal_dict):
         [type]: [description]
     """
     id_dict = {"proposalId": proposal_id}
-    return db.patch_db_item(models.Proposal, id_dict, proposal_dict)
+    return db.patch_db_item(
+        models.Proposal,
+        schemas.proposal.ma_schema,
+        id_dict,
+        proposal_dict
+    )
 
 
 def delete_proposal(proposal_id):

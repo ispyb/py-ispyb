@@ -22,15 +22,7 @@
 from tests.core import data
 
 
-def test_get(ispyb_core_app, ispyb_core_token):
-    client = ispyb_core_app.test_client()
-    route_root = ispyb_core_app.config["API_ROOT"] + "/contacts/labs"
-
-    headers = {"Authorization": "Bearer " + ispyb_core_token}
-    response = client.get(route_root, headers=headers)
-    assert response.status_code == 200, "Wrong status code"
-
-def test_put_patch_delete(ispyb_core_app, ispyb_core_token):
+def test_laboratory(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
     headers = {
         "Authorization": "Bearer " + ispyb_core_token
@@ -44,6 +36,9 @@ def test_put_patch_delete(ispyb_core_app, ispyb_core_token):
     lab_id = resp_data["laboratoryId"]
     assert lab_id
 
+    response = client.get(route, headers=headers)
+    assert response.status_code == 200, "Wrong status code"
+
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/labs/" + str(lab_id)
     mod_laboratory = {
         "name": "Modified name"
@@ -54,6 +49,6 @@ def test_put_patch_delete(ispyb_core_app, ispyb_core_token):
     response = client.delete(route, headers=headers)
 
     assert response.status_code == 200, "Wrong status code"
-
+    
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/labs"
     response = client.post(route, json=data.test_laboratory, headers=headers)

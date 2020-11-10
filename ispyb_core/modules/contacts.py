@@ -86,6 +86,60 @@ def add_person(data_dict):
     )
 
 
+def update_person(person_id, data_dict):
+    """
+    Updates person
+
+    Args:
+        person_id ([type]): [description]
+        person_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"personId": person_id}
+    return db.update_db_item(
+        models.Person,
+        schemas.person.ma_schema,
+        id_dict, 
+        data_dict
+    )
+
+
+def patch_person(person_id, person_dict):
+    """
+    Patch a person
+
+    Args:
+        person_id ([type]): [description]
+        person_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"personId": person_id}
+    return db.patch_db_item(
+        models.Person,
+        schemas.person.ma_schema,
+        id_dict,
+        person_dict
+    )
+
+
+def delete_person(person_id):
+    """Deletes person item from db
+
+    Args:
+        person_id (int): personId column in db
+
+    Returns:
+        bool: True if the person exists and deleted successfully,
+        otherwise return False
+    """
+    id_dict = {"personId": person_id}
+    return db.delete_db_item(models.Person, id_dict)
+
+
 def get_lab_contacts(request):
     """Returns shipments by query parameters"""
 
@@ -193,7 +247,7 @@ def patch_laboratory(laboratory_id, laboratory_dict):
         [type]: [description]
     """
     id_dict = {"laboratoryId": laboratory_id}
-    return db.patch_db_item(models.Laboratory, id_dict, laboratory_dict)
+    return db.patch_db_item(models.Laboratory, schemas.laboratory.ma_schema, id_dict, laboratory_dict)
 
 
 def delete_laboratory(laboratory_id):

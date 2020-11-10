@@ -1,4 +1,5 @@
 from datetime import datetime
+import uuid
 
 test_proposal = {
     "proposalCode": "MX",
@@ -99,13 +100,31 @@ test_shippment = {
 }
 
 test_laboratory = {
-  "laboratoryUUID": "UUID",
-  "name": "Test lab",
-  "address": "Test address",
-  "city": "City",
-  "country": "Country",
-  "url": "url",
-  "organization": "Test org",
-  "laboratoryPk": 0,
-  "postcode": "Test code"
+    "laboratoryUUID": "UUID",
+    "name": "Test lab",
+    "address": "Test address",
+    "city": "City",
+    "country": "Country",
+    "url": "url",
+    "organization": "Test org",
+    "laboratoryPk": 0,
+    "postcode": "Test code"
 }
+
+test_person = {
+  "laboratoryId": 1,
+  "personUUID": "Person uuid",
+  "familyName": "Family",
+  "givenName": "Name",
+  "title": "Dr",
+  "emailAddress": "email",
+  "phoneNumber": "2233",
+  "login": "login",
+  "faxNumber": "222",
+  "cache": "string",
+}
+
+def get_test_person():
+    test_person_dict = test_person
+    test_person_dict["login"] = uuid.uuid4().hex.upper()[0:6]
+    return test_person_dict
