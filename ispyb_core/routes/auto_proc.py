@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -26,8 +27,12 @@ from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.schemas import auto_proc as auto_proc_schemas
 from ispyb_core.schemas import auto_proc_program as auto_proc_program_schemas
-from ispyb_core.schemas import auto_proc_program_attachment as auto_proc_program_attachment_schemas
-from ispyb_core.schemas import auto_proc_program_message as auto_proc_program_message_schemas
+from ispyb_core.schemas import (
+    auto_proc_program_attachment as auto_proc_program_attachment_schemas,
+)
+from ispyb_core.schemas import (
+    auto_proc_program_message as auto_proc_program_message_schemas,
+)
 from ispyb_core.schemas import auto_proc_status as auto_proc_status_schemas
 from ispyb_core.modules import auto_proc
 
@@ -50,12 +55,7 @@ class AutoProcs(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """
-        Returns all auto proc entries.
-
-        Returns:
-            dict: response dict.
-        """
+        """Returns auto proc entries"""
         return auto_proc.get_auto_procs(request)
 
     @api.expect(auto_proc_schemas.f_schema)
@@ -67,7 +67,7 @@ class AutoProcs(Resource):
     def post(self):
         """Adds a new auto proc"""
 
-        return auto_proc.add_auto_proc(api)
+        return auto_proc.add_auto_proc(api.payload)
 
 
 @api.route("/<int:auto_proc_id>", endpoint="auto_proc_by_id")
@@ -86,6 +86,7 @@ class AutoProcById(Resource):
         """Returns a auto_proc by auto_procId"""
         return auto_proc.get_auto_proc_by_id(auto_proc_id)
 
+
 @api.route("/status", endpoint="auto_proc_status")
 @api.doc(security="apikey")
 class AutoProcStatus(Resource):
@@ -94,12 +95,7 @@ class AutoProcStatus(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """
-        Returns all auto_proc_status entries.
-
-        Returns:
-            dict: response dict.
-        """
+        """Returns all auto_proc_status entries"""
         return auto_proc.get_auto_proc_status(request)
 
     @api.expect(auto_proc_program_schemas.f_schema)
@@ -111,25 +107,21 @@ class AutoProcStatus(Resource):
     def post(self):
         """Adds a new auto proc program"""
 
-        return auto_proc.add_auto_proc_status(api)
+        return auto_proc.add_auto_proc_status(api.payload)
+
 
 @api.route("/status/<int:status_id>", endpoint="auto_proc_status_by_id")
 @api.param("status_id", "status id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="auto_proc_status not found."
-    )
+@api.response(code=HTTPStatus.NOT_FOUND, description="auto_proc_status not found.")
 class AutoProcStatusById(Resource):
 
     """Allows to get/set/delete a auto_proc_status"""
 
     @api.doc(description="status_id should be an integer ")
     @api.marshal_with(
-        auto_proc_status_schemas.f_schema,
-        skip_none=True, 
-        code=HTTPStatus.OK
-        )
+        auto_proc_status_schemas.f_schema, skip_none=True, code=HTTPStatus.OK
+    )
     @token_required
     @authorization_required
     def get(self, status_id):
@@ -145,12 +137,7 @@ class AutoProcPrograms(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """
-        Returns all auto_proc_program entries.
-
-        Returns:
-            dict: response dict.
-        """
+        """Returns all auto_proc_program entries"""
         return auto_proc.get_auto_proc_programs(request)
 
     @api.expect(auto_proc_program_schemas.f_schema)
@@ -162,30 +149,27 @@ class AutoProcPrograms(Resource):
     def post(self):
         """Adds a new auto proc program"""
 
-        return auto_proc.add_auto_proc_program(api)
+        return auto_proc.add_auto_proc_program(api.payload)
+
 
 @api.route("/programs/<int:program_id>", endpoint="program_by_id")
 @api.param("program_id", "program id (integer)")
 @api.doc(security="apikey")
-@api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="auto_proc_program not found."
-    )
+@api.response(code=HTTPStatus.NOT_FOUND, description="auto_proc_program not found.")
 class AutoProcProgramById(Resource):
 
     """Allows to get/set/delete a auto_proc_program"""
 
     @api.doc(description="program_id should be an integer ")
     @api.marshal_with(
-        auto_proc_program_schemas.f_schema,
-        skip_none=True, 
-        code=HTTPStatus.OK
-        )
+        auto_proc_program_schemas.f_schema, skip_none=True, code=HTTPStatus.OK
+    )
     @token_required
     @authorization_required
     def get(self, program_id):
         """Returns a auto_proc by auto_procId"""
         return auto_proc.get_auto_proc_program_by_id(program_id)
+
 
 @api.route("/programs/attachments", endpoint="auto_proc_program_attachments")
 @api.doc(security="apikey")
@@ -195,12 +179,7 @@ class AutoProcProgramAttachments(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """
-        Returns all auto_proc_program attachemnt entries.
-
-        Returns:
-            dict: response dict.
-        """
+        """Returns all auto_proc_program attachemnt entries"""
         return auto_proc.get_auto_proc_program_attachments(request)
 
     @api.expect(auto_proc_program_attachment_schemas.f_schema)
@@ -212,16 +191,15 @@ class AutoProcProgramAttachments(Resource):
     def post(self):
         """Adds a new auto proc program"""
 
-        return auto_proc.add_auto_proc_program_attachment(api)
+        return auto_proc.add_auto_proc_program_attachment(api.payload)
 
 
 @api.route("/programs/attachments/<int:attachment_id>", endpoint="attachment_by_id")
 @api.param("attachment_id", "attachment id (integer)")
 @api.doc(security="apikey")
 @api.response(
-    code=HTTPStatus.NOT_FOUND,
-    description="auto_proc_program_attachment not found."
-    )
+    code=HTTPStatus.NOT_FOUND, description="auto_proc_program_attachment not found."
+)
 class AutoProcProgramAttachmentById(Resource):
 
     """Allows to get/set/delete a auto_proc_program"""
@@ -229,9 +207,9 @@ class AutoProcProgramAttachmentById(Resource):
     @api.doc(description="attachment_id should be an integer ")
     @api.marshal_with(
         auto_proc_program_attachment_schemas.f_schema,
-        skip_none=True, 
-        code=HTTPStatus.OK
-        )
+        skip_none=True,
+        code=HTTPStatus.OK,
+    )
     @token_required
     @authorization_required
     def get(self, attachment_id):

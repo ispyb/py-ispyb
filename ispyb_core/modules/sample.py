@@ -55,9 +55,7 @@ def get_sample_by_id(sample_id):
     """
     data_dict = {"sampleId": sample_id}
     return db.get_db_item_by_params(
-        models.BLSample,
-        schemas.sample.ma_schema,
-        data_dict
+        models.BLSample, schemas.sample.ma_schema, data_dict
     )
 
 
@@ -71,8 +69,4 @@ def add_sample(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.BLSample,
-        schemas.sample.ma_schema,
-        data_dict
-    )
+    return db.add_db_item(models.BLSample, schemas.sample.ma_schema, data_dict)

@@ -95,7 +95,9 @@ def update_shipment(shipment_id, data_dict):
         [type]: [description]
     """
     id_dict = {"shippingId": shipment_id}
-    return db.update_db_item(models.Shipping, schemas.shipping.ma_schema, id_dict, data_dict)
+    return db.update_db_item(
+        models.Shipping, schemas.shipping.ma_schema, id_dict, data_dict
+    )
 
 
 def patch_shipment(shipment_id, data_dict):
@@ -110,7 +112,9 @@ def patch_shipment(shipment_id, data_dict):
         [type]: [description]
     """
     id_dict = {"shippingId": shipment_id}
-    return db.patch_db_item(models.Shipping, schemas.shipping.ma_schema, id_dict, data_dict)
+    return db.patch_db_item(
+        models.Shipping, schemas.shipping.ma_schema, id_dict, data_dict
+    )
 
 
 def delete_shipment(shipment_id):

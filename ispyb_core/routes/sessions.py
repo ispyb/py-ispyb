@@ -46,20 +46,7 @@ class Sessions(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """Returns list of sessions
-
-        /ispyb/api/v1/sessions: returns all sessions
-        /ispyb/api/v1/sessions?limit=10: returns first 10 sessions
-        /ispyb/api/v1/sessions?offset=10: returns sessions 10..30
-        (default limit defined in config.py)
-        /ispyb/api/v1/sessions?offset=10&limit=10: returns 10 sessions
-        starting from index 10
-
-        Returns:
-            list: list of sessions.
-        """
-
-        # TODO add decorator @paginate
+        """Returns list of sessions"""
         return session.get_sessions(request)
 
     @api.expect(session_schemas.f_schema)
@@ -106,6 +93,7 @@ class SessionInfoById(Resource):
         """Returns a full description of a session by sessionId"""
         return session.get_session_info_by_id(session_id)
 
+
 @api.route("/date", endpoint="sessions_by_date")
 @api.doc(security="apikey")
 class SessionsByDateBeamline(Resource):
@@ -127,8 +115,7 @@ class SessionsByDateBeamline(Resource):
 
         if start_date is None and end_date is None:
             abort(
-                HTTPStatus.NOT_ACCEPTABLE,
-                "No start_date or end_date argument provided"
+                HTTPStatus.NOT_ACCEPTABLE, "No start_date or end_date argument provided"
             )
 
         if start_date:
@@ -137,20 +124,21 @@ class SessionsByDateBeamline(Resource):
             except ValueError as ex:
                 abort(
                     HTTPStatus.NOT_ACCEPTABLE,
-                    "start_date should be in YYYYMMDD format (%s)" % str(ex)
+                    "start_date should be in YYYYMMDD format (%s)" % str(ex),
                 )
-        
+
         if end_date:
             try:
                 end_date = datetime.strptime(end_date, "%Y%m%d")
             except ValueError as ex:
                 abort(
                     HTTPStatus.NOT_ACCEPTABLE,
-                    "end_date should be in YYYYMMDD format (%s)" % str(ex)
+                    "end_date should be in YYYYMMDD format (%s)" % str(ex),
                 )
 
-
         return session.get_sessions_by_date(start_date, end_date, beamline)
+
+
 # getSessionsByDate(startDate, endDate)
 # getSessionsByDateAndBeamline(startDate, endDate, beamline)
 # getSessionsByProposalAndDate(startDate, endDate, proposal)

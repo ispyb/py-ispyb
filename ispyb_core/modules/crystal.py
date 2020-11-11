@@ -54,9 +54,7 @@ def get_crystal_by_id(crystal_id):
     """
     data_dict = {"crystalId": crystal_id}
     return db.get_db_item_by_params(
-        models.Crystal,
-        schemas.crystal.ma_schema,
-        data_dict
+        models.Crystal, schemas.crystal.ma_schema, data_dict
     )
 
 
@@ -70,8 +68,4 @@ def add_crystal(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Crystal,
-        schemas.crystal.ma_schema,
-        data_dict
-    )
+    return db.add_db_item(models.Crystal, schemas.crystal.ma_schema, data_dict)

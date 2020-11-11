@@ -49,11 +49,7 @@ def get_person_by_params(param_dict):
     Returns:
         dict: info about person as dict
     """
-    return db.get_db_item_by_params(
-        models.Person,
-        schemas.person.ma_schema,
-        param_dict
-    )
+    return db.get_db_item_by_params(models.Person, schemas.person.ma_schema, param_dict)
 
 
 def get_person_id_by_login(login_name):
@@ -70,6 +66,7 @@ def get_person_id_by_login(login_name):
         if person_item:
             return person_item["personId"]
 
+
 def add_person(data_dict):
     """Adds person item to db.
 
@@ -79,11 +76,7 @@ def add_person(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Person,
-        schemas.person.ma_schema,
-        data_dict
-    )
+    return db.add_db_item(models.Person, schemas.person.ma_schema, data_dict)
 
 
 def update_person(person_id, data_dict):
@@ -99,10 +92,7 @@ def update_person(person_id, data_dict):
     """
     id_dict = {"personId": person_id}
     return db.update_db_item(
-        models.Person,
-        schemas.person.ma_schema,
-        id_dict,
-        data_dict
+        models.Person, schemas.person.ma_schema, id_dict, data_dict
     )
 
 
@@ -119,10 +109,7 @@ def patch_person(person_id, person_dict):
     """
     id_dict = {"personId": person_id}
     return db.patch_db_item(
-        models.Person,
-        schemas.person.ma_schema,
-        id_dict,
-        person_dict
+        models.Person, schemas.person.ma_schema, id_dict, person_dict
     )
 
 
@@ -152,39 +139,30 @@ def get_lab_contacts(request):
         query_params,
     )
 
+
 def get_lab_contact_by_params(param_dict):
     return db.get_db_item_by_params(
-        models.LabContact,
-        schemas.lab_contact.ma_schema,
-        param_dict
+        models.LabContact, schemas.lab_contact.ma_schema, param_dict
     )
 
+
 def add_lab_contact(data_dict):
-    return db.add_db_item(
-        models.LabContact,
-        schemas.lab_contact.ma_schema,
-        data_dict
-    )
+    return db.add_db_item(models.LabContact, schemas.lab_contact.ma_schema, data_dict)
 
 
 def update_lab_contact(lab_contact_id, data_dict):
     id_dict = {"labContactId": lab_contact_id}
     return db.update_db_item(
-        models.LabContact,
-        schemas.lab_contact.ma_schema,
-        id_dict,
-        data_dict
+        models.LabContact, schemas.lab_contact.ma_schema, id_dict, data_dict
     )
 
 
 def patch_lab_contact(lab_contact_id, data_dict):
     id_dict = {"labContactId": lab_contact_id}
     return db.patch_db_item(
-        models.LabContact,
-        schemas.lab_contact.ma_schema,
-        id_dict,
-        data_dict
+        models.LabContact, schemas.lab_contact.ma_schema, id_dict, data_dict
     )
+
 
 def delete_lab_contact(lab_contact_id):
     id_dict = {"labContactId": lab_contact_id}
@@ -219,11 +197,7 @@ def add_laboratory(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Laboratory,
-        schemas.laboratory.ma_schema,
-        data_dict
-    )
+    return db.add_db_item(models.Laboratory, schemas.laboratory.ma_schema, data_dict)
 
 
 def get_laboratory_by_id(laboratory_id):
@@ -237,10 +211,9 @@ def get_laboratory_by_id(laboratory_id):
     """
     data_dict = {"laboratoryId": laboratory_id}
     return db.get_db_item_by_params(
-        models.Laboratory,
-        schemas.laboratory.ma_schema,
-        data_dict
+        models.Laboratory, schemas.laboratory.ma_schema, data_dict
     )
+
 
 def patch_laboratory(laboratory_id, data_dict):
     """
@@ -254,16 +227,15 @@ def patch_laboratory(laboratory_id, data_dict):
         [type]: [description]
     """
     id_dict = {"laboratoryId": laboratory_id}
-    return db.patch_db_item(models.Laboratory, schemas.laboratory.ma_schema, id_dict, data_dict)
+    return db.patch_db_item(
+        models.Laboratory, schemas.laboratory.ma_schema, id_dict, data_dict
+    )
 
 
 def update_laboratory(laboratory_id, data_dict):
     id_dict = {"laboratoryId": laboratory_id}
     return db.update_db_item(
-        models.Laboratory,
-        schemas.laboratory.ma_schema,
-        id_dict,
-        data_dict
+        models.Laboratory, schemas.laboratory.ma_schema, id_dict, data_dict
     )
 
 

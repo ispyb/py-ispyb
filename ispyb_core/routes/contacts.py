@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -94,7 +95,6 @@ class PersonById(Resource):
         return contacts.delete_person(person_id)
 
 
-
 @api.route("/lab_contacts", endpoint="lab_contacts")
 @api.doc(security="apikey")
 class LabContacts(Resource):
@@ -115,6 +115,7 @@ class LabContacts(Resource):
     def post(self):
         """Adds a new lab contact"""
         return contacts.add_lab_contact(api.payload)
+
 
 @api.route("/lab_contacts/<int:lab_contact_id>", endpoint="lab_contact_by_id")
 @api.doc(security="apikey")

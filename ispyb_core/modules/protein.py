@@ -54,9 +54,7 @@ def get_protein_by_id(protein_id):
     """
     data_dict = {"proteinId": protein_id}
     return db.get_db_item_by_params(
-        models.Protein,
-        schemas.protein.ma_schema,
-        data_dict
+        models.Protein, schemas.protein.ma_schema, data_dict
     )
 
 
@@ -70,9 +68,4 @@ def add_protein(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Protein,
-        schemas.protein.ma_schema,
-        data_dict
-    )
-
+    return db.add_db_item(models.Protein, schemas.protein.ma_schema, data_dict)

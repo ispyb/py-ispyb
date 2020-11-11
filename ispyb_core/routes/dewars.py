@@ -35,7 +35,6 @@ api = Namespace("Dewars", description="Dewar related namespace", path="/dewars")
 api_v1.add_namespace(api)
 
 
-
 @api.route("", endpoint="dewars")
 @api.doc(security="apikey")
 class Dewars(Resource):
@@ -52,7 +51,7 @@ class Dewars(Resource):
     @api.marshal_with(dewar_schemas.f_schema, code=201)
     def post(self):
         """Adds a new sample item"""
-        dewar.add_dewar(api)
+        dewar.add_dewar(api.payload)
 
 
 @api.route("/<int:dewar_id>", endpoint="dewar_by_id")
@@ -69,4 +68,3 @@ class DewarById(Resource):
     def get(self, dewar_id):
         """Returns a sample by sampleId"""
         return dewar.get_dewar_by_id(dewar_id)
-        

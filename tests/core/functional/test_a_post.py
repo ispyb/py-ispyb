@@ -60,4 +60,5 @@ def test_post(ispyb_core_app, ispyb_core_token):
 
     assert response.status_code == 200, "[POST] %s failed" % route
     lab_contact_id = response.json["labContactId"]
+    print("LabContact id: %d" % lab_contact_id)
     assert lab_contact_id

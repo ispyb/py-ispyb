@@ -54,9 +54,7 @@ def get_container_by_id(container_id):
     """
     id_dict = {"containerId": container_id}
     return db.get_db_item_by_params(
-        models.Container,
-        schemas.container.ma_schema, 
-        id_dict
+        models.Container, schemas.container.ma_schema, id_dict
     )
 
 
@@ -70,8 +68,4 @@ def add_container(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Container,
-        schemas.container.ma_schema,
-        data_dict
-        )
+    return db.add_db_item(models.Container, schemas.container.ma_schema, data_dict)

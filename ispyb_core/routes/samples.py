@@ -53,7 +53,7 @@ class Sample(Resource):
     @api.marshal_with(sample_schemas.f_schema, code=201)
     def post(self):
         """Adds a new sample item"""
-        sample.add_sample(api)
+        sample.add_sample(api.payload)
 
 
 @api.route("/<int:sample_id>", endpoint="sample_by_id")
@@ -89,7 +89,7 @@ class Crystals(Resource):
     @authorization_required
     def post(self):
         """Adds a new crystal item"""
-        crystal.add_crystal(api)
+        crystal.add_crystal(api.payload)
 
 
 @api.route("/crystals/<int:crystal_id>", endpoint="crystal_by_id")
@@ -106,6 +106,7 @@ class CrystalById(Resource):
     def get(self, crystal_id):
         """Returns a crystal by crystalId"""
         return crystal.get_crystal_by_id(crystal_id)
+
 
 @api.route("/proteins", endpoint="proteins")
 @api.doc(security="apikey")
@@ -124,4 +125,4 @@ class Proteins(Resource):
     @authorization_required
     def post(self):
         """Adds a new protein item"""
-        protein.add_protein(api)
+        protein.add_protein(api.payload)

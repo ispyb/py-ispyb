@@ -52,11 +52,7 @@ class DataColletions(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """Returns list of data_collections
-
-        Returns:
-            list: list of data_collections.
-        """
+        """Returns list of data_collections"""
         return data_collection.get_data_collections(request)
 
 
@@ -90,11 +86,8 @@ class DataCollectionGroups(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """Returns list of data_collection_groups
-
-        Returns:
-            list: list of data_collections.
-        """
+        """Returns list of data_collection_groups"""
         return data_collection.get_data_collection_groups(request)
+
 
 # DatacollectionsByShipment ?do we need this?
