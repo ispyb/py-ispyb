@@ -46,8 +46,8 @@ class SyncAll(Resource):
 
     """Sync with user office"""
 
-    # @token_required
-    # @authorization_required
+    @token_required
+    @authorization_required
     def post(self):
         """Sync with user office"""
 
@@ -67,8 +67,8 @@ class UpdateProposal(Resource):
 
     """Sync with user office"""
 
-    # @token_required
-    # @authorization_required
+    @token_required
+    @authorization_required
     @api.doc(
         description="proposal_code should be a string, proposal_number should be an integer"
     )

@@ -51,7 +51,7 @@ def test_get(ispyb_core_app, ispyb_core_token):
         response = client.get(route, headers=headers)
         data = response.json
 
-        print("[GET] %s : %s" % (route, str(data)))
+        #print("[GET] %s : %s" % (route, str(data)))
 
         assert response.status_code == 200, "[GET] %s " % (route)
         assert data, "[GET] %s No data returned" % route

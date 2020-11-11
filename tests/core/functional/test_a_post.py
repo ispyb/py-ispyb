@@ -33,6 +33,7 @@ def test_post(ispyb_core_app, ispyb_core_token):
     laboratory_id = response.json["laboratoryId"]
     assert laboratory_id
 
+    print("Laboratory id: %d" % laboratory_id)
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/persons"
     person_dict = data.get_test_person()
     person_dict["laboratoryId"] = laboratory_id
@@ -41,8 +42,8 @@ def test_post(ispyb_core_app, ispyb_core_token):
     assert response.status_code == 200, "[POST] %s failed" % route
     person_id = response.json["personId"]
     assert person_id
+    print("Person id: %d" % person_id)
 
-    
     route = ispyb_core_app.config["API_ROOT"] + "/proposals"
     proposal_dict = data.test_proposal
     proposal_dict["personId"] = person_id
@@ -51,6 +52,7 @@ def test_post(ispyb_core_app, ispyb_core_token):
     assert response.status_code == 200, "[POST] %s failed" % route
     proposal_id = response.json["proposalId"]
     assert proposal_id
+    print("Proposal id: %d" % proposal_id)
 
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/lab_contacts"
     lab_contact_dict = data.test_lab_contact
