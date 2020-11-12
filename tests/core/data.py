@@ -1,4 +1,5 @@
 from datetime import datetime
+import uuid
 
 test_proposal = {
     "proposalCode": "MX",
@@ -6,7 +7,7 @@ test_proposal = {
     "proposalType": "MX",
     "personId": 1,
     "proposalNumber": "111",
-    "bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%Y-%m-%d %H:%M:%S"),
+    #"bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%Y-%m-%d %H:%M:%S"),
     "state": "Open",
 }
 
@@ -67,10 +68,10 @@ test_data_collection = {
     "startImageNumber": 1,
     "rotationAxis": "Omega",
     "exposureTime": 0.02,
-    "startTime": datetime.strptime( "2016-01-14 12:40:34", "%Y-%m-%d %H:%M:%S"),
+    "startTime": datetime.strptime("2016-01-14 12:40:34", "%Y-%m-%d %H:%M:%S"),
 }
 
-test_local_contact = {
+test_lab_contact = {
     "personId": 1,
     "cardName": "Card",
     "proposalId": 37027,
@@ -97,3 +98,33 @@ test_shippment = {
     "deliveryAgent_label": "Label",
     "physicalLocation": "Store",
 }
+
+test_laboratory = {
+    "laboratoryUUID": "UUID",
+    "name": "Test lab",
+    "address": "Test address",
+    "city": "City",
+    "country": "Country",
+    "url": "url",
+    "organization": "Test org",
+    "laboratoryPk": 0,
+    "postcode": "Test code"
+}
+
+test_person = {
+  "laboratoryId": 1,
+  "personUUID": "Person uuid",
+  "familyName": "Family",
+  "givenName": "Name",
+  "title": "Dr",
+  "emailAddress": "email",
+  "phoneNumber": "2233",
+  "login": "login",
+  "faxNumber": "222",
+  "cache": "string",
+}
+
+def get_test_person():
+    test_person_dict = test_person
+    test_person_dict["login"] = uuid.uuid4().hex.upper()[0:6]
+    return test_person_dict

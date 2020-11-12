@@ -39,6 +39,7 @@ def get_auto_procs(request):
         query_params,
     )
 
+
 def get_auto_proc_by_id(auto_proc_id):
     """
     Returns auto_proc by its id
@@ -51,9 +52,7 @@ def get_auto_proc_by_id(auto_proc_id):
     """
     data_dict = {"autoProcId": auto_proc_id}
     return db.get_db_item_by_params(
-        models.AutoProc,
-        schemas.auto_proc.ma_schema,
-        data_dict
+        models.AutoProc, schemas.auto_proc.ma_schema, data_dict
     )
 
 
@@ -67,11 +66,7 @@ def add_auto_proc(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.AutoProc,
-        schemas.auto_proc.ma_schema,
-        data_dict
-    )
+    return db.add_db_item(models.AutoProc, schemas.auto_proc.ma_schema, data_dict)
 
 
 def get_auto_proc_status(request):
@@ -103,9 +98,7 @@ def get_auto_proc_status_by_id(auto_proc_status_id):
     """
     data_dict = {"auto_proc_statusId": auto_proc_status_id}
     return db.get_db_item_by_params(
-        models.AutoProcStatus,
-        schemas.auto_proc_status.ma_schema,
-        data_dict
+        models.AutoProcStatus, schemas.auto_proc_status.ma_schema, data_dict
     )
 
 
@@ -120,10 +113,9 @@ def add_auto_proc_status(data_dict):
         [type]: [description]
     """
     return db.add_db_item(
-        models.AutoProcStatus,
-        schemas.auto_proc_status.ma_schema,
-        data_dict
+        models.AutoProcStatus, schemas.auto_proc_status.ma_schema, data_dict
     )
+
 
 def get_auto_proc_programs(request):
     """
@@ -141,6 +133,7 @@ def get_auto_proc_programs(request):
         query_params,
     )
 
+
 def get_auto_proc_program_by_id(auto_proc_program_id):
     """
     Returns auto_proc_program by its auto_proc_programId
@@ -153,9 +146,7 @@ def get_auto_proc_program_by_id(auto_proc_program_id):
     """
     data_dict = {"autoProcProgramId": auto_proc_program_id}
     return db.get_db_item_by_params(
-        models.AutoProcProgram,
-        schemas.auto_proc_program.ma_schema,
-        data_dict
+        models.AutoProcProgram, schemas.auto_proc_program.ma_schema, data_dict
     )
 
 
@@ -170,10 +161,9 @@ def add_auto_proc_program(data_dict):
         [type]: [description]
     """
     return db.add_db_item(
-        models.AutoProcProgram,
-        schemas.auto_proc_program.ma_schema,
-        data_dict
+        models.AutoProcProgram, schemas.auto_proc_program.ma_schema, data_dict
     )
+
 
 def get_auto_proc_program_attachments(request):
     """
@@ -191,6 +181,7 @@ def get_auto_proc_program_attachments(request):
         query_params,
     )
 
+
 def get_auto_proc_program_attachment_by_id(auto_proc_program_attachment_id):
     """
     Returns auto_proc_program_attachment by its auto_proc_program_attachmentId
@@ -201,14 +192,13 @@ def get_auto_proc_program_attachment_by_id(auto_proc_program_attachment_id):
     Returns:
         dict: info about auto_proc_program_attachment as dict
     """
-    data_dict = {
-        "autoProcProgramAttachmentId": auto_proc_program_attachment_id
-        }
+    data_dict = {"autoProcProgramAttachmentId": auto_proc_program_attachment_id}
     return db.get_db_item_by_params(
         models.AutoProcProgramAttachment,
         schemas.auto_proc_program_attachment.ma_schema,
-        data_dict
+        data_dict,
     )
+
 
 def add_auto_proc_program_attachment(data_dict):
     """
@@ -223,8 +213,9 @@ def add_auto_proc_program_attachment(data_dict):
     return db.add_db_item(
         models.AutoProcProgramAttachment,
         schemas.auto_proc_program_attachment.ma_schema,
-        data_dict
+        data_dict,
     )
+
 
 def get_auto_proc_program_messages(request):
     """
@@ -257,7 +248,7 @@ def get_auto_proc_program_message_by_id(auto_proc_program_message_id):
     return db.get_db_item_by_params(
         models.AutoProcProgramMessage,
         schemas.auto_proc_program_message.ma_schema,
-        data_dict
+        data_dict,
     )
 
 
@@ -274,5 +265,5 @@ def add_auto_proc_program_message(data_dict):
     return db.add_db_item(
         models.AutoProcProgramMessage,
         schemas.auto_proc_program_message.ma_schema,
-        data_dict
+        data_dict,
     )

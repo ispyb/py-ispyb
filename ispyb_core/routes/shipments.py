@@ -33,7 +33,6 @@ Example routes:
 """
 
 
-import logging
 from flask import request
 from flask_restx._http import HTTPStatus
 from flask_restx_patched import Resource
@@ -41,6 +40,8 @@ from app.extensions.auth import token_required, authorization_required
 from app.extensions.api import api_v1, Namespace
 from ispyb_core.modules import shipping
 from ispyb_core.schemas import shipping as shipping_schemas
+
+import logging
 
 __license__ = "LGPLv3+"
 
@@ -60,11 +61,7 @@ class Shipments(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """Returns list of shipments
-
-        Returns:
-            list: list of shipments.
-        """
+        """Returns list of shipments"""
         return shipping.get_shipments(request), HTTPStatus.OK
 
     @api.expect(shipping_schemas.f_schema)
@@ -98,11 +95,7 @@ class ShipmentById(Resource):
     @token_required
     @authorization_required
     def put(self, shipment_id):
-        """Fully updates shipment with id shipment_id
-
-        Args:
-            shipment_id (int): corresponds to shipmentId in db
-        """
+        """Fully updates shipment with id shipment_id"""
         log.info("Update shipment %d" % shipment_id)
         return shipping.update_shipment(shipment_id, api.payload)
 
@@ -111,25 +104,14 @@ class ShipmentById(Resource):
     @token_required
     @authorization_required
     def patch(self, shipment_id):
-        """Partially updates shipment with id shipment_id
-
-        Args:
-            shipment_id (int): corresponds to shipmentId in db
-        """
+        """Partially updates shipment with id shipment_id"""
         log.info("Patch shipment %d" % shipment_id)
         return shipping.patch_shipment(shipment_id, api.payload)
 
     @token_required
     @authorization_required
     def delete(self, shipment_id):
-        """Deletes shipment by shipment_id
-
-        Args:
-            shipment_id (int): corresponds to shipmentId in db
-
-        Returns:
-            json, status_code:
-        """
+        """Deletes shipment by shipment_id"""
         return shipping.delete_shipment(shipment_id)
 
 

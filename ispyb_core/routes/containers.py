@@ -31,9 +31,10 @@ from ispyb_core.modules import container
 __license__ = "LGPLv3+"
 
 
-api = Namespace("Containers", description="Container related namespace", path="/containers")
+api = Namespace(
+    "Containers", description="Container related namespace", path="/containers"
+)
 api_v1.add_namespace(api)
-
 
 
 @api.route("", endpoint="containers")
@@ -52,7 +53,7 @@ class Containers(Resource):
     @api.marshal_with(container_schemas.f_schema, code=201)
     def post(self):
         """Adds a new sample item"""
-        container.add_container(api)
+        container.add_container(api.payload)
 
 
 @api.route("/<int:container_id>", endpoint="container_by_id")

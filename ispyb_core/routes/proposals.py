@@ -54,18 +54,12 @@ api_v1.add_namespace(api)
 @api.route("", endpoint="proposals")
 @api.doc(security="apikey")
 class Proposals(Resource):
-
     """Allows to get all proposals"""
 
     @token_required
     @authorization_required
     def get(self):
-        """
-        Returns all proposals.
-
-        Returns:
-            dict: response dict.
-        """
+        """Returns proposals based on query parameters"""
 
         api.logger.info("Get all proposals")
         return proposal.get_proposals(request)
@@ -80,7 +74,7 @@ class Proposals(Resource):
         """Adds a new proposal"""
 
         api.logger.info("Inserts a new proposal")
-        return proposal.add_proposal(api)
+        return proposal.add_proposal(api.payload)
 
 
 @api.route("/<int:proposal_id>", endpoint="proposal_by_id")
@@ -104,49 +98,23 @@ class ProposalById(Resource):
     @token_required
     @authorization_required
     def put(self, proposal_id):
-        """
-        Fully updates proposal with id proposal_id.
-
-        Args:
-            proposal_id (int): corresponds to proposalId in db
-        """
+        """Fully updates proposal with id proposal_id"""
         current_app.logger.info("Update proposal %d" % proposal_id)
-        result = proposal.update_proposal(proposal_id, api.payload)
-        if result:
-            return (
-                {"message": "Proposal with id %d updated" % proposal_id},
-                HTTPStatus.OK,
-            )
-        else:
-            api.abort(
-                HTTPStatus.NOT_FOUND, "Proposal with id %d not found" % proposal_id
-            )
+        return proposal.update_proposal(proposal_id, api.payload)
 
     @api.expect(proposal_schemas.f_schema)
     @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
     def patch(self, proposal_id):
-        """
-        Partially updates proposal with id proposal_id.
-
-        Args:
-            proposal_id (int): corresponds to proposalId in db
-        """
+        """Partially updates proposal with id proposal_id"""
         return proposal.patch_proposal(proposal_id, api.payload)
 
     @token_required
     @authorization_required
     def delete(self, proposal_id):
         """
-        Deletes proposal by proposal_id.
-
-        Args:
-            proposal_id (int): corresponds to proposalId in db
-
-        Returns:
-            json, status_code:
-        """
+        Deletes a proposal by proposal_id"""
         return proposal.delete_proposal(proposal_id)
 
 

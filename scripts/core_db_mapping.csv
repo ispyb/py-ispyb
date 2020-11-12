@@ -18,6 +18,7 @@ data_collection_group,DataCollectionGroup
 detector,Detector
 energy_scan,EnergyScan
 image_quality_indicators,ImageQualityIndicators
+laboratory,Laboratory
 lab_contact,LabContact
 person,Person
 proposal,Proposal

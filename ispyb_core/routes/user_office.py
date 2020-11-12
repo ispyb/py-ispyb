@@ -46,8 +46,8 @@ class SyncAll(Resource):
 
     """Sync with user office"""
 
-    #@token_required
-    #@authorization_required
+    @token_required
+    @authorization_required
     def post(self):
         """Sync with user office"""
 
@@ -55,7 +55,11 @@ class SyncAll(Resource):
         user_office_link.sync_with_user_office()
         return HTTPStatus.OK, {"message": "Done!"}
 
-@api.route("/update_proposal/<string:proposal_code><int:proposal_number>", endpoint="user_office_update_proposal")
+
+@api.route(
+    "/update_proposal/<string:proposal_code><int:proposal_number>",
+    endpoint="user_office_update_proposal",
+)
 @api.param("proposal_code", "Proposal code (string)")
 @api.param("proposal_number", "Proposal number (integer)")
 @api.doc(security="apikey")
@@ -63,15 +67,14 @@ class UpdateProposal(Resource):
 
     """Sync with user office"""
 
-    #@token_required
-    #@authorization_required
-    @api.doc(description="proposal_code should be a string, proposal_number should be an integer")
-
+    @token_required
+    @authorization_required
+    @api.doc(
+        description="proposal_code should be a string, proposal_number should be an integer"
+    )
     def post(self, proposal_code, proposal_number):
         """Sync with user office"""
 
         api.logger.info("Updates proposal %s%d" % (proposal_code, proposal_number))
         user_office_link.update_proposal(proposal_code, proposal_number)
         return HTTPStatus.OK, {"message": "Done!"}
-
-

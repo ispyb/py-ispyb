@@ -53,11 +53,7 @@ def get_dewar_by_id(dewar_id):
         dict: info about dewar as dict
     """
     id_dict = {"dewarId": dewar_id}
-    return db.get_db_item_by_params(
-        models.Dewar,
-        schemas.dewar.ma_schema,
-        id_dict
-    )
+    return db.get_db_item_by_params(models.Dewar, schemas.dewar.ma_schema, id_dict)
 
 
 def add_dewar(data_dict):

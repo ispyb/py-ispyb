@@ -22,6 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
+
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -29,19 +30,16 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-    "proposalId": f_fields.Integer(required=True, description=""),
-    "personId": f_fields.Integer(required=True, description=""),
-    "title": f_fields.String(required=False, description=""),
-    "proposalCode": f_fields.String(required=False, description=""),
-    "proposalNumber": f_fields.String(required=False, description=""),
-    "bltimeStamp": f_fields.DateTime(required=True, description=""),
-    "proposalType": f_fields.String(
-        required=False, description="Proposal type: MX, BX"
-    ),
-    "externalId": f_fields.Integer(required=False, description=""),
-    "state": f_fields.String(required=False, description="enum(Open,Closed,Cancelled)"),
-}
-
+        'proposalId': f_fields.Integer(required=True, description=''),
+        'personId': f_fields.Integer(required=True, description=''),
+        'title': f_fields.String(required=False, description=''),
+        'proposalCode': f_fields.String(required=False, description=''),
+        'proposalNumber': f_fields.String(required=False, description=''),
+        'bltimeStamp': f_fields.DateTime(required=True, description=''),
+        'proposalType': f_fields.String(required=False, description='Proposal type: MX, BX'),
+        'externalId': f_fields.Integer(required=False, description=''),
+        'state': f_fields.String(required=False, description='enum(Open,Closed,Cancelled)'),
+        }
 
 class ProposalSchema(Schema):
     """Marshmallows schema class representing Proposal table"""
@@ -56,7 +54,6 @@ class ProposalSchema(Schema):
     externalId = ma_fields.Integer()
     state = ma_fields.String()
 
-
-f_schema = api.model("Proposal", dict_schema)
+f_schema = api.model('Proposal', dict_schema)
 ma_schema = ProposalSchema()
 json_schema = JSONSchema().dump(ma_schema)

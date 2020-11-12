@@ -22,6 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
+
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -29,48 +30,25 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-    "dataCollectionId": f_fields.Integer(required=True, description=""),
-    "imageNumber": f_fields.Integer(required=True, description=""),
-    "imageId": f_fields.Integer(required=False, description=""),
-    "autoProcProgramId": f_fields.Integer(
-        required=False, description="Foreign key to the AutoProcProgram table"
-    ),
-    "spotTotal": f_fields.Integer(required=False, description="Total number of spots"),
-    "inResTotal": f_fields.Integer(
-        required=False, description="Total number of spots in resolution range"
-    ),
-    "goodBraggCandidates": f_fields.Integer(
-        required=False, description="Total number of Bragg diffraction spots"
-    ),
-    "iceRings": f_fields.Integer(
-        required=False, description="Number of ice rings identified"
-    ),
-    "method1Res": f_fields.Float(
-        required=False, description="Resolution estimate 1 (see publication)"
-    ),
-    "method2Res": f_fields.Float(
-        required=False, description="Resolution estimate 2 (see publication)"
-    ),
-    "maxUnitCell": f_fields.Float(
-        required=False, description="Estimation of the largest possible unit cell edge"
-    ),
-    "pctSaturationTop50Peaks": f_fields.Float(
-        required=False, description="The fraction of the dynamic range being used"
-    ),
-    "inResolutionOvrlSpots": f_fields.Integer(
-        required=False, description="Number of spots overloaded"
-    ),
-    "binPopCutOffMethod2Res": f_fields.Float(
-        required=False, description="Cut off used in resolution limit calculation"
-    ),
-    "recordTimeStamp": f_fields.DateTime(
-        required=False, description="Creation or last update date/time"
-    ),
-    "totalIntegratedSignal": f_fields.String(required=False, description=""),
-    "dozor_score": f_fields.String(required=False, description="dozor_score"),
-    "driftFactor": f_fields.Float(required=False, description="EM movie drift factor"),
-}
-
+        'dataCollectionId': f_fields.Integer(required=True, description=''),
+        'imageNumber': f_fields.Integer(required=True, description=''),
+        'imageId': f_fields.Integer(required=False, description=''),
+        'autoProcProgramId': f_fields.Integer(required=False, description='Foreign key to the AutoProcProgram table'),
+        'spotTotal': f_fields.Integer(required=False, description='Total number of spots'),
+        'inResTotal': f_fields.Integer(required=False, description='Total number of spots in resolution range'),
+        'goodBraggCandidates': f_fields.Integer(required=False, description='Total number of Bragg diffraction spots'),
+        'iceRings': f_fields.Integer(required=False, description='Number of ice rings identified'),
+        'method1Res': f_fields.Float(required=False, description='Resolution estimate 1 (see publication)'),
+        'method2Res': f_fields.Float(required=False, description='Resolution estimate 2 (see publication)'),
+        'maxUnitCell': f_fields.Float(required=False, description='Estimation of the largest possible unit cell edge'),
+        'pctSaturationTop50Peaks': f_fields.Float(required=False, description='The fraction of the dynamic range being used'),
+        'inResolutionOvrlSpots': f_fields.Integer(required=False, description='Number of spots overloaded'),
+        'binPopCutOffMethod2Res': f_fields.Float(required=False, description='Cut off used in resolution limit calculation'),
+        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
+        'totalIntegratedSignal': f_fields.String(required=False, description=''),
+        'dozor_score': f_fields.String(required=False, description='dozor_score'),
+        'driftFactor': f_fields.Float(required=False, description='EM movie drift factor'),
+        }
 
 class ImageQualityIndicatorsSchema(Schema):
     """Marshmallows schema class representing ImageQualityIndicators table"""
@@ -94,7 +72,6 @@ class ImageQualityIndicatorsSchema(Schema):
     dozor_score = ma_fields.String()
     driftFactor = ma_fields.Float()
 
-
-f_schema = api.model("ImageQualityIndicators", dict_schema)
+f_schema = api.model('ImageQualityIndicators', dict_schema)
 ma_schema = ImageQualityIndicatorsSchema()
 json_schema = JSONSchema().dump(ma_schema)

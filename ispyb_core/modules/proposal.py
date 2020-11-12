@@ -64,6 +64,7 @@ def get_proposals(request):
         msg = "No proposals associated to the username %s" % user_info["username"]
         return create_response_item(msg=msg), HTTPStatus.OK
 
+
 def get_db_proposals(query_params={}):
     return db.get_db_items(
         models.Proposal,
@@ -71,6 +72,7 @@ def get_db_proposals(query_params={}):
         schemas.proposal.ma_schema,
         query_params,
     )
+
 
 def get_proposal_by_id(proposal_id):
     """
@@ -134,7 +136,9 @@ def update_proposal(proposal_id, data_dict):
         [type]: [description]
     """
     id_dict = {"proposalId": proposal_id}
-    return db.update_db_item(models.Proposal, id_dict, data_dict)
+    return db.update_db_item(
+        models.Proposal, schemas.proposal.ma_schema, id_dict, data_dict
+    )
 
 
 def patch_proposal(proposal_id, proposal_dict):
@@ -149,7 +153,9 @@ def patch_proposal(proposal_id, proposal_dict):
         [type]: [description]
     """
     id_dict = {"proposalId": proposal_id}
-    return db.patch_db_item(models.Proposal, id_dict, proposal_dict)
+    return db.patch_db_item(
+        models.Proposal, schemas.proposal.ma_schema, id_dict, proposal_dict
+    )
 
 
 def delete_proposal(proposal_id):

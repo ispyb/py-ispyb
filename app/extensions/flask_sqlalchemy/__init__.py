@@ -217,7 +217,7 @@ class SQLAlchemy(BaseSQLAlchemy):
             raise Exception(str(ex))
             
 
-    def update_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):
+    def update_db_item(self, sql_alchemy_model, ma_schema, item_id_dict, item_update_dict):
         """
         Updates item in db
 
@@ -230,27 +230,9 @@ class SQLAlchemy(BaseSQLAlchemy):
             [type]: [description]
         """
         result = None
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
-        if db_item:
-            print(item_update_dict)
-            result = True
-
-        return result
-
-    def patch_db_item(self, sql_alchemy_model, item_id_dict, item_update_dict):
-        """
-        Patch db item
-
-        Args:
-            sql_alchemy_model ([type]): [description]
-            item_id_dict ([type]): [description]
-            item_update_dict ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-        result = None
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
+        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
+            description="There is no data with item id %s" % str(item_id_dict)
+        )
         if db_item:
             for key, value in item_update_dict.items():
                 if hasattr(db_item, key):
@@ -258,7 +240,38 @@ class SQLAlchemy(BaseSQLAlchemy):
                 else:
                     print("Attribute %s not defined in the item model" % key)
             self.session.commit()
-            result = True
+            result = ma_schema.dump(db_item)[0]
+        return result
+
+    def patch_db_item(self, sql_alchemy_model, ma_schema, item_id_dict, item_data_dict):
+        """
+        Patch db item.
+
+        Args:
+            sql_alchemy_model ([type]): [description]
+            ma_schema : Marshmallows schema
+            item_id_dict ([type]): [description]
+            item_data_dict ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        result = None
+        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
+            description="There is no data with item id %s" % str(item_id_dict)
+        )
+        print(item_id_dict, item_data_dict)
+        if db_item:
+            for key, value in item_data_dict.items():
+                if hasattr(db_item, key):
+                    setattr(db_item, key, value)
+                else:
+                    abort(
+                        HTTPStatus.NOT_ACCEPTABLE,
+                        "Attribute %s not defined in the item model" % key
+                    )
+            self.session.commit()
+            result = ma_schema.dump(db_item)[0]
 
         return result
 
@@ -273,15 +286,17 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             [type]: [description]
         """
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
-        if not db_item:
-            return None
-        else:
-            try:
-                self.session.delete(db_item)
-                self.session.commit()
-                return True
-            except BaseException as ex:
-                print(ex)
-                # log.exception(str(ex))
-                self.session.rollback()
+        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
+            description="There is no data with item id %s" % str(item_id_dict)
+        )
+
+        try:
+            self.session.delete(db_item)
+            self.session.commit()
+            return True
+        except Exception as ex:
+            print(ex)
+            # log.exception(str(ex))
+            self.session.rollback()
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(ex))
+
