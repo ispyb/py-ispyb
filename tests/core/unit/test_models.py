@@ -24,7 +24,17 @@ def test_lab_contact_model():
 
     assert lab_contact.errors == {}
 
-def test_shipment():
+def test_shipment_model():
     shipmenmt = schemas.shipping.ShippingSchema().dump(data.test_shippment)
 
     assert shipmenmt.errors == {}
+
+def test_laboratory_model():
+    laboratory = schemas.laboratory.LaboratorySchema().dump(data.test_laboratory)
+
+    assert laboratory.errors == {}
+
+def test_person_model():
+    person = schemas.person.PersonSchema().dump(data.test_person)
+
+    assert person.errors == {}
