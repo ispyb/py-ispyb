@@ -108,8 +108,6 @@ class LabContacts(Resource):
 
     @api.expect(lab_contact_schemas.f_schema)
     @api.marshal_with(lab_contact_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
@@ -164,18 +162,14 @@ class Laboratories(Resource):
     @authorization_required
     def get(self):
         """Returns all laboratory entries."""
-
         return contacts.get_laboratories(request)
 
     @api.expect(laboratory_schemas.f_schema)
     @api.marshal_with(laboratory_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
         """Adds a new laboratory"""
-
         return contacts.add_laboratory(api.payload)
 
 

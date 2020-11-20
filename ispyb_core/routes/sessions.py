@@ -58,7 +58,6 @@ class Sessions(Resource):
     def post(self):
         """Adds a new session"""
         log.info("Inserts a new session")
-
         return session.add_session(api.payload)
 
 
@@ -102,11 +101,7 @@ class SessionsByDateBeamline(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """Returns list of sessions by start_date, end_date and beamline.
-
-        Returns:
-            list: list of sessions.
-        """
+        """Returns list of sessions by start_date, end_date and beamline."""
 
         query_params = request.args.to_dict()
         start_date = query_params.get("start_date")

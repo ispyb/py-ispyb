@@ -32,7 +32,6 @@ Example routes:
 [DELETE]/ispyb/api/v1//shipments/1  - Deletes shipment #1
 """
 
-
 from flask import request
 from flask_restx._http import HTTPStatus
 from flask_restx_patched import Resource

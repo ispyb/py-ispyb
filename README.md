@@ -22,18 +22,27 @@ ISPyB backend server based on python flask-restx.
 
 ## How to run py-ispyb
 
-Install requirements:
+### Install requirements
 
-```bash
-sudo pip install -r requirements.txt
-```
+In case of MySQL or MariaDB you might have to install dev tools:
 
-Copy and edit yaml configuration file:
-```bash
-cp ispyb_core_config_example.yml ispyb_core_config.yml
-```
+```sudo apt-get install -y python3-mysqldb```
+or
+```apt-get install libmariadbclient-dev```
 
-Regenerate data base models and schemas:
+Install python dependencies:
+```sudo pip install -r requirements.txt```
+
+### Copy and edit yaml configuration file
+
+```cp ispyb_core_config_example.yml ispyb_core_config.yml```
+
+### Regenerate data base models and schemas
+
+If you do not have a running ispyb database then you can create one by running:
+
+```scripts/create_core_db.sh```
+
 ```bash
 cd scripts
 ./generate_core_models.sh
@@ -41,7 +50,7 @@ python3 generate_core_schemas.py
 cd ..
 ```
 
-Run application in debug mode:
+### Run application in debug mode
 * `python3 wsgi.py`
 * `invoke app.run`
 
