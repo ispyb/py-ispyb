@@ -68,3 +68,15 @@ def test_patch(ispyb_core_app, ispyb_core_token):
 
     response = client.patch(route, json=mod_detector, headers=headers)
     assert response.status_code == 200, "[PATCH] %s failed" % (route)
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/beamline/setups"
+    response = client.get(route, headers=headers)
+    beamline_setup_id = response.json["data"]["rows"][0]["beamlineSetupId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/beamline/setups/" + str(beamline_setup_id)
+    mode_beamline_setup = {
+        "synchrotronName": "Error"
+    }
+
+    response = client.patch(route, json=mode_beamline_setup, headers=headers)
+    assert response.status_code == 200, "[PATCH] %s failed" % (route)

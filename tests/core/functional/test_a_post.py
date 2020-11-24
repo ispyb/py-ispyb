@@ -65,9 +65,25 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("LabContact id: %d" % lab_contact_id)
     assert lab_contact_id
 
+
     route = ispyb_core_app.config["API_ROOT"] + "/beamline/detectors"
     detector_dict = data.test_detector
     response = client.post(route, json=detector_dict, headers=headers)
 
     assert response.status_code == 200, "[POST] %s failed" % route
+    detector_id = response.json["detectorId"]
+
+    print("Detector id: %d" % detector_id)
+    assert detector_id
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/beamline/setups"
+    beamline_setup_dict = data.test_beamline_setup
+    response = client.post(route, json=beamline_setup_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    beamline_setup_id = response.json["beamLineSetupId"]
+
+    print("BeamlineSetup id: %d" % beamline_setup_id)
+    assert beamline_setup_id
 

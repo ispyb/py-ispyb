@@ -43,7 +43,10 @@ def test_get(ispyb_core_app, ispyb_core_token):
         "/data_collections?offset=1&limit=1",
         "/beamline/detectors",
         "/beamline/detectors?offset=1&limit=1",
-        "/beamline/detectors?detectorModel=T1"
+        "/beamline/detectors?detectorModel=T1",
+        "/beamline/setups"
+        "/beamline/setups?offset=1&limit=1",
+        "/beamline/setups?beamlineName=testBeamline"
     ]
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
