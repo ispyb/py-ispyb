@@ -79,7 +79,7 @@ class AutoProcById(Resource):
     """Allows to get/set/delete a auto_proc"""
 
     @api.doc(description="auto_proc_id should be an integer ")
-    @api.marshal_with(auto_proc_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(auto_proc_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, auto_proc_id):
@@ -120,7 +120,7 @@ class AutoProcStatusById(Resource):
 
     @api.doc(description="status_id should be an integer ")
     @api.marshal_with(
-        auto_proc_status_schemas.f_schema, skip_none=True, code=HTTPStatus.OK
+        auto_proc_status_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
     )
     @token_required
     @authorization_required
@@ -162,7 +162,7 @@ class AutoProcProgramById(Resource):
 
     @api.doc(description="program_id should be an integer ")
     @api.marshal_with(
-        auto_proc_program_schemas.f_schema, skip_none=True, code=HTTPStatus.OK
+        auto_proc_program_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
     )
     @token_required
     @authorization_required
@@ -207,7 +207,7 @@ class AutoProcProgramAttachmentById(Resource):
     @api.doc(description="attachment_id should be an integer ")
     @api.marshal_with(
         auto_proc_program_attachment_schemas.f_schema,
-        skip_none=True,
+        skip_none=False,
         code=HTTPStatus.OK,
     )
     @token_required

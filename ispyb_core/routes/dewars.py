@@ -62,7 +62,7 @@ class DewarById(Resource):
     """Allows to get/set/delete a dewar item"""
 
     @api.doc(description="dewar_id should be an integer ")
-    @api.marshal_with(dewar_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(dewar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, dewar_id):

@@ -182,7 +182,7 @@ class LaboratoryById(Resource):
     """Allows to get/set/delete a laboratory item"""
 
     @api.doc(description="lab_id should be an integer ")
-    @api.marshal_with(laboratory_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(laboratory_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, laboratory_id):

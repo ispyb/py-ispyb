@@ -128,3 +128,30 @@ def get_test_person():
     test_person_dict = test_person
     test_person_dict["login"] = uuid.uuid4().hex.upper()[0:6]
     return test_person_dict
+
+test_detector = {
+    "detectorType": "PixelCounting",
+    "detectorManufacturer": "TestManufacturer",
+    "detectorModel": "T1",
+    "detectorPixelSizeHorizontal": 0.75,
+    "detectorPixelSizeVertical": 0.75,
+    "DETECTORMAXRESOLUTION": 0.6,
+    "DETECTORMINRESOLUTION": 6,
+    "detectorSerialNumber": "00AA11",
+    "detectorDistanceMin": "100",
+    "detectorDistanceMax": "1000",
+    "trustedPixelValueRangeLower": "1",
+    "trustedPixelValueRangeUpper": "2",
+    "sensorThickness": 1,
+    "overload": 1,
+    "XGeoCorr": "100",
+    "YGeoCorr": "200",
+    "detectorMode": "testMode",
+    "density": 1,
+    "composition": "comp",
+    "numberOfPixelsX": 8000,
+    "numberOfPixelsY": 8000,
+    "detectorRollMin": "1",
+    "detectorRollMax": "2",
+    "localName": "TestDetector"
+}

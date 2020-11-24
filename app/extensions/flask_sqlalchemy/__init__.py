@@ -164,7 +164,11 @@ class SQLAlchemy(BaseSQLAlchemy):
                 print(ex)
                 msg = "Unable to filter items based on query items (%s)" % str(ex)
 
-        query = query.limit(limit).offset(offset)
+        if limit:
+            query = query.limit(limit)
+        if offset:    
+            query = query.offset(offset)
+
         items = ma_schema.dump(query, many=True)[0]
 
         response_dict = create_response_item(msg, total, items)

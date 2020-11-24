@@ -57,3 +57,14 @@ def test_patch(ispyb_core_app, ispyb_core_token):
 
     response = client.patch(route, json=mod_lab_contact, headers=headers)
     assert response.status_code == 200, "[PATCH] %s failed" % (route)
+
+    route = ispyb_core_app.config["API_ROOT"] + "/beamline/detectors"
+    response = client.get(route, headers=headers)
+    detector_id = response.json["data"]["rows"][0]["detectorId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/beamline/detectors/" + str(detector_id)
+    mod_detector = {
+        "detectorModel": "T1_0001"
+    }
+
+    response = client.patch(route, json=mod_detector, headers=headers)
+    assert response.status_code == 200, "[PATCH] %s failed" % (route)

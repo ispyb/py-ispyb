@@ -28,8 +28,7 @@ from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.schemas import session as session_schemas
-from ispyb_core.schemas import beamline_setup as beamline_setup_schemas
-from ispyb_core.modules import session, beamline_setup
+from ispyb_core.modules import session
 
 
 __license__ = "LGPLv3+"
@@ -70,7 +69,7 @@ class SessionById(Resource):
     """Allows to get/set/delete a session"""
 
     @api.doc(description="session_id should be an integer ")
-    @api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(session_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, session_id):
@@ -156,28 +155,6 @@ class SessionsByDateBeamline(Resource):
                 )
 
         return session.get_sessions_by_date(start_date, end_date, beamline)
-
-@api.route("/beamline_setup", endpoint="beamline_setup")
-@api.doc(security="apikey")
-class BeamlineSetups(Resource):
-    """Allows to get beamline setup items and insert a new one"""
-
-    @token_required
-    @authorization_required
-    def get(self):
-        """Returns list of beamline setups"""
-        return beamline_setup.get_beamline_setups(request)
-
-    @api.expect(beamline_setup_schemas.f_schema)
-    @api.marshal_with(beamline_setup_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
-    @token_required
-    @authorization_required
-    def post(self):
-        """Adds a new beamline setup"""
-        print(api.payload)
-        return beamline_setup.add_beamline_setup(api.payload)
 
 # getSessionsByDateAndBeamline(startDate, endDate, beamline)
 # getSessionsByProposalAndDate(startDate, endDate, proposal)

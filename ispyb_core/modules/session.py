@@ -135,20 +135,20 @@ def update_session(session_id, data_dict):
     )
 
 
-def patch_session(session_id, session_dict):
+def patch_session(session_id, data_dict):
     """
     Patch a session
 
     Args:
         session_id ([type]): [description]
-        session_dict ([type]): [description]
+        data_dict ([type]): [description]
 
     Returns:
         [type]: [description]
     """
     id_dict = {"sessionId": session_id}
     return db.patch_db_item(
-        models.BLSession, schemas.session.ma_schema, id_dict, session_dict
+        models.BLSession, schemas.session.ma_schema, id_dict, data_dict
     )
 
 

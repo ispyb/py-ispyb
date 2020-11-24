@@ -64,3 +64,10 @@ def test_post(ispyb_core_app, ispyb_core_token):
     lab_contact_id = response.json["labContactId"]
     print("LabContact id: %d" % lab_contact_id)
     assert lab_contact_id
+
+    route = ispyb_core_app.config["API_ROOT"] + "/beamline/detectors"
+    detector_dict = data.test_detector
+    response = client.post(route, json=detector_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+

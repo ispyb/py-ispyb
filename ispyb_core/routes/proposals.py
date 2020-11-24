@@ -86,7 +86,7 @@ class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
     @api.doc(description="proposal_id should be an integer ")
-    @api.marshal_with(proposal_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(proposal_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, proposal_id):
