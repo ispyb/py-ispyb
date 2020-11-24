@@ -28,7 +28,8 @@ from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.schemas import session as session_schemas
-from ispyb_core.modules import session
+from ispyb_core.schemas import beamline_setup as beamline_setup_schemas
+from ispyb_core.modules import session, beamline_setup
 
 
 __license__ = "LGPLv3+"
@@ -75,6 +76,29 @@ class SessionById(Resource):
     def get(self, session_id):
         """Returns a session by sessionId"""
         return session.get_session_by_id(session_id)
+
+    @api.expect(session_schemas.f_schema)
+    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def put(self, session_id):
+        """Fully updates session with session_id"""
+        return session.update_session(session_id, api.payload)
+
+    @api.expect(session_schemas.f_schema)
+    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def patch(self, session_id):
+        """Partially updates session with id sessionId"""
+        return session.patch_session(session_id, api.payload)
+
+    @token_required
+    @authorization_required
+    def delete(self, session_id):
+        """
+        Deletes a session by sessionId"""
+        return session.delete_session(session_id)
 
 
 @api.route("/<int:session_id>/info", endpoint="session_info_by_id")
@@ -133,7 +157,27 @@ class SessionsByDateBeamline(Resource):
 
         return session.get_sessions_by_date(start_date, end_date, beamline)
 
+@api.route("/beamline_setup", endpoint="beamline_setup")
+@api.doc(security="apikey")
+class BeamlineSetups(Resource):
+    """Allows to get beamline setup items and insert a new one"""
 
-# getSessionsByDate(startDate, endDate)
+    @token_required
+    @authorization_required
+    def get(self):
+        """Returns list of beamline setups"""
+        return beamline_setup.get_beamline_setups(request)
+
+    @api.expect(beamline_setup_schemas.f_schema)
+    @api.marshal_with(beamline_setup_schemas.f_schema, code=201)
+    # @api.errorhandler(FakeException)
+    # TODO add custom exception handling
+    @token_required
+    @authorization_required
+    def post(self):
+        """Adds a new beamline setup"""
+        print(api.payload)
+        return beamline_setup.add_beamline_setup(api.payload)
+
 # getSessionsByDateAndBeamline(startDate, endDate, beamline)
 # getSessionsByProposalAndDate(startDate, endDate, proposal)

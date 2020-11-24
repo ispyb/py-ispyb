@@ -181,9 +181,10 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             dict: info dict
         """
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
-            description="There is no data with item id %s" % str(item_id_dict)
-        )
+        #db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
+        #    description="There is no data with item id %s" % str(item_id_dict)
+        #)
+        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
         db_item_json = ma_schema.dump(db_item)[0]
 
         return db_item_json
@@ -214,8 +215,9 @@ class SQLAlchemy(BaseSQLAlchemy):
             print(ex)
             abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s)" % str(ex))
         except Exception as ex:
-            raise Exception(str(ex))
-            
+            self.session.rollback()
+            print(ex)
+            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s)" % str(ex))            
 
     def update_db_item(self, sql_alchemy_model, ma_schema, item_id_dict, item_update_dict):
         """

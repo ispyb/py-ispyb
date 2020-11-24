@@ -31,6 +31,7 @@ from app.extensions.api import api_v1 as api
 dict_schema = {
     "crystalSlurryId": f_fields.Integer(required=True, description=""),
     "name": f_fields.String(required=False, description=""),
+    "crystalId": f_fields.Integer(required=True),
     "crystalSizeDistributionId": f_fields.Integer(required=False, description=""),
     "crystalDensity": f_fields.Float(required=False, description="1/mm3"),
     "bufferId": f_fields.Float(

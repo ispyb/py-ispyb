@@ -26,22 +26,21 @@ ISPyB backend server based on python flask-restx.
 
 In case of MySQL or MariaDB you might have to install dev tools:
 
-```sudo apt-get install -y python3-mysqldb```
+`sudo apt-get install -y python3-mysqldb`
+
 or
-```apt-get install libmariadbclient-dev```
+
+`apt-get install libmariadbclient-dev`
 
 Install python dependencies:
-```sudo pip install -r requirements.txt```
+
+`sudo pip install -r requirements.txt`
 
 ### Copy and edit yaml configuration file
 
-```cp ispyb_core_config_example.yml ispyb_core_config.yml```
+`cp ispyb_core_config_example.yml ispyb_core_config.yml`
 
 ### Regenerate data base models and schemas
-
-If you do not have a running ispyb database then you can create one by running:
-
-```scripts/create_core_db.sh```
 
 ```bash
 cd scripts
@@ -49,6 +48,11 @@ cd scripts
 python3 generate_core_schemas.py
 cd ..
 ```
+
+If you do not have a running ispyb database then you can create one by running:
+
+`scripts/create_core_db.sh`
+
 
 ### Run application in debug mode
 * `python3 wsgi.py`

@@ -104,6 +104,7 @@ def add_crystal_slurry(data_dict):
     status_code, result = ispyb_service_connector.get_ispyb_resource(
         "ispyb_core", "/samples/crystals/%d" % data_dict["crystalId"]
     )
+    print(status_code, result)
     if status_code == 200:
         crystal_id = data_dict.get("crystalId")
         if crystal_id is None:
@@ -113,6 +114,8 @@ def add_crystal_slurry(data_dict):
             return db.add_db_item(
                 models.CrystalSlurry, schemas.crystal_slurry.ma_schema, data_dict
             )
+    else:
+        abort(status_code, result)
 
 
 def get_crystal_size_distributions():
@@ -121,8 +124,8 @@ def get_crystal_size_distributions():
     Returns:
         [type]: [description]
     """
-    crystal_slurry_list = models.CrystalSlurry.query.all()
-    return schemas.crystal_slurry.ma_schema.dump(crystal_slurry_list, many=True)
+    crystal_size_distribution_list = models.CrystalSizeDistribution.query.all()
+    return schemas.crystal_size_distribution.ma_schema.dump(crystal_size_distribution_list, many=True)
 
 
 def add_crystal_size_distribution(data_dict):
@@ -184,7 +187,7 @@ def get_sample_stocks():
         [type]: [description]
     """
     sample_stock_list = models.SampleStock.query.all()
-    return schemas.sample_delivery_device.ma_schema.dump(sample_stock_list, many=True)
+    return schemas.sample_stock.ma_schema.dump(sample_stock_list, many=True)
 
 
 def add_sample_stock(data_dict):
@@ -198,5 +201,5 @@ def add_sample_stock(data_dict):
 
     """
     return db.add_db_item(
-        models.SampleStock, schemas.sample_delivery_device.ma_schema, data_dict
+        models.SampleStock, schemas.sample_stock.ma_schema, data_dict
     )

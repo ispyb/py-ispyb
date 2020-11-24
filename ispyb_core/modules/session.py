@@ -27,7 +27,7 @@ from app.extensions import db
 
 from ispyb_core import models, schemas
 
-from ispyb_core.modules import beamline_setup, data_collection, proposal
+from ispyb_core.modules import beamline_setup, data_collection, session
 
 
 def get_sessions(request):
@@ -87,8 +87,8 @@ def get_session_info_by_id(session_id):
     """
     session_json = get_session_by_id(session_id)
     if session_json:
-        session_json["proposal"] = proposal.get_proposal_by_id(
-            session_json["proposalId"]
+        session_json["local_contact"] = session.get_session_by_id(
+            session_json["sessionId"]
         )
         session_json["beamline_setup"] = beamline_setup.get_beamline_setup_by_id(
             session_json["beamLineSetupId"]
@@ -117,3 +117,50 @@ def get_sessions_by_date(start_date=None, end_date=None, beamline=None):
     if beamline:
         query = query.filter(models.BLSession.beamLineName == beamline)
     return schemas.session.ma_schema.dump(query, many=True)
+
+def update_session(session_id, data_dict):
+    """
+    Updates session
+
+    Args:
+        session_id ([type]): [description]
+        session_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"sessionId": session_id}
+    return db.update_db_item(
+        models.BLSession, schemas.session.ma_schema, id_dict, data_dict
+    )
+
+
+def patch_session(session_id, session_dict):
+    """
+    Patch a session
+
+    Args:
+        session_id ([type]): [description]
+        session_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"sessionId": session_id}
+    return db.patch_db_item(
+        models.BLSession, schemas.session.ma_schema, id_dict, session_dict
+    )
+
+
+def delete_session(session_id):
+    """Deletes session item from db
+
+    Args:
+        session_id (int): sessionId column in db
+
+    Returns:
+        bool: True if the session exists and deleted successfully,
+        otherwise return False
+    """
+    id_dict = {"sessionId": session_id}
+    return db.delete_db_item(models.BLSession, id_dict)
