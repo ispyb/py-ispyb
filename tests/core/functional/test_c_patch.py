@@ -72,7 +72,7 @@ def test_patch(ispyb_core_app, ispyb_core_token):
 
     route = ispyb_core_app.config["API_ROOT"] + "/beamline/setups"
     response = client.get(route, headers=headers)
-    beamline_setup_id = response.json["data"]["rows"][0]["beamlineSetupId"]
+    beamline_setup_id = response.json["data"]["rows"][0]["beamLineSetupId"]
     route = ispyb_core_app.config["API_ROOT"] + "/beamline/setups/" + str(beamline_setup_id)
     mode_beamline_setup = {
         "synchrotronName": "Error"

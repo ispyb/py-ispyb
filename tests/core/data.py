@@ -156,6 +156,11 @@ test_detector = {
     "localName": "TestDetector"
 }
 
+def get_test_detector():
+    test_detector_dict = test_detector
+    test_detector_dict["detectorSerialNumber"] = uuid.uuid4().hex.upper()[0:6]
+    return test_detector_dict
+
 test_beamline_setup = {
     "detectorId": 0,
     "synchrotronMode": "Test mode",
@@ -166,7 +171,7 @@ test_beamline_setup = {
     "beamDivergenceVertical": 0.1,
     "polarisation": 0,
     "monochromatorType": "T",
-    "setupDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    "setupDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     "synchrotronName": "TestSynch",
     "maxExpTimePerDataCollection": "0.04",
     "maxExposureTimePerImage": 10,

@@ -45,13 +45,6 @@ def test_delete(ispyb_core_app, ispyb_core_token):
     response = client.delete(route, headers=headers)
     assert response.status_code == 200, "[DELETE] %s " % (route)
 
-    route = ispyb_core_app.config["API_ROOT"] + "/beamline/detectors"
-    response = client.get(route, headers=headers)
-    detector_id = response.json["data"]["rows"][-1]["detectorId"]
-    route = ispyb_core_app.config["API_ROOT"] + "/beamline/detectors/" + str(detector_id)
-    response = client.delete(route, headers=headers)
-    assert response.status_code == 200, "[DELETE] %s " % (route)
-
     route = ispyb_core_app.config["API_ROOT"] + "/beamline/setups"
     response = client.get(route, headers=headers)
     beamline_setup_id = response.json["data"]["rows"][-1]["beamLineSetupId"]

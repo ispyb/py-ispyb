@@ -44,7 +44,7 @@ def test_get(ispyb_core_app, ispyb_core_token):
         "/beamline/detectors",
         "/beamline/detectors?offset=1&limit=1",
         "/beamline/detectors?detectorModel=T1",
-        "/beamline/setups"
+        "/beamline/setups",
         "/beamline/setups?offset=1&limit=1",
         "/beamline/setups?beamlineName=testBeamline"
     ]
@@ -53,6 +53,7 @@ def test_get(ispyb_core_app, ispyb_core_token):
 
     for endpoint in endpoint_list:
         route = ispyb_core_app.config["API_ROOT"] + endpoint
+        print(route)
         response = client.get(route, headers=headers)
         data = response.json
 
