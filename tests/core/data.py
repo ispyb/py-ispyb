@@ -166,7 +166,7 @@ test_beamline_setup = {
     "beamDivergenceVertical": 0.1,
     "polarisation": 0,
     "monochromatorType": "T",
-    "setupDate": datetime.now(),
+    "setupDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     "synchrotronName": "TestSynch",
     "maxExpTimePerDataCollection": "0.04",
     "maxExposureTimePerImage": 10,
