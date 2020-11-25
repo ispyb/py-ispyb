@@ -90,6 +90,7 @@ class CrystalSlurry(Resource):
     @authorization_required
     def post(self):
         """Adds a new crystal slury"""
+        print(api.payload)
         return loaded_sample.add_crystal_slurry(api.payload)
 
 

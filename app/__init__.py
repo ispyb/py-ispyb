@@ -23,7 +23,6 @@
 import os
 import sys
 import importlib
-from logging.config import dictConfig
 from flask import Flask
 from flask_cors import CORS
 

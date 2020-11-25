@@ -32,7 +32,6 @@ Example routes:
 [DELETE]/ispyb/api/v1//shipments/1  - Deletes shipment #1
 """
 
-
 from flask import request
 from flask_restx._http import HTTPStatus
 from flask_restx_patched import Resource
@@ -83,7 +82,7 @@ class ShipmentById(Resource):
     """Allows to get/set/delete a shipment"""
 
     @api.doc(description="shipment_id should be an integer ")
-    @api.marshal_with(shipping_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(shipping_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, shipment_id):

@@ -58,7 +58,6 @@ class Sessions(Resource):
     def post(self):
         """Adds a new session"""
         log.info("Inserts a new session")
-
         return session.add_session(api.payload)
 
 
@@ -70,12 +69,35 @@ class SessionById(Resource):
     """Allows to get/set/delete a session"""
 
     @api.doc(description="session_id should be an integer ")
-    @api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(session_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
     def get(self, session_id):
         """Returns a session by sessionId"""
         return session.get_session_by_id(session_id)
+
+    @api.expect(session_schemas.f_schema)
+    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def put(self, session_id):
+        """Fully updates session with session_id"""
+        return session.update_session(session_id, api.payload)
+
+    @api.expect(session_schemas.f_schema)
+    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def patch(self, session_id):
+        """Partially updates session with id sessionId"""
+        return session.patch_session(session_id, api.payload)
+
+    @token_required
+    @authorization_required
+    def delete(self, session_id):
+        """
+        Deletes a session by sessionId"""
+        return session.delete_session(session_id)
 
 
 @api.route("/<int:session_id>/info", endpoint="session_info_by_id")
@@ -102,11 +124,7 @@ class SessionsByDateBeamline(Resource):
     @token_required
     @authorization_required
     def get(self):
-        """Returns list of sessions by start_date, end_date and beamline.
-
-        Returns:
-            list: list of sessions.
-        """
+        """Returns list of sessions by start_date, end_date and beamline."""
 
         query_params = request.args.to_dict()
         start_date = query_params.get("start_date")
@@ -138,7 +156,5 @@ class SessionsByDateBeamline(Resource):
 
         return session.get_sessions_by_date(start_date, end_date, beamline)
 
-
-# getSessionsByDate(startDate, endDate)
 # getSessionsByDateAndBeamline(startDate, endDate, beamline)
 # getSessionsByProposalAndDate(startDate, endDate, proposal)

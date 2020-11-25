@@ -128,3 +128,73 @@ def get_test_person():
     test_person_dict = test_person
     test_person_dict["login"] = uuid.uuid4().hex.upper()[0:6]
     return test_person_dict
+
+test_detector = {
+    "detectorType": "PixelCounting",
+    "detectorManufacturer": "TestManufacturer",
+    "detectorModel": "T1",
+    "detectorPixelSizeHorizontal": 0.75,
+    "detectorPixelSizeVertical": 0.75,
+    "DETECTORMAXRESOLUTION": 0.6,
+    "DETECTORMINRESOLUTION": 6,
+    "detectorSerialNumber": "00AA11",
+    "detectorDistanceMin": "100",
+    "detectorDistanceMax": "1000",
+    "trustedPixelValueRangeLower": "1",
+    "trustedPixelValueRangeUpper": "2",
+    "sensorThickness": 1,
+    "overload": 1,
+    "XGeoCorr": "100",
+    "YGeoCorr": "200",
+    "detectorMode": "testMode",
+    "density": 1,
+    "composition": "comp",
+    "numberOfPixelsX": 8000,
+    "numberOfPixelsY": 8000,
+    "detectorRollMin": "1",
+    "detectorRollMax": "2",
+    "localName": "TestDetector"
+}
+
+def get_test_detector():
+    test_detector_dict = test_detector
+    test_detector_dict["detectorSerialNumber"] = uuid.uuid4().hex.upper()[0:6]
+    return test_detector_dict
+
+test_beamline_setup = {
+    "detectorId": 0,
+    "synchrotronMode": "Test mode",
+    "undulatorType1": "Si111",
+    "focalSpotSizeAtSample": 10,
+    "focusingOptic": "CRL",
+    "beamDivergenceHorizontal": 0.1,
+    "beamDivergenceVertical": 0.1,
+    "polarisation": 0,
+    "monochromatorType": "T",
+    "setupDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    "synchrotronName": "TestSynch",
+    "maxExpTimePerDataCollection": "0.04",
+    "maxExposureTimePerImage": 10,
+    "minExposureTimePerImage": "0",
+    "goniostatMaxOscillationSpeed": "1",
+    "goniostatMaxOscillationWidth": "1",
+    "goniostatMinOscillationWidth": "1",
+    "maxTransmission": "100",
+    "minTransmission": "0",
+    "beamlineName": "testBeamline",
+    "beamSizeXMin": 10,
+    "beamSizeXMax": 200,
+    "beamSizeYMin": 10,
+    "beamSizeYMax": 200,
+    "energyMin": 5,
+    "energyMax": 15,
+    "omegaMin": 0,
+    "omegaMax": 360,
+    "kappaMin": 0,
+    "kappaMax": 360,
+    "phiMin": 0,
+    "phiMax": 180,
+    "active": 0,
+    "numberOfImagesMax": 1000000,
+    "numberOfImagesMin": 1,
+}

@@ -47,7 +47,7 @@ api_v1.add_namespace(api)
 class DataColletions(Resource):
     """Allows to get all data_collections"""
 
-    # @api.marshal_list_with(data_collection_schemas.data_collection_f_schema, skip_none=True, code=HTTPStatus.OK)
+    # @api.marshal_list_with(data_collection_schemas.data_collection_f_schema, skip_none=False, code=HTTPStatus.OK)
     # TODO Define model with JSON Schema
     @token_required
     @authorization_required
@@ -66,7 +66,7 @@ class DataCollectionById(Resource):
     @api.doc(description="data_collection_id should be an integer ")
     @api.marshal_with(
         data_collection_schemas.f_schema,
-        skip_none=True,
+        skip_none=False,
         code=HTTPStatus.OK,
     )
     @token_required
@@ -81,7 +81,7 @@ class DataCollectionById(Resource):
 class DataCollectionGroups(Resource):
     """Allows to get all data collection groups and add a new one"""
 
-    # @api.marshal_list_with(data_collection_schemas.data_collection_f_schema, skip_none=True, code=HTTPStatus.OK)
+    # @api.marshal_list_with(data_collection_schemas.data_collection_f_schema, skip_none=False, code=HTTPStatus.OK)
     # TODO Define model with JSON Schema
     @token_required
     @authorization_required

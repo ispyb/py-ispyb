@@ -41,17 +41,21 @@ def test_get(ispyb_core_app, ispyb_core_token):
         "/contacts/persons?login=boaty",
         "/data_collections",
         "/data_collections?offset=1&limit=1",
-
+        "/beamline/detectors",
+        "/beamline/detectors?offset=1&limit=1",
+        "/beamline/detectors?detectorModel=T1",
+        "/beamline/setups",
+        "/beamline/setups?offset=1&limit=1",
+        "/beamline/setups?beamlineName=testBeamline"
     ]
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
 
     for endpoint in endpoint_list:
         route = ispyb_core_app.config["API_ROOT"] + endpoint
+        print(route)
         response = client.get(route, headers=headers)
         data = response.json
-
-        #print("[GET] %s : %s" % (route, str(data)))
 
         assert response.status_code == 200, "[GET] %s " % (route)
         assert data, "[GET] %s No data returned" % route
