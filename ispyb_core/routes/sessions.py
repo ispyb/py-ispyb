@@ -51,8 +51,6 @@ class Sessions(Resource):
 
     @api.expect(session_schemas.f_schema)
     @api.marshal_with(session_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):

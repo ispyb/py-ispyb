@@ -53,7 +53,7 @@ def get_sample_by_id(sample_id):
     Returns:
         dict: info about sample as dict
     """
-    data_dict = {"sampleId": sample_id}
+    data_dict = {"blSampleId": sample_id}
     return db.get_db_item_by_params(
         models.BLSample, schemas.sample.ma_schema, data_dict
     )
@@ -70,3 +70,50 @@ def add_sample(data_dict):
         [type]: [description]
     """
     return db.add_db_item(models.BLSample, schemas.sample.ma_schema, data_dict)
+
+def update_sample(sample_id, data_dict):
+    """
+    Updates sample
+
+    Args:
+        sample_id ([type]): [description]
+        sample_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"blSampleId": sample_id}
+    return db.update_db_item(
+        models.BLSample, schemas.sample.ma_schema, id_dict, data_dict
+    )
+
+
+def patch_sample(sample_id, data_dict):
+    """
+    Patch a sample
+
+    Args:
+        sample_id ([type]): [description]
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"blSampleId": sample_id}
+    return db.patch_db_item(
+        models.BLSample, schemas.sample.ma_schema, id_dict, data_dict
+    )
+
+
+def delete_sample(sample_id):
+    """Deletes sample item from db
+
+    Args:
+        sample_id (int): blSampleId column in db
+
+    Returns:
+        bool: True if the sample exists and deleted successfully,
+        otherwise return False
+    """
+    id_dict = {"blSampleId": sample_id}
+    return db.delete_db_item(models.BLSample, id_dict)

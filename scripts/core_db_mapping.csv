@@ -16,6 +16,7 @@ crystal,Crystal
 data_collection,DataCollection
 data_collection_group,DataCollectionGroup
 detector,Detector
+diffraction_plan,DiffractionPlan
 energy_scan,EnergyScan
 image_quality_indicators,ImageQualityIndicators
 laboratory,Laboratory

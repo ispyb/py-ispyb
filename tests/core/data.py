@@ -1,4 +1,5 @@
 from datetime import datetime
+from random import randint
 import uuid
 
 test_proposal = {
@@ -10,6 +11,11 @@ test_proposal = {
     #"bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%Y-%m-%d %H:%M:%S"),
     "state": "Open",
 }
+
+def get_test_proposal():
+    proposal = test_proposal
+    proposal["proposalNumber"] = randint(1, 1e5)
+    return proposal
 
 test_session = {
     "bltimeStamp": datetime.strptime("2015-12-21 16:20:44", "%Y-%m-%d %H:%M:%S"),
@@ -197,4 +203,127 @@ test_beamline_setup = {
     "active": 0,
     "numberOfImagesMax": 1000000,
     "numberOfImagesMin": 1,
+}
+
+test_protein = {
+    "proposalId": 37027,
+    "name": "Protein name",
+    "acronym": "ancr",
+    "molecularMass": "2",
+    "proteinType": "2",
+    "personId": 1
+}
+
+test_diffraction_plan = {
+    "name": "Test",
+    "experimentKind": "OSC",
+    "observedResolution": 2,
+    "minimalResolution": 2,
+    "exposureTime": 0.04,
+    "oscillationRange": 360,
+    "maximalResolution": 1,
+    "screeningResolution": 2,
+    "radiationSensitivity": 0,
+    "preferredBeamSizeX": 20,
+    "preferredBeamSizeY": 20,
+    "preferredBeamDiameter": 20,
+    "comments": "Test comment",
+    "DIFFRACTIONPLANUUID": "uuid",
+    "aimedCompleteness": "99",
+    "aimedIOverSigmaAtHighestRes": "1",
+    "aimedMultiplicity": "1",
+    "aimedResolution": "1",
+    "anomalousData": 0,
+    "complexity": "1",
+    "estimateRadiationDamage": 0,
+    "forcedSpaceGroup": "P4",
+    "requiredCompleteness": "99",
+    "requiredMultiplicity": "1",
+    "requiredResolution": "1",
+    "numberOfPositions": 1,
+    "minOscWidth": 0.1,
+    "energy": 12.70,
+    "transmission": 100,
+    "kappaStart": 0,
+    "axisStart": 0,
+    "axisRange": 0.1,
+    "numberOfImages": 3600,
+    "beamLineName": "test beamline",
+    "distance": "200",
+}
+
+test_crystal = {
+    "diffractionPlanId": 0,
+    "proteinId": 0,
+    "crystalUUID": "crUUID",
+    "name": "Test crystal",
+    "spaceGroup": "P4",
+    "morphology": "No",
+    "color": "Green",
+    "size_X": "10",
+    "size_Y": "10",
+    "size_Z": "100",
+    "cell_a": "1",
+    "cell_b": "1",
+    "cell_c": "1",
+    "cell_alpha": "2",
+    "cell_beta": "2",
+    "cell_gamma": "2",
+    "comments": "Comment",
+    "pdbFileName": "pdf_filename",
+    "pdbFilePath": "pdf_filen_path",
+    "abundance": 0,
+    "theoreticalDensity": 0
+}
+
+test_sample = {
+    "blSampleId": 0,
+    "diffractionPlanId": 0,
+    "crystalId": 0,
+    "containerId": 0,
+    "name": "Test sample",
+    "code": "code",
+    "location": "1",
+    "holderLength": "22",
+    "loopLength": "22",
+    "loopType": "N",
+    "wireWidth": "1",
+    "comments": "Test comment",
+    "isInSampleChanger": 0,
+    "POSITIONID": 0,
+    "SMILES": "string",
+    "blSubSampleId": 0,
+    "lastImageURL": "string",
+    "screenComponentGroupId": 0,
+    "volume": 0,
+    "packingFraction": 0,
+    "preparationTemeprature": 0,
+    "preparationHumidity": 0,
+    "blottingTime": 0,
+    "blottingForce": 0,
+    "blottingDrainTime": 0,
+    "support": "string",
+    "subLocation": 0
+}
+
+test_container = {
+    "dewarId": 0,
+    "code": "string",
+    "containerType": "string",
+    "capacity": 0,
+    "sampleChangerLocation": "string",
+    "containerStatus": "string",
+    "beamlineLocation": "string",
+    "screenId": 0,
+    "scheduleId": 0,
+    "barcode": "string",
+    "imagerId": 0,
+    "sessionId": 0,
+    "ownerId": 0,
+    "requestedImagerId": 0,
+    "requestedReturn": 0,
+    "comments": "string",
+    "experimentType": "string",
+    "storageTemperature": 0,
+    "containerRegistryId": 0
 }

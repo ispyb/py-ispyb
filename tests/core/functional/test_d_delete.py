@@ -23,13 +23,13 @@ def test_delete(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
     headers = {"Authorization": "Bearer " + ispyb_core_token}
 
-    route = ispyb_core_app.config["API_ROOT"] + "/proposals"
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/diffraction_plans"
     response = client.get(route, headers=headers)
-    proposal_id = response.json["data"]["rows"][-1]["proposalId"]
-
-    route = ispyb_core_app.config["API_ROOT"] + "/proposals/" + str(proposal_id)
+    diffraction_plan_id = response.json["data"]["rows"][-1]["diffractionPlanId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/diffraction_plans/" + str(diffraction_plan_id)
     response = client.delete(route, headers=headers)
-    assert response.status_code == 200, "[DELTE] %s " % (route)
+    assert response.status_code == 200, "[DELETE] %s " % (route)
+
 
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/persons"
     response = client.get(route, headers=headers)
@@ -51,3 +51,19 @@ def test_delete(ispyb_core_app, ispyb_core_token):
     route = ispyb_core_app.config["API_ROOT"] + "/beamline/setups/" + str(beamline_setup_id)
     response = client.delete(route, headers=headers)
     assert response.status_code == 200, "[DELETE] %s " % (route)
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/samples"
+    response = client.get(route, headers=headers)
+    sample_id = response.json["data"]["rows"][-1]["blSampleId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/" + str(sample_id)
+    response = client.delete(route, headers=headers)
+    assert response.status_code == 200, "[DELETE] %s " % (route)
+    
+    route = ispyb_core_app.config["API_ROOT"] + "/proposals"
+    response = client.get(route, headers=headers)
+    proposal_id = response.json["data"]["rows"][-1]["proposalId"]
+
+    route = ispyb_core_app.config["API_ROOT"] + "/proposals/" + str(proposal_id)
+    response = client.delete(route, headers=headers)
+    assert response.status_code == 200, "[DELTE] %s " % (route)

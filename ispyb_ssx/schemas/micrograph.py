@@ -22,6 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
+
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -29,15 +30,12 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-    "micrographId": f_fields.Integer(required=True, description=""),
-    "crystalSlurryId": f_fields.Integer(required=True, description=""),
-    "url": f_fields.String(required=False, description=""),
-    "objectSidePixelSize": f_fields.String(
-        required=False, description="comma separated two floats"
-    ),
-    "descriptionJson": f_fields.String(required=False, description=""),
-}
-
+        'micrographId': f_fields.Integer(required=True, description=''),
+        'crystalSlurryId': f_fields.Integer(required=True, description=''),
+        'url': f_fields.String(required=False, description=''),
+        'objectSidePixelSize': f_fields.String(required=False, description='comma separated two floats'),
+        'descriptionJson': f_fields.String(required=False, description=''),
+        }
 
 class MicrographSchema(Schema):
     """Marshmallows schema class representing Micrograph table"""
@@ -48,7 +46,6 @@ class MicrographSchema(Schema):
     objectSidePixelSize = ma_fields.String()
     descriptionJson = ma_fields.String()
 
-
-f_schema = api.model("Micrograph", dict_schema)
+f_schema = api.model('Micrograph', dict_schema)
 ma_schema = MicrographSchema()
 json_schema = JSONSchema().dump(ma_schema)
