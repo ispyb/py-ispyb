@@ -69,3 +69,50 @@ def add_protein(data_dict):
         [type]: [description]
     """
     return db.add_db_item(models.Protein, schemas.protein.ma_schema, data_dict)
+
+def update_protein(protein_id, data_dict):
+    """
+    Updates protein
+
+    Args:
+        protein_id ([type]): [description]
+        protein_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"proteinId": protein_id}
+    return db.update_db_item(
+        models.Protein, schemas.protein.ma_schema, id_dict, data_dict
+    )
+
+
+def patch_protein(protein_id, data_dict):
+    """
+    Patch a protein
+
+    Args:
+        protein_id ([type]): [description]
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"proteinId": protein_id}
+    return db.patch_db_item(
+        models.Protein, schemas.protein.ma_schema, id_dict, data_dict
+    )
+
+
+def delete_protein(protein_id):
+    """Deletes protein item from db
+
+    Args:
+        protein_id (int): proteinId column in db
+
+    Returns:
+        bool: True if the protein exists and deleted successfully,
+        otherwise return False
+    """
+    id_dict = {"proteinId": protein_id}
+    return db.delete_db_item(models.Protein, id_dict)

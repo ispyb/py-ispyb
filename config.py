@@ -38,7 +38,7 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # SQLALCHEMY_POOL_RECYCLE = 2999
     # SQLALCHEMY_POOL_TIMEOUT = 20
-    PAGINATION_ITEMS_LIMIT = 20
+    PAGINATION_ITEMS_LIMIT = 100
 
     DEBUG = True
     ERROR_404_HELP = False
@@ -48,17 +48,7 @@ class BaseConfig:
         "apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}
     }
 
-    AUTHORIZATION_RULES = {
-        "proposals": {
-            "get": ["all"],
-            "post": ["admin"]
-        },
-        "proposal_by_id" : {
-            "get": ["all"],
-            "put": ["admin"],
-            "path": ["admin"]
-        }
-    }
+    AUTHORIZATION_RULES = {}
 
     AUTH_MODULE = "app.extensions.auth.DummyAuth"
     AUTH_CLASS = "DummyAuth"
