@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -94,8 +95,7 @@ class SessionById(Resource):
     @token_required
     @authorization_required
     def delete(self, session_id):
-        """
-        Deletes a session by sessionId"""
+        """Deletes a session by sessionId"""
         return session.delete_session(session_id)
 
 
@@ -107,7 +107,6 @@ class SessionInfoById(Resource):
     """Returns full information of a session"""
 
     @api.doc(description="session_id should be an integer ")
-    # @api.marshal_with(session_desc_f_schema)
     @token_required
     @authorization_required
     def get(self, session_id):
@@ -155,8 +154,10 @@ class SessionsByDateBeamline(Resource):
 
         return session.get_sessions_by_date(start_date, end_date, beamline)
 
+
 # getSessionsByDateAndBeamline(startDate, endDate, beamline)
 # getSessionsBybeam_calendarAndDate(startDate, endDate, beam_calendar)
+
 
 @api.route("/beam_calendars", endpoint="beam_calendars")
 @api.doc(security="apikey")
@@ -171,8 +172,6 @@ class BeamCalendars(Resource):
 
     @api.expect(beam_calendar_schemas.f_schema)
     @api.marshal_with(beam_calendar_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
@@ -189,7 +188,9 @@ class beam_calendarById(Resource):
     """Allows to get/set/delete a beam_calendar"""
 
     @api.doc(description="beam_calendar_id should be an integer ")
-    @api.marshal_with(beam_calendar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @api.marshal_with(
+        beam_calendar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
+    )
     @token_required
     @authorization_required
     def get(self, beam_calendar_id):

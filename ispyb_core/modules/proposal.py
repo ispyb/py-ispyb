@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -22,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-import logging
 from flask_restx._http import HTTPStatus
 
 from app.extensions import db, auth_provider
@@ -31,8 +31,6 @@ from app.utils import create_response_item
 from ispyb_core import models, schemas
 from ispyb_core.modules import contacts, session
 
-
-log = logging.getLogger(__name__)
 
 
 def get_proposals(request):
@@ -66,6 +64,14 @@ def get_proposals(request):
 
 
 def get_db_proposals(query_params={}):
+    """Returns proposal db items
+
+    Args:
+        query_params (dict, optional): [description]. Defaults to {}.
+
+    Returns:
+        [type]: [description]
+    """
     return db.get_db_items(
         models.Proposal,
         schemas.proposal.dict_schema,
@@ -76,7 +82,7 @@ def get_db_proposals(query_params={}):
 
 def get_proposal_by_id(proposal_id):
     """
-    Returns proposal by its proposalId
+    Returns proposal by its proposalId.
 
     Args:
         proposal_id (int): corresponds to proposalId in db
@@ -92,7 +98,7 @@ def get_proposal_by_id(proposal_id):
 
 def get_proposal_info_by_id(proposal_id):
     """
-    Returns proposal by its proposalId
+    Returns proposal by its proposalId.
 
     Args:
         proposal_id (int): corresponds to proposalId in db
@@ -113,7 +119,7 @@ def get_proposal_info_by_id(proposal_id):
 
 def add_proposal(data_dict):
     """
-    Adds a proposal
+    Adds a proposal.
 
     Args:
         proposal_dict ([type]): [description]
@@ -126,7 +132,7 @@ def add_proposal(data_dict):
 
 def update_proposal(proposal_id, data_dict):
     """
-    Updates proposal
+    Updates proposal.
 
     Args:
         proposal_id ([type]): [description]
@@ -143,7 +149,7 @@ def update_proposal(proposal_id, data_dict):
 
 def patch_proposal(proposal_id, proposal_dict):
     """
-    Patch a proposal
+    Patch a proposal.
 
     Args:
         proposal_id ([type]): [description]
@@ -159,7 +165,8 @@ def patch_proposal(proposal_id, proposal_dict):
 
 
 def delete_proposal(proposal_id):
-    """Deletes proposal item from db
+    """
+    Deletes proposal item from db.
 
     Args:
         proposal_id (int): proposalId column in db

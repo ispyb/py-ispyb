@@ -24,11 +24,11 @@ Proposal namespace with enpoint allowing to manipulate proposal items.
 Example routes:
 
 [GET]   /ispyb/api/v1/proposals     - Retrieves a list of proposals
-[GET]   /ispyb/api/v1//proposals/1  - Retrieves proposal #1
-[POST]  /ispyb/api/v1//proposals    - Creates a new proposal
-[PUT]   /ispyb/api/v1//proposals/1  - Updates proposal #1
-[PATCH] /ispyb/api/v1//proposals/1  - Partially updates proposal #1
-[DELETE]/ispyb/api/v1//proposals/1  - Deletes proposal #1
+[GET]   /ispyb/api/v1/proposals/1  - Retrieves proposal #1
+[POST]  /ispyb/api/v1/proposals    - Creates a new proposal
+[PUT]   /ispyb/api/v1/proposals/1  - Updates proposal #1
+[PATCH] /ispyb/api/v1/proposals/1  - Partially updates proposal #1
+[DELETE]/ispyb/api/v1/proposals/1  - Deletes proposal #1
 """
 
 

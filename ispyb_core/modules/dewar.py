@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -27,7 +28,8 @@ from ispyb_core import models, schemas
 
 
 def get_dewars(request):
-    """Returns all dewars.
+    """
+    Returns all dewars.
 
     Returns:
         dict: list with dewars]
@@ -44,7 +46,8 @@ def get_dewars(request):
 
 
 def get_dewar_by_id(dewar_id):
-    """Returns dewar by its dewar_id
+    """
+    Returns dewar by its dewar_id.
 
     Args:
         dewar_id (int): corresponds to dewarId in db
@@ -58,7 +61,7 @@ def get_dewar_by_id(dewar_id):
 
 def add_dewar(data_dict):
     """
-    Adds a dewar to db
+    Adds a dewar to db.
 
     Args:
         data_dict ([type]): [description]
@@ -68,9 +71,10 @@ def add_dewar(data_dict):
     """
     return db.add_db_item(models.Dewar, schemas.dewar.ma_schema, data_dict)
 
+
 def update_dewar(dewar_id, data_dict):
     """
-    Updates dewar
+    Updates dewar.
 
     Args:
         dewar_id ([type]): [description]
@@ -80,14 +84,12 @@ def update_dewar(dewar_id, data_dict):
         [type]: [description]
     """
     id_dict = {"dewarId": dewar_id}
-    return db.update_db_item(
-        models.Dewar, schemas.dewar.ma_schema, id_dict, data_dict
-    )
+    return db.update_db_item(models.Dewar, schemas.dewar.ma_schema, id_dict, data_dict)
 
 
 def patch_dewar(dewar_id, data_dict):
     """
-    Patch a dewar
+    Patch a dewar.
 
     Args:
         dewar_id ([type]): [description]
@@ -97,13 +99,12 @@ def patch_dewar(dewar_id, data_dict):
         [type]: [description]
     """
     id_dict = {"dewarId": dewar_id}
-    return db.patch_db_item(
-        models.Dewar, schemas.dewar.ma_schema, id_dict, data_dict
-    )
+    return db.patch_db_item(models.Dewar, schemas.dewar.ma_schema, id_dict, data_dict)
 
 
 def delete_dewar(dewar_id):
-    """Deletes dewar item from db
+    """
+    Deletes dewar item from db.
 
     Args:
         dewar_id (int): dewarId column in db

@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -71,9 +72,10 @@ def add_sample(data_dict):
     """
     return db.add_db_item(models.BLSample, schemas.sample.ma_schema, data_dict)
 
+
 def update_sample(sample_id, data_dict):
     """
-    Updates sample
+    Updates sample.
 
     Args:
         sample_id ([type]): [description]
@@ -90,7 +92,7 @@ def update_sample(sample_id, data_dict):
 
 def patch_sample(sample_id, data_dict):
     """
-    Patch a sample
+    Patch a sample.
 
     Args:
         sample_id ([type]): [description]
@@ -106,7 +108,8 @@ def patch_sample(sample_id, data_dict):
 
 
 def delete_sample(sample_id):
-    """Deletes sample item from db
+    """
+    Deletes sample item from db.
 
     Args:
         sample_id (int): blSampleId column in db

@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -27,7 +28,8 @@ from ispyb_core import models, schemas
 
 
 def get_containers(request):
-    """Returns all containers.
+    """
+    Returns all containers.
 
     Returns:
         dict: list with dewars]
@@ -44,7 +46,8 @@ def get_containers(request):
 
 
 def get_container_by_id(container_id):
-    """Returns container by its container_id
+    """
+    Returns container by its container_id.
 
     Args:
         container_id (int): corresponds to containerId in db
@@ -60,7 +63,7 @@ def get_container_by_id(container_id):
 
 def add_container(data_dict):
     """
-    Adds a container to db
+    Adds a container to db.
 
     Args:
         data_dict ([type]): [description]
@@ -70,9 +73,10 @@ def add_container(data_dict):
     """
     return db.add_db_item(models.Container, schemas.container.ma_schema, data_dict)
 
+
 def update_container(container_id, data_dict):
     """
-    Updates container
+    Updates container.
 
     Args:
         container_id ([type]): [description]
@@ -89,7 +93,7 @@ def update_container(container_id, data_dict):
 
 def patch_container(container_id, data_dict):
     """
-    Patch a container
+    Patch a container.
 
     Args:
         container_id ([type]): [description]
@@ -105,7 +109,8 @@ def patch_container(container_id, data_dict):
 
 
 def delete_container(container_id):
-    """Deletes container item from db
+    """
+    Deletes container item from db.
 
     Args:
         container_id (int): containerId column in db

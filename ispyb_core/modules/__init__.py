@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -21,11 +22,10 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
+
 import os
-import logging
 from importlib import import_module
 
-log = logging.getLogger(__name__)
 
 
 def init_app(app, **kwargs):

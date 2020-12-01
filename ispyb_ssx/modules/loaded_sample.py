@@ -125,7 +125,9 @@ def get_crystal_size_distributions():
         [type]: [description]
     """
     crystal_size_distribution_list = models.CrystalSizeDistribution.query.all()
-    return schemas.crystal_size_distribution.ma_schema.dump(crystal_size_distribution_list, many=True)
+    return schemas.crystal_size_distribution.ma_schema.dump(
+        crystal_size_distribution_list, many=True
+    )
 
 
 def add_crystal_size_distribution(data_dict):
@@ -200,6 +202,4 @@ def add_sample_stock(data_dict):
         [type]: [description]
 
     """
-    return db.add_db_item(
-        models.SampleStock, schemas.sample_stock.ma_schema, data_dict
-    )
+    return db.add_db_item(models.SampleStock, schemas.sample_stock.ma_schema, data_dict)

@@ -170,6 +170,7 @@ class DewarById(Resource):
         """Deletes a dewar by dewarId"""
         return dewar.delete_dewar(dewar_id)
 
+
 @api.route("/containers", endpoint="containers")
 @api.doc(security="apikey")
 class Containers(Resource):
@@ -223,6 +224,5 @@ class ContainerById(Resource):
     @token_required
     @authorization_required
     def delete(self, container_id):
-        """
-        Deletes a container by containerId"""
+        """Deletes a container by containerId"""
         return container.delete_container(container_id)

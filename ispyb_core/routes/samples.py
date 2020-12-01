@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -91,8 +92,7 @@ class SampleById(Resource):
     @token_required
     @authorization_required
     def delete(self, sample_id):
-        """
-        Deletes a sample by sampleId"""
+        """Deletes a sample by sampleId"""
         return sample.delete_sample(sample_id)
 
 
@@ -150,8 +150,7 @@ class CrystalById(Resource):
     @token_required
     @authorization_required
     def delete(self, crystal_id):
-        """
-        Deletes a crystal by crystalId"""
+        """Deletes a crystal by crystalId"""
         return crystal.delete_crystal(crystal_id)
 
 
@@ -173,6 +172,7 @@ class Proteins(Resource):
     def post(self):
         """Adds a new protein item"""
         return protein.add_protein(api.payload)
+
 
 @api.route("/proteins/<int:protein_id>", endpoint="protein_by_id")
 @api.param("protein_id", "protein id (integer)")
@@ -211,6 +211,7 @@ class ProteinById(Resource):
         """Deletes a protein by proteinId"""
         return protein.delete_protein(protein_id)
 
+
 @api.route("/diffraction_plans", endpoint="diffraction_plans")
 @api.doc(security="apikey")
 class DiffractionPlans(Resource):
@@ -231,7 +232,9 @@ class DiffractionPlans(Resource):
         return diffraction_plan.add_diffraction_plan(api.payload)
 
 
-@api.route("/diffraction_plans/<int:diffraction_plan_id>", endpoint="diffraction_plan_by_id")
+@api.route(
+    "/diffraction_plans/<int:diffraction_plan_id>", endpoint="diffraction_plan_by_id"
+)
 @api.param("diffraction_plan_id", "diffraction_plan id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="diffraction_plan not found.")
@@ -239,7 +242,9 @@ class DiffractionPlanById(Resource):
     """Allows to get/set/delete a diffraction_plan"""
 
     @api.doc(description="diffraction_plan_id should be an integer ")
-    @api.marshal_with(diffraction_plan_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @api.marshal_with(
+        diffraction_plan_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
+    )
     @token_required
     @authorization_required
     def get(self, diffraction_plan_id):
@@ -252,7 +257,9 @@ class DiffractionPlanById(Resource):
     @authorization_required
     def put(self, diffraction_plan_id):
         """Fully updates diffraction_plan with diffraction_plan_id"""
-        return diffraction_plan.update_diffraction_plan(diffraction_plan_id, api.payload)
+        return diffraction_plan.update_diffraction_plan(
+            diffraction_plan_id, api.payload
+        )
 
     @api.expect(diffraction_plan_schemas.f_schema)
     @api.marshal_with(diffraction_plan_schemas.f_schema, code=HTTPStatus.CREATED)
@@ -265,6 +272,5 @@ class DiffractionPlanById(Resource):
     @token_required
     @authorization_required
     def delete(self, diffraction_plan_id):
-        """
-        Deletes a diffraction_plan by diffraction_planId"""
+        """Deletes a diffraction_plan by diffraction_planId"""
         return diffraction_plan.delete_diffraction_plan(diffraction_plan_id)

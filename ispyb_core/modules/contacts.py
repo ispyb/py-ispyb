@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -81,7 +82,7 @@ def add_person(data_dict):
 
 def update_person(person_id, data_dict):
     """
-    Updates person
+    Updates person.
 
     Args:
         person_id ([type]): [description]
@@ -98,7 +99,7 @@ def update_person(person_id, data_dict):
 
 def patch_person(person_id, person_dict):
     """
-    Patch a person
+    Patch a person.
 
     Args:
         person_id ([type]): [description]
@@ -114,7 +115,7 @@ def patch_person(person_id, person_dict):
 
 
 def delete_person(person_id):
-    """Deletes person item from db
+    """Deletes person item from db.
 
     Args:
         person_id (int): personId column in db
@@ -141,16 +142,44 @@ def get_lab_contacts(request):
 
 
 def get_lab_contact_by_params(param_dict):
+    """
+    Returns lab contacts by params.
+
+    Args:
+        param_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     return db.get_db_item_by_params(
         models.LabContact, schemas.lab_contact.ma_schema, param_dict
     )
 
 
 def add_lab_contact(data_dict):
+    """
+    Adds a new lab contact.
+
+    Args:
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     return db.add_db_item(models.LabContact, schemas.lab_contact.ma_schema, data_dict)
 
 
 def update_lab_contact(lab_contact_id, data_dict):
+    """
+    Updates lab contact.
+
+    Args:
+        lab_contact_id (int): [description]
+        data_dict (dict): [description]
+
+    Returns:
+       dict: [description]
+    """
     id_dict = {"labContactId": lab_contact_id}
     return db.update_db_item(
         models.LabContact, schemas.lab_contact.ma_schema, id_dict, data_dict
@@ -158,6 +187,16 @@ def update_lab_contact(lab_contact_id, data_dict):
 
 
 def patch_lab_contact(lab_contact_id, data_dict):
+    """
+    Patches lab contact db item.
+
+    Args:
+        lab_contact_id (int): [description]
+        data_dict (dict): [description]
+
+    Returns:
+        dict: [description]
+    """
     id_dict = {"labContactId": lab_contact_id}
     return db.patch_db_item(
         models.LabContact, schemas.lab_contact.ma_schema, id_dict, data_dict
@@ -165,12 +204,22 @@ def patch_lab_contact(lab_contact_id, data_dict):
 
 
 def delete_lab_contact(lab_contact_id):
+    """
+    Deletes lab contact.
+
+    Args:
+        lab_contact_id ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     id_dict = {"labContactId": lab_contact_id}
     return db.delete_db_item(models.LabContact, id_dict)
 
 
 def get_laboratories(request):
-    """Returns laboratories based on query parameters
+    """
+    Returns laboratories based on query parameters.
 
     Args:
         query_params ([type]): [description]
@@ -189,7 +238,8 @@ def get_laboratories(request):
 
 
 def add_laboratory(data_dict):
-    """Adds new laboratory
+    """
+    Adds new laboratory.
 
     Args:
         laboratory_dict ([type]): [description]
@@ -201,7 +251,8 @@ def add_laboratory(data_dict):
 
 
 def get_laboratory_by_id(laboratory_id):
-    """Returns laboratory info by its laboratoryId
+    """
+    Returns laboratory info by its laboratoryId.
 
     Args:
         laboratory_id (int): corresponds to laboratoryId in db
@@ -217,7 +268,7 @@ def get_laboratory_by_id(laboratory_id):
 
 def patch_laboratory(laboratory_id, data_dict):
     """
-    Patch a laboratory
+    Patch a laboratory.
 
     Args:
         laboratory_id ([type]): [description]
@@ -233,6 +284,16 @@ def patch_laboratory(laboratory_id, data_dict):
 
 
 def update_laboratory(laboratory_id, data_dict):
+    """
+    Updates laboratory db item.
+
+    Args:
+        laboratory_id ([type]): [description]
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     id_dict = {"laboratoryId": laboratory_id}
     return db.update_db_item(
         models.Laboratory, schemas.laboratory.ma_schema, id_dict, data_dict
@@ -240,7 +301,8 @@ def update_laboratory(laboratory_id, data_dict):
 
 
 def delete_laboratory(laboratory_id):
-    """Deletes laboratory item from db
+    """
+    Deletes laboratory item from db.
 
     Args:
         laboratory_id (int): laboratoryId column in db

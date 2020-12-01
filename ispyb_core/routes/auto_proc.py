@@ -30,9 +30,9 @@ from ispyb_core.schemas import auto_proc_program as auto_proc_program_schemas
 from ispyb_core.schemas import (
     auto_proc_program_attachment as auto_proc_program_attachment_schemas,
 )
-from ispyb_core.schemas import (
-    auto_proc_program_message as auto_proc_program_message_schemas,
-)
+#from ispyb_core.schemas import (
+#    auto_proc_program_message as auto_proc_program_message_schemas,
+#)
 from ispyb_core.schemas import auto_proc_status as auto_proc_status_schemas
 from ispyb_core.modules import auto_proc
 
@@ -66,7 +66,6 @@ class AutoProcs(Resource):
     @authorization_required
     def post(self):
         """Adds a new auto proc"""
-
         return auto_proc.add_auto_proc(api.payload)
 
 
@@ -106,7 +105,6 @@ class AutoProcStatus(Resource):
     @authorization_required
     def post(self):
         """Adds a new auto proc program"""
-
         return auto_proc.add_auto_proc_status(api.payload)
 
 
@@ -142,8 +140,6 @@ class AutoProcPrograms(Resource):
 
     @api.expect(auto_proc_program_schemas.f_schema)
     @api.marshal_with(auto_proc_program_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
@@ -184,13 +180,10 @@ class AutoProcProgramAttachments(Resource):
 
     @api.expect(auto_proc_program_attachment_schemas.f_schema)
     @api.marshal_with(auto_proc_program_attachment_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
         """Adds a new auto proc program"""
-
         return auto_proc.add_auto_proc_program_attachment(api.payload)
 
 

@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -22,19 +23,14 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-import logging
-
 from app.extensions import db
 
 from ispyb_core import models, schemas
 
 
-log = logging.getLogger(__name__)
-
-
 def get_data_collections(request):
     """
-    Returns data collection items based on query parameters
+    Returns data collection items based on query parameters.
 
     Args:
         query_params ([type]): [description]
@@ -54,7 +50,7 @@ def get_data_collections(request):
 
 def add_data_collection(data_dict):
     """
-    Adds data collection item
+    Adds data collection item.
 
     Args:
         data_collection_dict ([type]): [description]
@@ -69,7 +65,7 @@ def add_data_collection(data_dict):
 
 def get_data_collection_by_id(data_collection_id):
     """
-    Returns data_collection by its id
+    Returns data_collection by its id.
 
     Args:
         data_collection_id (int): corresponds to dataCollectionId in db
@@ -85,7 +81,7 @@ def get_data_collection_by_id(data_collection_id):
 
 def get_data_collection_groups(request):
     """
-    Returns data collection group items based on query parameters
+    Returns data collection group items based on query parameters.
 
     Args:
         query_params ([type]): [description]
@@ -124,7 +120,7 @@ def get_data_collection_group_by_id(data_collection_group_id):
     Returns data collection group by its id.
 
     Args:
-        data_collection_group_id (int): corresponds to dataCollectionGroupId in db
+        data_collection_group_id (int): corresponds to dataCollectionGroupId
 
     Returns:
         dict: info about data collection group as dict

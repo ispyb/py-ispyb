@@ -19,6 +19,8 @@ along
 """
 
 
+from app import create_app
+
 __license__ = "LGPLv3+"
 
 
@@ -30,8 +32,6 @@ import pytest
 TESTS_DIR = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, ROOT_DIR)
-
-from app import create_app
 
 
 @pytest.fixture(scope="session")

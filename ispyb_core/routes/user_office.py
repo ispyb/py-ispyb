@@ -17,12 +17,8 @@ GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-
-
 """
 
-
-__license__ = "LGPLv3+"
 
 from flask import request, current_app
 from flask_restx._http import HTTPStatus
@@ -32,6 +28,9 @@ from flask_restx_patched import Resource
 from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
 from app.extensions.user_office_link import user_office_link
+
+
+__license__ = "LGPLv3+"
 
 
 api = Namespace(

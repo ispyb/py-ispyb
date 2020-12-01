@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -76,9 +77,10 @@ def get_beamline_setup_by_id(beamline_setup_id):
         models.BeamLineSetup, schemas.beamline_setup.ma_schema, data_dict
     )
 
+
 def update_beamline_setup(beamline_setup_id, data_dict):
     """
-    Updates beamline_setup
+    Updates beamline_setup.
 
     Args:
         beamline_setup_id ([type]): [description]
@@ -111,7 +113,7 @@ def patch_beamline_setup(beamline_setup_id, data_dict):
 
 
 def delete_beamline_setup(beamline_setup_id):
-    """Deletes beamline_setup item from db
+    """Deletes beamline_setup item from db.
 
     Args:
         beamline_setup_id (int): beamline_setupId column in db

@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -58,7 +59,7 @@ def get_auto_proc_by_id(auto_proc_id):
 
 def add_auto_proc(data_dict):
     """
-    Adds a auto_proc to db
+    Adds a auto_proc to db.
 
     Args:
         data_dict ([type]): [description]
@@ -136,7 +137,7 @@ def get_auto_proc_programs(request):
 
 def get_auto_proc_program_by_id(auto_proc_program_id):
     """
-    Returns auto_proc_program by its auto_proc_programId
+    Returns auto_proc_program by its auto_proc_programId.
 
     Args:
         auto_proc_program (int): corresponds to auto_proc_programId in db
@@ -152,7 +153,7 @@ def get_auto_proc_program_by_id(auto_proc_program_id):
 
 def add_auto_proc_program(data_dict):
     """
-    Adds a auto_proc_program to db
+    Adds a auto_proc_program to db.
 
     Args:
         data_dict ([type]): [description]
@@ -184,10 +185,10 @@ def get_auto_proc_program_attachments(request):
 
 def get_auto_proc_program_attachment_by_id(auto_proc_program_attachment_id):
     """
-    Returns auto_proc_program_attachment by its auto_proc_program_attachmentId
+    Returns auto_proc_program_attachment by its auto_proc_program_attachmentId.
 
     Args:
-        auto_proc_program_attachment (int): corresponds to autoProcProgramAttachmentId in db
+        auto_proc_program_attachment (int): corresponds to autoProcProgramAttachmentId
 
     Returns:
         dict: info about auto_proc_program_attachment as dict
@@ -202,7 +203,7 @@ def get_auto_proc_program_attachment_by_id(auto_proc_program_attachment_id):
 
 def add_auto_proc_program_attachment(data_dict):
     """
-    Adds a auto_proc_program_attachment to db
+    Adds a auto_proc_program_attachment to db.
 
     Args:
         data_dict ([type]): [description]
@@ -236,10 +237,10 @@ def get_auto_proc_program_messages(request):
 
 def get_auto_proc_program_message_by_id(auto_proc_program_message_id):
     """
-    Returns auto_proc_program_message by its autoProcProgramMessageId
+    Returns auto_proc_program_message by its autoProcProgramMessageId.
 
     Args:
-        auto_proc_program_message (int): corresponds to autoProcProgramMessageId in db
+        auto_proc_program_message (int): corresponds to autoProcProgramMessageId
 
     Returns:
         dict: info about auto_proc_program_message as dict
@@ -254,7 +255,7 @@ def get_auto_proc_program_message_by_id(auto_proc_program_message_id):
 
 def add_auto_proc_program_message(data_dict):
     """
-    Adds a auto_proc_program_message to db
+    Adds a auto_proc_program_message to db.
 
     Args:
         data_dict ([type]): [description]

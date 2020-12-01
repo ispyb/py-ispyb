@@ -47,7 +47,6 @@ class Persons(Resource):
     @authorization_required
     def get(self):
         """Returns all persons"""
-        # app.logger.info("Return all person")
         return contacts.get_persons(request)
 
     @api.expect(person_schemas.f_schema)
