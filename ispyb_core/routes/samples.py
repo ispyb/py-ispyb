@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -91,8 +92,7 @@ class SampleById(Resource):
     @token_required
     @authorization_required
     def delete(self, sample_id):
-        """
-        Deletes a sample by sampleId"""
+        """Deletes a sample by sampleId"""
         return sample.delete_sample(sample_id)
 
 
@@ -150,8 +150,7 @@ class CrystalById(Resource):
     @token_required
     @authorization_required
     def delete(self, crystal_id):
-        """
-        Deletes a crystal by crystalId"""
+        """Deletes a crystal by crystalId"""
         return crystal.delete_crystal(crystal_id)
 
 
@@ -273,6 +272,5 @@ class DiffractionPlanById(Resource):
     @token_required
     @authorization_required
     def delete(self, diffraction_plan_id):
-        """
-        Deletes a diffraction_plan by diffraction_planId"""
+        """Deletes a diffraction_plan by diffraction_planId"""
         return diffraction_plan.delete_diffraction_plan(diffraction_plan_id)

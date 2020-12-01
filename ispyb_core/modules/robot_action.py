@@ -78,7 +78,7 @@ def get_robot_action_by_id(robot_action_id):
 
 def update_robot_action(robot_action_id, data_dict):
     """
-    Updates robot_action
+    Updates robot_action.
 
     Args:
         robot_action_id ([type]): [description]
@@ -95,7 +95,7 @@ def update_robot_action(robot_action_id, data_dict):
 
 def patch_robot_action(robot_action_id, data_dict):
     """
-    Patch a robot_action
+    Patch a robot_action.
 
     Args:
         robot_action_id ([type]): [description]
@@ -111,7 +111,8 @@ def patch_robot_action(robot_action_id, data_dict):
 
 
 def delete_robot_action(robot_action_id):
-    """Deletes robot_action item from db
+    """
+    Deletes robot_action item from db.
 
     Args:
         robot_action_id (int): robot_actionId column in db

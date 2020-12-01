@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -42,7 +43,7 @@ def get_shipments(request):
 
 def get_shipment_by_id(shipment_id):
     """
-    Returns shipment by its shipmentId
+    Returns shipment by its shipmentId.
 
     Args:
         shipment_id (int): corresponds to shipmentId in db
@@ -58,7 +59,7 @@ def get_shipment_by_id(shipment_id):
 
 def get_shipment_info_by_id(shipment_id):
     """
-    Returns shipment by its shipmentId
+    Returns shipment by its shipmentId.
 
     Args:
         shipment_id (int): corresponds to shipmentId in db
@@ -85,7 +86,8 @@ def add_shipment(data_dict):
 
 
 def update_shipment(shipment_id, data_dict):
-    """Updates shipment
+    """
+    Updates shipment.
 
     Args:
         shipment_id ([type]): [description]
@@ -102,7 +104,7 @@ def update_shipment(shipment_id, data_dict):
 
 def patch_shipment(shipment_id, data_dict):
     """
-    Partialy updates shipment
+    Partialy updates shipment.
 
     Args:
         shipment_id ([type]): [description]
@@ -119,7 +121,7 @@ def patch_shipment(shipment_id, data_dict):
 
 def delete_shipment(shipment_id):
     """
-    Deletes shipment item from db
+    Deletes shipment item from db.
 
     Args:
         shipment_id (int): shipmentId column in db

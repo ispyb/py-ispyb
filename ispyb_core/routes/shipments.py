@@ -224,6 +224,5 @@ class ContainerById(Resource):
     @token_required
     @authorization_required
     def delete(self, container_id):
-        """
-        Deletes a container by containerId"""
+        """Deletes a container by containerId"""
         return container.delete_container(container_id)
