@@ -8,6 +8,7 @@ auto_proc_scaling_statistics,AutoProcScalingStatistics
 auto_proc_status,AutoProcStatus
 sample,BLSample
 session,BLSession
+beam_calendar,BeamCalendar
 beamline_setup,BeamLineSetup
 container,Container
 dewar,Dewar
@@ -16,6 +17,7 @@ crystal,Crystal
 data_collection,DataCollection
 data_collection_group,DataCollectionGroup
 detector,Detector
+diffraction_plan,DiffractionPlan
 energy_scan,EnergyScan
 image_quality_indicators,ImageQualityIndicators
 laboratory,Laboratory

@@ -22,6 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
+
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -29,16 +30,12 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-    "crystalSlurryId": f_fields.Integer(required=True, description=""),
-    "name": f_fields.String(required=False, description=""),
-    "crystalId": f_fields.Integer(required=True),
-    "crystalSizeDistributionId": f_fields.Integer(required=False, description=""),
-    "crystalDensity": f_fields.Float(required=False, description="1/mm3"),
-    "bufferId": f_fields.Float(
-        required=False, description="reference to Buffer.bufferId"
-    ),
-}
-
+        'crystalSlurryId': f_fields.Integer(required=True, description=''),
+        'name': f_fields.String(required=False, description=''),
+        'crystalSizeDistributionId': f_fields.Integer(required=False, description=''),
+        'crystalDensity': f_fields.Float(required=False, description='1/mm3'),
+        'bufferId': f_fields.Float(required=False, description='reference to Buffer.bufferId'),
+        }
 
 class CrystalSlurrySchema(Schema):
     """Marshmallows schema class representing CrystalSlurry table"""
@@ -49,7 +46,6 @@ class CrystalSlurrySchema(Schema):
     crystalDensity = ma_fields.Float()
     bufferId = ma_fields.Float()
 
-
-f_schema = api.model("CrystalSlurry", dict_schema)
+f_schema = api.model('CrystalSlurry', dict_schema)
 ma_schema = CrystalSlurrySchema()
 json_schema = JSONSchema().dump(ma_schema)

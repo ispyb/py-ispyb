@@ -55,20 +55,27 @@ If you do not have a running ispyb database then you can create one by running:
 
 
 ### Run application in debug mode
+
 * `python3 wsgi.py`
 * `invoke app.run`
 
-For deployment options see `deploy` directory.
+Now you can go to http://localhost:5000/ispyb/api/v1/doc and explore py-ispyb via swagger ui.
+For authentication json web tokens (jwt) are used. Call http://localhost:5000/ispyb/api/v1/auth/login and retrieve access token from the response:
 
-## Authentication
-JWT (Jason web tokens) are used to authenticate requests. See jwt.io to test the token.
-
-## Status codes
-https://www.flaskapi.org/api-guide/status-codes/
-
-## Format code
 ```bash
-autopep8 -a -r -j 0 -i --max-line-length 88 ./
-black --safe ./
+{
+    "token": "YOUR_JWT_TOKEN",
+    "roles": [
+        "user"
+    ]
+}
 ```
+For requests use the token in the `Authorization` header: `Bearer YOUR_JWT_TOKEN`. For example to retrieve proposals call:
+
+`curl -X GET -H 'Authorization: Bearer YOUR_JWT_TOKEN' -i http://localhost:5000/ispyb/api/v1/proposals`
+
+## Misc
+
+* For deployment options see `deploy` directory.
+* Status codes: https://www.flaskapi.org/api-guide/status-codes/
 

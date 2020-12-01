@@ -80,3 +80,51 @@ def test_patch(ispyb_core_app, ispyb_core_token):
 
     response = client.patch(route, json=mode_beamline_setup, headers=headers)
     assert response.status_code == 200, "[PATCH] %s failed" % (route)
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/proteins"
+    response = client.get(route, headers=headers)
+    protein_id = response.json["data"]["rows"][0]["proteinId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/proteins/" + str(protein_id)
+    mod_protein = {
+        "molecularMass": "200"
+    }
+
+    response = client.patch(route, json=mod_protein, headers=headers)
+    assert response.status_code == 200, "[PATCH] %s failed" % (route)
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/diffraction_plans"
+    response = client.get(route, headers=headers)
+    diffraction_plan_id = response.json["data"]["rows"][0]["diffractionPlanId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/diffraction_plans/" + str(diffraction_plan_id)
+    mod_diffraction_plan = {
+        "observedResolution": "3"
+    }
+
+    response = client.patch(route, json=mod_diffraction_plan, headers=headers)
+    assert response.status_code == 200, "[PATCH] %s failed" % (route)
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/crystals"
+    response = client.get(route, headers=headers)
+    crystal_id = response.json["data"]["rows"][0]["crystalId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/crystals/" + str(crystal_id)
+    mod_crystal = {
+        "spaceGroup": "P2"
+    }
+
+    response = client.patch(route, json=mod_crystal, headers=headers)
+    assert response.status_code == 200, "[PATCH] %s failed" % (route)
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/samples"
+    response = client.get(route, headers=headers)
+    sample_id = response.json["data"]["rows"][0]["blSampleId"]
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/" + str(sample_id)
+    mod_sample = {
+        "location": "2"
+    }
+
+    response = client.patch(route, json=mod_sample, headers=headers)
+    assert response.status_code == 200, "[PATCH] %s failed" % (route)

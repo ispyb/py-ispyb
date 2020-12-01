@@ -30,24 +30,22 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'timedXrayExposureId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'repeatedSequenceId': f_fields.Integer(required=False, description=''),
-        'eventTrainId': f_fields.Integer(required=False, description=''),
-        'timedBunches': f_fields.String(required=False, description=''),
-        'shutter': f_fields.String(required=False, description=''),
+        'beamCalendarId': f_fields.Integer(required=True, description=''),
+        'run': f_fields.String(required=True, description=''),
+        'beamStatus': f_fields.String(required=True, description=''),
+        'startDate': f_fields.DateTime(required=True, description=''),
+        'endDate': f_fields.DateTime(required=True, description=''),
         }
 
-class TimedXrayExposureSchema(Schema):
-    """Marshmallows schema class representing TimedXrayExposure table"""
+class BeamCalendarSchema(Schema):
+    """Marshmallows schema class representing BeamCalendar table"""
 
-    timedXrayExposureId = ma_fields.Integer()
-    name = ma_fields.String()
-    repeatedSequenceId = ma_fields.Integer()
-    eventTrainId = ma_fields.Integer()
-    timedBunches = ma_fields.String()
-    shutter = ma_fields.String()
+    beamCalendarId = ma_fields.Integer()
+    run = ma_fields.String()
+    beamStatus = ma_fields.String()
+    startDate = ma_fields.DateTime()
+    endDate = ma_fields.DateTime()
 
-f_schema = api.model('TimedXrayExposure', dict_schema)
-ma_schema = TimedXrayExposureSchema()
+f_schema = api.model('BeamCalendar', dict_schema)
+ma_schema = BeamCalendarSchema()
 json_schema = JSONSchema().dump(ma_schema)

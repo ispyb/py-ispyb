@@ -67,3 +67,50 @@ def add_dewar(data_dict):
         [type]: [description]
     """
     return db.add_db_item(models.Dewar, schemas.dewar.ma_schema, data_dict)
+
+def update_dewar(dewar_id, data_dict):
+    """
+    Updates dewar
+
+    Args:
+        dewar_id ([type]): [description]
+        dewar_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"dewarId": dewar_id}
+    return db.update_db_item(
+        models.Dewar, schemas.dewar.ma_schema, id_dict, data_dict
+    )
+
+
+def patch_dewar(dewar_id, data_dict):
+    """
+    Patch a dewar
+
+    Args:
+        dewar_id ([type]): [description]
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"dewarId": dewar_id}
+    return db.patch_db_item(
+        models.Dewar, schemas.dewar.ma_schema, id_dict, data_dict
+    )
+
+
+def delete_dewar(dewar_id):
+    """Deletes dewar item from db
+
+    Args:
+        dewar_id (int): dewarId column in db
+
+    Returns:
+        bool: True if the dewar exists and deleted successfully,
+        otherwise return False
+    """
+    id_dict = {"dewarId": dewar_id}
+    return db.delete_db_item(models.Dewar, id_dict)

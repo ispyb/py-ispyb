@@ -45,7 +45,7 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("Person id: %d" % person_id)
 
     route = ispyb_core_app.config["API_ROOT"] + "/proposals"
-    proposal_dict = data.test_proposal
+    proposal_dict = data.get_test_proposal()
     proposal_dict["personId"] = person_id
     response = client.post(route, json=proposal_dict, headers=headers)
 
@@ -88,3 +88,108 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("BeamlineSetup id: %d" % beamline_setup_id)
     assert beamline_setup_id
 
+
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/proteins"
+    protein_dict = data.test_protein
+    proposal_dict["proposalId"] = proposal_id
+    proposal_dict["personId"] = person_id
+    response = client.post(route, json=protein_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    protein_id = response.json["proteinId"]
+
+    print("Protein id: %d" % protein_id)
+    assert protein_id
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/diffraction_plans"
+    diffraction_plan_dict = data.test_diffraction_plan
+    diffraction_plan_dict["presetForProposalId"] = proposal_id
+    diffraction_plan_dict["detectorId"] = detector_id
+    response = client.post(route, json=diffraction_plan_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    diffraction_plan_id = response.json["diffractionPlanId"]
+
+    print("Diffraction plan id: %d" % diffraction_plan_id)
+    assert diffraction_plan_id
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/samples/crystals"
+    crystal_dict = data.test_crystal
+    crystal_dict["proteinId"] = protein_id
+    crystal_dict["diffractionPlanId"] = diffraction_plan_id
+    response = client.post(route, json=crystal_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    crystal_id = response.json["crystalId"]
+
+    print("Crystal id: %d" % crystal_id)
+    assert crystal_id
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/shipments"
+    shipment_dict = data.test_shippment
+    shipment_dict["proposalId"] = proposal_id
+    shipment_dict["sendingLabContactId"] = lab_contact_id
+    shipment_dict["returnLabContactId"] = lab_contact_id
+    shipment_dict["deliveryAgent_flightCodePersonId"] = person_id
+    response = client.post(route, json=shipment_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    shipment_id = response.json["shippingId"]
+
+    print("Shipping id: %d" % shipment_id)
+    assert shipment_id
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/sessions/beam_calendars"
+    beam_calendar_dict = data.test_beam_calendar
+    response = client.post(route, json=beam_calendar_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    beam_calendar_id = response.json["beamCalendarId"]
+
+    print("Beam calendar id: %d" % beam_calendar_id)
+    assert beam_calendar_id
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/sessions"
+    session_dict = data.test_session
+    session_dict["proposalId"] = proposal_id
+    session_dict["beamLineSetupId"] = beamline_setup_id
+    session_dict["beamCalendarId"] = beam_calendar_id
+    response = client.post(route, json=session_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    session_id = response.json["sessionId"]
+
+    print("Session id: %d" % session_id)
+    assert session_id
+
+
+    
+    route = ispyb_core_app.config["API_ROOT"] + "/shipments/dewars"
+    dewar_dict = data.get_test_dewar()
+    dewar_dict["firstExperimentId"] = session_id
+    dewar_dict["shippingId"] = shipment_id
+    response = client.post(route, json=dewar_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    dewar_id = response.json["dewarId"]
+
+    print("Dewar id: %d" % dewar_id)
+    assert dewar_id
+
+    """
+    route = ispyb_core_app.config["API_ROOT"] + "/samples"
+    sample_dict = data.test_sample
+    sample_dict["crystalId"] = crystal_id
+    response = client.post(route, json=sample_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    sample_id = response.json["blSampleId"]
+
+    print("Sample id: %d" % sample_id)
+    assert sample_id
+    """

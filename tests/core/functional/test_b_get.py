@@ -19,10 +19,6 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-from tests.core.data import test_proposal
-
-
-
 def test_get(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
 
@@ -46,14 +42,25 @@ def test_get(ispyb_core_app, ispyb_core_token):
         "/beamline/detectors?detectorModel=T1",
         "/beamline/setups",
         "/beamline/setups?offset=1&limit=1",
-        "/beamline/setups?beamlineName=testBeamline"
+        "/beamline/setups?beamlineName=testBeamline",
+        "/samples/proteins",
+        "/samples/proteins?offset=1&limit=1",
+        "/samples/proteins?acronym=ancr",
+        "/samples/diffraction_plans",
+        "/samples/diffraction_plans?offset=1&limit=1",
+        "/samples/diffraction_plans?experimentKind=OSC",
+        "/samples/crystals",
+        "/samples/crystals?offset=1&limit=1",
+        "/samples/crystals?spaceGroup=P4"
+        "/samples",
+        "/samples?offset=1&limit=1",
+        "/samples?holderLength=22"
     ]
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}
 
     for endpoint in endpoint_list:
         route = ispyb_core_app.config["API_ROOT"] + endpoint
-        print(route)
         response = client.get(route, headers=headers)
         data = response.json
 

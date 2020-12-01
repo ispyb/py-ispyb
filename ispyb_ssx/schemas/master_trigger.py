@@ -22,6 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
+
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -29,12 +30,11 @@ from marshmallow_jsonschema import JSONSchema
 from app.extensions.api import api_v1 as api
 
 dict_schema = {
-    "masterTriggerId": f_fields.Integer(required=True, description=""),
-    "nameInEventLog": f_fields.String(required=False, description=""),
-    "triggerDevice": f_fields.Integer(required=False, description=""),
-    "descriptionJson": f_fields.String(required=False, description=""),
-}
-
+        'masterTriggerId': f_fields.Integer(required=True, description=''),
+        'nameInEventLog': f_fields.String(required=False, description=''),
+        'triggerDevice': f_fields.Integer(required=False, description=''),
+        'descriptionJson': f_fields.String(required=False, description=''),
+        }
 
 class MasterTriggerSchema(Schema):
     """Marshmallows schema class representing MasterTrigger table"""
@@ -44,7 +44,6 @@ class MasterTriggerSchema(Schema):
     triggerDevice = ma_fields.Integer()
     descriptionJson = ma_fields.String()
 
-
-f_schema = api.model("MasterTrigger", dict_schema)
+f_schema = api.model('MasterTrigger', dict_schema)
 ma_schema = MasterTriggerSchema()
 json_schema = JSONSchema().dump(ma_schema)
