@@ -127,6 +127,61 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("Crystal id: %d" % crystal_id)
     assert crystal_id
 
+
+    route = ispyb_core_app.config["API_ROOT"] + "/shipments"
+    shipment_dict = data.test_shippment
+    shipment_dict["proposalId"] = proposal_id
+    shipment_dict["sendingLabContactId"] = lab_contact_id
+    shipment_dict["returnLabContactId"] = lab_contact_id
+    shipment_dict["deliveryAgent_flightCodePersonId"] = person_id
+    response = client.post(route, json=shipment_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    shipment_id = response.json["shippingId"]
+
+    print("Shipping id: %d" % shipment_id)
+    assert shipment_id
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/sessions/beam_calendars"
+    beam_calendar_dict = data.test_beam_calendar
+    response = client.post(route, json=beam_calendar_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    beam_calendar_id = response.json["beamCalendarId"]
+
+    print("Beam calendar id: %d" % beam_calendar_id)
+    assert beam_calendar_id
+
+
+    route = ispyb_core_app.config["API_ROOT"] + "/sessions"
+    session_dict = data.test_session
+    session_dict["proposalId"] = proposal_id
+    session_dict["beamLineSetupId"] = beamline_setup_id
+    session_dict["beamCalendarId"] = beam_calendar_id
+    response = client.post(route, json=session_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    session_id = response.json["sessionId"]
+
+    print("Session id: %d" % session_id)
+    assert session_id
+
+
+    
+    route = ispyb_core_app.config["API_ROOT"] + "/shipments/dewars"
+    dewar_dict = data.get_test_dewar()
+    dewar_dict["firstExperimentId"] = session_id
+    dewar_dict["shippingId"] = shipment_id
+    response = client.post(route, json=dewar_dict, headers=headers)
+
+    assert response.status_code == 200, "[POST] %s failed" % route
+    dewar_id = response.json["dewarId"]
+
+    print("Dewar id: %d" % dewar_id)
+    assert dewar_id
+
+    """
     route = ispyb_core_app.config["API_ROOT"] + "/samples"
     sample_dict = data.test_sample
     sample_dict["crystalId"] = crystal_id
@@ -137,3 +192,4 @@ def test_post(ispyb_core_app, ispyb_core_token):
 
     print("Sample id: %d" % sample_id)
     assert sample_id
+    """

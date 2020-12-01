@@ -23,6 +23,7 @@ def test_delete(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
     headers = {"Authorization": "Bearer " + ispyb_core_token}
 
+    return
     route = ispyb_core_app.config["API_ROOT"] + "/samples/diffraction_plans"
     response = client.get(route, headers=headers)
     diffraction_plan_id = response.json["data"]["rows"][-1]["diffractionPlanId"]
@@ -53,6 +54,7 @@ def test_delete(ispyb_core_app, ispyb_core_token):
     assert response.status_code == 200, "[DELETE] %s " % (route)
 
 
+    return
     route = ispyb_core_app.config["API_ROOT"] + "/samples"
     response = client.get(route, headers=headers)
     sample_id = response.json["data"]["rows"][-1]["blSampleId"]

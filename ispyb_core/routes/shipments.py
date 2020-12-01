@@ -19,33 +19,21 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
-"""
-shipment namespace with enpoint allowing to manipulate shipment items.
-
-Example routes:
-
-[GET]   /ispyb/api/v1/shipments     - Retrieves a list of shipments
-[GET]   /ispyb/api/v1//shipments/1  - Retrieves shipment #1
-[POST]  /ispyb/api/v1//shipments    - Creates a new shipment
-[PUT]   /ispyb/api/v1//shipments/1  - Updates shipment #1
-[PATCH] /ispyb/api/v1//shipments/1  - Partially updates shipment #1
-[DELETE]/ispyb/api/v1//shipments/1  - Deletes shipment #1
-"""
-
 from flask import request
 from flask_restx._http import HTTPStatus
 from flask_restx_patched import Resource
 from app.extensions.auth import token_required, authorization_required
 from app.extensions.api import api_v1, Namespace
-from ispyb_core.modules import shipping
+
+from ispyb_core.modules import container, dewar, shipping
+from ispyb_core.schemas import container as container_schemas
+from ispyb_core.schemas import dewar as dewar_schemas
 from ispyb_core.schemas import shipping as shipping_schemas
 
-import logging
 
 __license__ = "LGPLv3+"
 
 
-log = logging.getLogger(__name__)
 api = Namespace(
     "Shipments", description="Shipment related namespace", path="/shipments"
 )
@@ -65,8 +53,6 @@ class Shipments(Resource):
 
     @api.expect(shipping_schemas.f_schema)
     @api.marshal_with(shipping_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
@@ -95,7 +81,6 @@ class ShipmentById(Resource):
     @authorization_required
     def put(self, shipment_id):
         """Fully updates shipment with id shipment_id"""
-        log.info("Update shipment %d" % shipment_id)
         return shipping.update_shipment(shipment_id, api.payload)
 
     @api.expect(shipping_schemas.f_schema)
@@ -104,7 +89,6 @@ class ShipmentById(Resource):
     @authorization_required
     def patch(self, shipment_id):
         """Partially updates shipment with id shipment_id"""
-        log.info("Patch shipment %d" % shipment_id)
         return shipping.patch_shipment(shipment_id, api.payload)
 
     @token_required
@@ -128,3 +112,117 @@ class ShipmentInfoById(Resource):
     def get(self, shipment_id):
         """Returns a full description of a shipment by shipmentId"""
         return shipping.get_shipment_info_by_id(shipment_id)
+
+
+@api.route("/dewars", endpoint="dewars")
+@api.doc(security="apikey")
+class Dewars(Resource):
+    """Dewars resource"""
+
+    @token_required
+    @authorization_required
+    def get(self):
+        """Returns all dewars items"""
+        return dewar.get_dewars(request)
+
+    @token_required
+    @api.expect(dewar_schemas.f_schema)
+    @api.marshal_with(dewar_schemas.f_schema, code=201)
+    def post(self):
+        """Adds a new dewar item"""
+        return dewar.add_dewar(api.payload)
+
+
+@api.route("/dewars/<int:dewar_id>", endpoint="dewar_by_id")
+@api.param("dewar_id", "Dewar id (integer)")
+@api.doc(security="apikey")
+@api.response(code=HTTPStatus.NOT_FOUND, description="Dewar not found.")
+class DewarById(Resource):
+    """Allows to get/set/delete a dewar item"""
+
+    @api.doc(description="dewar_id should be an integer ")
+    @api.marshal_with(dewar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @token_required
+    @authorization_required
+    def get(self, dewar_id):
+        """Returns a dewar by dewarId"""
+        return dewar.get_dewar_by_id(dewar_id)
+
+    @api.expect(dewar_schemas.f_schema)
+    @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def put(self, dewar_id):
+        """Fully updates dewar with dewar_id"""
+        return dewar.update_dewar(dewar_id, api.payload)
+
+    @api.expect(dewar_schemas.f_schema)
+    @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def patch(self, dewar_id):
+        """Partially updates dewar with id dewarId"""
+        return dewar.patch_dewar(dewar_id, api.payload)
+
+    @token_required
+    @authorization_required
+    def delete(self, dewar_id):
+        """Deletes a dewar by dewarId"""
+        return dewar.delete_dewar(dewar_id)
+
+@api.route("/containers", endpoint="containers")
+@api.doc(security="apikey")
+class Containers(Resource):
+    """Containers resource"""
+
+    @token_required
+    @authorization_required
+    def get(self):
+        """Returns all container items"""
+        return container.get_containers(request)
+
+    @token_required
+    @api.expect(container_schemas.f_schema)
+    @api.marshal_with(container_schemas.f_schema, code=201)
+    def post(self):
+        """Adds a new container item"""
+        return container.add_container(api.payload)
+
+
+@api.route("/containers/<int:container_id>", endpoint="container_by_id")
+@api.param("container_id", "Container id (integer)")
+@api.doc(security="apikey")
+@api.response(code=HTTPStatus.NOT_FOUND, description="Container not found.")
+class ContainerById(Resource):
+    """Allows to get/set/delete a container item"""
+
+    @api.doc(description="container_id should be an integer ")
+    @api.marshal_with(container_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @token_required
+    @authorization_required
+    def get(self, container_id):
+        """Returns a container by container_id"""
+        return container.get_container_by_id(container_id)
+
+    @api.expect(container_schemas.f_schema)
+    @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def put(self, container_id):
+        """Fully updates container with container_id"""
+        return container.update_container(container_id, api.payload)
+
+    @api.expect(container_schemas.f_schema)
+    @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
+    @token_required
+    @authorization_required
+    def patch(self, container_id):
+        """Partially updates container with id containerId"""
+        return container.patch_container(container_id, api.payload)
+
+    @token_required
+    @authorization_required
+    def delete(self, container_id):
+        """
+        Deletes a container by containerId"""
+        return container.delete_container(container_id)

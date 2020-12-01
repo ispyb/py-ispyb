@@ -28,6 +28,7 @@ from app.extensions.api import api_v1, Namespace
 from app.extensions.auth import token_required, authorization_required
 
 from ispyb_core.schemas import session as session_schemas
+from ispyb_core.schemas import beam_calendar as beam_calendar_schemas
 from ispyb_core.modules import session
 
 
@@ -155,4 +156,42 @@ class SessionsByDateBeamline(Resource):
         return session.get_sessions_by_date(start_date, end_date, beamline)
 
 # getSessionsByDateAndBeamline(startDate, endDate, beamline)
-# getSessionsByProposalAndDate(startDate, endDate, proposal)
+# getSessionsBybeam_calendarAndDate(startDate, endDate, beam_calendar)
+
+@api.route("/beam_calendars", endpoint="beam_calendars")
+@api.doc(security="apikey")
+class BeamCalendars(Resource):
+    """Allows to get all beam_calendars"""
+
+    @token_required
+    @authorization_required
+    def get(self):
+        """Returns beam_calendars based on query parameters"""
+        return session.get_beam_calendars(request)
+
+    @api.expect(beam_calendar_schemas.f_schema)
+    @api.marshal_with(beam_calendar_schemas.f_schema, code=201)
+    # @api.errorhandler(FakeException)
+    # TODO add custom exception handling
+    @token_required
+    @authorization_required
+    def post(self):
+        """Adds a new beam_calendar"""
+        return session.add_beam_calendar(api.payload)
+
+
+@api.route("/beam_calendar/<int:beam_calendar_id>", endpoint="beam_calendar_by_id")
+@api.param("beam_calendar_id", "beam_calendar id (integer)")
+@api.doc(security="apikey")
+@api.response(code=HTTPStatus.NOT_FOUND, description="beam_calendar not found.")
+class beam_calendarById(Resource):
+
+    """Allows to get/set/delete a beam_calendar"""
+
+    @api.doc(description="beam_calendar_id should be an integer ")
+    @api.marshal_with(beam_calendar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @token_required
+    @authorization_required
+    def get(self, beam_calendar_id):
+        """Returns a beam_calendar by beam_calendarId"""
+        return session.get_beam_calendar_by_id(beam_calendar_id)

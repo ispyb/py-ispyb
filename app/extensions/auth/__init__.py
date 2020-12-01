@@ -283,8 +283,8 @@ def authorization_required(func):
         methods = current_app.config.get("AUTHORIZATION_RULES").get(self.endpoint, {})
         roles = methods.get(func.__name__, [])
 
-        print("User roles: %s" % str(user_info.get("roles")))
-        print("Endpoint [%s] %s roles: %s" % (func.__name__, self.endpoint, roles))
+        #print("User roles: %s" % str(user_info.get("roles")))
+        #print("Endpoint [%s] %s roles: %s" % (func.__name__, self.endpoint, roles))
 
         if not roles or "all" in roles or any(role in list(roles) for role in list(user_info.get("roles"))):
             return func(self, *args, **kwargs)

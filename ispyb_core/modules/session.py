@@ -164,3 +164,101 @@ def delete_session(session_id):
     """
     id_dict = {"sessionId": session_id}
     return db.delete_db_item(models.BLSession, id_dict)
+
+
+def get_beam_calendars(request):
+    """
+    Returns beam_calendar items based on query parameters.
+
+    Args:
+        query_params (dict): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    query_params = request.args.to_dict()
+
+    return db.get_db_items(
+        models.BeamCalendar,
+        schemas.beam_calendar.dict_schema,
+        schemas.beam_calendar.ma_schema,
+        query_params,
+    )
+
+
+def add_beam_calendar(data_dict):
+    """
+    Adds data collection item.
+
+    Args:
+        beam_calendar_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    return db.add_db_item(
+        models.BeamCalendar, schemas.beam_calendar.ma_schema, data_dict
+    )
+
+
+def get_beam_calendar_by_id(beam_calendar_id):
+    """
+    Returns beam_calendar by its beam_calendarId.
+
+    Args:
+        beam_calendar_id (int): corresponds to beamlineSetupId in db
+
+    Returns:
+        dict: info about beam_calendar as dict
+    """
+    data_dict = {"beamCalendarId": beam_calendar_id}
+    return db.get_db_item_by_params(
+        models.BeamCalendar, schemas.beam_calendar.ma_schema, data_dict
+    )
+
+def update_beam_calendar(beam_calendar_id, data_dict):
+    """
+    Updates beam_calendar
+
+    Args:
+        beam_calendar_id ([type]): [description]
+        beam_calendar_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"beamCalendarId": beam_calendar_id}
+    return db.update_db_item(
+        models.BeamCalendar, schemas.beam_calendar.ma_schema, id_dict, data_dict
+    )
+
+
+def patch_beam_calendar(beam_calendar_id, data_dict):
+    """
+    Patch a beam_calendar
+
+    Args:
+        beam_calendar_id ([type]): [description]
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"beamCalendarId": beam_calendar_id}
+    return db.patch_db_item(
+        models.BeamCalendar, schemas.beam_calendar.ma_schema, id_dict, data_dict
+    )
+
+
+def delete_beam_calendar(beam_calendar_id):
+    """Deletes beam_calendar item from db
+
+    Args:
+        beam_calendar_id (int): beam_calendarId column in db
+
+    Returns:
+        bool: True if the beam_calendar exists and deleted successfully,
+        otherwise return False
+    """
+    id_dict = {"beamCalendarId": beam_calendar_id}
+    return db.delete_db_item(models.BeamCalendar, id_dict)

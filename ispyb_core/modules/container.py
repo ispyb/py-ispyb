@@ -36,7 +36,7 @@ def get_containers(request):
     query_params = request.args.to_dict()
 
     return db.get_db_items(
-        models.Dewar,
+        models.Container,
         schemas.dewar.dict_schema,
         schemas.dewar.ma_schema,
         query_params,
@@ -69,3 +69,50 @@ def add_container(data_dict):
         [type]: [description]
     """
     return db.add_db_item(models.Container, schemas.container.ma_schema, data_dict)
+
+def update_container(container_id, data_dict):
+    """
+    Updates container
+
+    Args:
+        container_id ([type]): [description]
+        container_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"containerId": container_id}
+    return db.update_db_item(
+        models.Container, schemas.container.ma_schema, id_dict, data_dict
+    )
+
+
+def patch_container(container_id, data_dict):
+    """
+    Patch a container
+
+    Args:
+        container_id ([type]): [description]
+        data_dict ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    id_dict = {"containerId": container_id}
+    return db.patch_db_item(
+        models.Container, schemas.container.ma_schema, id_dict, data_dict
+    )
+
+
+def delete_container(container_id):
+    """Deletes container item from db
+
+    Args:
+        container_id (int): containerId column in db
+
+    Returns:
+        bool: True if the container exists and deleted successfully,
+        otherwise return False
+    """
+    id_dict = {"containerId": container_id}
+    return db.delete_db_item(models.Container, id_dict)

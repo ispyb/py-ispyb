@@ -266,7 +266,6 @@ class SQLAlchemy(BaseSQLAlchemy):
         db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
             description="There is no data with item id %s" % str(item_id_dict)
         )
-        print(item_id_dict, item_data_dict)
         if db_item:
             for key, value in item_data_dict.items():
                 if hasattr(db_item, key):

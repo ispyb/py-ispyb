@@ -8,6 +8,7 @@ auto_proc_scaling_statistics,AutoProcScalingStatistics
 auto_proc_status,AutoProcStatus
 sample,BLSample
 session,BLSession
+beam_calendar,BeamCalendar
 beamline_setup,BeamLineSetup
 container,Container
 dewar,Dewar

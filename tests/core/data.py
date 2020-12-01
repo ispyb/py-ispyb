@@ -1,3 +1,5 @@
+import time
+
 from datetime import datetime
 from random import randint
 import uuid
@@ -17,15 +19,22 @@ def get_test_proposal():
     proposal["proposalNumber"] = randint(1, 1e5)
     return proposal
 
+test_beam_calendar = {
+    "run": "1",
+    "beamStatus": "Open",
+    "endDate":  datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    "startDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+}
+
 test_session = {
-    "bltimeStamp": datetime.strptime("2015-12-21 16:20:44", "%Y-%m-%d %H:%M:%S"),
+    "bltimeStamp": "2015-12-21 16:20:44",
     "proposalId": 37027,
     "beamLineName": "i03",
     "visit_number": 2,
     "archived": 0,
     "beamLineSetupId": 1,
-    "endDate": datetime.strptime("2016-03-11 17:00:00", "%Y-%m-%d %H:%M:%S"),
-    "startDate": datetime.strptime("2016-03-11 09:00:00", "%Y-%m-%d %H:%M:%S"),
+    "endDate":  "2015-12-21 16:20:44",
+    "startDate": "2015-12-21 16:20:44",
 }
 
 
@@ -39,11 +48,11 @@ test_data_collection = {
     "slitGapHorizontal": 0.099937,
     "axisStart": 45,
     "xtalSnapshotFullPath1": "/path/to_snapshot1",
-    "imageDirectory": "/dls/i03/data/2016/cm14451-1/20160114/tlys_jan_4/",
+    "imageDirectory": "/path/o/image/dir",
     "BLSAMPLEID": 374695,
     "xBeam": 215.62,
     "SESSIONID": 55167,
-    "comments": "(-402,345,142) EDNAStrategy4: subWedge:1Aperture: Medium",
+    "comments": "Test_comm",
     "fileTemplate": "tlys_jan_4_1_####.cbf",
     "imageSuffix": "cbf",
     "flux": 833107367454.3083,
@@ -118,16 +127,16 @@ test_laboratory = {
 }
 
 test_person = {
-  "laboratoryId": 1,
-  "personUUID": "Person uuid",
-  "familyName": "Family",
-  "givenName": "Name",
-  "title": "Dr",
-  "emailAddress": "email",
-  "phoneNumber": "2233",
-  "login": "login",
-  "faxNumber": "222",
-  "cache": "string",
+    "laboratoryId": 1,
+    "personUUID": "Person uuid",
+    "familyName": "Family",
+    "givenName": "Name",
+    "title": "Dr",
+    "emailAddress": "email",
+    "phoneNumber": "2233",
+    "login": "login",
+    "faxNumber": "222",
+    "cache": "string",
 }
 
 def get_test_person():
@@ -308,22 +317,46 @@ test_sample = {
 
 test_container = {
     "dewarId": 0,
-    "code": "string",
-    "containerType": "string",
-    "capacity": 0,
-    "sampleChangerLocation": "string",
-    "containerStatus": "string",
-    "beamlineLocation": "string",
+    "code": "code",
+    "containerType": "cane",
+    "capacity": 10,
+    "sampleChangerLocation": "1",
+    "containerStatus": "ready",
+    "beamlineLocation": "no",
     "screenId": 0,
     "scheduleId": 0,
-    "barcode": "string",
+    "barcode": "barcode",
     "imagerId": 0,
     "sessionId": 0,
     "ownerId": 0,
     "requestedImagerId": 0,
     "requestedReturn": 0,
     "comments": "string",
-    "experimentType": "string",
-    "storageTemperature": 0,
+    "experimentType": "MX",
+    "storageTemperature": 8,
     "containerRegistryId": 0
 }
+
+test_dewar = {
+    "shippingId": 0,
+    "code": "00001",
+    "comments": "comments",
+    "storageLocation": "string",
+    "dewarStatus": "open",
+    "isStorageDewar": 1,
+    "barCode": "code",
+    "firstExperimentId": 0,
+    "customsValue": 10,
+    "transportValue": 100,
+    "trackingNumberToSynchrotron": "00001",
+    "trackingNumberFromSynchrotron": "00002",
+    "type": "Dewar",
+    "FACILITYCODE": "fac",
+    "weight": 30,
+    "deliveryAgent_barcode": "test"
+}
+
+def get_test_dewar():
+    dewar_dict = test_dewar
+    dewar_dict["barCode"] = uuid.uuid4().hex.upper()[0:6]
+    return dewar_dict
