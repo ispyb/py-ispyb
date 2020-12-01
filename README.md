@@ -40,19 +40,18 @@ Install python dependencies:
 
 `cp ispyb_core_config_example.yml ispyb_core_config.yml`
 
-### Regenerate data base models and schemas
-
-```bash
-cd scripts
-./generate_core_models.sh
-python3 generate_core_schemas.py
-cd ..
-```
-
 If you do not have a running ispyb database then you can create one by running:
 
 `scripts/create_core_db.sh`
 
+### Regenerate data base models and schemas
+
+```bash
+cd scripts
+./generate_core_models.sh PATH_TO_CONFIG_FILE.yml
+python3 generate_core_schemas.py
+cd ..
+```
 
 ### Run application in debug mode
 
@@ -60,7 +59,7 @@ If you do not have a running ispyb database then you can create one by running:
 * `invoke app.run`
 
 Now you can go to http://localhost:5000/ispyb/api/v1/doc and explore py-ispyb via swagger ui.
-For authentication json web tokens (jwt) are used. Call http://localhost:5000/ispyb/api/v1/auth/login and retrieve access token from the response:
+For authentication json web tokens (jwt) are used. In the web browser call http://localhost:5000/ispyb/api/v1/auth/login , enter user credentials and retrieve access token from the response:
 
 ```bash
 {
@@ -70,6 +69,13 @@ For authentication json web tokens (jwt) are used. Call http://localhost:5000/is
     ]
 }
 ```
+
+Corresponding curl command:
+
+`curl -u USER:PASS -i -H "Accept:application/json" http://localhost:5000/ispyb/api/v1/auth/login`
+
+In the case of dummy authentication username _user_ will grant _user_ role and _manager_ will grant _user_ and _manager_ roles. 
+
 For requests use the token in the `Authorization` header: `Bearer YOUR_JWT_TOKEN`. For example to retrieve proposals call:
 
 `curl -X GET -H 'Authorization: Bearer YOUR_JWT_TOKEN' -i http://localhost:5000/ispyb/api/v1/proposals`
