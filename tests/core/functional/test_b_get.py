@@ -51,10 +51,9 @@ def test_get(ispyb_core_app, ispyb_core_token):
         "/samples/diffraction_plans?experimentKind=OSC",
         "/samples/crystals",
         "/samples/crystals?offset=1&limit=1",
-        "/samples/crystals?spaceGroup=P4"
-        "/samples",
+        "/samples/crystals?spaceGroup=P4" "/samples",
         "/samples?offset=1&limit=1",
-        "/samples?holderLength=22"
+        "/samples?holderLength=22",
     ]
 
     headers = {"Authorization": "Bearer " + ispyb_core_token}

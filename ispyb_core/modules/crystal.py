@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -27,7 +28,7 @@ from ispyb_core import models, schemas
 
 def get_crystals(request):
     """
-    Returns crystal entries
+    Returns crystal entries.
 
     Returns:
         [type]: [description]
@@ -44,7 +45,7 @@ def get_crystals(request):
 
 def get_crystal_by_id(crystal_id):
     """
-    Returns crystal by its crystalId
+    Returns crystal by its crystalId.
 
     Args:
         crystal_id (int): corresponds to crystalId in db
@@ -60,7 +61,7 @@ def get_crystal_by_id(crystal_id):
 
 def add_crystal(data_dict):
     """
-    Adds a crystal to db
+    Adds a crystal to db.
 
     Args:
         data_dict ([type]): [description]
@@ -70,9 +71,10 @@ def add_crystal(data_dict):
     """
     return db.add_db_item(models.Crystal, schemas.crystal.ma_schema, data_dict)
 
+
 def update_crystal(crystal_id, data_dict):
     """
-    Updates crystal
+    Updates crystal.
 
     Args:
         crystal_id ([type]): [description]
@@ -89,7 +91,7 @@ def update_crystal(crystal_id, data_dict):
 
 def patch_crystal(crystal_id, data_dict):
     """
-    Patch a crystal
+    Patch a crystal.
 
     Args:
         crystal_id ([type]): [description]
@@ -105,7 +107,8 @@ def patch_crystal(crystal_id, data_dict):
 
 
 def delete_crystal(crystal_id):
-    """Deletes crystal item from db
+    """
+    Deletes crystal item from db.
 
     Args:
         crystal_id (int): crystalId column in db

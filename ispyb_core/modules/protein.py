@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -20,6 +21,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
 __license__ = "LGPLv3+"
+
 
 from app.extensions import db
 from ispyb_core import models, schemas
@@ -44,7 +46,7 @@ def get_proteins(request):
 
 def get_protein_by_id(protein_id):
     """
-    Returns protein by its proteinId
+    Returns protein by its proteinId.
 
     Args:
         protein (int): corresponds to proteinId in db
@@ -60,7 +62,7 @@ def get_protein_by_id(protein_id):
 
 def add_protein(data_dict):
     """
-    Adds a protein to db
+    Adds a protein to db.
 
     Args:
         data_dict ([type]): [description]
@@ -70,9 +72,10 @@ def add_protein(data_dict):
     """
     return db.add_db_item(models.Protein, schemas.protein.ma_schema, data_dict)
 
+
 def update_protein(protein_id, data_dict):
     """
-    Updates protein
+    Updates protein.
 
     Args:
         protein_id ([type]): [description]
@@ -89,7 +92,7 @@ def update_protein(protein_id, data_dict):
 
 def patch_protein(protein_id, data_dict):
     """
-    Patch a protein
+    Patch a protein.
 
     Args:
         protein_id ([type]): [description]
@@ -105,7 +108,8 @@ def patch_protein(protein_id, data_dict):
 
 
 def delete_protein(protein_id):
-    """Deletes protein item from db
+    """
+    Deletes protein item from db.
 
     Args:
         protein_id (int): proteinId column in db

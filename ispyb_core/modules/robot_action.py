@@ -57,9 +57,7 @@ def add_robot_action(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.RobotAction, schemas.robot_action.ma_schema, data_dict
-    )
+    return db.add_db_item(models.RobotAction, schemas.robot_action.ma_schema, data_dict)
 
 
 def get_robot_action_by_id(robot_action_id):
@@ -76,6 +74,7 @@ def get_robot_action_by_id(robot_action_id):
     return db.get_db_item_by_params(
         models.RobotAction, schemas.robot_action.ma_schema, data_dict
     )
+
 
 def update_robot_action(robot_action_id, data_dict):
     """

@@ -10,19 +10,21 @@ test_proposal = {
     "proposalType": "MX",
     "personId": 1,
     "proposalNumber": "111",
-    #"bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%Y-%m-%d %H:%M:%S"),
+    # "bltimeStamp": datetime.strptime("2015-12-21 16:20:43", "%Y-%m-%d %H:%M:%S"),
     "state": "Open",
 }
+
 
 def get_test_proposal():
     proposal = test_proposal
     proposal["proposalNumber"] = randint(1, 1e5)
     return proposal
 
+
 test_beam_calendar = {
     "run": "1",
     "beamStatus": "Open",
-    "endDate":  datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    "endDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     "startDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
 }
 
@@ -33,7 +35,7 @@ test_session = {
     "visit_number": 2,
     "archived": 0,
     "beamLineSetupId": 1,
-    "endDate":  "2015-12-21 16:20:44",
+    "endDate": "2015-12-21 16:20:44",
     "startDate": "2015-12-21 16:20:44",
 }
 
@@ -123,7 +125,7 @@ test_laboratory = {
     "url": "url",
     "organization": "Test org",
     "laboratoryPk": 0,
-    "postcode": "Test code"
+    "postcode": "Test code",
 }
 
 test_person = {
@@ -139,10 +141,12 @@ test_person = {
     "cache": "string",
 }
 
+
 def get_test_person():
     test_person_dict = test_person
     test_person_dict["login"] = uuid.uuid4().hex.upper()[0:6]
     return test_person_dict
+
 
 test_detector = {
     "detectorType": "PixelCounting",
@@ -168,13 +172,15 @@ test_detector = {
     "numberOfPixelsY": 8000,
     "detectorRollMin": "1",
     "detectorRollMax": "2",
-    "localName": "TestDetector"
+    "localName": "TestDetector",
 }
+
 
 def get_test_detector():
     test_detector_dict = test_detector
     test_detector_dict["detectorSerialNumber"] = uuid.uuid4().hex.upper()[0:6]
     return test_detector_dict
+
 
 test_beamline_setup = {
     "detectorId": 0,
@@ -220,7 +226,7 @@ test_protein = {
     "acronym": "ancr",
     "molecularMass": "2",
     "proteinType": "2",
-    "personId": 1
+    "personId": 1,
 }
 
 test_diffraction_plan = {
@@ -282,7 +288,7 @@ test_crystal = {
     "pdbFileName": "pdf_filename",
     "pdbFilePath": "pdf_filen_path",
     "abundance": 0,
-    "theoreticalDensity": 0
+    "theoreticalDensity": 0,
 }
 
 test_sample = {
@@ -312,7 +318,7 @@ test_sample = {
     "blottingForce": 0,
     "blottingDrainTime": 0,
     "support": "string",
-    "subLocation": 0
+    "subLocation": 0,
 }
 
 test_container = {
@@ -334,7 +340,7 @@ test_container = {
     "comments": "string",
     "experimentType": "MX",
     "storageTemperature": 8,
-    "containerRegistryId": 0
+    "containerRegistryId": 0,
 }
 
 test_dewar = {
@@ -353,8 +359,9 @@ test_dewar = {
     "type": "Dewar",
     "FACILITYCODE": "fac",
     "weight": 30,
-    "deliveryAgent_barcode": "test"
+    "deliveryAgent_barcode": "test",
 }
+
 
 def get_test_dewar():
     dewar_dict = test_dewar

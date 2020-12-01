@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -19,15 +20,15 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-__license__ = "LGPLv3+"
-
-
 from ispyb_core import models, schemas
+
+
+__license__ = "LGPLv3+"
 
 
 def get_energy_scans():
     """
-    Returns list of energy scans
+    Returns list of energy scans.
 
     Returns:
         [type]: [description]

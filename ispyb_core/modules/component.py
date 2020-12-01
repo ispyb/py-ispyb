@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -27,7 +28,7 @@ from ispyb_core import models, schemas
 
 def get_component_types(request):
     """
-    Returns component_type entries
+    Returns component_type entries.
 
     Returns:
         [type]: [description]
@@ -44,7 +45,7 @@ def get_component_types(request):
 
 def get_component_type_by_id(component_type_id):
     """
-    Returns component_type by its component_typeId
+    Returns component_type by its component_typeId.
 
     Args:
         component_type_id (int): corresponds to component_typeId in db
@@ -60,7 +61,7 @@ def get_component_type_by_id(component_type_id):
 
 def add_component_type(data_dict):
     """
-    Adds a component_type to db
+    Adds a component_type to db.
 
     Args:
         data_dict ([type]): [description]
@@ -68,11 +69,14 @@ def add_component_type(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(models.ComponentType, schemas.component_type.ma_schema, data_dict)
+    return db.add_db_item(
+        models.ComponentType, schemas.component_type.ma_schema, data_dict
+    )
+
 
 def update_component_type(component_type_id, data_dict):
     """
-    Updates component_type
+    Updates component_type.
 
     Args:
         component_type_id ([type]): [description]
@@ -89,7 +93,7 @@ def update_component_type(component_type_id, data_dict):
 
 def patch_component_type(component_type_id, data_dict):
     """
-    Patch a component_type
+    Patch a component_type.
 
     Args:
         component_type_id ([type]): [description]
@@ -105,7 +109,8 @@ def patch_component_type(component_type_id, data_dict):
 
 
 def delete_component_type(component_type_id):
-    """Deletes component_type item from db
+    """
+    Deletes component_type item from db.
 
     Args:
         component_type_id (int): componentTypeId column in db

@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -21,13 +22,14 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
+
 from app.extensions import db
 from ispyb_core import models, schemas
 
 
 def get_diffraction_plans(request):
     """
-    Returns diffraction_plan entries
+    Returns diffraction_plan entries.
 
     Returns:
         [type]: [description]
@@ -44,7 +46,7 @@ def get_diffraction_plans(request):
 
 def get_diffraction_plan_by_id(diffraction_plan_id):
     """
-    Returns diffraction_plan by its diffraction_planId
+    Returns diffraction_plan by its diffraction_planId.
 
     Args:
         diffraction_plan_id (int): corresponds to diffraction_planId in db
@@ -60,7 +62,7 @@ def get_diffraction_plan_by_id(diffraction_plan_id):
 
 def add_diffraction_plan(data_dict):
     """
-    Adds a diffraction_plan to db
+    Adds a diffraction_plan to db.
 
     Args:
         data_dict ([type]): [description]
@@ -68,11 +70,14 @@ def add_diffraction_plan(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(models.DiffractionPlan, schemas.diffraction_plan.ma_schema, data_dict)
+    return db.add_db_item(
+        models.DiffractionPlan, schemas.diffraction_plan.ma_schema, data_dict
+    )
+
 
 def update_diffraction_plan(diffraction_plan_id, data_dict):
     """
-    Updates diffraction_plan
+    Updates diffraction_plan.
 
     Args:
         diffraction_plan_id ([type]): [description]
@@ -89,7 +94,7 @@ def update_diffraction_plan(diffraction_plan_id, data_dict):
 
 def patch_diffraction_plan(diffraction_plan_id, data_dict):
     """
-    Patch a diffraction_plan
+    Patch a diffraction_plan.
 
     Args:
         diffraction_plan_id ([type]): [description]
@@ -105,7 +110,8 @@ def patch_diffraction_plan(diffraction_plan_id, data_dict):
 
 
 def delete_diffraction_plan(diffraction_plan_id):
-    """Deletes diffraction_plan item from db
+    """
+    Deletes diffraction_plan item from db.
 
     Args:
         diffraction_plan_id (int): diffraction_planId column in db

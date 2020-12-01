@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -56,9 +57,7 @@ def add_detector(data_dict):
     Returns:
         [type]: [description]
     """
-    return db.add_db_item(
-        models.Detector, schemas.detector.ma_schema, data_dict
-    )
+    return db.add_db_item(models.Detector, schemas.detector.ma_schema, data_dict)
 
 
 def get_detector_by_id(detector_id):
@@ -76,9 +75,10 @@ def get_detector_by_id(detector_id):
         models.Detector, schemas.detector.ma_schema, data_dict
     )
 
+
 def update_detector(detector_id, data_dict):
     """
-    Updates detector
+    Updates detector.
 
     Args:
         detector_id ([type]): [description]
@@ -95,7 +95,7 @@ def update_detector(detector_id, data_dict):
 
 def patch_detector(detector_id, data_dict):
     """
-    Patch a detector
+    Patch a detector.
 
     Args:
         detector_id ([type]): [description]
@@ -111,7 +111,8 @@ def patch_detector(detector_id, data_dict):
 
 
 def delete_detector(detector_id):
-    """Deletes detector item from db
+    """
+    Deletes detector item from db.
 
     Args:
         detector_id (int): detectorId column in db

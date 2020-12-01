@@ -27,11 +27,12 @@ from app.extensions import db
 
 from ispyb_core import models, schemas
 
-from ispyb_core.modules import beamline_setup, data_collection, session
+from ispyb_core.modules import beamline_setup, session
 
 
 def get_sessions(request):
-    """Returns session based on query parameters
+    """
+    Returns session based on query parameters.
 
     Args:
         query_params ([type]): [description]
@@ -50,7 +51,8 @@ def get_sessions(request):
 
 
 def add_session(data_dict):
-    """Adds new session
+    """
+    Adds new session.
 
     Args:
         session_dict ([type]): [description]
@@ -62,7 +64,8 @@ def add_session(data_dict):
 
 
 def get_session_by_id(session_id):
-    """Returns session info by its sessionId
+    """
+    Returns session info by its sessionId.
 
     Args:
         session_id (int): corresponds to sessionId in db
@@ -77,7 +80,8 @@ def get_session_by_id(session_id):
 
 
 def get_session_info_by_id(session_id):
-    """Returns session info by its sessionId
+    """
+    Returns session info by its sessionId.
 
     Args:
         session_id (int): corresponds to sessionId in db
@@ -93,13 +97,15 @@ def get_session_info_by_id(session_id):
         session_json["beamline_setup"] = beamline_setup.get_beamline_setup_by_id(
             session_json["beamLineSetupId"]
         )
-        # session_json["data_collections_groups"] = data_collection.get_data_collection_groups({"sessionId" : session_id})["data"]["rows"]
+        # session_json["data_collections_groups"] = data_collection.
+        # get_data_collection_groups({"sessionId" : session_id})["data"]["rows"]
 
     return session_json
 
 
 def get_sessions_by_date(start_date=None, end_date=None, beamline=None):
-    """Returns list of sessions by start_date, end_date and beamline.
+    """
+    Returns list of sessions by start_date, end_date and beamline.
 
     Args:
         start_date (datetime, optional): start date. Defaults to None.
@@ -118,9 +124,10 @@ def get_sessions_by_date(start_date=None, end_date=None, beamline=None):
         query = query.filter(models.BLSession.beamLineName == beamline)
     return schemas.session.ma_schema.dump(query, many=True)
 
+
 def update_session(session_id, data_dict):
     """
-    Updates session
+    Updates session.
 
     Args:
         session_id ([type]): [description]
@@ -137,7 +144,7 @@ def update_session(session_id, data_dict):
 
 def patch_session(session_id, data_dict):
     """
-    Patch a session
+    Patch a session.
 
     Args:
         session_id ([type]): [description]
@@ -153,7 +160,8 @@ def patch_session(session_id, data_dict):
 
 
 def delete_session(session_id):
-    """Deletes session item from db
+    """
+    Deletes session item from db.
 
     Args:
         session_id (int): sessionId column in db
@@ -216,9 +224,10 @@ def get_beam_calendar_by_id(beam_calendar_id):
         models.BeamCalendar, schemas.beam_calendar.ma_schema, data_dict
     )
 
+
 def update_beam_calendar(beam_calendar_id, data_dict):
     """
-    Updates beam_calendar
+    Updates beam_calendar.
 
     Args:
         beam_calendar_id ([type]): [description]
@@ -235,7 +244,7 @@ def update_beam_calendar(beam_calendar_id, data_dict):
 
 def patch_beam_calendar(beam_calendar_id, data_dict):
     """
-    Patch a beam_calendar
+    Patch a beam_calendar.
 
     Args:
         beam_calendar_id ([type]): [description]
@@ -251,7 +260,8 @@ def patch_beam_calendar(beam_calendar_id, data_dict):
 
 
 def delete_beam_calendar(beam_calendar_id):
-    """Deletes beam_calendar item from db
+    """
+    Deletes beam_calendar item from db.
 
     Args:
         beam_calendar_id (int): beam_calendarId column in db

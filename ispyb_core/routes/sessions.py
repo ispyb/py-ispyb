@@ -155,8 +155,10 @@ class SessionsByDateBeamline(Resource):
 
         return session.get_sessions_by_date(start_date, end_date, beamline)
 
+
 # getSessionsByDateAndBeamline(startDate, endDate, beamline)
 # getSessionsBybeam_calendarAndDate(startDate, endDate, beam_calendar)
+
 
 @api.route("/beam_calendars", endpoint="beam_calendars")
 @api.doc(security="apikey")
@@ -189,7 +191,9 @@ class beam_calendarById(Resource):
     """Allows to get/set/delete a beam_calendar"""
 
     @api.doc(description="beam_calendar_id should be an integer ")
-    @api.marshal_with(beam_calendar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @api.marshal_with(
+        beam_calendar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
+    )
     @token_required
     @authorization_required
     def get(self, beam_calendar_id):

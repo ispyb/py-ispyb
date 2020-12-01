@@ -54,14 +54,13 @@ class BeamlineSetups(Resource):
 
     @api.expect(beamline_setup_schemas.f_schema)
     @api.marshal_with(beamline_setup_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @token_required
     @authorization_required
     def post(self):
         """Adds a new beamline_setup"""
         log.info("Inserts a new beamline_setup")
         return beamline_setup.add_beamline_setup(api.payload)
+
 
 @api.route("/setups/<int:beamline_setup_id>", endpoint="beamline_setup_by_id")
 @api.param("beamline_setup_id", "beamline_setup id (integer)")
@@ -71,7 +70,9 @@ class BeamlineSetupById(Resource):
     """Allows to get/set/delete a beamline_setup"""
 
     @api.doc(description="beamline_setup_id should be an integer ")
-    @api.marshal_with(beamline_setup_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @api.marshal_with(
+        beamline_setup_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
+    )
     @token_required
     @authorization_required
     def get(self, beamline_setup_id):
@@ -97,9 +98,9 @@ class BeamlineSetupById(Resource):
     @token_required
     @authorization_required
     def delete(self, beamline_setup_id):
-        """
-        Deletes a beamline_setup by beamline_setupId"""
+        """Deletes a beamline_setup by beamline_setupId"""
         return beamline_setup.delete_beamline_setup(beamline_setup_id)
+
 
 @api.route("/robot_actions", endpoint="robot_actions")
 @api.doc(security="apikey")
@@ -122,6 +123,7 @@ class RobotActions(Resource):
         """Adds a new robot_action"""
         return robot_action.add_robot_action(api.payload)
 
+
 @api.route("/robot_actions/<int:robot_action_id>", endpoint="robot_action_by_id")
 @api.param("robot_action_id", "robot_action id (integer)")
 @api.doc(security="apikey")
@@ -130,7 +132,9 @@ class RobotActionById(Resource):
     """Allows to get/set/delete a robot_action"""
 
     @api.doc(description="robot_action_id should be an integer ")
-    @api.marshal_with(robot_action_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @api.marshal_with(
+        robot_action_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
+    )
     @token_required
     @authorization_required
     def get(self, robot_action_id):
@@ -156,9 +160,9 @@ class RobotActionById(Resource):
     @token_required
     @authorization_required
     def delete(self, robot_action_id):
-        """
-        Deletes a robot_action by robot_action_id"""
+        """Deletes a robot_action by robot_action_id"""
         return robot_action.delete_robot_action(robot_action_id)
+
 
 @api.route("/detectors", endpoint="detectors")
 @api.doc(security="apikey")
@@ -217,6 +221,5 @@ class DetectorById(Resource):
     @token_required
     @authorization_required
     def delete(self, detector_id):
-        """
-        Deletes a detector by detectorId"""
+        """Deletes a detector by detectorId"""
         return detector.delete_detector(detector_id)

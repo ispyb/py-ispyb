@@ -1,5 +1,6 @@
 """
-Project: py-ispyb
+Project: py-ispyb.
+
 https://github.com/ispyb/py-ispyb
 
 This file is part of py-ispyb software.
@@ -27,7 +28,7 @@ from ispyb_core import models, schemas
 
 def get_image_quality_indicators():
     """
-    Returns image quality indicators
+    Returns image quality indicators.
 
     Returns:
         [type]: [description]

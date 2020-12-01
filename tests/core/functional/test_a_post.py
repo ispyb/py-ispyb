@@ -25,7 +25,7 @@ from tests.core import data
 def test_post(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
     headers = {"Authorization": "Bearer " + ispyb_core_token}
-    
+
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/labs"
     response = client.post(route, json=data.test_laboratory, headers=headers)
 
@@ -65,7 +65,6 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("LabContact id: %d" % lab_contact_id)
     assert lab_contact_id
 
-
     route = ispyb_core_app.config["API_ROOT"] + "/beamline/detectors"
     detector_dict = data.get_test_detector()
     response = client.post(route, json=detector_dict, headers=headers)
@@ -75,7 +74,6 @@ def test_post(ispyb_core_app, ispyb_core_token):
 
     print("Detector id: %d" % detector_id)
     assert detector_id
-
 
     route = ispyb_core_app.config["API_ROOT"] + "/beamline/setups"
     beamline_setup_dict = data.test_beamline_setup
@@ -87,7 +85,6 @@ def test_post(ispyb_core_app, ispyb_core_token):
 
     print("BeamlineSetup id: %d" % beamline_setup_id)
     assert beamline_setup_id
-
 
     route = ispyb_core_app.config["API_ROOT"] + "/samples/proteins"
     protein_dict = data.test_protein
@@ -101,7 +98,6 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("Protein id: %d" % protein_id)
     assert protein_id
 
-
     route = ispyb_core_app.config["API_ROOT"] + "/samples/diffraction_plans"
     diffraction_plan_dict = data.test_diffraction_plan
     diffraction_plan_dict["presetForProposalId"] = proposal_id
@@ -114,7 +110,6 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("Diffraction plan id: %d" % diffraction_plan_id)
     assert diffraction_plan_id
 
-
     route = ispyb_core_app.config["API_ROOT"] + "/samples/crystals"
     crystal_dict = data.test_crystal
     crystal_dict["proteinId"] = protein_id
@@ -126,7 +121,6 @@ def test_post(ispyb_core_app, ispyb_core_token):
 
     print("Crystal id: %d" % crystal_id)
     assert crystal_id
-
 
     route = ispyb_core_app.config["API_ROOT"] + "/shipments"
     shipment_dict = data.test_shippment
@@ -142,7 +136,6 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("Shipping id: %d" % shipment_id)
     assert shipment_id
 
-
     route = ispyb_core_app.config["API_ROOT"] + "/sessions/beam_calendars"
     beam_calendar_dict = data.test_beam_calendar
     response = client.post(route, json=beam_calendar_dict, headers=headers)
@@ -152,7 +145,6 @@ def test_post(ispyb_core_app, ispyb_core_token):
 
     print("Beam calendar id: %d" % beam_calendar_id)
     assert beam_calendar_id
-
 
     route = ispyb_core_app.config["API_ROOT"] + "/sessions"
     session_dict = data.test_session
@@ -167,8 +159,6 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("Session id: %d" % session_id)
     assert session_id
 
-
-    
     route = ispyb_core_app.config["API_ROOT"] + "/shipments/dewars"
     dewar_dict = data.get_test_dewar()
     dewar_dict["firstExperimentId"] = session_id
