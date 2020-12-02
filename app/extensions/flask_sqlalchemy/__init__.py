@@ -149,8 +149,7 @@ class SQLAlchemy(BaseSQLAlchemy):
             limit = query_params.get("limit")
 
         query = sql_alchemy_model.query
-        total = query.count()
-
+        
         # Filter items based on schema keys
         schema_keys = {}
         for key in query_params.keys():
@@ -163,6 +162,8 @@ class SQLAlchemy(BaseSQLAlchemy):
             except sqlalchemy.exc.InvalidRequestError as ex:
                 print(ex)
                 msg = "Unable to filter items based on query items (%s)" % str(ex)
+
+        total = query.count()
 
         if limit:
             query = query.limit(limit)

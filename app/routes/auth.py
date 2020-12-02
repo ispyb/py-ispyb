@@ -69,5 +69,5 @@ class Login(Resource):
                 {"WWW-Authenticate": 'Basic realm="Login required!"'},
             )
         else:
-            token = auth_provider.generate_token(username, roles)
-            return {"token": token, "roles": roles}
+            token_info = auth_provider.generate_token(username, roles)
+            return token_info

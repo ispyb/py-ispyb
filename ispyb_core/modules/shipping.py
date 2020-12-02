@@ -24,8 +24,11 @@ __license__ = "LGPLv3+"
 
 
 from app.extensions import db
+from app.extensions.auth import auth_provider
+from app.utils import create_response_item
 
 from ispyb_core import models, schemas
+from ispyb_core.modules import proposal
 
 
 def get_shipments(request):
@@ -33,12 +36,46 @@ def get_shipments(request):
 
     query_params = request.args.to_dict()
 
-    return db.get_db_items(
-        models.Shipping,
-        schemas.shipping.dict_schema,
-        schemas.shipping.ma_schema,
-        query_params,
+    user_info = auth_provider.get_user_info_by_auth_header(
+        request.headers.get("Authorization")
     )
+
+    # If the user has no admin role then allow retreive sessions 
+    # from particular proposals
+    # 
+    # Do we need to retrieve sessions from all proposals?
+    # Add sessions from session_has_person
+    run_query = False
+    msg = None
+
+    if user_info.get("is_admin"):
+        run_query = True
+    else:
+        if "proposalId" not in query_params.keys():
+            msg = "User is not admin. No proposalId in query parameters"
+        else:
+            # Check if proposal belongs to the person
+            user_proposals, status_code = proposal.get_proposals(request)
+            for user_proposal in user_proposals["data"]["rows"]:
+                if user_proposal.get("proposalId") == int(query_params.get("proposalId")):
+                    run_query = True
+                    break
+            
+            if not run_query:
+                msg = "Proposal with id %s is not associated with user %s" % (
+                    query_params.get("proposalId"),
+                    user_info.get("username")
+                )
+
+    if run_query:
+        return db.get_db_items(
+            models.Shipping,
+            schemas.shipping.dict_schema,
+            schemas.shipping.ma_schema,
+            query_params,
+            )
+    else:
+        return create_response_item(msg=msg)
 
 
 def get_shipment_by_id(shipment_id):
