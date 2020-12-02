@@ -147,21 +147,32 @@ class AuthProvider:
             except jwt.ExpiredSignatureError:
                 pass
 
+        iat = datetime.datetime.utcnow()
+        exp = datetime.datetime.utcnow() + datetime.timedelta(
+            minutes=current_app.config["TOKEN_EXP_TIME"]
+        )
+
         token = jwt.encode(
             {
                 "sub": username,
-                "iat": datetime.datetime.utcnow(),
-                "exp": datetime.datetime.utcnow()
-                + datetime.timedelta(minutes=current_app.config["TOKEN_EXP_TIME"]),
+                "iat": iat,
+                "exp": exp,
             },
             current_app.config["SECRET_KEY"],
             algorithm=current_app.config["JWT_CODING_ALGORITHM"],
         )
         dec_token = token.decode("UTF-8")
 
-        self.tokens.append({"username": username, "token": dec_token, "roles": roles})
+        token_info = {
+            "username": username,
+            "token": dec_token,
+            "iat": iat.strftime("%Y-%m-%d %H:%M:%S"),
+            "exp": exp.strftime("%Y-%m-%d %H:%M:%S"),
+            "roles": roles
+        }
+        self.tokens.append(token_info)
 
-        return dec_token
+        return token_info
 
 
 auth_provider = AuthProvider()

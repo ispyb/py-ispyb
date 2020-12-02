@@ -24,8 +24,10 @@ __license__ = "LGPLv3+"
 
 
 from app.extensions import db
+from app.utils import create_response_item
 
 from ispyb_core import models, schemas
+from ispyb_core.modules import proposal
 
 
 def get_shipments(request):
@@ -33,12 +35,17 @@ def get_shipments(request):
 
     query_params = request.args.to_dict()
 
-    return db.get_db_items(
-        models.Shipping,
-        schemas.shipping.dict_schema,
-        schemas.shipping.ma_schema,
-        query_params,
-    )
+    run_query, msg = proposal.get_proposal_ids_by_username(request)
+
+    if run_query:
+        return db.get_db_items(
+            models.Shipping,
+            schemas.shipping.dict_schema,
+            schemas.shipping.ma_schema,
+            query_params,
+            )
+    else:
+        return create_response_item(msg=msg)
 
 
 def get_shipment_by_id(shipment_id):

@@ -34,7 +34,7 @@ def get_crystals(request):
         [type]: [description]
     """
     query_params = request.args.to_dict()
-
+    
     return db.get_db_items(
         models.Crystal,
         schemas.crystal.dict_schema,

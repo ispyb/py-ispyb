@@ -177,3 +177,28 @@ def delete_proposal(proposal_id):
     """
     id_dict = {"proposalId": proposal_id}
     return db.delete_db_item(models.Proposal, id_dict)
+
+def get_proposal_ids_by_username(request):
+    """
+    Checks if user can run query.
+    Manager role allows to run query without restrictions.
+    Otherwise proposal with proposalId in the query parameters should belong
+    to the user calling the requests
+
+    Args:
+        request (request): [description]
+
+    Returns:
+        bool, str: true if user can run query, if False then msg describes the reason
+    """
+
+    user_info = auth_provider.get_user_info_by_auth_header(
+        request.headers.get("Authorization")
+    )
+    proposal_id_list = []
+
+    user_proposals, status_code = get_proposals(request)
+    for user_proposal in user_proposals["data"]["rows"]:
+        proposal_id_list.append(user_proposal.get("proposalId"))
+
+    return user_info.get("is_admin"), proposal_id_list
