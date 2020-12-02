@@ -34,25 +34,7 @@ def get_crystals(request):
         [type]: [description]
     """
     query_params = request.args.to_dict()
-
-    # user_info = auth_provider.get_user_info_by_auth_header(
-    #     request.headers.get("Authorization")
-    # )
-
-    # run_query = False
-    # msg = None
-
-    # if user_info.get("is_admin"):
-    #     run_query = True
-    # else:
-    #     if "proposalId" not in query_params.keys():
-    #         msg = "User is not admin. No proposalId in query parameters"
-
-
-    # User.name.in_(['Edwardo', 'fakeuser'])).all()
-
-
-    # if run_query
+    
     return db.get_db_items(
         models.Crystal,
         schemas.crystal.dict_schema,
