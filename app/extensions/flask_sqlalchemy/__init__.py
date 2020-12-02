@@ -139,23 +139,30 @@ class SQLAlchemy(BaseSQLAlchemy):
                     "error": str
                     }
         """
-        offset = 0
-        limit = current_app.config.get("PAGINATION_ITEMS_LIMIT")
-        msg = None
-
         if "offset" in query_params.keys():
             offset = query_params.get("offset")
+        else:
+            offset = 0
         if "limit" in query_params.keys():
             limit = query_params.get("limit")
+        else:
+            limit = current_app.config.get("PAGINATION_ITEMS_LIMIT")
 
-        query = sql_alchemy_model.query
         
-        # Filter items based on schema keys
+        msg = None
         schema_keys = {}
+        multiple_value_query_params = {}
+
         for key in query_params.keys():
             if key in dict_schema.keys():
-                schema_keys[key] = query_params.get(key)
+                if isinstance(query_params[key], (list, tuple)):
+                    multiple_value_query_params[key] = query_params[key]
+                else:
+                    schema_keys[key] = query_params.get(key)
 
+        query = sql_alchemy_model.query
+
+        # Filter items based on schema keys with one value
         if schema_keys:
             try:
                 query = query.filter_by(**schema_keys)
@@ -163,18 +170,26 @@ class SQLAlchemy(BaseSQLAlchemy):
                 print(ex)
                 msg = "Unable to filter items based on query items (%s)" % str(ex)
 
+        # Filter items based on  schema keys with multiple values
+        if multiple_value_query_params:
+            for key, value in multiple_value_query_params.items():
+                attr = getattr(sql_alchemy_model, key)
+                try:
+                    query = query.filter(attr.in_(value))
+                except sqlalchemy.exc.InvalidRequestError as ex:
+                    print(ex)
+                    msg = "Unable to filter items based on query items (%s)" % str(ex)
+
         total = query.count()
 
         if limit:
             query = query.limit(limit)
-        if offset:    
+        if offset:
             query = query.offset(offset)
 
         items = ma_schema.dump(query, many=True)[0]
 
-        response_dict = create_response_item(msg, total, items)
-
-        return response_dict
+        return create_response_item(msg, total, items)
 
     def get_db_item_by_params(self, sql_alchemy_model, ma_schema, item_id_dict):
         """

@@ -35,7 +35,7 @@ def get_shipments(request):
 
     query_params = request.args.to_dict()
 
-    run_query, msg = proposal.can_user_run_query(request)
+    run_query, msg = proposal.get_proposal_ids_by_username(request)
 
     if run_query:
         return db.get_db_items(

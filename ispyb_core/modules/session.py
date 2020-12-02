@@ -44,7 +44,22 @@ def get_sessions(request):
     """
     query_params = request.args.to_dict()
 
-    run_query, msg = proposal.can_user_run_query(request)
+    is_admin, proposal_id_list = proposal.get_proposal_ids_by_username(request)
+
+    run_query = False
+    if is_admin:
+        run_query = True
+    else:
+        if not proposal_id_list:
+            msg = "No sessions returned. User has no proposals."
+        else:
+            if "proposalId" in query_params.keys():
+                if query_params["proposalId"] in proposal_id_list:
+                    run_query = True
+                else:
+                    msg = "Proposal with id %s is not associated with user" % query_params["proposalId"]
+            else:
+                query_params["proposalId"] = proposal_id_list
 
     if run_query:
         return db.get_db_items(

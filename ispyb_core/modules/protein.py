@@ -24,7 +24,10 @@ __license__ = "LGPLv3+"
 
 
 from app.extensions import db
+from app.utils import create_response_item
+
 from ispyb_core import models, schemas
+from ispyb_core.modules import proposal
 
 
 def get_proteins(request):
@@ -36,12 +39,32 @@ def get_proteins(request):
     """
     query_params = request.args.to_dict()
 
-    return db.get_db_items(
-        models.Protein,
-        schemas.protein.dict_schema,
-        schemas.protein.ma_schema,
-        query_params,
-    )
+    is_admin, proposal_id_list = proposal.get_proposal_ids_by_username(request)
+
+    run_query = False
+    if is_admin:
+        run_query = True
+    else:
+        if not proposal_id_list:
+            msg = "No sessions returned. User has no proposals."
+        else:
+            if "proposalId" in query_params.keys():
+                if query_params["proposalId"] in proposal_id_list:
+                    run_query = True
+                else:
+                    msg = "Proposal with id %s is not associated with user" % query_params["proposalId"]
+            else:
+                query_params["proposalId"] = proposal_id_list
+
+    if run_query:
+        return db.get_db_items(
+            models.Protein,
+            schemas.protein.dict_schema,
+            schemas.protein.ma_schema,
+            query_params,
+        )
+    else:
+        return create_response_item(msg=msg)
 
 
 def get_protein_by_id(protein_id):

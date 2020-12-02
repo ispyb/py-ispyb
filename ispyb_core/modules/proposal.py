@@ -178,7 +178,7 @@ def delete_proposal(proposal_id):
     id_dict = {"proposalId": proposal_id}
     return db.delete_db_item(models.Proposal, id_dict)
 
-def can_user_run_query(request):
+def get_proposal_ids_by_username(request):
     """
     Checks if user can run query.
     Manager role allows to run query without restrictions.
@@ -195,33 +195,10 @@ def can_user_run_query(request):
     user_info = auth_provider.get_user_info_by_auth_header(
         request.headers.get("Authorization")
     )
-    query_params = request.args.to_dict()
+    proposal_id_list = []
 
-    # If the user has no admin role then allow retreive sessions 
-    # from particular proposals
-    # 
-    # Do we need to retrieve sessions from all proposals?
-    # Add sessions from session_has_person
-    run_query = False
-    msg = None
+    user_proposals, status_code = get_proposals(request)
+    for user_proposal in user_proposals["data"]["rows"]:
+        proposal_id_list.append(user_proposal.get("proposalId"))
 
-    if user_info.get("is_admin"):
-        run_query = True
-    else:
-        if "proposalId" not in query_params.keys():
-            msg = "User is not admin. No proposalId in query parameters"
-        else:
-            # Check if proposal belongs to the person
-            user_proposals, status_code = get_proposals(request)
-            for user_proposal in user_proposals["data"]["rows"]:
-                if user_proposal.get("proposalId") == int(query_params.get("proposalId")):
-                    run_query = True
-                    break
-            
-            if not run_query:
-                msg = "Proposal with id %s is not associated with user %s" % (
-                    query_params.get("proposalId"),
-                    user_info.get("username")
-                )
-
-    return run_query, msg
+    return user_info.get("is_admin"), proposal_id_list
