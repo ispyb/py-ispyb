@@ -192,7 +192,7 @@ def get_proposal_ids_by_username(request):
         bool, str: true if user can run query, if False then msg describes the reason
     """
 
-    user_info = auth_provider.get_user_info_by_auth_header(
+    user_info = auth_provider.get_user_info_from_auth_header(
         request.headers.get("Authorization")
     )
     proposal_id_list = []

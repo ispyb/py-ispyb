@@ -81,8 +81,15 @@ class AuthProvider:
         try:
             parts = auth_header.split()
             token = parts[1]
-            user_info, msg = decode_token(token)
-            user_info["is_admin"] = any(role in current_app.config.get("ADMIN_ROLES", []) for role in user_info["roles"])
+            if current_app.config.get("MASTER_TOKEN"):
+                if current_app.config["MASTER_TOKEN"] == token:
+                    user_info["sub"] = "MasterToken"
+                    user_info["roles"] = current_app.config.get("ADMIN_ROLES")
+            else:
+                user_info, msg = decode_token(token)
+            user_info["is_admin"] = any(
+                role in current_app.config.get("ADMIN_ROLES", []) for role in user_info["roles"]
+            )
 
         except BaseException as ex:
             print("Unable to extract token from Authorization header (%s)" % str(ex))
@@ -260,7 +267,7 @@ def authorization_required(func):
             return func(self, *args, **kwargs)
         else:
             msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (
-                user_info.get("username"),
+                user_info.get("sub"),
                 str(user_info.get("roles")),
                 str(roles),
             )
