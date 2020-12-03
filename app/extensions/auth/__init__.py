@@ -38,7 +38,6 @@ class AuthProvider:
     """Allows to authentificate users and create tokens."""
 
     def __init__(self):
-        self.tokens = []
         self.site_auth = None
 
     def init_app(self, app):
@@ -50,14 +49,6 @@ class AuthProvider:
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 
-        if app.config.get("MASTER_TOKEN"):
-            self.tokens.append(
-                {
-                    "username": "admin",
-                    "token": app.config.get("MASTER_TOKEN"),
-                    "roles": ["admin"],
-                }
-            )
 
     def get_roles(self, username, password):
         """
@@ -74,26 +65,7 @@ class AuthProvider:
         """
         return self.site_auth.get_roles(username, password)
 
-    def get_roles_by_token(self, token):
-        """
-        Returns roles associated with the token.
-
-        Args:
-            token (str): jwt token
-
-        Returns:
-            tuple: tuple with roles associated to the token, user
-        """
-        roles = []
-        if current_app.config.get("MASTER_TOKEN") == token:
-            roles.append("admin")
-        else:
-            for user_token in self.tokens:
-                if user_token["token"] == token:
-                    roles = user_token["roles"]
-        return roles
-
-    def get_user_info_by_auth_header(self, auth_header):
+    def get_user_info_from_auth_header(self, auth_header):
         """
         Returns dict with user info based on auth header.
 
@@ -109,18 +81,11 @@ class AuthProvider:
         try:
             parts = auth_header.split()
             token = parts[1]
+            user_info, msg = decode_token(token)
+            user_info["is_admin"] = any(role in current_app.config.get("ADMIN_ROLES", []) for role in user_info["roles"])
+
         except BaseException as ex:
             print("Unable to extract token from Authorization header (%s)" % str(ex))
-
-        for token_info in self.tokens:
-            if token_info["token"] == token:
-                user_info = token_info
-        if user_info.get("roles"):
-            user_info["is_admin"] = any(
-                x in ["manager", "admin"] for x in user_info.get("roles")
-            )
-        else:
-            user_info["is_admin"] = False
 
         return user_info
 
@@ -135,18 +100,6 @@ class AuthProvider:
         Returns:
             str: token
         """
-        if username in self.tokens:
-            # Check if the previously generated token is still valid
-            try:
-                jwt.decode(
-                    self.tokens[username]["token"],
-                    current_app.config["SECRET_KEY"],
-                    algorithms=current_app.config["JWT_CODING_ALGORITHM"],
-                )
-                return self.tokens[username]["token"]
-            except jwt.ExpiredSignatureError:
-                pass
-
         iat = datetime.datetime.utcnow()
         exp = datetime.datetime.utcnow() + datetime.timedelta(
             minutes=current_app.config["TOKEN_EXP_TIME"]
@@ -155,6 +108,7 @@ class AuthProvider:
         token = jwt.encode(
             {
                 "sub": username,
+                "roles": roles,
                 "iat": iat,
                 "exp": exp,
             },
@@ -163,19 +117,38 @@ class AuthProvider:
         )
         dec_token = token.decode("UTF-8")
 
-        token_info = {
-            "username": username,
+        return {
+            "sub": username,
             "token": dec_token,
             "iat": iat.strftime("%Y-%m-%d %H:%M:%S"),
             "exp": exp.strftime("%Y-%m-%d %H:%M:%S"),
             "roles": roles
         }
-        self.tokens.append(token_info)
-
-        return token_info
-
 
 auth_provider = AuthProvider()
+
+def decode_token(token):
+    user_info = {}
+    msg = None
+
+    try:
+        user_info = jwt.decode(
+            token,
+            current_app.config["SECRET_KEY"],
+            algorithms=current_app.config["JWT_CODING_ALGORITHM"],
+        )
+    except jwt.ExpiredSignatureError:
+        current_app.logger.info("Token expired. Please log in again")
+        msg = "Token expired. Please log in again"
+        print(msg)
+        current_app.logger.info(msg)
+    except jwt.InvalidTokenError:
+        msg = "Invalid token. Please log in again"
+        print(msg)
+        current_app.logger.info(msg)
+
+    return user_info, msg
+
 
 
 def token_required(func):
@@ -229,26 +202,12 @@ def token_required(func):
             if current_app.config["MASTER_TOKEN"] == token:
                 current_app.logger.info("Master token validated")
                 return func(*args, **kwargs)
-        try:
-            jwt.decode(
-                token,
-                current_app.config["SECRET_KEY"],
-                algorithms=current_app.config["JWT_CODING_ALGORITHM"],
-            )
-        except jwt.ExpiredSignatureError:
-            current_app.logger.info("Token expired. Please log in again")
-            print("Token expired. Please log in again")
-            return (
-                {"message": "Token expired. Please log in again"},
-                HTTPStatus.UNAUTHORIZED,
-            )
-        except jwt.InvalidTokenError:
-            print("Invalid token. Please log in again")
-            return (
-                {"message": "Invalid token. Please log in again"},
-                HTTPStatus.UNAUTHORIZED,
-            )
-        return func(*args, **kwargs)
+
+        user_info, msg = decode_token(token)
+        if not user_info:
+            return {"message": msg}, HTTPStatus.UNAUTHORIZED
+        else:
+            return func(*args, **kwargs)
 
     return decorated
 
@@ -287,7 +246,7 @@ def authorization_required(func):
             [type]: [description]
         """
 
-        user_info = auth_provider.get_user_info_by_auth_header(
+        user_info = auth_provider.get_user_info_from_auth_header(
             request.headers.get("Authorization")
         )
 
