@@ -55,6 +55,7 @@ class BaseConfig:
     JWT_CODING_ALGORITHM = "HS256"
     TOKEN_EXP_TIME = 60  # in minutes
     MASTER_TOKEN = "MasterToken"
+    ADMIN_ROLES = ["manager", "admin"] # allows to access all resources
 
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
