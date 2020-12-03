@@ -1,0 +1,6947 @@
+{
+  "swagger": "2.0",
+  "basePath": "/ispyb/api/v1",
+  "paths": {
+    "/auth/login": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "operationId": "get_login",
+        "tags": [
+          "Authentication"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_login",
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/autoproc": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AutoProc"
+            }
+          }
+        },
+        "summary": "Adds a new auto proc",
+        "operationId": "post_auto_procs",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AutoProc"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns auto proc entries",
+        "operationId": "get_auto_procs",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_auto_procs",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      }
+    },
+    "/autoproc/programs": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AutoProcProgram"
+            }
+          }
+        },
+        "summary": "Adds a new auto proc program",
+        "operationId": "post_auto_proc_programs",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AutoProcProgram"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all auto_proc_program entries",
+        "operationId": "get_auto_proc_programs",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_auto_proc_programs",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      }
+    },
+    "/autoproc/programs/attachments": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AutoProcProgramAttachment"
+            }
+          }
+        },
+        "summary": "Adds a new auto proc program",
+        "operationId": "post_auto_proc_program_attachments",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AutoProcProgramAttachment"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all auto_proc_program attachemnt entries",
+        "operationId": "get_auto_proc_program_attachments",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_auto_proc_program_attachments",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      }
+    },
+    "/autoproc/programs/attachments/{attachment_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "attachment id (integer)",
+          "name": "attachment_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AutoProcProgramAttachment"
+            }
+          },
+          "404": {
+            "description": "auto_proc_program_attachment not found."
+          }
+        },
+        "summary": "Returns a auto_proc by attachment_id",
+        "description": "attachment_id should be an integer",
+        "operationId": "get_auto_proc_program_attachment_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "auto_proc_program_attachment not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_auto_proc_program_attachment_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      }
+    },
+    "/autoproc/programs/{program_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "program id (integer)",
+          "name": "program_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AutoProcProgram"
+            }
+          },
+          "404": {
+            "description": "auto_proc_program not found."
+          }
+        },
+        "summary": "Returns a auto_proc by auto_procId",
+        "description": "program_id should be an integer",
+        "operationId": "get_auto_proc_program_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "auto_proc_program not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_auto_proc_program_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      }
+    },
+    "/autoproc/status": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AutoProcProgram"
+            }
+          }
+        },
+        "summary": "Adds a new auto proc program",
+        "operationId": "post_auto_proc_status",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AutoProcProgram"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all auto_proc_status entries",
+        "operationId": "get_auto_proc_status",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_auto_proc_status",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      }
+    },
+    "/autoproc/status/{status_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "status id (integer)",
+          "name": "status_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AutoProcStatus"
+            }
+          },
+          "404": {
+            "description": "auto_proc_status not found."
+          }
+        },
+        "summary": "Returns a auto_proc by auto_procId",
+        "description": "status_id should be an integer",
+        "operationId": "get_auto_proc_status_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "auto_proc_status not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_auto_proc_status_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      }
+    },
+    "/autoproc/{auto_proc_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "auto_proc id (integer)",
+          "name": "auto_proc_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AutoProc"
+            }
+          },
+          "404": {
+            "description": "auto_proc not found."
+          }
+        },
+        "summary": "Returns a auto_proc by auto_procId",
+        "description": "auto_proc_id should be an integer",
+        "operationId": "get_auto_proc_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "auto_proc not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_auto_proc_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Auto processing"
+        ]
+      }
+    },
+    "/beamline/detectors": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Detector"
+            }
+          }
+        },
+        "summary": "Adds a new detector",
+        "operationId": "post_detectors",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Detector"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of detectors",
+        "operationId": "get_detectors",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_detectors",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      }
+    },
+    "/beamline/detectors/{detector_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "detector id (integer)",
+          "name": "detector_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Detector"
+            }
+          },
+          "404": {
+            "description": "detector not found."
+          }
+        },
+        "summary": "Fully updates detector with detector_id",
+        "operationId": "put_detector_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Detector"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "detector not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_detector_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Detector"
+            }
+          },
+          "404": {
+            "description": "detector not found."
+          }
+        },
+        "summary": "Returns a detector by detectorId",
+        "description": "detector_id should be an integer",
+        "operationId": "get_detector_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "detector not found."
+          }
+        },
+        "summary": "Deletes a detector by detectorId",
+        "operationId": "delete_detector_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Detector"
+            }
+          },
+          "404": {
+            "description": "detector not found."
+          }
+        },
+        "summary": "Partially updates detector with id detectorId",
+        "operationId": "patch_detector_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Detector"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      }
+    },
+    "/beamline/robot_actions": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/RobotAction"
+            }
+          }
+        },
+        "summary": "Adds a new robot_action",
+        "operationId": "post_robot_actions",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RobotAction"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of robot_actions",
+        "operationId": "get_robot_actions",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_robot_actions",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      }
+    },
+    "/beamline/robot_actions/{robot_action_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "robot_action id (integer)",
+          "name": "robot_action_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/RobotAction"
+            }
+          },
+          "404": {
+            "description": "robot_action not found."
+          }
+        },
+        "summary": "Fully updates robot_action with robot_action_id",
+        "operationId": "put_robot_action_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RobotAction"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "robot_action not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_robot_action_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/RobotAction"
+            }
+          },
+          "404": {
+            "description": "robot_action not found."
+          }
+        },
+        "summary": "Returns a robot_action by robot_action_id",
+        "description": "robot_action_id should be an integer",
+        "operationId": "get_robot_action_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "robot_action not found."
+          }
+        },
+        "summary": "Deletes a robot_action by robot_action_id",
+        "operationId": "delete_robot_action_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/RobotAction"
+            }
+          },
+          "404": {
+            "description": "robot_action not found."
+          }
+        },
+        "summary": "Partially updates robot_action with robot_action_id",
+        "operationId": "patch_robot_action_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RobotAction"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      }
+    },
+    "/beamline/setups": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/BeamLineSetup"
+            }
+          }
+        },
+        "summary": "Adds a new beamline_setup",
+        "operationId": "post_beamline_setups",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/BeamLineSetup"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of beamline_setups",
+        "operationId": "get_beamline_setups",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_beamline_setups",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      }
+    },
+    "/beamline/setups/{beamline_setup_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "beamline_setup id (integer)",
+          "name": "beamline_setup_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/BeamLineSetup"
+            }
+          },
+          "404": {
+            "description": "beamline_setup not found."
+          }
+        },
+        "summary": "Fully updates beamline_setup with beamline_setup_id",
+        "operationId": "put_beamline_setup_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/BeamLineSetup"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "beamline_setup not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_beamline_setup_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/BeamLineSetup"
+            }
+          },
+          "404": {
+            "description": "beamline_setup not found."
+          }
+        },
+        "summary": "Returns a beamline_setup by beamline_setupId",
+        "description": "beamline_setup_id should be an integer",
+        "operationId": "get_beamline_setup_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "beamline_setup not found."
+          }
+        },
+        "summary": "Deletes a beamline_setup by beamline_setupId",
+        "operationId": "delete_beamline_setup_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/BeamLineSetup"
+            }
+          },
+          "404": {
+            "description": "beamline_setup not found."
+          }
+        },
+        "summary": "Partially updates beamline_setup with id beamline_setupId",
+        "operationId": "patch_beamline_setup_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/BeamLineSetup"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Beamline"
+        ]
+      }
+    },
+    "/contacts/lab_contacts": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/LabContact"
+            }
+          }
+        },
+        "summary": "Adds a new lab contact",
+        "operationId": "post_lab_contacts",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LabContact"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of local contacts",
+        "operationId": "get_lab_contacts",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_lab_contacts",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      }
+    },
+    "/contacts/lab_contacts/{lab_contact_id}": {
+      "parameters": [
+        {
+          "name": "lab_contact_id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/LabContact"
+            }
+          }
+        },
+        "summary": "Fully updates person with id lab_contact_id",
+        "operationId": "put_lab_contact_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LabContact"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_lab_contact_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/LabContact"
+            }
+          }
+        },
+        "summary": "Returns a lab contact by lab_contact_id",
+        "description": "lab_contact_id should be an integer",
+        "operationId": "get_lab_contact_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Deletes lab contact by lab_contact_id",
+        "operationId": "delete_lab_contact_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/LabContact"
+            }
+          }
+        },
+        "summary": "Partially updates person with id lab_contact_id",
+        "operationId": "patch_lab_contact_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LabContact"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      }
+    },
+    "/contacts/labs": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Laboratory"
+            }
+          }
+        },
+        "summary": "Adds a new laboratory",
+        "operationId": "post_laboratories",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Laboratory"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all laboratory entries",
+        "operationId": "get_laboratories",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_laboratories",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      }
+    },
+    "/contacts/labs/{laboratory_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "laboratory_id id (integer)",
+          "name": "laboratory_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Laboratory"
+            }
+          },
+          "404": {
+            "description": "Laboratory not found."
+          }
+        },
+        "summary": "Fully updates laboratory with id laboratory_id",
+        "operationId": "put_laboratory_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Laboratory"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "Laboratory not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_laboratory_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Laboratory"
+            }
+          },
+          "404": {
+            "description": "Laboratory not found."
+          }
+        },
+        "summary": "Returns a laboratory by laboratoryId",
+        "description": "lab_id should be an integer",
+        "operationId": "get_laboratory_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "Laboratory not found."
+          }
+        },
+        "summary": "Deletes laboratory by laboratory_id",
+        "operationId": "delete_laboratory_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Laboratory"
+            }
+          },
+          "404": {
+            "description": "Laboratory not found."
+          }
+        },
+        "summary": "Partially updates laboratory with id laboratory_id",
+        "operationId": "patch_laboratory_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Laboratory"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      }
+    },
+    "/contacts/persons": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          }
+        },
+        "operationId": "post_persons",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all persons",
+        "operationId": "get_persons",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_persons",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      }
+    },
+    "/contacts/persons/{person_id}": {
+      "parameters": [
+        {
+          "name": "person_id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          }
+        },
+        "summary": "Fully updates person with id person_id",
+        "operationId": "put_person_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_person_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          }
+        },
+        "summary": "Returns a person by personId",
+        "description": "person_id should be an integer",
+        "operationId": "get_person_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Deletes person by person_id",
+        "operationId": "delete_person_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          }
+        },
+        "summary": "Partially updates person with id person_id",
+        "operationId": "patch_person_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ]
+      }
+    },
+    "/data_collections": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of data_collections",
+        "operationId": "get_data_colletions",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Data collections"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_data_colletions",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Data collections"
+        ]
+      }
+    },
+    "/data_collections/groups": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of data_collection_groups",
+        "operationId": "get_data_collection_groups",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Data collections"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_data_collection_groups",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Data collections"
+        ]
+      }
+    },
+    "/data_collections/{data_collection_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "data_collection id (integer)",
+          "name": "data_collection_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/DataCollection"
+            }
+          },
+          "404": {
+            "description": "data collection not found."
+          }
+        },
+        "summary": "Returns a data_collection by data_collectionId",
+        "description": "data_collection_id should be an integer",
+        "operationId": "get_data_collection_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Data collections"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "data collection not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_data_collection_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Data collections"
+        ]
+      }
+    },
+    "/proposals": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Proposal"
+            }
+          }
+        },
+        "summary": "Adds a new proposal",
+        "operationId": "post_proposals",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Proposal"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns proposals based on query parameters",
+        "operationId": "get_proposals",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_proposals",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      }
+    },
+    "/proposals/{proposal_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "Proposal id (integer)",
+          "name": "proposal_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Proposal"
+            }
+          },
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "summary": "Fully updates proposal with id proposal_id",
+        "operationId": "put_proposal_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Proposal"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_proposal_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Proposal"
+            }
+          },
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "summary": "Returns a proposal by proposalId",
+        "description": "proposal_id should be an integer",
+        "operationId": "get_proposal_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "summary": "Deletes a proposal by proposal_id",
+        "operationId": "delete_proposal_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Proposal"
+            }
+          },
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "summary": "Partially updates proposal with id proposal_id",
+        "operationId": "patch_proposal_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Proposal"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      }
+    },
+    "/proposals/{proposal_id}/info": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "Proposal id (integer)",
+          "name": "proposal_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "summary": "Returns a full description of a proposal by proposalId",
+        "description": "proposal_id should be an integer",
+        "operationId": "get_proposal_info_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_proposal_info_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Proposals"
+        ]
+      }
+    },
+    "/samples": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Sample"
+            }
+          }
+        },
+        "summary": "Adds a new sample item",
+        "operationId": "post_sample",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Sample"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all sample items",
+        "operationId": "get_sample",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_sample",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      }
+    },
+    "/samples/crystals": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Crystal"
+            }
+          }
+        },
+        "summary": "Adds a new crystal item",
+        "operationId": "post_crystals",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Crystal"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all crystal items",
+        "operationId": "get_crystals",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_crystals",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      }
+    },
+    "/samples/crystals/{crystal_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "Crystal id (integer)",
+          "name": "crystal_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Crystal"
+            }
+          },
+          "404": {
+            "description": "Crystal not found."
+          }
+        },
+        "summary": "Fully updates crystal with crystal_id",
+        "operationId": "put_crystal_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Crystal"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "Crystal not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_crystal_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Crystal"
+            }
+          },
+          "404": {
+            "description": "Crystal not found."
+          }
+        },
+        "summary": "Returns a crystal by crystalId",
+        "description": "crystal_id should be an integer",
+        "operationId": "get_crystal_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "Crystal not found."
+          }
+        },
+        "summary": "Deletes a crystal by crystalId",
+        "operationId": "delete_crystal_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Crystal"
+            }
+          },
+          "404": {
+            "description": "Crystal not found."
+          }
+        },
+        "summary": "Partially updates crystal with id crystalId",
+        "operationId": "patch_crystal_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Crystal"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      }
+    },
+    "/samples/diffraction_plans": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/DiffractionPlan"
+            }
+          }
+        },
+        "summary": "Adds a new diffraction_plan",
+        "operationId": "post_diffraction_plans",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/DiffractionPlan"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of diffraction_plans",
+        "operationId": "get_diffraction_plans",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_diffraction_plans",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      }
+    },
+    "/samples/diffraction_plans/{diffraction_plan_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "diffraction_plan id (integer)",
+          "name": "diffraction_plan_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/DiffractionPlan"
+            }
+          },
+          "404": {
+            "description": "diffraction_plan not found."
+          }
+        },
+        "summary": "Fully updates diffraction_plan with diffraction_plan_id",
+        "operationId": "put_diffraction_plan_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/DiffractionPlan"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "diffraction_plan not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_diffraction_plan_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/DiffractionPlan"
+            }
+          },
+          "404": {
+            "description": "diffraction_plan not found."
+          }
+        },
+        "summary": "Returns a diffraction_plan by diffraction_planId",
+        "description": "diffraction_plan_id should be an integer",
+        "operationId": "get_diffraction_plan_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "diffraction_plan not found."
+          }
+        },
+        "summary": "Deletes a diffraction_plan by diffraction_planId",
+        "operationId": "delete_diffraction_plan_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/DiffractionPlan"
+            }
+          },
+          "404": {
+            "description": "diffraction_plan not found."
+          }
+        },
+        "summary": "Partially updates diffraction_plan with id diffraction_planId",
+        "operationId": "patch_diffraction_plan_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/DiffractionPlan"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      }
+    },
+    "/samples/proteins": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Protein"
+            }
+          }
+        },
+        "summary": "Adds a new protein item",
+        "operationId": "post_proteins",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Protein"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all protein items",
+        "operationId": "get_proteins",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_proteins",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      }
+    },
+    "/samples/proteins/{protein_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "protein id (integer)",
+          "name": "protein_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Protein"
+            }
+          },
+          "404": {
+            "description": "protein not found."
+          }
+        },
+        "summary": "Fully updates protein with proteinId",
+        "operationId": "put_protein_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Protein"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "protein not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_protein_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Protein"
+            }
+          },
+          "404": {
+            "description": "protein not found."
+          }
+        },
+        "summary": "Returns a protein by proteinId",
+        "description": "protein_id should be an integer",
+        "operationId": "get_protein_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "protein not found."
+          }
+        },
+        "summary": "Deletes a protein by proteinId",
+        "operationId": "delete_protein_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Protein"
+            }
+          },
+          "404": {
+            "description": "protein not found."
+          }
+        },
+        "summary": "Partially updates protein with proteinId",
+        "operationId": "patch_protein_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Protein"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      }
+    },
+    "/samples/{sample_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "Sample id (integer)",
+          "name": "sample_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Sample"
+            }
+          },
+          "404": {
+            "description": "Sample not found."
+          }
+        },
+        "summary": "Fully updates sample with sample_id",
+        "operationId": "put_sample_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Sample"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "Sample not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_sample_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Sample"
+            }
+          },
+          "404": {
+            "description": "Sample not found."
+          }
+        },
+        "summary": "Returns a sample by sampleId",
+        "description": "sample_id should be an integer",
+        "operationId": "get_sample_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "Sample not found."
+          }
+        },
+        "summary": "Deletes a sample by sampleId",
+        "operationId": "delete_sample_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Sample"
+            }
+          },
+          "404": {
+            "description": "Sample not found."
+          }
+        },
+        "summary": "Partially updates sample with id sampleId",
+        "operationId": "patch_sample_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Sample"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Samples"
+        ]
+      }
+    },
+    "/schemas/available_names": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of available schemas",
+        "description": "Returns:\n    list: list of names",
+        "operationId": "get_schemas_list",
+        "tags": [
+          "Schemas"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_schemas_list",
+        "tags": [
+          "Schemas"
+        ]
+      }
+    },
+    "/schemas/{name}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "name (string)",
+          "name": "name",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns json schema",
+        "description": "name should be a string\nArgs:\n    name (string): schema name\n\nReturns:\n    json: schema as json",
+        "operationId": "get_schemas",
+        "tags": [
+          "Schemas"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "name should be a string\nUse this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_schemas",
+        "tags": [
+          "Schemas"
+        ]
+      }
+    },
+    "/sessions": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          }
+        },
+        "summary": "Adds a new session",
+        "operationId": "post_sessions",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of sessions",
+        "operationId": "get_sessions",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_sessions",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      }
+    },
+    "/sessions/beam_calendar/{beam_calendar_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "beam_calendar id (integer)",
+          "name": "beam_calendar_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/BeamCalendar"
+            }
+          },
+          "404": {
+            "description": "beam_calendar not found."
+          }
+        },
+        "summary": "Returns a beam_calendar by beam_calendarId",
+        "description": "beam_calendar_id should be an integer",
+        "operationId": "get_beam_calendar_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "beam_calendar not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_beam_calendar_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      }
+    },
+    "/sessions/beam_calendars": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/BeamCalendar"
+            }
+          }
+        },
+        "summary": "Adds a new beam_calendar",
+        "operationId": "post_beam_calendars",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/BeamCalendar"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns beam_calendars based on query parameters",
+        "operationId": "get_beam_calendars",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_beam_calendars",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      }
+    },
+    "/sessions/date": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of sessions by start_date, end_date and beamline",
+        "operationId": "get_sessions_by_date_beamline",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_sessions_by_date_beamline",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      }
+    },
+    "/sessions/{session_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "Session id (integer)",
+          "name": "session_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "404": {
+            "description": "Session not found."
+          }
+        },
+        "summary": "Fully updates session with session_id",
+        "operationId": "put_session_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "Session not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_session_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "404": {
+            "description": "Session not found."
+          }
+        },
+        "summary": "Returns a session by sessionId",
+        "description": "session_id should be an integer",
+        "operationId": "get_session_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "Session not found."
+          }
+        },
+        "summary": "Deletes a session by sessionId",
+        "operationId": "delete_session_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "404": {
+            "description": "Session not found."
+          }
+        },
+        "summary": "Partially updates session with id sessionId",
+        "operationId": "patch_session_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      }
+    },
+    "/sessions/{session_id}/info": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "session id (integer)",
+          "name": "session_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "404": {
+            "description": "session not found."
+          }
+        },
+        "summary": "Returns a full description of a session by sessionId",
+        "description": "session_id should be an integer",
+        "operationId": "get_session_info_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "session not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_session_info_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ]
+      }
+    },
+    "/shipments": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Shipping"
+            }
+          }
+        },
+        "summary": "Adds a new shipment",
+        "operationId": "post_shipments",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Shipping"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns list of shipments",
+        "operationId": "get_shipments",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_shipments",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/shipments/containers": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Container"
+            }
+          }
+        },
+        "summary": "Adds a new container item",
+        "operationId": "post_containers",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Container"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all container items",
+        "operationId": "get_containers",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_containers",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/shipments/containers/{container_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "Container id (integer)",
+          "name": "container_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Container"
+            }
+          },
+          "404": {
+            "description": "Container not found."
+          }
+        },
+        "summary": "Fully updates container with container_id",
+        "operationId": "put_container_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Container"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "Container not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_container_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Container"
+            }
+          },
+          "404": {
+            "description": "Container not found."
+          }
+        },
+        "summary": "Returns a container by container_id",
+        "description": "container_id should be an integer",
+        "operationId": "get_container_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "Container not found."
+          }
+        },
+        "summary": "Deletes a container by containerId",
+        "operationId": "delete_container_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Container"
+            }
+          },
+          "404": {
+            "description": "Container not found."
+          }
+        },
+        "summary": "Partially updates container with id containerId",
+        "operationId": "patch_container_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Container"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/shipments/dewars": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Dewar"
+            }
+          }
+        },
+        "summary": "Adds a new dewar item",
+        "operationId": "post_dewars",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Dewar"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Returns all dewars items",
+        "operationId": "get_dewars",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_dewars",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/shipments/dewars/{dewar_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "Dewar id (integer)",
+          "name": "dewar_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Dewar"
+            }
+          },
+          "404": {
+            "description": "Dewar not found."
+          }
+        },
+        "summary": "Fully updates dewar with dewar_id",
+        "operationId": "put_dewar_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Dewar"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "Dewar not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_dewar_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Dewar"
+            }
+          },
+          "404": {
+            "description": "Dewar not found."
+          }
+        },
+        "summary": "Returns a dewar by dewarId",
+        "description": "dewar_id should be an integer",
+        "operationId": "get_dewar_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "Dewar not found."
+          }
+        },
+        "summary": "Deletes a dewar by dewarId",
+        "operationId": "delete_dewar_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Dewar"
+            }
+          },
+          "404": {
+            "description": "Dewar not found."
+          }
+        },
+        "summary": "Partially updates dewar with id dewarId",
+        "operationId": "patch_dewar_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Dewar"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/shipments/{shipment_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "shipment id (integer)",
+          "name": "shipment_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Shipping"
+            }
+          },
+          "404": {
+            "description": "shipment not found."
+          }
+        },
+        "summary": "Fully updates shipment with id shipment_id",
+        "operationId": "put_shipment_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Shipping"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "shipment not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_shipment_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Shipping"
+            }
+          },
+          "404": {
+            "description": "shipment not found."
+          }
+        },
+        "summary": "Returns a shipment by shipmentId",
+        "description": "shipment_id should be an integer",
+        "operationId": "get_shipment_by_id",
+        "parameters": [
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "404": {
+            "description": "shipment not found."
+          }
+        },
+        "summary": "Deletes shipment by shipment_id",
+        "operationId": "delete_shipment_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "patch": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Shipping"
+            }
+          },
+          "404": {
+            "description": "shipment not found."
+          }
+        },
+        "summary": "Partially updates shipment with id shipment_id",
+        "operationId": "patch_shipment_by_id",
+        "parameters": [
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Shipping"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/shipments/{shipment_id}/info": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "shipment id (integer)",
+          "name": "shipment_id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "404": {
+            "description": "shipment not found."
+          }
+        },
+        "summary": "Returns a full description of a shipment by shipmentId",
+        "description": "shipment_id should be an integer",
+        "operationId": "get_shipment_info_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "options": {
+        "responses": {
+          "404": {
+            "description": "shipment not found."
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_shipment_info_by_id",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/user_office/sync_all": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Sync with user office",
+        "operationId": "post_sync_all",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "User office"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_sync_all",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "User office"
+        ]
+      }
+    },
+    "/user_office/update_proposal/{proposal_code}{proposal_number}": {
+      "parameters": [
+        {
+          "in": "path",
+          "description": "Proposal number (integer)",
+          "name": "proposal_number",
+          "required": true,
+          "type": "integer"
+        },
+        {
+          "in": "path",
+          "description": "Proposal code (string)",
+          "name": "proposal_code",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Sync with user office",
+        "description": "proposal_code should be a string, proposal_number should be an integer",
+        "operationId": "post_update_proposal",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "User office"
+        ]
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Check which methods are allowed",
+        "description": "Use this method if you need to know what operations are allowed to be\nperformed on this endpoint, e.g. to decide wether to display a button\nin your UI.\n\nThe list of allowed methods is provided in `Allow` response header.",
+        "operationId": "options_update_proposal",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "tags": [
+          "User office"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "ISPyB",
+    "version": "1.0",
+    "description": "ISPyB Flask rest server"
+  },
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "apikey": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization"
+    }
+  },
+  "tags": [
+    {
+      "name": "Schemas",
+      "description": "Schemas related namespace"
+    },
+    {
+      "name": "Contacts",
+      "description": "Contact related namespace"
+    },
+    {
+      "name": "Sessions",
+      "description": "Session related namespace"
+    },
+    {
+      "name": "Shipments",
+      "description": "Shipment related namespace"
+    },
+    {
+      "name": "Proposals",
+      "description": "Proposal related namespace"
+    },
+    {
+      "name": "Samples",
+      "description": "Sample related namespace"
+    },
+    {
+      "name": "Data collections",
+      "description": "Data collection related namespace"
+    },
+    {
+      "name": "Auto processing",
+      "description": "Auto processing related namespace"
+    },
+    {
+      "name": "Beamline",
+      "description": "Beamline related namespace"
+    },
+    {
+      "name": "User office",
+      "description": "User office related namespace"
+    },
+    {
+      "name": "Authentication",
+      "description": "authentication namespace"
+    }
+  ],
+  "definitions": {
+    "Person": {
+      "required": [
+        "personId",
+        "recordTimeStamp"
+      ],
+      "properties": {
+        "personId": {
+          "type": "integer",
+          "description": ""
+        },
+        "laboratoryId": {
+          "type": "integer",
+          "description": ""
+        },
+        "siteId": {
+          "type": "integer",
+          "description": ""
+        },
+        "personUUID": {
+          "type": "string",
+          "description": ""
+        },
+        "familyName": {
+          "type": "string",
+          "description": ""
+        },
+        "givenName": {
+          "type": "string",
+          "description": ""
+        },
+        "title": {
+          "type": "string",
+          "description": ""
+        },
+        "emailAddress": {
+          "type": "string",
+          "description": ""
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": ""
+        },
+        "login": {
+          "type": "string",
+          "description": ""
+        },
+        "faxNumber": {
+          "type": "string",
+          "description": ""
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        },
+        "cache": {
+          "type": "string",
+          "description": ""
+        },
+        "externalId": {
+          "type": "integer",
+          "description": ""
+        }
+      },
+      "type": "object"
+    },
+    "LabContact": {
+      "required": [
+        "cardName",
+        "dewarAvgCustomsValue",
+        "dewarAvgTransportValue",
+        "labContactId",
+        "personId",
+        "proposalId",
+        "recordTimeStamp"
+      ],
+      "properties": {
+        "labContactId": {
+          "type": "integer",
+          "description": ""
+        },
+        "personId": {
+          "type": "integer",
+          "description": ""
+        },
+        "cardName": {
+          "type": "string",
+          "description": ""
+        },
+        "proposalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "defaultCourrierCompany": {
+          "type": "string",
+          "description": ""
+        },
+        "courierAccount": {
+          "type": "string",
+          "description": ""
+        },
+        "billingReference": {
+          "type": "string",
+          "description": ""
+        },
+        "dewarAvgCustomsValue": {
+          "type": "integer",
+          "description": ""
+        },
+        "dewarAvgTransportValue": {
+          "type": "integer",
+          "description": ""
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        }
+      },
+      "type": "object"
+    },
+    "Laboratory": {
+      "required": [
+        "laboratoryId",
+        "recordTimeStamp"
+      ],
+      "properties": {
+        "laboratoryId": {
+          "type": "integer",
+          "description": ""
+        },
+        "laboratoryUUID": {
+          "type": "string",
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "description": ""
+        },
+        "address": {
+          "type": "string",
+          "description": ""
+        },
+        "city": {
+          "type": "string",
+          "description": ""
+        },
+        "country": {
+          "type": "string",
+          "description": ""
+        },
+        "url": {
+          "type": "string",
+          "description": ""
+        },
+        "organization": {
+          "type": "string",
+          "description": ""
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        },
+        "laboratoryPk": {
+          "type": "integer",
+          "description": ""
+        },
+        "postcode": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "type": "object"
+    },
+    "Session": {
+      "required": [
+        "bltimeStamp",
+        "lastUpdate",
+        "proposalId",
+        "sessionId"
+      ],
+      "properties": {
+        "sessionId": {
+          "type": "integer",
+          "description": ""
+        },
+        "beamLineSetupId": {
+          "type": "integer",
+          "description": ""
+        },
+        "proposalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "beamCalendarId": {
+          "type": "integer",
+          "description": ""
+        },
+        "projectCode": {
+          "type": "string",
+          "description": ""
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "beamLineName": {
+          "type": "string",
+          "description": ""
+        },
+        "scheduled": {
+          "type": "integer",
+          "description": ""
+        },
+        "nbShifts": {
+          "type": "integer",
+          "description": ""
+        },
+        "comments": {
+          "type": "string",
+          "description": ""
+        },
+        "beamLineOperator": {
+          "type": "string",
+          "description": ""
+        },
+        "bltimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "visit_number": {
+          "type": "integer",
+          "description": ""
+        },
+        "usedFlag": {
+          "type": "integer",
+          "description": "indicates if session has Datacollections or XFE or EnergyScans attached"
+        },
+        "sessionTitle": {
+          "type": "string",
+          "description": "fx accounts only"
+        },
+        "structureDeterminations": {
+          "type": "number",
+          "description": ""
+        },
+        "dewarTransport": {
+          "type": "number",
+          "description": ""
+        },
+        "databackupFrance": {
+          "type": "number",
+          "description": "data backup and express delivery France"
+        },
+        "databackupEurope": {
+          "type": "number",
+          "description": "data backup and express delivery Europe"
+        },
+        "expSessionPk": {
+          "type": "integer",
+          "description": "smis session Pk "
+        },
+        "operatorSiteNumber": {
+          "type": "string",
+          "description": "matricule site"
+        },
+        "lastUpdate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "last update timestamp: by default the end of the session, the last collect..."
+        },
+        "protectedData": {
+          "type": "string",
+          "description": "indicates if the data are protected or not"
+        },
+        "externalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "archived": {
+          "type": "integer",
+          "description": "The data for the session is archived and no longer available on disk"
+        }
+      },
+      "type": "object"
+    },
+    "BeamCalendar": {
+      "required": [
+        "beamCalendarId",
+        "beamStatus",
+        "endDate",
+        "run",
+        "startDate"
+      ],
+      "properties": {
+        "beamCalendarId": {
+          "type": "integer",
+          "description": ""
+        },
+        "run": {
+          "type": "string",
+          "description": ""
+        },
+        "beamStatus": {
+          "type": "string",
+          "description": ""
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        }
+      },
+      "type": "object"
+    },
+    "Shipping": {
+      "required": [
+        "proposalId",
+        "shippingId"
+      ],
+      "properties": {
+        "shippingId": {
+          "type": "integer",
+          "description": ""
+        },
+        "proposalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "shippingName": {
+          "type": "string",
+          "description": ""
+        },
+        "deliveryAgent_agentName": {
+          "type": "string",
+          "description": ""
+        },
+        "deliveryAgent_shippingDate": {
+          "type": "string",
+          "description": ""
+        },
+        "deliveryAgent_deliveryDate": {
+          "type": "string",
+          "description": ""
+        },
+        "deliveryAgent_agentCode": {
+          "type": "string",
+          "description": ""
+        },
+        "deliveryAgent_flightCode": {
+          "type": "string",
+          "description": ""
+        },
+        "shippingStatus": {
+          "type": "string",
+          "description": ""
+        },
+        "bltimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "laboratoryId": {
+          "type": "integer",
+          "description": ""
+        },
+        "isStorageShipping": {
+          "type": "integer",
+          "description": ""
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "comments": {
+          "type": "string",
+          "description": ""
+        },
+        "sendingLabContactId": {
+          "type": "integer",
+          "description": ""
+        },
+        "returnLabContactId": {
+          "type": "integer",
+          "description": ""
+        },
+        "returnCourier": {
+          "type": "string",
+          "description": ""
+        },
+        "dateOfShippingToUser": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "shippingType": {
+          "type": "string",
+          "description": ""
+        },
+        "SAFETYLEVEL": {
+          "type": "string",
+          "description": ""
+        },
+        "deliveryAgent_flightCodeTimestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date flight code created, if automatic"
+        },
+        "deliveryAgent_label": {
+          "type": "string",
+          "description": "Base64 encoded pdf of airway label"
+        },
+        "readyByTime": {
+          "type": "string",
+          "description": "Time shipment will be ready"
+        },
+        "closeTime": {
+          "type": "string",
+          "description": "Time after which shipment cannot be picked up"
+        },
+        "physicalLocation": {
+          "type": "string",
+          "description": "Where shipment can be picked up from: i.e. Stores"
+        },
+        "deliveryAgent_pickupConfirmationTimestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date picked confirmed"
+        },
+        "deliveryAgent_pickupConfirmation": {
+          "type": "string",
+          "description": "Confirmation number of requested pickup"
+        },
+        "deliveryAgent_readyByTime": {
+          "type": "string",
+          "description": "Confirmed ready-by time"
+        },
+        "deliveryAgent_callinTime": {
+          "type": "string",
+          "description": "Confirmed courier call-in time"
+        },
+        "deliveryAgent_productcode": {
+          "type": "string",
+          "description": "A code that identifies which shipment service was used"
+        },
+        "deliveryAgent_flightCodePersonId": {
+          "type": "integer",
+          "description": "The person who created the AWB (for auditing)"
+        }
+      },
+      "type": "object"
+    },
+    "Dewar": {
+      "required": [
+        "dewarId",
+        "type"
+      ],
+      "properties": {
+        "dewarId": {
+          "type": "integer",
+          "description": ""
+        },
+        "shippingId": {
+          "type": "integer",
+          "description": ""
+        },
+        "code": {
+          "type": "string",
+          "description": ""
+        },
+        "comments": {
+          "type": "string",
+          "description": ""
+        },
+        "storageLocation": {
+          "type": "string",
+          "description": ""
+        },
+        "dewarStatus": {
+          "type": "string",
+          "description": ""
+        },
+        "bltimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "isStorageDewar": {
+          "type": "integer",
+          "description": ""
+        },
+        "barCode": {
+          "type": "string",
+          "description": ""
+        },
+        "firstExperimentId": {
+          "type": "integer",
+          "description": ""
+        },
+        "customsValue": {
+          "type": "integer",
+          "description": ""
+        },
+        "transportValue": {
+          "type": "integer",
+          "description": ""
+        },
+        "trackingNumberToSynchrotron": {
+          "type": "string",
+          "description": ""
+        },
+        "trackingNumberFromSynchrotron": {
+          "type": "string",
+          "description": ""
+        },
+        "type": {
+          "type": "string",
+          "description": "enum(Dewar,Toolbox)"
+        },
+        "FACILITYCODE": {
+          "type": "string",
+          "description": ""
+        },
+        "weight": {
+          "type": "number",
+          "description": "dewar weight in kg"
+        },
+        "deliveryAgent_barcode": {
+          "type": "string",
+          "description": "Courier piece barcode (not the airway bill)"
+        }
+      },
+      "type": "object"
+    },
+    "Container": {
+      "required": [
+        "containerId"
+      ],
+      "properties": {
+        "containerId": {
+          "type": "integer",
+          "description": ""
+        },
+        "dewarId": {
+          "type": "integer",
+          "description": ""
+        },
+        "code": {
+          "type": "string",
+          "description": ""
+        },
+        "containerType": {
+          "type": "string",
+          "description": ""
+        },
+        "capacity": {
+          "type": "integer",
+          "description": ""
+        },
+        "sampleChangerLocation": {
+          "type": "string",
+          "description": ""
+        },
+        "containerStatus": {
+          "type": "string",
+          "description": ""
+        },
+        "bltimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "beamlineLocation": {
+          "type": "string",
+          "description": ""
+        },
+        "screenId": {
+          "type": "integer",
+          "description": ""
+        },
+        "scheduleId": {
+          "type": "integer",
+          "description": ""
+        },
+        "barcode": {
+          "type": "string",
+          "description": ""
+        },
+        "imagerId": {
+          "type": "integer",
+          "description": ""
+        },
+        "sessionId": {
+          "type": "integer",
+          "description": ""
+        },
+        "ownerId": {
+          "type": "integer",
+          "description": ""
+        },
+        "requestedImagerId": {
+          "type": "integer",
+          "description": ""
+        },
+        "requestedReturn": {
+          "type": "integer",
+          "description": "True for requesting return, False means container will be disposed"
+        },
+        "comments": {
+          "type": "string",
+          "description": ""
+        },
+        "experimentType": {
+          "type": "string",
+          "description": ""
+        },
+        "storageTemperature": {
+          "type": "number",
+          "description": ""
+        },
+        "containerRegistryId": {
+          "type": "integer",
+          "description": ""
+        }
+      },
+      "type": "object"
+    },
+    "Proposal": {
+      "required": [
+        "bltimeStamp",
+        "personId",
+        "proposalId"
+      ],
+      "properties": {
+        "proposalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "personId": {
+          "type": "integer",
+          "description": ""
+        },
+        "title": {
+          "type": "string",
+          "description": ""
+        },
+        "proposalCode": {
+          "type": "string",
+          "description": ""
+        },
+        "proposalNumber": {
+          "type": "string",
+          "description": ""
+        },
+        "bltimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "proposalType": {
+          "type": "string",
+          "description": "Proposal type: MX, BX"
+        },
+        "externalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "state": {
+          "type": "string",
+          "description": "enum(Open,Closed,Cancelled)"
+        }
+      },
+      "type": "object"
+    },
+    "Sample": {
+      "required": [
+        "blSampleId",
+        "recordTimeStamp"
+      ],
+      "properties": {
+        "blSampleId": {
+          "type": "integer",
+          "description": ""
+        },
+        "diffractionPlanId": {
+          "type": "integer",
+          "description": ""
+        },
+        "crystalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "containerId": {
+          "type": "integer",
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "description": ""
+        },
+        "code": {
+          "type": "string",
+          "description": ""
+        },
+        "location": {
+          "type": "string",
+          "description": ""
+        },
+        "holderLength": {
+          "type": "string",
+          "description": ""
+        },
+        "loopLength": {
+          "type": "string",
+          "description": ""
+        },
+        "loopType": {
+          "type": "string",
+          "description": ""
+        },
+        "wireWidth": {
+          "type": "string",
+          "description": ""
+        },
+        "comments": {
+          "type": "string",
+          "description": ""
+        },
+        "completionStage": {
+          "type": "string",
+          "description": ""
+        },
+        "structureStage": {
+          "type": "string",
+          "description": ""
+        },
+        "publicationStage": {
+          "type": "string",
+          "description": ""
+        },
+        "publicationComments": {
+          "type": "string",
+          "description": ""
+        },
+        "blSampleStatus": {
+          "type": "string",
+          "description": ""
+        },
+        "isInSampleChanger": {
+          "type": "integer",
+          "description": ""
+        },
+        "lastKnownCenteringPosition": {
+          "type": "string",
+          "description": ""
+        },
+        "POSITIONID": {
+          "type": "integer",
+          "description": ""
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        },
+        "SMILES": {
+          "type": "string",
+          "description": "the symbolic description of the structure of a chemical compound"
+        },
+        "blSubSampleId": {
+          "type": "integer",
+          "description": ""
+        },
+        "lastImageURL": {
+          "type": "string",
+          "description": ""
+        },
+        "screenComponentGroupId": {
+          "type": "integer",
+          "description": ""
+        },
+        "volume": {
+          "type": "number",
+          "description": ""
+        },
+        "dimension1": {
+          "type": "string",
+          "description": ""
+        },
+        "dimension2": {
+          "type": "string",
+          "description": ""
+        },
+        "dimension3": {
+          "type": "string",
+          "description": ""
+        },
+        "shape": {
+          "type": "string",
+          "description": ""
+        },
+        "packingFraction": {
+          "type": "number",
+          "description": ""
+        },
+        "preparationTemeprature": {
+          "type": "integer",
+          "description": "Sample preparation temperature, Units: kelvin"
+        },
+        "preparationHumidity": {
+          "type": "number",
+          "description": "Sample preparation humidity, Units: %"
+        },
+        "blottingTime": {
+          "type": "integer",
+          "description": "Blotting time, Units: sec"
+        },
+        "blottingForce": {
+          "type": "number",
+          "description": "Force used when blotting sample, Units: N?"
+        },
+        "blottingDrainTime": {
+          "type": "integer",
+          "description": "Time sample left to drain after blotting, Units: sec"
+        },
+        "support": {
+          "type": "string",
+          "description": "Sample support material"
+        },
+        "subLocation": {
+          "type": "integer",
+          "description": "Indicates the samples location on a multi-sample pin, where 1 is closest to the pin base"
+        }
+      },
+      "type": "object"
+    },
+    "Crystal": {
+      "required": [
+        "crystalId",
+        "proteinId",
+        "recordTimeStamp"
+      ],
+      "properties": {
+        "crystalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "diffractionPlanId": {
+          "type": "integer",
+          "description": ""
+        },
+        "proteinId": {
+          "type": "integer",
+          "description": ""
+        },
+        "crystalUUID": {
+          "type": "string",
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "description": ""
+        },
+        "spaceGroup": {
+          "type": "string",
+          "description": ""
+        },
+        "morphology": {
+          "type": "string",
+          "description": ""
+        },
+        "color": {
+          "type": "string",
+          "description": ""
+        },
+        "size_X": {
+          "type": "string",
+          "description": ""
+        },
+        "size_Y": {
+          "type": "string",
+          "description": ""
+        },
+        "size_Z": {
+          "type": "string",
+          "description": ""
+        },
+        "cell_a": {
+          "type": "string",
+          "description": ""
+        },
+        "cell_b": {
+          "type": "string",
+          "description": ""
+        },
+        "cell_c": {
+          "type": "string",
+          "description": ""
+        },
+        "cell_alpha": {
+          "type": "string",
+          "description": ""
+        },
+        "cell_beta": {
+          "type": "string",
+          "description": ""
+        },
+        "cell_gamma": {
+          "type": "string",
+          "description": ""
+        },
+        "comments": {
+          "type": "string",
+          "description": ""
+        },
+        "pdbFileName": {
+          "type": "string",
+          "description": "pdb file name"
+        },
+        "pdbFilePath": {
+          "type": "string",
+          "description": "pdb file path"
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        },
+        "abundance": {
+          "type": "number",
+          "description": ""
+        },
+        "theoreticalDensity": {
+          "type": "number",
+          "description": ""
+        }
+      },
+      "type": "object"
+    },
+    "Protein": {
+      "required": [
+        "bltimeStamp",
+        "proposalId",
+        "proteinId"
+      ],
+      "properties": {
+        "proteinId": {
+          "type": "integer",
+          "description": ""
+        },
+        "proposalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "description": ""
+        },
+        "acronym": {
+          "type": "string",
+          "description": ""
+        },
+        "molecularMass": {
+          "type": "string",
+          "description": ""
+        },
+        "proteinType": {
+          "type": "string",
+          "description": ""
+        },
+        "personId": {
+          "type": "integer",
+          "description": ""
+        },
+        "bltimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "isCreatedBySampleSheet": {
+          "type": "integer",
+          "description": ""
+        },
+        "sequence": {
+          "type": "string",
+          "description": ""
+        },
+        "MOD_ID": {
+          "type": "string",
+          "description": ""
+        },
+        "componentTypeId": {
+          "type": "integer",
+          "description": ""
+        },
+        "concentrationTypeId": {
+          "type": "integer",
+          "description": ""
+        },
+        "Global": {
+          "type": "integer",
+          "description": ""
+        },
+        "externalId": {
+          "type": "integer",
+          "description": ""
+        },
+        "density": {
+          "type": "number",
+          "description": ""
+        },
+        "abundance": {
+          "type": "number",
+          "description": "Deprecated"
+        }
+      },
+      "type": "object"
+    },
+    "DiffractionPlan": {
+      "required": [
+        "diffractionPlanId",
+        "recordTimeStamp"
+      ],
+      "properties": {
+        "diffractionPlanId": {
+          "type": "integer",
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "description": ""
+        },
+        "experimentKind": {
+          "type": "string",
+          "description": "enum(Default,MXPressE,MXPressO,MXPressE_SAD,MXScore,MXPressM,MAD,SAD,Fixed,Ligand binding,Refinement,OSC,MAD - Inverse Beam,SAD - Inverse Beam,MESH,XFE,Stepped transmission)"
+        },
+        "observedResolution": {
+          "type": "number",
+          "description": ""
+        },
+        "minimalResolution": {
+          "type": "number",
+          "description": ""
+        },
+        "exposureTime": {
+          "type": "number",
+          "description": ""
+        },
+        "oscillationRange": {
+          "type": "number",
+          "description": ""
+        },
+        "maximalResolution": {
+          "type": "number",
+          "description": ""
+        },
+        "screeningResolution": {
+          "type": "number",
+          "description": ""
+        },
+        "radiationSensitivity": {
+          "type": "number",
+          "description": ""
+        },
+        "anomalousScatterer": {
+          "type": "string",
+          "description": ""
+        },
+        "preferredBeamSizeX": {
+          "type": "number",
+          "description": ""
+        },
+        "preferredBeamSizeY": {
+          "type": "number",
+          "description": ""
+        },
+        "preferredBeamDiameter": {
+          "type": "number",
+          "description": ""
+        },
+        "comments": {
+          "type": "string",
+          "description": ""
+        },
+        "DIFFRACTIONPLANUUID": {
+          "type": "string",
+          "description": ""
+        },
+        "aimedCompleteness": {
+          "type": "string",
+          "description": ""
+        },
+        "aimedIOverSigmaAtHighestRes": {
+          "type": "string",
+          "description": ""
+        },
+        "aimedMultiplicity": {
+          "type": "string",
+          "description": ""
+        },
+        "aimedResolution": {
+          "type": "string",
+          "description": ""
+        },
+        "anomalousData": {
+          "type": "integer",
+          "description": ""
+        },
+        "complexity": {
+          "type": "string",
+          "description": ""
+        },
+        "estimateRadiationDamage": {
+          "type": "integer",
+          "description": ""
+        },
+        "forcedSpaceGroup": {
+          "type": "string",
+          "description": ""
+        },
+        "requiredCompleteness": {
+          "type": "string",
+          "description": ""
+        },
+        "requiredMultiplicity": {
+          "type": "string",
+          "description": ""
+        },
+        "requiredResolution": {
+          "type": "string",
+          "description": ""
+        },
+        "strategyOption": {
+          "type": "string",
+          "description": ""
+        },
+        "kappaStrategyOption": {
+          "type": "string",
+          "description": ""
+        },
+        "numberOfPositions": {
+          "type": "integer",
+          "description": ""
+        },
+        "minDimAccrossSpindleAxis": {
+          "type": "string",
+          "description": "minimum dimension accross the spindle axis"
+        },
+        "maxDimAccrossSpindleAxis": {
+          "type": "string",
+          "description": "maximum dimension accross the spindle axis"
+        },
+        "radiationSensitivityBeta": {
+          "type": "string",
+          "description": ""
+        },
+        "radiationSensitivityGamma": {
+          "type": "string",
+          "description": ""
+        },
+        "minOscWidth": {
+          "type": "number",
+          "description": ""
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        },
+        "monochromator": {
+          "type": "string",
+          "description": "DMM or DCM"
+        },
+        "energy": {
+          "type": "number",
+          "description": "eV"
+        },
+        "transmission": {
+          "type": "number",
+          "description": "Decimal fraction in range [0,1]"
+        },
+        "boxSizeX": {
+          "type": "number",
+          "description": "microns"
+        },
+        "boxSizeY": {
+          "type": "number",
+          "description": "microns"
+        },
+        "kappaStart": {
+          "type": "number",
+          "description": "degrees"
+        },
+        "axisStart": {
+          "type": "number",
+          "description": "degrees"
+        },
+        "axisRange": {
+          "type": "number",
+          "description": "degrees"
+        },
+        "numberOfImages": {
+          "type": "integer",
+          "description": "The number of images requested"
+        },
+        "presetForProposalId": {
+          "type": "integer",
+          "description": "Indicates this plan is available to all sessions on given proposal"
+        },
+        "beamLineName": {
+          "type": "string",
+          "description": "Indicates this plan is available to all sessions on given beamline"
+        },
+        "detectorId": {
+          "type": "integer",
+          "description": ""
+        },
+        "distance": {
+          "type": "string",
+          "description": ""
+        },
+        "orientation": {
+          "type": "string",
+          "description": ""
+        },
+        "monoBandwidth": {
+          "type": "string",
+          "description": ""
+        },
+        "centringMethod": {
+          "type": "string",
+          "description": "enum(xray,loop,diffraction,optical)"
+        }
+      },
+      "type": "object"
+    },
+    "DataCollection": {
+      "required": [
+        "dataCollectionGroupId",
+        "dataCollectionId"
+      ],
+      "properties": {
+        "dataCollectionId": {
+          "type": "integer",
+          "description": "Primary key (auto-incremented)"
+        },
+        "BLSAMPLEID": {
+          "type": "integer",
+          "description": ""
+        },
+        "SESSIONID": {
+          "type": "integer",
+          "description": ""
+        },
+        "experimenttype": {
+          "type": "string",
+          "description": ""
+        },
+        "dataCollectionNumber": {
+          "type": "integer",
+          "description": ""
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time of the dataCollection"
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "end time of the dataCollection"
+        },
+        "runStatus": {
+          "type": "string",
+          "description": ""
+        },
+        "axisStart": {
+          "type": "number",
+          "description": ""
+        },
+        "axisEnd": {
+          "type": "number",
+          "description": ""
+        },
+        "axisRange": {
+          "type": "number",
+          "description": ""
+        },
+        "overlap": {
+          "type": "number",
+          "description": ""
+        },
+        "numberOfImages": {
+          "type": "integer",
+          "description": ""
+        },
+        "startImageNumber": {
+          "type": "integer",
+          "description": ""
+        },
+        "numberOfPasses": {
+          "type": "integer",
+          "description": ""
+        },
+        "exposureTime": {
+          "type": "number",
+          "description": ""
+        },
+        "imageDirectory": {
+          "type": "string",
+          "description": "The directory where files reside - should end with a slash"
+        },
+        "imagePrefix": {
+          "type": "string",
+          "description": ""
+        },
+        "imageSuffix": {
+          "type": "string",
+          "description": ""
+        },
+        "imageContainerSubPath": {
+          "type": "string",
+          "description": "Internal path of a HDF5 file pointing to the data for this data collection"
+        },
+        "fileTemplate": {
+          "type": "string",
+          "description": ""
+        },
+        "wavelength": {
+          "type": "number",
+          "description": ""
+        },
+        "resolution": {
+          "type": "number",
+          "description": ""
+        },
+        "detectorDistance": {
+          "type": "number",
+          "description": ""
+        },
+        "xBeam": {
+          "type": "number",
+          "description": ""
+        },
+        "yBeam": {
+          "type": "number",
+          "description": ""
+        },
+        "comments": {
+          "type": "string",
+          "description": ""
+        },
+        "printableForReport": {
+          "type": "integer",
+          "description": ""
+        },
+        "CRYSTALCLASS": {
+          "type": "string",
+          "description": ""
+        },
+        "slitGapVertical": {
+          "type": "number",
+          "description": ""
+        },
+        "slitGapHorizontal": {
+          "type": "number",
+          "description": ""
+        },
+        "transmission": {
+          "type": "number",
+          "description": ""
+        },
+        "synchrotronMode": {
+          "type": "string",
+          "description": ""
+        },
+        "xtalSnapshotFullPath1": {
+          "type": "string",
+          "description": ""
+        },
+        "xtalSnapshotFullPath2": {
+          "type": "string",
+          "description": ""
+        },
+        "xtalSnapshotFullPath3": {
+          "type": "string",
+          "description": ""
+        },
+        "xtalSnapshotFullPath4": {
+          "type": "string",
+          "description": ""
+        },
+        "rotationAxis": {
+          "type": "string",
+          "description": "enum(Omega,Kappa,Phi)"
+        },
+        "phiStart": {
+          "type": "number",
+          "description": ""
+        },
+        "kappaStart": {
+          "type": "number",
+          "description": ""
+        },
+        "omegaStart": {
+          "type": "number",
+          "description": ""
+        },
+        "chiStart": {
+          "type": "number",
+          "description": ""
+        },
+        "resolutionAtCorner": {
+          "type": "number",
+          "description": ""
+        },
+        "detector2Theta": {
+          "type": "number",
+          "description": ""
+        },
+        "DETECTORMODE": {
+          "type": "string",
+          "description": ""
+        },
+        "undulatorGap1": {
+          "type": "number",
+          "description": ""
+        },
+        "undulatorGap2": {
+          "type": "number",
+          "description": ""
+        },
+        "undulatorGap3": {
+          "type": "number",
+          "description": ""
+        },
+        "beamSizeAtSampleX": {
+          "type": "number",
+          "description": ""
+        },
+        "beamSizeAtSampleY": {
+          "type": "number",
+          "description": ""
+        },
+        "centeringMethod": {
+          "type": "string",
+          "description": ""
+        },
+        "averageTemperature": {
+          "type": "number",
+          "description": ""
+        },
+        "ACTUALSAMPLEBARCODE": {
+          "type": "string",
+          "description": ""
+        },
+        "ACTUALSAMPLESLOTINCONTAINER": {
+          "type": "integer",
+          "description": ""
+        },
+        "ACTUALCONTAINERBARCODE": {
+          "type": "string",
+          "description": ""
+        },
+        "ACTUALCONTAINERSLOTINSC": {
+          "type": "integer",
+          "description": ""
+        },
+        "actualCenteringPosition": {
+          "type": "string",
+          "description": ""
+        },
+        "beamShape": {
+          "type": "string",
+          "description": ""
+        },
+        "dataCollectionGroupId": {
+          "type": "integer",
+          "description": "references DataCollectionGroup table"
+        },
+        "POSITIONID": {
+          "type": "integer",
+          "description": ""
+        },
+        "detectorId": {
+          "type": "integer",
+          "description": "references Detector table"
+        },
+        "FOCALSPOTSIZEATSAMPLEX": {
+          "type": "number",
+          "description": ""
+        },
+        "POLARISATION": {
+          "type": "number",
+          "description": ""
+        },
+        "FOCALSPOTSIZEATSAMPLEY": {
+          "type": "number",
+          "description": ""
+        },
+        "APERTUREID": {
+          "type": "integer",
+          "description": ""
+        },
+        "screeningOrigId": {
+          "type": "integer",
+          "description": ""
+        },
+        "startPositionId": {
+          "type": "integer",
+          "description": ""
+        },
+        "endPositionId": {
+          "type": "integer",
+          "description": ""
+        },
+        "flux": {
+          "type": "string",
+          "description": ""
+        },
+        "strategySubWedgeOrigId": {
+          "type": "integer",
+          "description": "references ScreeningStrategySubWedge table"
+        },
+        "blSubSampleId": {
+          "type": "integer",
+          "description": ""
+        },
+        "flux_end": {
+          "type": "string",
+          "description": "flux measured after the collect"
+        },
+        "bestWilsonPlotPath": {
+          "type": "string",
+          "description": ""
+        },
+        "processedDataFile": {
+          "type": "string",
+          "description": ""
+        },
+        "datFullPath": {
+          "type": "string",
+          "description": ""
+        },
+        "magnification": {
+          "type": "number",
+          "description": "Calibrated magnification, Units: dimensionless"
+        },
+        "totalAbsorbedDose": {
+          "type": "number",
+          "description": "Unit: e-/A^2 for EM"
+        },
+        "binning": {
+          "type": "integer",
+          "description": "1 or 2. Number of pixels to process as 1. (Use mean value.)"
+        },
+        "particleDiameter": {
+          "type": "number",
+          "description": "Unit: nm"
+        },
+        "boxSize_CTF": {
+          "type": "number",
+          "description": "Unit: pixels"
+        },
+        "minResolution": {
+          "type": "number",
+          "description": "Unit: A"
+        },
+        "minDefocus": {
+          "type": "number",
+          "description": "Unit: A"
+        },
+        "maxDefocus": {
+          "type": "number",
+          "description": "Unit: A"
+        },
+        "defocusStepSize": {
+          "type": "number",
+          "description": "Unit: A"
+        },
+        "amountAstigmatism": {
+          "type": "number",
+          "description": "Unit: A"
+        },
+        "extractSize": {
+          "type": "number",
+          "description": "Unit: pixels"
+        },
+        "bgRadius": {
+          "type": "number",
+          "description": "Unit: nm"
+        },
+        "voltage": {
+          "type": "number",
+          "description": "Unit: kV"
+        },
+        "objAperture": {
+          "type": "number",
+          "description": "Unit: um"
+        },
+        "c1aperture": {
+          "type": "number",
+          "description": "Unit: um"
+        },
+        "c2aperture": {
+          "type": "number",
+          "description": "Unit: um"
+        },
+        "c3aperture": {
+          "type": "number",
+          "description": "Unit: um"
+        },
+        "c1lens": {
+          "type": "number",
+          "description": "Unit: %"
+        },
+        "c2lens": {
+          "type": "number",
+          "description": "Unit: %"
+        },
+        "c3lens": {
+          "type": "number",
+          "description": "Unit: %"
+        },
+        "totalExposedDose": {
+          "type": "number",
+          "description": "Units: e-/A^2"
+        },
+        "nominalMagnification": {
+          "type": "number",
+          "description": "Nominal magnification: Units: dimensionless"
+        },
+        "nominalDefocus": {
+          "type": "number",
+          "description": "Nominal defocus, Units: A"
+        },
+        "imageSizeX": {
+          "type": "integer",
+          "description": "Image size in x, incase crop has been used, Units: pixels"
+        },
+        "imageSizeY": {
+          "type": "integer",
+          "description": "Image size in y, Units: pixels"
+        },
+        "pixelSizeOnImage": {
+          "type": "number",
+          "description": "Pixel size on image, calculated from magnification, duplicate? Units: um?"
+        },
+        "phasePlate": {
+          "type": "integer",
+          "description": "Whether the phase plate was used"
+        }
+      },
+      "type": "object"
+    },
+    "AutoProc": {
+      "required": [
+        "autoProcId"
+      ],
+      "properties": {
+        "autoProcId": {
+          "type": "integer",
+          "description": "Primary key (auto-incremented)"
+        },
+        "autoProcProgramId": {
+          "type": "integer",
+          "description": "Related program item"
+        },
+        "spaceGroup": {
+          "type": "string",
+          "description": "Space group"
+        },
+        "refinedCell_a": {
+          "type": "number",
+          "description": "Refined cell"
+        },
+        "refinedCell_b": {
+          "type": "number",
+          "description": "Refined cell"
+        },
+        "refinedCell_c": {
+          "type": "number",
+          "description": "Refined cell"
+        },
+        "refinedCell_alpha": {
+          "type": "number",
+          "description": "Refined cell"
+        },
+        "refinedCell_beta": {
+          "type": "number",
+          "description": "Refined cell"
+        },
+        "refinedCell_gamma": {
+          "type": "number",
+          "description": "Refined cell"
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        }
+      },
+      "type": "object"
+    },
+    "AutoProcProgram": {
+      "required": [
+        "autoProcProgramId"
+      ],
+      "properties": {
+        "autoProcProgramId": {
+          "type": "integer",
+          "description": "Primary key (auto-incremented)"
+        },
+        "processingCommandLine": {
+          "type": "string",
+          "description": "Command line for running the automatic processing"
+        },
+        "processingPrograms": {
+          "type": "string",
+          "description": "Processing programs (comma separated)"
+        },
+        "processingStatus": {
+          "type": "integer",
+          "description": "success (1) / fail (0)"
+        },
+        "processingMessage": {
+          "type": "string",
+          "description": "warning, error,..."
+        },
+        "processingStartTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Processing start time"
+        },
+        "processingEndTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Processing end time"
+        },
+        "processingEnvironment": {
+          "type": "string",
+          "description": "Cpus, Nodes,..."
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        },
+        "processingJobId": {
+          "type": "integer",
+          "description": ""
+        },
+        "dataCollectionId": {
+          "type": "integer",
+          "description": ""
+        }
+      },
+      "type": "object"
+    },
+    "AutoProcStatus": {
+      "required": [
+        "autoProcIntegrationId",
+        "autoProcStatusId",
+        "bltimeStamp",
+        "status",
+        "step"
+      ],
+      "properties": {
+        "autoProcStatusId": {
+          "type": "integer",
+          "description": "Primary key (auto-incremented)"
+        },
+        "autoProcIntegrationId": {
+          "type": "integer",
+          "description": ""
+        },
+        "step": {
+          "type": "string",
+          "description": "autoprocessing stepenum(Indexing,Integration,Correction,Scaling,Importing)"
+        },
+        "status": {
+          "type": "string",
+          "description": "autoprocessing statusenum(Launched,Successful,Failed)"
+        },
+        "comments": {
+          "type": "string",
+          "description": "comments"
+        },
+        "bltimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        }
+      },
+      "type": "object"
+    },
+    "AutoProcProgramAttachment": {
+      "required": [
+        "autoProcProgramAttachmentId",
+        "autoProcProgramId"
+      ],
+      "properties": {
+        "autoProcProgramAttachmentId": {
+          "type": "integer",
+          "description": "Primary key (auto-incremented)"
+        },
+        "autoProcProgramId": {
+          "type": "integer",
+          "description": "Related autoProcProgram item"
+        },
+        "fileType": {
+          "type": "string",
+          "description": "Type of file Attachmentenum(Log,Result,Graph,Debug)"
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Attachment filename"
+        },
+        "filePath": {
+          "type": "string",
+          "description": "Attachment filepath to disk storage"
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        },
+        "importanceRank": {
+          "type": "integer",
+          "description": "For the particular autoProcProgramId and fileType, indicate the importance of the attachment. Higher numbers are more important"
+        }
+      },
+      "type": "object"
+    },
+    "BeamLineSetup": {
+      "required": [
+        "active",
+        "beamLineSetupId",
+        "recordTimeStamp"
+      ],
+      "properties": {
+        "beamLineSetupId": {
+          "type": "integer",
+          "description": ""
+        },
+        "detectorId": {
+          "type": "integer",
+          "description": ""
+        },
+        "synchrotronMode": {
+          "type": "string",
+          "description": ""
+        },
+        "undulatorType1": {
+          "type": "string",
+          "description": ""
+        },
+        "undulatorType2": {
+          "type": "string",
+          "description": ""
+        },
+        "undulatorType3": {
+          "type": "string",
+          "description": ""
+        },
+        "focalSpotSizeAtSample": {
+          "type": "number",
+          "description": ""
+        },
+        "focusingOptic": {
+          "type": "string",
+          "description": ""
+        },
+        "beamDivergenceHorizontal": {
+          "type": "number",
+          "description": ""
+        },
+        "beamDivergenceVertical": {
+          "type": "number",
+          "description": ""
+        },
+        "polarisation": {
+          "type": "number",
+          "description": ""
+        },
+        "monochromatorType": {
+          "type": "string",
+          "description": ""
+        },
+        "setupDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "synchrotronName": {
+          "type": "string",
+          "description": ""
+        },
+        "maxExpTimePerDataCollection": {
+          "type": "string",
+          "description": ""
+        },
+        "maxExposureTimePerImage": {
+          "type": "number",
+          "description": "unit: seconds"
+        },
+        "minExposureTimePerImage": {
+          "type": "string",
+          "description": ""
+        },
+        "goniostatMaxOscillationSpeed": {
+          "type": "string",
+          "description": ""
+        },
+        "goniostatMaxOscillationWidth": {
+          "type": "string",
+          "description": "unit: degrees"
+        },
+        "goniostatMinOscillationWidth": {
+          "type": "string",
+          "description": ""
+        },
+        "maxTransmission": {
+          "type": "string",
+          "description": "unit: percentage"
+        },
+        "minTransmission": {
+          "type": "string",
+          "description": ""
+        },
+        "recordTimeStamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation or last update date/time"
+        },
+        "CS": {
+          "type": "number",
+          "description": "Spherical Aberration, Units: mm?"
+        },
+        "beamlineName": {
+          "type": "string",
+          "description": "Beamline that this setup relates to"
+        },
+        "beamSizeXMin": {
+          "type": "number",
+          "description": "unit: um"
+        },
+        "beamSizeXMax": {
+          "type": "number",
+          "description": "unit: um"
+        },
+        "beamSizeYMin": {
+          "type": "number",
+          "description": "unit: um"
+        },
+        "beamSizeYMax": {
+          "type": "number",
+          "description": "unit: um"
+        },
+        "energyMin": {
+          "type": "number",
+          "description": "unit: eV"
+        },
+        "energyMax": {
+          "type": "number",
+          "description": "unit: eV"
+        },
+        "omegaMin": {
+          "type": "number",
+          "description": "unit: degrees"
+        },
+        "omegaMax": {
+          "type": "number",
+          "description": "unit: degrees"
+        },
+        "kappaMin": {
+          "type": "number",
+          "description": "unit: degrees"
+        },
+        "kappaMax": {
+          "type": "number",
+          "description": "unit: degrees"
+        },
+        "phiMin": {
+          "type": "number",
+          "description": "unit: degrees"
+        },
+        "phiMax": {
+          "type": "number",
+          "description": "unit: degrees"
+        },
+        "active": {
+          "type": "integer",
+          "description": ""
+        },
+        "numberOfImagesMax": {
+          "type": "integer",
+          "description": ""
+        },
+        "numberOfImagesMin": {
+          "type": "integer",
+          "description": ""
+        },
+        "boxSizeXMin": {
+          "type": "string",
+          "description": "For gridscans, unit: um"
+        },
+        "boxSizeXMax": {
+          "type": "string",
+          "description": "For gridscans, unit: um"
+        },
+        "boxSizeYMin": {
+          "type": "string",
+          "description": "For gridscans, unit: um"
+        },
+        "boxSizeYMax": {
+          "type": "string",
+          "description": "For gridscans, unit: um"
+        },
+        "monoBandwidthMin": {
+          "type": "string",
+          "description": "unit: percentage"
+        },
+        "monoBandwidthMax": {
+          "type": "string",
+          "description": "unit: percentage"
+        }
+      },
+      "type": "object"
+    },
+    "RobotAction": {
+      "required": [
+        "blsessionId",
+        "endTimestamp",
+        "robotActionId",
+        "startTimestamp"
+      ],
+      "properties": {
+        "robotActionId": {
+          "type": "integer",
+          "description": ""
+        },
+        "blsessionId": {
+          "type": "integer",
+          "description": ""
+        },
+        "blsampleId": {
+          "type": "integer",
+          "description": ""
+        },
+        "actionType": {
+          "type": "string",
+          "description": "enum(LOAD,UNLOAD,DISPOSE,STORE,WASH,ANNEAL)"
+        },
+        "startTimestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "endTimestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": ""
+        },
+        "status": {
+          "type": "string",
+          "description": "enum(SUCCESS,ERROR,CRITICAL,WARNING,EPICSFAIL,COMMANDNOTSENT)"
+        },
+        "message": {
+          "type": "string",
+          "description": ""
+        },
+        "containerLocation": {
+          "type": "integer",
+          "description": ""
+        },
+        "dewarLocation": {
+          "type": "integer",
+          "description": ""
+        },
+        "sampleBarcode": {
+          "type": "string",
+          "description": ""
+        },
+        "xtalSnapshotBefore": {
+          "type": "string",
+          "description": ""
+        },
+        "xtalSnapshotAfter": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "type": "object"
+    },
+    "Detector": {
+      "required": [
+        "detectorId"
+      ],
+      "properties": {
+        "detectorId": {
+          "type": "integer",
+          "description": "Primary key (auto-incremented)"
+        },
+        "detectorType": {
+          "type": "string",
+          "description": ""
+        },
+        "detectorManufacturer": {
+          "type": "string",
+          "description": ""
+        },
+        "detectorModel": {
+          "type": "string",
+          "description": ""
+        },
+        "detectorPixelSizeHorizontal": {
+          "type": "number",
+          "description": ""
+        },
+        "detectorPixelSizeVertical": {
+          "type": "number",
+          "description": ""
+        },
+        "DETECTORMAXRESOLUTION": {
+          "type": "number",
+          "description": ""
+        },
+        "DETECTORMINRESOLUTION": {
+          "type": "number",
+          "description": ""
+        },
+        "detectorSerialNumber": {
+          "type": "string",
+          "description": ""
+        },
+        "detectorDistanceMin": {
+          "type": "string",
+          "description": ""
+        },
+        "detectorDistanceMax": {
+          "type": "string",
+          "description": ""
+        },
+        "trustedPixelValueRangeLower": {
+          "type": "string",
+          "description": ""
+        },
+        "trustedPixelValueRangeUpper": {
+          "type": "string",
+          "description": ""
+        },
+        "sensorThickness": {
+          "type": "number",
+          "description": ""
+        },
+        "overload": {
+          "type": "number",
+          "description": ""
+        },
+        "XGeoCorr": {
+          "type": "string",
+          "description": ""
+        },
+        "YGeoCorr": {
+          "type": "string",
+          "description": ""
+        },
+        "detectorMode": {
+          "type": "string",
+          "description": ""
+        },
+        "density": {
+          "type": "number",
+          "description": ""
+        },
+        "composition": {
+          "type": "string",
+          "description": ""
+        },
+        "numberOfPixelsX": {
+          "type": "integer",
+          "description": "Detector number of pixels in x"
+        },
+        "numberOfPixelsY": {
+          "type": "integer",
+          "description": "Detector number of pixels in y"
+        },
+        "detectorRollMin": {
+          "type": "string",
+          "description": "unit: degrees"
+        },
+        "detectorRollMax": {
+          "type": "string",
+          "description": "unit: degrees"
+        },
+        "localName": {
+          "type": "string",
+          "description": "Colloquial name for the detector"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "responses": {
+    "ParseError": {
+      "description": "When a mask can't be parsed"
+    },
+    "MaskError": {
+      "description": "When any error occurs on mask"
+    }
+  }
+}

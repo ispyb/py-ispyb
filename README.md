@@ -82,6 +82,7 @@ For requests use the token in the `Authorization` header: `Bearer YOUR_JWT_TOKEN
 
 ## Misc
 
+* Swagger documentation: https://raw.githubusercontent.com/ispyb/py-ispyb/master/docs/swagger.json
 * For deployment options see `deploy` directory.
 * Status codes: https://www.flaskapi.org/api-guide/status-codes/
 

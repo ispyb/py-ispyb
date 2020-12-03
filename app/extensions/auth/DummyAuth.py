@@ -29,18 +29,18 @@ class DummyAuth(AbstractAuth):
     """Dummy authentication class."""
 
     def get_roles(self, username, password):
-        """Dummy auth
+        """Returns roles
 
         Args:
-            username (str): [description]
-            password (str): [description]
+            username (str): str
+            password (str): str
 
         Returns:
             list: list of roles
         """
 
         roles = []
-        
+
         if username != "invaliduser":
             roles.append("user")
         if username.startswith("manager"):
