@@ -23,8 +23,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from app.extensions import db
-from app.extensions.auth import auth_provider
+from app.extensions import db, auth_provider
 from app.utils import create_response_item
 
 from ispyb_core import models, schemas

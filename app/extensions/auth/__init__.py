@@ -74,26 +74,7 @@ class AuthProvider:
         """
         return self.site_auth.get_roles(username, password)
 
-    def get_roles_by_token(self, token):
-        """
-        Returns roles associated with the token.
-
-        Args:
-            token (str): jwt token
-
-        Returns:
-            tuple: tuple with roles associated to the token, user
-        """
-        roles = []
-        if current_app.config.get("MASTER_TOKEN") == token:
-            roles.append("admin")
-        else:
-            for user_token in self.tokens:
-                if user_token["token"] == token:
-                    roles = user_token["roles"]
-        return roles
-
-    def get_user_info_by_auth_header(self, auth_header):
+    def get_user_info(self, auth_header):
         """
         Returns dict with user info based on auth header.
 
@@ -172,12 +153,15 @@ class AuthProvider:
         }
         self.tokens.append(token_info)
 
+<<<<<<< Updated upstream
         return token_info
 
 
 auth_provider = AuthProvider()
 
 
+=======
+>>>>>>> Stashed changes
 def token_required(func):
     """
     Token required decorator.
@@ -258,7 +242,7 @@ def authorization_required(func):
     Checks if user has role required to access the given resource.
 
     Authorization is done via AUTHORIZATION_RULES dictionary that contains
-    mapping of endpoints with user groups. For example: 
+    mapping of endpoints with user groups. For example:
 
     AUTHORIZATION_RULES = {
         "proposals": {
@@ -287,7 +271,11 @@ def authorization_required(func):
             [type]: [description]
         """
 
+<<<<<<< Updated upstream
         user_info = auth_provider.get_user_info_by_auth_header(
+=======
+        user_info = get_user_info(
+>>>>>>> Stashed changes
             request.headers.get("Authorization")
         )
 
@@ -311,3 +299,33 @@ def authorization_required(func):
         return func(self, *args, **kwargs)
 
     return decorated
+
+def decode_token(token):
+    """Pass
+
+    Args:
+        token ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    user_info = {}
+    msg = None
+
+    try:
+        user_info = jwt.decode(
+            token,
+            current_app.config["SECRET_KEY"],
+            algorithms=current_app.config["JWT_CODING_ALGORITHM"],
+        )
+    except jwt.ExpiredSignatureError:
+        current_app.logger.info("Token expired. Please log in again")
+        msg = "Token expired. Please log in again"
+        print(msg)
+        current_app.logger.info(msg)
+    except jwt.InvalidTokenError:
+        msg = "Invalid token. Please log in again"
+        print(msg)
+        current_app.logger.info(msg)
+
+    return user_info, msg

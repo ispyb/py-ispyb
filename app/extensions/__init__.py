@@ -29,7 +29,7 @@ from .logging import Logging
 logging = Logging()
 
 from . import api
-from .auth import auth_provider
+from .auth import AuthProvider
 from .user_office_link import user_office_link
 from .flask_sqlalchemy import SQLAlchemy
 
@@ -37,6 +37,7 @@ db = SQLAlchemy()
 db.ENUM = ENUM
 db.LONGBLOB = LONGBLOB
 
+auth_provider = AuthProvider()
 
 def init_app(app):
     """Initializes app extensions

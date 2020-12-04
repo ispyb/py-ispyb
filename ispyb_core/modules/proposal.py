@@ -32,12 +32,12 @@ from ispyb_core import models, schemas
 from ispyb_core.modules import contacts, session
 
 
-
 def get_proposals(request):
     """Returns proposals by query parameters"""
 
     query_params = request.args.to_dict()
-    user_info = auth_provider.get_user_info_by_auth_header(
+    print(dir(auth_provider))
+    user_info = auth_provider.get_user_info(
         request.headers.get("Authorization")
     )
     run_query = True
@@ -192,7 +192,7 @@ def get_proposal_ids_by_username(request):
         bool, str: true if user can run query, if False then msg describes the reason
     """
 
-    user_info = auth_provider.get_user_info_by_auth_header(
+    user_info = auth_provider.get_user_info(
         request.headers.get("Authorization")
     )
     proposal_id_list = []
