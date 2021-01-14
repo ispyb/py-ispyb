@@ -23,7 +23,7 @@ script:
         - bash create_ssx_db.sh
         - bash run_all.sh
         - cd ..
-        - pylint -E app pyispyb.core pyispyb.ssx
+        - pylint -E pyispyb.app pyispyb.core pyispyb.ssx
         - coverage run -m pytest tests/core
         - bash <(curl -s https://codecov.io/bash)
         - coverage run -m pytest tests/ssx

@@ -44,7 +44,7 @@ def is_resource_available(service_name):
 
 
 def get_ispyb_resource(service_name, path):
-    status_code, data = is_resource_available("pyispyb.core")
+    status_code, data = is_resource_available("core")
     if status_code != 200:
         return status_code, data
     else:

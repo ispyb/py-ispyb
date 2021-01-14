@@ -43,7 +43,6 @@ class AuthProvider:
     def init_app(self, app):
         module_name = app.config["AUTH_MODULE"]
         class_name = app.config["AUTH_CLASS"]
-        print(module_name, class_name)
         cls = getattr(importlib.import_module(module_name), class_name)
         self.site_auth = cls()
         self.site_auth.init_app(app)
