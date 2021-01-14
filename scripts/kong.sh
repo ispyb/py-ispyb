@@ -2,7 +2,7 @@ KONG_DIR=/home/mxuser/software/kong
 CONFIG_FILE=$KONG_DIR/conf/kong.conf
 
 HOST=http://localhost
-ISPYB_CORE_URL=http://127.0.0.1:5000/ispyb/api/v1
+pyispyb.core_URL=http://127.0.0.1:5000/ispyb/api/v1
 ISPYB_SSX_URL=http://127.0.0.1:5010/ispyb/api/v1/ssx
 
 case "$1" in
@@ -29,15 +29,15 @@ case "$1" in
  ;;
  init)
 	echo "Initializing kong services..."
-	curl -i -X POST --url $HOST:8001/services/ --data 'name=ispyb_core' --data 'url=http://127.0.0.1:5000/ispyb/api/v1'
-	curl -i -X POST --url $HOST:8001/services/ispyb_core/routes --data 'hosts[]=ispyb_core'
+	curl -i -X POST --url $HOST:8001/services/ --data 'name=pyispyb.core' --data 'url=http://127.0.0.1:5000/ispyb/api/v1'
+	curl -i -X POST --url $HOST:8001/services/pyispyb.core/routes --data 'hosts[]=pyispyb.core'
 
 
 	curl -i -X POST --url $HOST:8001/services/ --data 'name=ispyb_ssx' --data 'url=http://127.0.0.1:5010/ispyb/api/v1/ssx'
 	curl -i -X POST --url $HOST:8001/services/ispyb_ssx/routes --data 'hosts[]=ispyb_ssx'
  ;;
  test)
- 	curl -i -X GET --url $HOST:8000/proposals --header 'Host: ispyb_core' --header  "Authorization: Bearer MasterToken"
+ 	curl -i -X GET --url $HOST:8000/proposals --header 'Host: pyispyb.core' --header  "Authorization: Bearer MasterToken"
 	curl -i -X GET --url $HOST:8000/samples --header 'Host: ispyb_ssx' --header  "Authorization: Bearer MasterToken"
  ;;
 

@@ -20,7 +20,7 @@
 
 import sys
 
-from app import create_app
+from pyispyb import create_app
 
 
 __license__ = "LGPLv3+"

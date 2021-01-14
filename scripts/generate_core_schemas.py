@@ -29,7 +29,7 @@ ispyb_root = "/" + os.path.join(*ispyb_root[1:-1])
 sys.path.insert(0, ispyb_root)
 
 
-from config import BaseConfig
+from pyispyb.config import BaseConfig
 config = BaseConfig(os.path.join(ispyb_root, "ispyb_core_config.yml"))
 
 uri = config.SQLALCHEMY_DATABASE_URI
@@ -67,7 +67,7 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
 
-from app.extensions.api import api_v1 as api
+from pyispyb.app.extensions.api import api_v1 as api
 
 """
 
@@ -131,7 +131,7 @@ for table in tables:
         class_text += "ma_schema = %sSchema()\n" % (table_name)
         json_text = "json_schema = JSONSchema().dump(ma_schema)\n"
 
-        schema_file_path = "%s/ispyb_core/schemas/%s.py" % (ispyb_root, schema_name)
+        schema_file_path = "%s/pyispyb/core/schemas/%s.py" % (ispyb_root, schema_name)
         if not os.path.exists(os.path.dirname(schema_file_path)):
             os.makedirs(os.path.dirname(schema_file_path))
         schema_file = open(schema_file_path, "w")

@@ -21,9 +21,9 @@
 import os
 import sys
 from gevent.pywsgi import WSGIServer
+from pyispyb import create_app
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, ROOT_DIR)
 
 if len(sys.argv) > 3:
     config_filename = sys.argv[1]
@@ -34,8 +34,6 @@ else:
     run_mode = "dev"
     port = 5000
 
-
-from app import create_app
 
 app = create_app(config_filename, run_mode)
 http_server = WSGIServer(('', 5000), app)
