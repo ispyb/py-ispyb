@@ -81,10 +81,9 @@ class AuthProvider:
         try:
             parts = auth_header.split()
             token = parts[1]
-            if current_app.config.get("MASTER_TOKEN"):
-                if current_app.config["MASTER_TOKEN"] == token:
-                    user_info["sub"] = "MasterToken"
-                    user_info["roles"] = current_app.config.get("ADMIN_ROLES")
+            if current_app.config.get("MASTER_TOKEN") == token:
+                user_info["sub"] = "MasterToken"
+                user_info["roles"] = current_app.config.get("ADMIN_ROLES")
             else:
                 user_info, msg = decode_token(token)
             user_info["is_admin"] = any(
@@ -122,6 +121,9 @@ class AuthProvider:
             current_app.config["SECRET_KEY"],
             algorithm=current_app.config["JWT_CODING_ALGORITHM"],
         )
+        print(username, roles, iat, exp)
+        print(token)
+        print(type(token))
         dec_token = token.decode("UTF-8")
 
         return {
@@ -144,6 +146,7 @@ def decode_token(token):
             current_app.config["SECRET_KEY"],
             algorithms=current_app.config["JWT_CODING_ALGORITHM"],
         )
+        print("decode token", user_info)
     except jwt.ExpiredSignatureError:
         current_app.logger.info("Token expired. Please log in again")
         msg = "Token expired. Please log in again"
@@ -253,6 +256,7 @@ def authorization_required(func):
             [type]: [description]
         """
 
+        print(111)
         user_info = auth_provider.get_user_info_from_auth_header(
             request.headers.get("Authorization")
         )
@@ -263,7 +267,9 @@ def authorization_required(func):
         #print("User roles: %s" % str(user_info.get("roles")))
         #print("Endpoint [%s] %s roles: %s" % (func.__name__, self.endpoint, roles))
 
-        if not roles or "all" in roles or any(role in list(roles) for role in list(user_info.get("roles"))):
+        print(user_info)
+        print(roles)
+        if not roles or "all" in roles or any(role in list(roles) for role in list(user_info.get("roles", []))):
             return func(self, *args, **kwargs)
         else:
             msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (

@@ -50,5 +50,4 @@ def ispyb_core_token(ispyb_core_app):
     response = client.get(
         api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
     )
-    return "MasterToken"
-    #return response.json["token"]
+    return response.json["token"]

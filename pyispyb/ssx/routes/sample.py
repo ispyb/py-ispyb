@@ -18,11 +18,6 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
-"""
-
-Example routes:
-
-"""
 
 import logging
 from flask import request, current_app
