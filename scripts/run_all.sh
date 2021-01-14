@@ -1,5 +1,5 @@
 # Generates sqlalchemy db models
-bash generate_core_models.sh ../ispyb_core_config.yml
+bash generate_core_models.sh ../pyispyb.core_config.yml
 bash generate_ssx_models.sh ../ispyb_ssx_config.yml
 
 # Generates marshmallow and flask schemas

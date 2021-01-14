@@ -1,8 +1,8 @@
 server:
-    SERVICE_NAME : "ispyb_ssx"
+    SERVICE_NAME : "ssx"
     API_ROOT : "/ispyb/api/v1/ssx"
     SQLALCHEMY_DATABASE_URI : "mysql://mxuser:mxpass@localhost/ispyb_ssx"
 
-    AUTH_MODULE : "app.extensions.auth.DummyAuth"
+    AUTH_MODULE : "pyispyb.app.extensions.auth.DummyAuth"
     AUTH_CLASS : "DummyAuth"
     MASTER_TOKEN : "MasterToken"

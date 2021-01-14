@@ -30,7 +30,7 @@ if len(sys.argv) > 3:
     run_mode = sys.argv[2]
     port = sys.argv[3]
 else:
-    config_filename = os.path.join(ROOT_DIR, "ispyb_core_config.yml")
+    config_filename = os.path.join(ROOT_DIR, "pyispyb.core_config.yml")
     run_mode = "dev"
     port = 5000
 

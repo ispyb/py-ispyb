@@ -1,6 +1,6 @@
 from tests.core import data
 
-from ispyb_core import schemas
+from pyispyb.core import schemas
 
 
 def test_data_collection_model():

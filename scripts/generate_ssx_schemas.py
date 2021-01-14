@@ -65,7 +65,7 @@ from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
 
-from app.extensions.api import api_v1 as api
+from pyispyb.app.extensions.api import api_v1 as api
 
 """
 

@@ -34,7 +34,7 @@ else:
     port = 5000
 
 
-from app import create_app
+from pyispyb.app import create_app
 
 app = create_app(config_filename, run_mode)
 app.run(host='0.0.0.0', port=port, debug=True)
