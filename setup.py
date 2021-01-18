@@ -13,10 +13,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ispyb/py-ispyb",
     packages=setuptools.find_packages(),
+    license="LGPL-3.0",
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: LGPL3 License",
-        "Operating System :: OS Independent",
+        "Development Status :: 1 - Planning",
+        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
     ],
     python_requires='>=3.6',
 )

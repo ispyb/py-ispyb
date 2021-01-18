@@ -121,14 +121,14 @@ class AuthProvider:
             current_app.config["SECRET_KEY"],
             algorithm=current_app.config["JWT_CODING_ALGORITHM"],
         )
-        print(username, roles, iat, exp)
-        print(token)
-        print(type(token))
-        dec_token = token.decode("UTF-8")
+
+        # TravisCI fix
+        if type(token) != str:
+            token = token.decode("UTF-8")
 
         return {
             "sub": username,
-            "token": dec_token,
+            "token": token,
             "iat": iat.strftime("%Y-%m-%d %H:%M:%S"),
             "exp": exp.strftime("%Y-%m-%d %H:%M:%S"),
             "roles": roles
@@ -146,15 +146,12 @@ def decode_token(token):
             current_app.config["SECRET_KEY"],
             algorithms=current_app.config["JWT_CODING_ALGORITHM"],
         )
-        print("decode token", user_info)
     except jwt.ExpiredSignatureError:
         current_app.logger.info("Token expired. Please log in again")
         msg = "Token expired. Please log in again"
-        print(msg)
         current_app.logger.info(msg)
     except jwt.InvalidTokenError:
         msg = "Invalid token. Please log in again"
-        print(msg)
         current_app.logger.info(msg)
 
     return user_info, msg
@@ -256,7 +253,6 @@ def authorization_required(func):
             [type]: [description]
         """
 
-        print(111)
         user_info = auth_provider.get_user_info_from_auth_header(
             request.headers.get("Authorization")
         )
@@ -267,8 +263,6 @@ def authorization_required(func):
         #print("User roles: %s" % str(user_info.get("roles")))
         #print("Endpoint [%s] %s roles: %s" % (func.__name__, self.endpoint, roles))
 
-        print(user_info)
-        print(roles)
         if not roles or "all" in roles or any(role in list(roles) for role in list(user_info.get("roles", []))):
             return func(self, *args, **kwargs)
         else:
