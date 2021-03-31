@@ -7,7 +7,7 @@ Flask-SQLAlchemy>=2.4,<3
 flask-sqlacodegen
 
 marshmallow
-flask-marshmallow>=0.7,<0.8
+flask-marshmallow
 marshmallow-sqlalchemy>=0.12,<0.13
 marshmallow_jsonschema
 webargs>=1.4.0,<2
