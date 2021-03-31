@@ -1,10 +1,7 @@
 language: python
 
-matrix:
-  include:
-    - python: 3.7
-      #    - python: pypy
-      #env: OPTIONAL=1
+python:
+  - "3.8"
 
 addons:
   mariadb: 10.3
