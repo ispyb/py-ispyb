@@ -1794,8 +1794,8 @@ class IspybReference(db.Model):
 class LabContact(db.Model):
     __tablename__ = 'LabContact'
     __table_args__ = (
-        db.Index('cardNameAndProposal', 'cardName', 'proposalId'),
-        db.Index('personAndProposal', 'personId', 'proposalId')
+        db.Index('personAndProposal', 'personId', 'proposalId'),
+        db.Index('cardNameAndProposal', 'cardName', 'proposalId')
     )
 
     labContactId = db.Column(db.Integer, primary_key=True)
