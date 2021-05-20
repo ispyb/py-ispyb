@@ -63,4 +63,4 @@ class PhasingResults(Resource):
         """Adds a new phasing_result"""
 
         api.logger.info("Inserts a new phasing_result")
-        return phasing.add_phasing_result(api.payload)
+        return phasing.add_phasing_results(api.payload)
