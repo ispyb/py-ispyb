@@ -23,8 +23,15 @@ image_quality_indicators,ImageQualityIndicators
 laboratory,Laboratory
 lab_contact,LabContact
 person,Person
+phasing,Phasing
+phasing_program_attachment,PhasingProgramAttachment
+phasing_program_run,PhasingProgramRun
+phasing_statistics,PhasingStatistics
+phasing_step,PhasingStep
+phasing_has_scaling,Phasing_has_Scaling
 proposal,Proposal
 protein,Protein
 robot_action,RobotAction
 screening,Screening
 shipping,Shipping
+v_datacollection_summary_phasing,v_datacollection_summary_phasing

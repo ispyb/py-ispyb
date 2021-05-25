@@ -42,7 +42,7 @@ db_name = uri.split("/")[-1]
 gen_tables = []
 gen_modules = []
 
-with open("%s/scripts/core_db_mapping.csv" % ispyb_root) as csvfile:
+with open("%s/examples/core_db_mapping.csv" % ispyb_root) as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
         gen_modules.append(row[0])
