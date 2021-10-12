@@ -24,6 +24,7 @@ __license__ = "LGPLv3+"
 
 
 from pyispyb.app.extensions import db
+from pyispyb.app.extensions.auth import auth_provider
 
 from pyispyb.core import models, schemas
 from pyispyb.core.modules import proposal, sample, protein, crystal
@@ -96,6 +97,16 @@ def get_person_id_by_login(login_name):
         person_item = get_person_by_params({"login": login_name})
         if person_item:
             return person_item["personId"]
+
+
+def check_person_by_request(request):
+    query_params = request.args.to_dict()
+    user_info = auth_provider.get_user_info_from_auth_header(
+        request.headers.get("Authorization")
+    )
+    person_id = get_person_id_by_login(query_params.get("login_name", user_info["sub"]))
+    run_query = True if user_info.get("is_admin") else person_id is not None
+    return run_query, person_id
 
 
 def add_person(data_dict):

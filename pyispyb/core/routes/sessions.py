@@ -74,6 +74,7 @@ class SessionById(Resource):
     @authorization_required
     def get(self, session_id):
         """Returns a session by sessionId"""
+
         return session.get_session_by_id(session_id)
 
     @api.expect(session_schemas.f_schema)

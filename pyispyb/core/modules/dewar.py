@@ -23,7 +23,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from pyispyb.app.extensions import db
+from pyispyb.app.extensions import db, report
 from pyispyb.core import models, schemas
 
 
@@ -38,10 +38,7 @@ def get_dewars(request):
     query_params = request.args.to_dict()
 
     return db.get_db_items(
-        models.Dewar,
-        schemas.dewar.dict_schema,
-        schemas.dewar.ma_schema,
-        query_params,
+        models.Dewar, schemas.dewar.dict_schema, schemas.dewar.ma_schema, query_params
     )
 
 
@@ -57,6 +54,11 @@ def get_dewar_by_id(dewar_id):
     """
     id_dict = {"dewarId": dewar_id}
     return db.get_db_item_by_params(models.Dewar, schemas.dewar.ma_schema, id_dict)
+
+
+def get_dewar_labels_by_id(dewar_id):
+    dewar_dict = get_dewar_by_id(dewar_id)
+    return report.create_dewar_labels(dewar_dict)
 
 
 def add_dewar(data_dict):

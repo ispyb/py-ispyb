@@ -26,11 +26,13 @@ from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql.types import LONGBLOB
 
 from pyispyb.app.extensions.logging import Logging
+
 logging = Logging()
 
 from . import api
 from .auth import auth_provider
 from .user_office_link import user_office_link
+from .report import report
 from .flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -44,5 +46,5 @@ def init_app(app):
     Args:
         app (flask app): Flask application
     """
-    for extension in (api, auth_provider, logging, db, user_office_link):
+    for extension in (api, auth_provider, logging, db, user_office_link, report):
         extension.init_app(app)

@@ -35,19 +35,7 @@ from pyispyb.core.modules import contacts, session
 def get_proposals_by_request(request):
     """Returns proposals by query parameters"""
 
-    query_params = request.args.to_dict()
-    user_info = auth_provider.get_user_info_from_auth_header(
-        request.headers.get("Authorization")
-    )
-    run_query = True
-
-    if not user_info.get("is_admin"):
-        # If the user is not admin or manager then proposals associated to the
-        # user login name are returned
-        person_id = contacts.get_person_id_by_login(user_info["sub"])
-        run_query = person_id is not None
-    else:
-        person_id = contacts.get_person_id_by_login(query_params.get("login_name"))
+    run_query, person_id = contacts.check_person_by_request(request)
 
     if person_id:
         query_params["personId"] = person_id

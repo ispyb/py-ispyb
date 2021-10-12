@@ -24,6 +24,7 @@ __license__ = "LGPLv3+"
 
 
 import os
+import tempfile
 import ruamel.yaml
 
 
@@ -56,6 +57,14 @@ class BaseConfig:
     TOKEN_EXP_TIME = 60  # in minutes
     MASTER_TOKEN = "MasterToken"
     ADMIN_ROLES = ["manager", "admin"] # allows to access all resources
+
+    UPLOAD_DIR = os.path.join(tempfile.gettempdir(), "pyispyb")
+    if not os.path.exists(UPLOAD_DIR):
+        try:
+           os.makedirs(UPLOAD_DIR)
+           print("Upload dir %s created" % UPLOAD_DIR)
+        except:
+           print("Unable to create upload dir %s" % UPLOAD_DIR)
 
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"

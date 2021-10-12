@@ -18,9 +18,11 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
+import logging
 
-from flask import request
+from flask import current_app, request, send_from_directory
 from flask_restx._http import HTTPStatus
+
 from pyispyb.flask_restx_patched import Resource
 from pyispyb.app.extensions.auth import token_required, authorization_required
 from pyispyb.app.extensions.api import api_v1, Namespace
@@ -33,6 +35,7 @@ from pyispyb.core.schemas import shipping as shipping_schemas
 
 __license__ = "LGPLv3+"
 
+log = logging.getLogger(__name__)
 
 api = Namespace(
     "Shipments", description="Shipment related namespace", path="/shipments"
@@ -169,6 +172,29 @@ class DewarById(Resource):
     def delete(self, dewar_id):
         """Deletes a dewar by dewarId"""
         return dewar.delete_dewar(dewar_id)
+
+
+@api.route("/dewars/<int:dewar_id>/labels", endpoint="dewar_labels_by_id")
+@api.param("dewar_id", "Dewar id (integer)")
+@api.doc(security="apikey")
+@api.response(code=HTTPStatus.NOT_FOUND, description="Dewar not found.")
+class DewarLabelsById(Resource):
+    """Returns dewar label pdf"""
+
+    @api.doc(description="dewar_id should be an integer ")
+    # @token_required
+    # @authorization_required
+    def get(self, dewar_id):
+        """Returns a dewar labels by dewarId"""
+        log.info("Generating pdf labels for dewar %d" % dewar_id)
+        html_labels_filename, pdf_labels_filename = dewar.get_dewar_labels_by_id(
+            dewar_id
+        )
+
+        print(current_app.config["UPLOAD_DIR"], pdf_labels_filename)
+        return send_from_directory(
+            current_app.config["UPLOAD_DIR"], pdf_labels_filename, as_attachment=True
+        )
 
 
 @api.route("/containers", endpoint="containers")
