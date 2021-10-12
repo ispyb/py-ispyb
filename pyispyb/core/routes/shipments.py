@@ -190,8 +190,6 @@ class DewarLabelsById(Resource):
         html_labels_filename, pdf_labels_filename = dewar.get_dewar_labels_by_id(
             dewar_id
         )
-
-        print(current_app.config["UPLOAD_DIR"], pdf_labels_filename)
         return send_from_directory(
             current_app.config["UPLOAD_DIR"], pdf_labels_filename, as_attachment=True
         )
