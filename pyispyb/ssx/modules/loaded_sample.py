@@ -60,7 +60,8 @@ def get_loaded_sample_by_id(loaded_sample_id):
     Returns:
         dict: info about loaded_sample as dict
     """
-    id_dict = {"loaded_sampleId": loaded_sample_id}
+    id_dict = {"loadedSampleId": loaded_sample_id}
+
     return db.get_db_item_by_params(
         models.LoadedSample, schemas.loaded_sample.ma_schema, id_dict
     )
@@ -80,6 +81,29 @@ def add_loaded_sample(data_dict):
     )
 
 
+def get_loaded_sample_info_by_id(loaded_sample_id):
+    """
+    Returns loaded_sample by its loaded_sampleId.
+
+    Args:
+        loaded_sample_id (int): corresponds to loaded_sampleId in db
+
+    Returns:
+        dict: info about loaded_sample as dict
+    """
+    loaded_sample_json = get_loaded_sample_by_id(loaded_sample_id)
+
+    sample_stock_json = get_sample_stock_info_by_id(loaded_sample_json["sampleStockId"])
+    loaded_sample_json["sample_stock"] = sample_stock_json
+
+    sample_delivery_device = get_sample_delivery_device_by_id(
+        loaded_sample_json["sampleDeliveryDeviceId"]
+    )
+    loaded_sample_json["sample_delivery_device"] = sample_delivery_device
+
+    return loaded_sample_json
+
+
 def get_all_crystal_slurry():
     """Returns all crystal slurry db items.
 
@@ -88,6 +112,13 @@ def get_all_crystal_slurry():
     """
     crystal_slurry_list = models.CrystalSlurry.query.all()
     return schemas.crystal_slurry.ma_schema.dump(crystal_slurry_list, many=True)
+
+
+def get_crystal_slurry_by_id(crystal_slurry_id):
+    id_dict = {"crystalSlurryId": crystal_slurry_id}
+    return db.get_db_item_by_params(
+        models.CrystalSlurry, schemas.crystal_slurry.ma_schema, id_dict
+    )
 
 
 def add_crystal_slurry(data_dict):
@@ -102,7 +133,6 @@ def add_crystal_slurry(data_dict):
     status_code, result = ispyb_service_connector.get_ispyb_resource(
         "pyispyb.core", "/samples/crystals/%d" % data_dict["crystalId"]
     )
-    print(status_code, result)
     if status_code == 200:
         crystal_id = data_dict.get("crystalId")
         if crystal_id is None:
@@ -113,6 +143,10 @@ def add_crystal_slurry(data_dict):
                 models.CrystalSlurry, schemas.crystal_slurry.ma_schema, data_dict
             )
     else:
+        result = (
+            "Unable to add new crystal slurry Crystal with id %s do not exist"
+            % data_dict["crystalId"]
+        )
         abort(status_code, result)
 
 
@@ -180,6 +214,13 @@ def add_sample_delivery_device(data_dict):
     )
 
 
+def get_sample_delivery_device_by_id(sample_delivery_device_id):
+    id_dict = {"sampleDeliveryDeviceId": sample_delivery_device_id}
+    return db.get_db_item_by_params(
+        models.SampleDeliveryDevice, schemas.sample_delivery_device.ma_schema, id_dict
+    )
+
+
 def get_sample_stocks():
     """Returns all sample stock db items.
 
@@ -201,3 +242,20 @@ def add_sample_stock(data_dict):
 
     """
     return db.add_db_item(models.SampleStock, schemas.sample_stock.ma_schema, data_dict)
+
+
+def get_sample_stock_by_id(sample_stock_id):
+    id_dict = {"sampleStockId": sample_stock_id}
+    return db.get_db_item_by_params(
+        models.SampleStock, schemas.sample_stock.ma_schema, id_dict
+    )
+
+
+def get_sample_stock_info_by_id(sample_stock_id):
+    sample_stock_json = get_sample_stock_by_id(sample_stock_id)
+
+    crystal_slurry_json = get_crystal_slurry_by_id(sample_stock_json["crystalSlurryId"])
+
+    sample_stock_json["crystal_slurry"] = crystal_slurry_json
+
+    return sample_stock_json

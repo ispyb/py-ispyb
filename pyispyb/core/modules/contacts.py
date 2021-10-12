@@ -26,6 +26,7 @@ __license__ = "LGPLv3+"
 from pyispyb.app.extensions import db
 
 from pyispyb.core import models, schemas
+from pyispyb.core.modules import proposal, sample, protein, crystal
 
 
 def get_persons(request):
@@ -45,12 +46,41 @@ def get_person_by_params(param_dict):
     """Returns person by its id.
 
     Args:
-        person_id (int): corresponds to personId in db
+        param_dict (dict): corresponds to personId in db
 
     Returns:
         dict: info about person as dict
     """
     return db.get_db_item_by_params(models.Person, schemas.person.ma_schema, param_dict)
+
+
+def get_person_info_by_params(param_dict):
+    """Returns person by its id.
+
+    Args:
+        param_dict (dict): corresponds to personId in db
+
+    Returns:
+        dict: info about person as dict
+    """
+    person_info_dict = db.get_db_item_by_params(
+        models.Person, schemas.person.ma_schema, param_dict
+    )
+    proposal_id_list = proposal.get_proposal_ids_by_login_name(
+        person_info_dict["login"]
+    )
+    person_info_dict["proposal_ids"] = proposal_id_list
+
+    person_protein_list = []
+    for proposal_id in proposal_id_list:
+        protein_list = protein.get_proteins_by_query({"proposalId": proposal_id})
+        for protein_dict in protein_list["data"]["rows"]:
+            person_protein_list.append(protein_dict["proteinId"])
+
+    # sample_list = sample.get_samples_by_request
+    person_info_dict["protein_ids"] = person_protein_list
+
+    return person_info_dict
 
 
 def get_person_id_by_login(login_name):

@@ -2130,7 +2130,7 @@
           }
         },
         "summary": "Returns proposals based on query parameters",
-        "operationId": "get_proposals",
+        "operationId": "get_proposals_by_request",
         "security": [
           {
             "apikey": []
@@ -2950,7 +2950,7 @@
           }
         },
         "summary": "Returns all protein items",
-        "operationId": "get_proteins",
+        "operationId": "get_proteins_by_request",
         "security": [
           {
             "apikey": []

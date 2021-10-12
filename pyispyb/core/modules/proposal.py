@@ -32,8 +32,7 @@ from pyispyb.core import models, schemas
 from pyispyb.core.modules import contacts, session
 
 
-
-def get_proposals(request):
+def get_proposals_by_request(request):
     """Returns proposals by query parameters"""
 
     query_params = request.args.to_dict()
@@ -54,16 +53,13 @@ def get_proposals(request):
         query_params["personId"] = person_id
 
     if run_query:
-        return (
-            get_db_proposals(query_params),
-            HTTPStatus.OK,
-        )
+        return (get_proposals_by_query(query_params), HTTPStatus.OK)
     else:
         msg = "No proposals associated to the username %s" % user_info["sub"]
         return create_response_item(msg=msg), HTTPStatus.OK
 
 
-def get_db_proposals(query_params={}):
+def get_proposals_by_query(query_params={}):
     """Returns proposal db items
 
     Args:
@@ -178,7 +174,20 @@ def delete_proposal(proposal_id):
     id_dict = {"proposalId": proposal_id}
     return db.delete_db_item(models.Proposal, id_dict)
 
-def get_proposal_ids_by_username(request):
+
+def get_proposal_ids_by_login_name(login_name):
+    person_id = contacts.get_person_id_by_login(login_name)
+    proposal_list = get_proposals_by_query({"personId": person_id})
+
+    proposal_id_list = []
+    if proposal_list:
+        for proposal_dict in proposal_list["data"]["rows"]:
+            proposal_id_list.append(proposal_dict["proposalId"])
+
+    return proposal_id_list
+
+
+def get_proposal_ids(request):
     """
     Checks if user can run query.
     Manager role allows to run query without restrictions.
@@ -197,7 +206,7 @@ def get_proposal_ids_by_username(request):
     )
     proposal_id_list = []
 
-    user_proposals, status_code = get_proposals(request)
+    user_proposals, status_code = get_proposals_by_request(request)
     for user_proposal in user_proposals["data"]["rows"]:
         proposal_id_list.append(user_proposal.get("proposalId"))
 

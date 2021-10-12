@@ -30,7 +30,7 @@ from pyispyb.core import models, schemas
 from pyispyb.core.modules import proposal
 
 
-def get_proteins(request):
+def get_proteins_by_request(request):
     """
     Returns protein entries.
 
@@ -39,7 +39,7 @@ def get_proteins(request):
     """
     query_params = request.args.to_dict()
 
-    is_admin, proposal_id_list = proposal.get_proposal_ids_by_username(request)
+    is_admin, proposal_id_list = proposal.get_proposal_ids(request)
 
     run_query = False
     if is_admin:
@@ -52,19 +52,26 @@ def get_proteins(request):
                 if query_params["proposalId"] in proposal_id_list:
                     run_query = True
                 else:
-                    msg = "Proposal with id %s is not associated with user" % query_params["proposalId"]
+                    msg = (
+                        "Proposal with id %s is not associated with user"
+                        % query_params["proposalId"]
+                    )
             else:
                 query_params["proposalId"] = proposal_id_list
 
     if run_query:
-        return db.get_db_items(
-            models.Protein,
-            schemas.protein.dict_schema,
-            schemas.protein.ma_schema,
-            query_params,
-        )
+        get_proteins_by_query(query_params)
     else:
         return create_response_item(msg=msg)
+
+
+def get_proteins_by_query(query_params):
+    return db.get_db_items(
+        models.Protein,
+        schemas.protein.dict_schema,
+        schemas.protein.ma_schema,
+        query_params,
+    )
 
 
 def get_protein_by_id(protein_id):

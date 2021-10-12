@@ -34,18 +34,17 @@ class DummyAuth(AbstractAuth):
         Args:
             username (str): str
             password (str): str
-
         Returns:
             list: list of roles
         """
 
         roles = []
 
-        if username != "invaliduser":
+        if "user" in username:
             roles.append("user")
-        if username.startswith("manager"):
+        if "manager" in username:
             roles.append("manager")
-        elif username.startswith("admin"):
+        if "admin" in username:
             roles.append("admin")
 
         return roles

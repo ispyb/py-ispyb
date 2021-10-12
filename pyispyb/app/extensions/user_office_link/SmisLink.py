@@ -27,12 +27,13 @@ from suds.client import Client
 from suds.transport.http import HttpAuthenticated
 
 
-from pyispyb.app.extensions.user_office_link.AbstractUserOfficeLink import AbstractUserOfficeLink
-from pyispyb.core.modules import proposal 
+from pyispyb.app.extensions.user_office_link.AbstractUserOfficeLink import (
+    AbstractUserOfficeLink,
+)
+from pyispyb.core.modules import proposal
 
 
 class SmisLink(AbstractUserOfficeLink):
-    
     def init_app(self, app):
         """Initializes user office class.
 
@@ -41,22 +42,19 @@ class SmisLink(AbstractUserOfficeLink):
         """
         http_auth = HttpAuthenticated(
             username=app.config.get("SMIS_USERNAME"),
-            password=app.config.get("SMIS_PASSWORD")
-            )
+            password=app.config.get("SMIS_PASSWORD"),
+        )
         self.smis_ws = Client(
-            app.config.get("SMIS_WS_URL"),
-            transport=http_auth,
-            cache=None,
-            timeout=180
-            )
+            app.config.get("SMIS_WS_URL"), transport=http_auth, cache=None, timeout=180
+        )
 
     def sync_all(self):
         # Get 1 month old proposals
         print("sync proposals")
-        past_str = datetime.strftime(datetime.now() - timedelta(days=30), '%d/%m/%YYYY')
+        past_str = datetime.strftime(datetime.now() - timedelta(days=30), "%d/%m/%YYYY")
         now_str = datetime.strftime(datetime.now(), "%d/%m/%YYYY")
         smis_proposals = self.smis_ws.service.findNewMXProposalPKs(past_str, now_str)
-        current_proposals = proposal.get_db_proposals()
+        current_proposals = proposal.get_proposals_by_query()
 
         print(smis_proposals)
         print(current_proposals)

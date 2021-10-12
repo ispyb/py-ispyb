@@ -68,6 +68,42 @@ class LoadedSample(Resource):
         return loaded_sample.add_loaded_sample(api.payload)
 
 
+@api.route("/<int:loaded_sample_id>", endpoint="loaded_sample_by_id")
+@api.param("loaded_sample_id", "loaded_sample id (integer)")
+@api.doc(security="apikey")
+@api.response(code=HTTPStatus.NOT_FOUND, description="loaded_sample not found.")
+class LoadedSampleById(Resource):
+
+    """Allows to get/set/delete a loaded_sample"""
+
+    @api.doc(description="loaded_sample_id should be an integer ")
+    @api.marshal_with(
+        loaded_sample_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
+    )
+    @token_required
+    @authorization_required
+    def get(self, loaded_sample_id):
+        """Returns a loaded_sample by loaded_sampleId"""
+        return loaded_sample.get_loaded_sample_by_id(loaded_sample_id)
+
+
+@api.route("/<int:loaded_sample_id>/info", endpoint="loaded_sample_info_by_id")
+@api.param("loaded_sample_id", "loaded_sample id (integer)")
+@api.doc(security="apikey")
+@api.response(code=HTTPStatus.NOT_FOUND, description="loaded_sample not found.")
+class LoadedSampleInfoById(Resource):
+
+    """Returns full information of a loaded_sample"""
+
+    @api.doc(description="loaded_sample_id should be an integer ")
+    # @api.marshal_with(loaded_sample_desc_f_schema)
+    @token_required
+    @authorization_required
+    def get(self, loaded_sample_id):
+        """Returns a full description of a loaded_sample by loaded_sampleId"""
+        return loaded_sample.get_loaded_sample_info_by_id(loaded_sample_id)
+
+
 @api.route("/crystal_slurry", endpoint="crystal_slurry")
 @api.doc(security="apikey")
 class CrystalSlurry(Resource):

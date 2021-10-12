@@ -62,7 +62,7 @@ class Proposals(Resource):
         """Returns proposals based on query parameters"""
 
         api.logger.info("Get all proposals")
-        return proposal.get_proposals(request)
+        return proposal.get_proposals_by_request(request)
 
     @api.expect(proposal_schemas.f_schema)
     @api.marshal_with(proposal_schemas.f_schema, code=201)
