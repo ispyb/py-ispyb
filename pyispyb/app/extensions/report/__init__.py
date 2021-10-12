@@ -23,13 +23,11 @@ __license__ = "LGPLv3+"
 
 import os
 import logging
-from flask import current_app
 
-try:
-    import pdfkit
-except ModuleNotFoundError:
-    print("pdfkit not available")
-    # logging.getLogger("ssss").warning("pdfkit not available")
+from flask import current_app
+import barcode
+from barcode.writer import ImageWriter
+import pdfkit
 
 
 class Report(object):
@@ -39,10 +37,10 @@ class Report(object):
     """
 
     def __init__(self, app=None):
-        self.upload_dir = None
+        self.tmp_dir = None
 
     def init_app(self, app):
-        self.upload_dir = app.config["UPLOAD_DIR"]
+        self.tmp_dir = app.config["TMP_DIR"]
 
     def create_dewar_labels(self, dewar_info):
         html_filename = "dewar_%d_label.html" % dewar_info["dewarId"]
@@ -51,7 +49,14 @@ class Report(object):
         with open(self.get_static_file_path("dewar_label_template.html")) as f:
             html_template = f.read()
 
+        ean = barcode.get(
+            current_app.config["BARCODE_TYPE"], "TestBarcode1234", writer=ImageWriter()
+        )
+        dewar_barcode_filepath = os.path.join(self.tmp_dir, "barcode.png")
+        ean.save(dewar_barcode_filepath)
+
         html_template = html_template.format(
+            dewar_barcode_filepath=dewar_barcode_filepath,
             site_name="Site",
             parcel_label="1",
             shipment_label="2",
@@ -61,12 +66,12 @@ class Report(object):
             local_contact="5",
         )
 
-        html_file = open(os.path.join(self.upload_dir, html_filename), "w")
+        html_file = open(os.path.join(self.tmp_dir, html_filename), "w")
         html_file.write(html_template)
         html_file.close()
         pdfkit.from_file(
-            os.path.join(self.upload_dir, html_filename),
-            os.path.join(self.upload_dir, pdf_filename),
+            os.path.join(self.tmp_dir, html_filename),
+            os.path.join(self.tmp_dir, pdf_filename),
         )
 
         return html_filename, pdf_filename
