@@ -91,6 +91,7 @@ class DataCollectionGroups(Resource):
         """Returns list of data_collection_groups"""
         return data_collection.get_data_collection_groups(request)
 
+
 @api.route("/groups/<int:data_collection_id>")
 @api.param("data_collection_group_id", "data_collection group_id (integer)")
 @api.doc(security="apikey")

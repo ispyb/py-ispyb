@@ -41,7 +41,8 @@ def create_response_item(msg=None, num_items=None, data=[]):
         "message": msg,
     }
 
+
 def download_pdb_file(pdb_filename):
-    response = get(current_app.config["PDB_URI"] + "/"+ pdb_filename)
+    response = get(current_app.config["PDB_URI"] + "/" + pdb_filename)
     if response.status_code == 200:
         return response.content

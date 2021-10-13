@@ -30,9 +30,10 @@ from pyispyb.core.schemas import auto_proc_program as auto_proc_program_schemas
 from pyispyb.core.schemas import (
     auto_proc_program_attachment as auto_proc_program_attachment_schemas,
 )
-#from pyispyb.core.schemas import (
+
+# from pyispyb.core.schemas import (
 #    auto_proc_program_message as auto_proc_program_message_schemas,
-#)
+# )
 from pyispyb.core.schemas import auto_proc_status as auto_proc_status_schemas
 from pyispyb.core.modules import auto_proc
 

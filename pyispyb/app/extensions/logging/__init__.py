@@ -46,7 +46,7 @@ class Logging(object):
         app.logger.propagate = True
 
         if app.debug:
-            logging.getLogger('flask_oauthlib').setLevel(logging.DEBUG)
+            logging.getLogger("flask_oauthlib").setLevel(logging.DEBUG)
             app.logger.setLevel(logging.DEBUG)
 
         # We don't need the default SQLAlchemy loggers when using our invoke
@@ -54,7 +54,7 @@ class Logging(object):
         # NOTE: This particular workaround is for the SQLALCHEMY_ECHO mode,
         # when all SQL commands get printed (without these lines, they will get
         # printed twice).
-        sqla_logger = logging.getLogger('sqlalchemy.engine.base.Engine')
+        sqla_logger = logging.getLogger("sqlalchemy.engine.base.Engine")
         for hdlr in list(sqla_logger.handlers):
             sqla_logger.removeHandler(hdlr)
         sqla_logger.addHandler(logging.NullHandler())

@@ -40,7 +40,9 @@ class Report(object):
         html_filename = "dewar_%d_label.html" % dewar_dict["dewarId"]
         pdf_filename = "dewar_%d_label.pdf" % dewar_dict["dewarId"]
 
-        with open(os.path.join(current_app.config["STATIC_ROOT"], "dewar_label_template.html")) as template_file:
+        with open(
+            os.path.join(current_app.config["STATIC_ROOT"], "dewar_label_template.html")
+        ) as template_file:
             html_template = template_file.read()
 
         ean = barcode.get(
@@ -48,7 +50,9 @@ class Report(object):
             dewar_dict["barCode"],
             writer=ImageWriter(format="PNG"),
         )
-        dewar_barcode_filepath = os.path.join(current_app.config["TEMP_FOLDER"], "barcode")
+        dewar_barcode_filepath = os.path.join(
+            current_app.config["TEMP_FOLDER"], "barcode"
+        )
         ean.save(dewar_barcode_filepath)
 
         html_template = html_template.format(
@@ -81,5 +85,6 @@ class Report(object):
         )
 
         return html_filename, pdf_filename
+
 
 report = Report()

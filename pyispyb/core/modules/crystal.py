@@ -58,6 +58,7 @@ def get_crystal_by_id(crystal_id):
         models.Crystal, schemas.crystal.ma_schema, data_dict
     )
 
+
 def add_crystal(data_dict):
     """
     Adds a crystal to db.
@@ -118,17 +119,24 @@ def delete_crystal(crystal_id):
     id_dict = {"crystalId": crystal_id}
     return db.delete_db_item(models.Crystal, id_dict)
 
+
 def get_crystal_pdb_by_id(crystal_id):
     crystal_dict = get_crystal_by_id(crystal_id)
     if crystal_dict:
         if crystal_dict["pdbFilePath"]:
-            #Return a file path
-            return os.path.join(crystal_dict["pdbFilePath"], crystal_dict["pdbFileName"])
+            # Return a file path
+            return os.path.join(
+                crystal_dict["pdbFilePath"], crystal_dict["pdbFileName"]
+            )
         elif crystal_dict["pdbFileName"]:
             return crystal_dict["pdbFileName"]
+
 
 def patch_crystal_pdb_by_id(crystal_id, query_params):
     print("path", crystal_id, query_params)
     return db.patch_db_item(
-        models.Crystal, schemas.crystal.ma_schema, {"crystalId": crystal_id}, query_params
+        models.Crystal,
+        schemas.crystal.ma_schema,
+        {"crystalId": crystal_id},
+        query_params,
     )

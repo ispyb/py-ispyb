@@ -27,7 +27,6 @@ import os
 from importlib import import_module
 
 
-
 def init_app(app, **kwargs):
     """
     Inits extensions.

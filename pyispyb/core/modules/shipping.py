@@ -77,7 +77,9 @@ def get_shipping_info_by_id(shipping_id):
     shipping_dict = {}
 
     shipping_dict["shipping"] = get_shipping_by_id(shipping_id)
-    shipping_dict["proposal"] = proposal.get_proposal_by_id(shipping_dict["shipping"]["proposalId"])
+    shipping_dict["proposal"] = proposal.get_proposal_by_id(
+        shipping_dict["shipping"]["proposalId"]
+    )
     shipping_dict["send_lab_contact"] = contacts.get_lab_contact_by_params(
         {"labContactId": shipping_dict["shipping"]["sendingLabContactId"]}
     )

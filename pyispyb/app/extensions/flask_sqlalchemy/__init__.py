@@ -210,7 +210,9 @@ class SQLAlchemy(BaseSQLAlchemy):
 
         return db_item_json
 
-    def get_db_items_by_view(self, sql_alchemy_model, dict_schema, ma_schema, query_params):
+    def get_db_items_by_view(
+        self, sql_alchemy_model, dict_schema, ma_schema, query_params
+    ):
         msg = None
         schema_keys = {}
         multiple_value_query_params = {}
@@ -229,7 +231,6 @@ class SQLAlchemy(BaseSQLAlchemy):
         items = ma_schema.dump(query, many=True)[0]
 
         return create_response_item(msg, total, items)
-        
 
     def add_db_item(self, sql_alchemy_model, ma_schema, data):
         """
@@ -344,4 +345,3 @@ class SQLAlchemy(BaseSQLAlchemy):
             # log.exception(str(ex))
             self.session.rollback()
             abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(ex))
-

@@ -29,7 +29,8 @@ from pyispyb.app.extensions import db, auth_provider
 from pyispyb.app.utils import create_response_item
 
 from pyispyb.core import models, schemas
-#from pyispyb.core.schemas import phasing_view
+
+# from pyispyb.core.schemas import phasing_view
 
 
 def get_phasing_results(request):
@@ -37,19 +38,16 @@ def get_phasing_results(request):
 
     query_params = request.args.to_dict()
 
-    query_arg_list = (
-        "dataCollectionId",
-        "autoProcScalingId",
-        "phasingStepId"
-    )
+    query_arg_list = ("dataCollectionId", "autoProcScalingId", "phasingStepId")
 
-    #print(query_arg_list)
-    #return db.get_db_items_by_view(
+    # print(query_arg_list)
+    # return db.get_db_items_by_view(
     #    models.t_v_datacollection_summary_phasing,
     #    phasing_view.dict_schema,
     #    phasing_view.ma_schema,
     #    query_params,
-    #)
+    # )
+
 
 def add_phasing_results(data_dict):
     """
@@ -62,4 +60,5 @@ def add_phasing_results(data_dict):
         [type]: [description]
     """
     return "Ok"
-    #return db.add_db_item(models.phasing_results, schemas.phasing_results.ma_schema, data_dict)
+    # return db.add_db_item(models.phasing_results,
+    # schemas.phasing_results.ma_schema, data_dict)

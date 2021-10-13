@@ -25,6 +25,7 @@ import importlib
 from flask import current_app
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 from pyispyb.app.extensions.api import api_v1, Namespace
+
 # from pyispyb.app.extensions.auth import token_required
 from pyispyb.core import schemas
 

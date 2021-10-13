@@ -23,9 +23,10 @@ import datetime
 import importlib
 
 import time
-#import gevent
-#from gevent import monkey
-#monkey.patch_all()
+
+# import gevent
+# from gevent import monkey
+# monkey.patch_all()
 
 
 from flask import current_app
@@ -49,16 +50,17 @@ class UserOfficeLink:
         self.site_user_office = cls()
         self.site_user_office.init_app(app)
 
-        #self.sync_polling = gevent.spawn_later(
+        # self.sync_polling = gevent.spawn_later(
         #    10,
         #    self.sync_with_user_office,
         #    app
-        #)
+        # )
 
     def sync_with_user_office(self):
         self.site_user_office.sync_all()
 
     def update_proposal(self, code, number):
         self.site_user_office.update_proposal(code, number)
+
 
 user_office_link = UserOfficeLink()
