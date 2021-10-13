@@ -38,83 +38,83 @@ __license__ = "LGPLv3+"
 log = logging.getLogger(__name__)
 
 api = Namespace(
-    "Shipments", description="Shipment related namespace", path="/shipments"
+    "Shippings", description="shipping related namespace", path="/shippings"
 )
 api_v1.add_namespace(api)
 
 
-@api.route("", endpoint="shipments")
+@api.route("", endpoint="shippings")
 @api.doc(security="apikey")
-class Shipments(Resource):
-    """Allows to get all shipments"""
+class shippings(Resource):
+    """Allows to get all shippings"""
 
     @token_required
     @authorization_required
     def get(self):
-        """Returns list of shipments"""
-        return shipping.get_shipments(request), HTTPStatus.OK
+        """Returns list of shippings"""
+        return shipping.get_shippings(request), HTTPStatus.OK
 
     @api.expect(shipping_schemas.f_schema)
     @api.marshal_with(shipping_schemas.f_schema, code=201)
     @token_required
     @authorization_required
     def post(self):
-        """Adds a new shipment"""
-        return shipping.add_shipment(api.payload)
+        """Adds a new shipping"""
+        return shipping.add_shipping(api.payload)
 
 
-@api.route("/<int:shipment_id>", endpoint="shipment_by_id")
-@api.param("shipment_id", "shipment id (integer)")
+@api.route("/<int:shipping_id>", endpoint="shipping_by_id")
+@api.param("shipping_id", "shipping id (integer)")
 @api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="shipment not found.")
-class ShipmentById(Resource):
-    """Allows to get/set/delete a shipment"""
+@api.response(code=HTTPStatus.NOT_FOUND, description="shipping not found.")
+class shippingById(Resource):
+    """Allows to get/set/delete a shipping"""
 
-    @api.doc(description="shipment_id should be an integer ")
+    @api.doc(description="shipping_id should be an integer ")
     @api.marshal_with(shipping_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
-    def get(self, shipment_id):
-        """Returns a shipment by shipmentId"""
-        return shipping.get_shipment_by_id(shipment_id)
+    def get(self, shipping_id):
+        """Returns a shipping by shippingId"""
+        return shipping.get_shipping_by_id(shipping_id)
 
     @api.expect(shipping_schemas.f_schema)
     @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
-    def put(self, shipment_id):
-        """Fully updates shipment with id shipment_id"""
-        return shipping.update_shipment(shipment_id, api.payload)
+    def put(self, shipping_id):
+        """Fully updates shipping with id shipping_id"""
+        return shipping.update_shipping(shipping_id, api.payload)
 
     @api.expect(shipping_schemas.f_schema)
     @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
-    def patch(self, shipment_id):
-        """Partially updates shipment with id shipment_id"""
-        return shipping.patch_shipment(shipment_id, api.payload)
+    def patch(self, shipping_id):
+        """Partially updates shipping with id shipping_id"""
+        return shipping.patch_shipping(shipping_id, api.payload)
 
     @token_required
     @authorization_required
-    def delete(self, shipment_id):
-        """Deletes shipment by shipment_id"""
-        return shipping.delete_shipment(shipment_id)
+    def delete(self, shipping_id):
+        """Deletes shipping by shipping_id"""
+        return shipping.delete_shipping(shipping_id)
 
 
-@api.route("/<int:shipment_id>/info", endpoint="shipment_info_by_id")
-@api.param("shipment_id", "shipment id (integer)")
+@api.route("/<int:shipping_id>/info", endpoint="shipping_info_by_id")
+@api.param("shipping_id", "shipping id (integer)")
 @api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="shipment not found.")
-class ShipmentInfoById(Resource):
-    """Returns full information of a shipment"""
+@api.response(code=HTTPStatus.NOT_FOUND, description="shipping not found.")
+class shippingInfoById(Resource):
+    """Returns full information of a shipping"""
 
-    @api.doc(description="shipment_id should be an integer ")
-    # @api.marshal_with(shipment_desc_f_schema)
+    @api.doc(description="shipping_id should be an integer ")
+    # @api.marshal_with(shipping_desc_f_schema)
     @token_required
     @authorization_required
-    def get(self, shipment_id):
-        """Returns a full description of a shipment by shipmentId"""
-        return shipping.get_shipment_info_by_id(shipment_id)
+    def get(self, shipping_id):
+        """Returns a full description of a shipping by shippingId"""
+        return shipping.get_shipping_info_by_id(shipping_id)
 
 
 @api.route("/dewars", endpoint="dewars")
@@ -126,7 +126,8 @@ class Dewars(Resource):
     @authorization_required
     def get(self):
         """Returns all dewars items"""
-        return dewar.get_dewars(request)
+        query_params = request.args.to_dict()
+        return dewar.get_dewars_by_query(query_params)
 
     @token_required
     @api.expect(dewar_schemas.f_schema)
@@ -191,7 +192,7 @@ class DewarLabelsById(Resource):
             dewar_id
         )
         return send_from_directory(
-            current_app.config["TMP_DIR"], pdf_labels_filename, as_attachment=True
+            current_app.config["TEMP_DIR"], pdf_labels_filename, as_attachment=True
         )
 
 

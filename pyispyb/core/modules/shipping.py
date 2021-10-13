@@ -27,11 +27,11 @@ from pyispyb.app.extensions import db
 from pyispyb.app.utils import create_response_item
 
 from pyispyb.core import models, schemas
-from pyispyb.core.modules import proposal
+from pyispyb.core.modules import contacts, proposal, dewar
 
 
-def get_shipments(request):
-    """Returns shipments by query parameters"""
+def get_shippings(request):
+    """Returns shippings by query parameters"""
 
     query_params = request.args.to_dict()
 
@@ -43,45 +43,59 @@ def get_shipments(request):
             schemas.shipping.dict_schema,
             schemas.shipping.ma_schema,
             query_params,
-            )
+        )
     else:
         return create_response_item(msg=msg)
 
 
-def get_shipment_by_id(shipment_id):
+def get_shipping_by_id(shipping_id):
     """
-    Returns shipment by its shipmentId.
+    Returns shipping by its shippingId.
 
     Args:
-        shipment_id (int): corresponds to shipmentId in db
+        shipping_id (int): corresponds to shippingId in db
 
     Returns:
-        dict: info about shipment as dict
+        dict: info about shipping as dict
     """
-    id_dict = {"shippingId": shipment_id}
+    id_dict = {"shippingId": shipping_id}
     return db.get_db_item_by_params(
         models.Shipping, schemas.shipping.ma_schema, id_dict
     )
 
 
-def get_shipment_info_by_id(shipment_id):
+def get_shipping_info_by_id(shipping_id):
     """
-    Returns shipment by its shipmentId.
+    Returns shipping by its shippingId.
 
     Args:
-        shipment_id (int): corresponds to shipmentId in db
+        shipping_id (int): corresponds to shippingId in db
 
     Returns:
-        dict: info about shipment as dict
+        dict: info about shipping as dict
     """
-    shipment_json = get_shipment_by_id(shipment_id)
+    shipping_dict = {}
 
-    return shipment_json
+    shipping_dict["shipping"] = get_shipping_by_id(shipping_id)
+    shipping_dict["proposal"] = proposal.get_proposal_by_id(shipping_dict["proposalId"])
+    shipping_dict["send_lab_contact"] = contacts.get_lab_contact_by_params(
+        {"labContactId": shipping_dict["sendingLabContactId"]}
+    )
+    shipping_dict["send_person"] = contacts.get_person_by_params(
+        {"personId": shipping_dict["send_lab_contact"]["personId"]}
+    )
+    shipping_dict["send_lab"] = contacts.get_laboratory_by_id(
+        shipping_dict["send_person"]["laboratoryId"]
+    )
+    dewars = dewar.get_dewars_by_query({"shippingId": shipping_id})
+    shipping_dict["dewars"] = dewars["data"]["rows"]
+
+    return shipping_dict
 
 
-def add_shipment(data_dict):
+def add_shipping(data_dict):
     """
-    Adds new shipment
+    Adds new shipping
 
     Args:
         data_dict ([type]): [description]
@@ -92,50 +106,50 @@ def add_shipment(data_dict):
     return db.add_db_item(models.Shipping, schemas.shipping.ma_schema, data_dict)
 
 
-def update_shipment(shipment_id, data_dict):
+def update_shipping(shipping_id, data_dict):
     """
-    Updates shipment.
+    Updates shipping.
 
     Args:
-        shipment_id ([type]): [description]
-        shipment_dict ([type]): [description]
+        shipping_id ([type]): [description]
+        shipping_dict ([type]): [description]
 
     Returns:
         [type]: [description]
     """
-    id_dict = {"shippingId": shipment_id}
+    id_dict = {"shippingId": shipping_id}
     return db.update_db_item(
         models.Shipping, schemas.shipping.ma_schema, id_dict, data_dict
     )
 
 
-def patch_shipment(shipment_id, data_dict):
+def patch_shipping(shipping_id, data_dict):
     """
-    Partialy updates shipment.
+    Partialy updates shipping.
 
     Args:
-        shipment_id ([type]): [description]
-        shipment_dict ([type]): [description]
+        shipping_id ([type]): [description]
+        shipping_dict ([type]): [description]
 
     Returns:
         [type]: [description]
     """
-    id_dict = {"shippingId": shipment_id}
+    id_dict = {"shippingId": shipping_id}
     return db.patch_db_item(
         models.Shipping, schemas.shipping.ma_schema, id_dict, data_dict
     )
 
 
-def delete_shipment(shipment_id):
+def delete_shipping(shipping_id):
     """
-    Deletes shipment item from db.
+    Deletes shipping item from db.
 
     Args:
-        shipment_id (int): shipmentId column in db
+        shipping_id (int): shippingId column in db
 
     Returns:
-        bool: True if the shipment exists and deleted successfully,
+        bool: True if the shipping exists and deleted successfully,
         otherwise return False
     """
-    id_dict = {"shippingId": shipment_id}
+    id_dict = {"shippingId": shipping_id}
     return db.delete_db_item(models.Shipping, id_dict)

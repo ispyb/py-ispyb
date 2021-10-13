@@ -4167,7 +4167,7 @@
           }
         },
         "summary": "Returns all dewars items",
-        "operationId": "get_dewars",
+        "operationId": "get_dewars_by_query",
         "security": [
           {
             "apikey": []

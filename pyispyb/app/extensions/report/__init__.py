@@ -36,42 +36,44 @@ class Report(object):
     application.
     """
 
-    def __init__(self, app=None):
-        self.tmp_dir = None
-
-    def init_app(self, app):
-        self.tmp_dir = app.config["TMP_DIR"]
-
-    def create_dewar_labels(self, dewar_info):
-        html_filename = "dewar_%d_label.html" % dewar_info["dewarId"]
-        pdf_filename = "dewar_%d_label.pdf" % dewar_info["dewarId"]
+    def create_dewar_labels(self, shipping_info_dict, dewar_dict):
+        html_filename = "dewar_%d_label.html" % dewar_dict["dewarId"]
+        pdf_filename = "dewar_%d_label.pdf" % dewar_dict["dewarId"]
 
         with open(self.get_static_file_path("dewar_label_template.html")) as f:
             html_template = f.read()
 
         ean = barcode.get(
-            current_app.config["BARCODE_TYPE"], "TestBarcode1234", writer=ImageWriter()
+            current_app.config["BARCODE_TYPE"],
+            dewar_dict["barCode"],
+            writer=ImageWriter(format="PNG"),
         )
-        dewar_barcode_filepath = os.path.join(self.tmp_dir, "barcode.png")
+        dewar_barcode_filepath = os.path.join(current_app.config["TEMP_DIR"], "barcode")
         ean.save(dewar_barcode_filepath)
 
         html_template = html_template.format(
-            dewar_barcode_filepath=dewar_barcode_filepath,
-            site_name="Site",
-            parcel_label="1",
-            shipment_label="2",
+            dewar_barcode_filepath=dewar_barcode_filepath + ".png",
+            site_name=current_app.config["SITE_NAME"],
+            parcel_label=dewar_dict["code"],
+            shipping_label=shipping_info_dict["shipping"]["shippingName"],
             num_parcels="1",
-            proposal_number="3",
-            laboratory_name="4",
+            proposal_number="%s%s"
+            % (
+                shipping_info_dict["proposal"]["proposalCode"],
+                shipping_info_dict["proposal"]["proposalNumber"],
+            ),
+            laboratory_name=shipping_info_dict["send_lab"]["name"],
             local_contact="5",
         )
 
-        html_file = open(os.path.join(self.tmp_dir, html_filename), "w")
+        html_file = open(
+            os.path.join(current_app.config["TEMP_DIR"], html_filename), "w"
+        )
         html_file.write(html_template)
         html_file.close()
         pdfkit.from_file(
-            os.path.join(self.tmp_dir, html_filename),
-            os.path.join(self.tmp_dir, pdf_filename),
+            os.path.join(current_app.config["TEMP_DIR"], html_filename),
+            os.path.join(current_app.config["TEMP_DIR"], pdf_filename),
         )
 
         return html_filename, pdf_filename

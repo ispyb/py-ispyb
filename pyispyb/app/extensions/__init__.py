@@ -46,5 +46,5 @@ def init_app(app):
     Args:
         app (flask app): Flask application
     """
-    for extension in (api, auth_provider, logging, db, user_office_link, report):
+    for extension in (api, auth_provider, logging, db, user_office_link):
         extension.init_app(app)

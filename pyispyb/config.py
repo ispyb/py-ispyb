@@ -34,6 +34,7 @@ class BaseConfig:
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
 
+    SITE_NAME = "Generic"
     API_ROOT = "/ispyb/api/v1"
     SECRET_KEY = os.urandom(16)
     SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -59,13 +60,20 @@ class BaseConfig:
     ADMIN_ROLES = ["manager", "admin"]  # allows to access all resources
 
     BARCODE_TYPE = "code39"
-    TMP_DIR = os.path.join(tempfile.gettempdir(), "pyispyb")
-    if not os.path.exists(TMP_DIR):
+    TEMP_DIR = os.path.join(tempfile.gettempdir(), "pyispyb", "tmp")
+    if not os.path.exists(TEMP_DIR):
         try:
-            os.makedirs(TMP_DIR)
-            print("Upload dir %s created" % TMP_DIR)
+            os.makedirs(TEMP_DIR)
+            print("Temp dir %s created" % TEMP_DIR)
         except Exception as ex:
-            print("Unable to create upload dir %s (%s)" % (TMP_DIR, str(ex)))
+            print("Unable to create temp dir %s (%s)" % (TEMP_DIR, str(ex)))
+    UPLOAD_DIR = os.path.join(tempfile.gettempdir(), "pyispyb", "upload")
+    if not os.path.exists(UPLOAD_DIR):
+        try:
+            os.makedirs(UPLOAD_DIR)
+            print("Upload dir %s created" % UPLOAD_DIR)
+        except Exception as ex:
+            print("Unable to create upload dir %s (%s)" % (UPLOAD_DIR, str(ex)))
 
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"

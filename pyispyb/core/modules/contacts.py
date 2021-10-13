@@ -170,7 +170,7 @@ def delete_person(person_id):
 
 
 def get_lab_contacts(request):
-    """Returns shipments by query parameters"""
+    """Returns lab contact by query parameters"""
 
     query_params = request.args.to_dict()
 
