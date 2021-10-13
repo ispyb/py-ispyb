@@ -44,7 +44,7 @@ def get_sessions(request):
     """
     query_params = request.args.to_dict()
 
-    is_admin, proposal_id_list = proposal.get_proposal_ids_by_username(request)
+    is_admin, proposal_id_list = proposal.get_proposal_ids(request)
 
     run_query = False
     if is_admin:

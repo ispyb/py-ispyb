@@ -94,6 +94,20 @@ class PersonById(Resource):
         return contacts.delete_person(person_id)
 
 
+@api.route("/persons/<string:person_login>/info", endpoint="person_info_by_login")
+@api.doc(security="apikey")
+class PersonInfoByLoginName(Resource):
+    """Returns info about the person"""
+
+    @api.doc(description="person_login should be a string")
+    # @token_required
+    # @authorization_required
+    def get(self, person_login):
+        """Returns info about a person by login"""
+        params = {"login": person_login}
+        return contacts.get_person_info_by_params(params)
+
+
 @api.route("/lab_contacts", endpoint="lab_contacts")
 @api.doc(security="apikey")
 class LabContacts(Resource):

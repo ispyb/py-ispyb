@@ -117,7 +117,9 @@ class SQLAlchemy(BaseSQLAlchemy):
             raise Exception("SQLALCHEMY_DATABASE_URI must be configured!")
         # assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
         if database_uri.startswith("sqlite:"):
-            self.event.listens_for(sqlalchemy.engine.Engine, "connect")(set_sqlite_pragma)
+            self.event.listens_for(sqlalchemy.engine.Engine, "connect")(
+                set_sqlite_pragma
+            )
 
         app.extensions["migrate"] = AlembicDatabaseMigrationConfig(
             self, compare_type=True
@@ -148,7 +150,6 @@ class SQLAlchemy(BaseSQLAlchemy):
         else:
             limit = current_app.config.get("PAGINATION_ITEMS_LIMIT")
 
-        
         msg = None
         schema_keys = {}
         multiple_value_query_params = {}
@@ -201,10 +202,10 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             dict: info dict
         """
-        #db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
-        #    description="There is no data with item id %s" % str(item_id_dict)
-        #)
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
+        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
+            description="There is no data with item id %s" % str(item_id_dict)
+        )
+        # db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
         db_item_json = ma_schema.dump(db_item)[0]
 
         return db_item_json
@@ -237,9 +238,11 @@ class SQLAlchemy(BaseSQLAlchemy):
         except Exception as ex:
             self.session.rollback()
             print(ex)
-            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s)" % str(ex))            
+            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s)" % str(ex))
 
-    def update_db_item(self, sql_alchemy_model, ma_schema, item_id_dict, item_update_dict):
+    def update_db_item(
+        self, sql_alchemy_model, ma_schema, item_id_dict, item_update_dict
+    ):
         """
         Updates item in db
 
@@ -289,7 +292,7 @@ class SQLAlchemy(BaseSQLAlchemy):
                 else:
                     abort(
                         HTTPStatus.NOT_ACCEPTABLE,
-                        "Attribute %s not defined in the item model" % key
+                        "Attribute %s not defined in the item model" % key,
                     )
             self.session.commit()
             result = ma_schema.dump(db_item)[0]

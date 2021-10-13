@@ -122,19 +122,19 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("Crystal id: %d" % crystal_id)
     assert crystal_id
 
-    route = ispyb_core_app.config["API_ROOT"] + "/shipments"
-    shipment_dict = data.test_shippment
-    shipment_dict["proposalId"] = proposal_id
-    shipment_dict["sendingLabContactId"] = lab_contact_id
-    shipment_dict["returnLabContactId"] = lab_contact_id
-    shipment_dict["deliveryAgent_flightCodePersonId"] = person_id
-    response = client.post(route, json=shipment_dict, headers=headers)
+    route = ispyb_core_app.config["API_ROOT"] + "/shippings"
+    shipping_dict = data.test_shippment
+    shipping_dict["proposalId"] = proposal_id
+    shipping_dict["sendingLabContactId"] = lab_contact_id
+    shipping_dict["returnLabContactId"] = lab_contact_id
+    shipping_dict["deliveryAgent_flightCodePersonId"] = person_id
+    response = client.post(route, json=shipping_dict, headers=headers)
 
     assert response.status_code == 200, "[POST] %s failed" % route
-    shipment_id = response.json["shippingId"]
+    shipping_id = response.json["shippingId"]
 
-    print("Shipping id: %d" % shipment_id)
-    assert shipment_id
+    print("Shipping id: %d" % shipping_id)
+    assert shipping_id
 
     route = ispyb_core_app.config["API_ROOT"] + "/sessions/beam_calendars"
     beam_calendar_dict = data.test_beam_calendar
@@ -159,10 +159,10 @@ def test_post(ispyb_core_app, ispyb_core_token):
     print("Session id: %d" % session_id)
     assert session_id
 
-    route = ispyb_core_app.config["API_ROOT"] + "/shipments/dewars"
+    route = ispyb_core_app.config["API_ROOT"] + "/shippings/dewars"
     dewar_dict = data.get_test_dewar()
     dewar_dict["firstExperimentId"] = session_id
-    dewar_dict["shippingId"] = shipment_id
+    dewar_dict["shippingId"] = shipping_id
     response = client.post(route, json=dewar_dict, headers=headers)
 
     assert response.status_code == 200, "[POST] %s failed" % route

@@ -27,7 +27,7 @@ from pyispyb.app.extensions import db
 from pyispyb.core import models, schemas
 
 
-def get_samples(request):
+def get_samples_by_request(request):
     """
     Returns sample entries.
 

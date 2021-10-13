@@ -49,7 +49,6 @@ class AuthProvider:
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 
-
     def get_roles(self, username, password):
         """
         Returns roles associated to user. Basically this is the main
@@ -87,7 +86,8 @@ class AuthProvider:
             else:
                 user_info, msg = decode_token(token)
             user_info["is_admin"] = any(
-                role in current_app.config.get("ADMIN_ROLES", []) for role in user_info["roles"]
+                role in current_app.config.get("ADMIN_ROLES", [])
+                for role in user_info["roles"]
             )
 
         except BaseException as ex:
@@ -112,12 +112,7 @@ class AuthProvider:
         )
 
         token = jwt.encode(
-            {
-                "sub": username,
-                "roles": roles,
-                "iat": iat,
-                "exp": exp,
-            },
+            {"sub": username, "roles": roles, "iat": iat, "exp": exp},
             current_app.config["SECRET_KEY"],
             algorithm=current_app.config["JWT_CODING_ALGORITHM"],
         )
@@ -131,10 +126,12 @@ class AuthProvider:
             "token": token,
             "iat": iat.strftime("%Y-%m-%d %H:%M:%S"),
             "exp": exp.strftime("%Y-%m-%d %H:%M:%S"),
-            "roles": roles
+            "roles": roles,
         }
 
+
 auth_provider = AuthProvider()
+
 
 def decode_token(token):
     user_info = {}
@@ -155,7 +152,6 @@ def decode_token(token):
         current_app.logger.info(msg)
 
     return user_info, msg
-
 
 
 def token_required(func):
@@ -258,12 +254,17 @@ def authorization_required(func):
         )
 
         methods = current_app.config.get("AUTHORIZATION_RULES").get(self.endpoint, {})
-        roles = methods.get(func.__name__, [])
+        # If no role is defined then just manager is allowed to access the resource
+        roles = methods.get(func.__name__, ["manager"])
 
-        #print("User roles: %s" % str(user_info.get("roles")))
-        #print("Endpoint [%s] %s roles: %s" % (func.__name__, self.endpoint, roles))
+        # print("User roles: %s" % str(user_info.get("roles")))
+        # print("Endpoint [%s] %s roles: %s" % (func.__name__, self.endpoint, roles))
 
-        if not roles or "all" in roles or any(role in list(roles) for role in list(user_info.get("roles", []))):
+        if (
+            not roles
+            or "all" in roles
+            or any(role in list(roles) for role in list(user_info.get("roles", [])))
+        ):
             return func(self, *args, **kwargs)
         else:
             msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (

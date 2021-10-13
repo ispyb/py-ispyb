@@ -30,7 +30,7 @@ def test_lab_contact_model():
     assert lab_contact.errors == {}
 
 
-def test_shipment_model():
+def test_shipping_model():
     shipmenmt = schemas.shipping.ShippingSchema().dump(data.test_shippment)
 
     assert shipmenmt.errors == {}

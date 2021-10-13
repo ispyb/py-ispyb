@@ -17,4 +17,7 @@ Alembic>=1.0,<2
 pyjwt
 mysqlclient
 ruamel.yaml
+pdfkit
+python-barcode
+
 #gevent==20.9.0

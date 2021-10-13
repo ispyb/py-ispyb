@@ -48,7 +48,7 @@ class Sample(Resource):
     @authorization_required
     def get(self):
         """Returns all sample items"""
-        return sample.get_samples(request)
+        return sample.get_samples_by_request(request)
 
     @token_required
     @api.expect(sample_schemas.f_schema)
@@ -163,7 +163,7 @@ class Proteins(Resource):
     @authorization_required
     def get(self):
         """Returns all protein items"""
-        return protein.get_proteins(request)
+        return protein.get_proteins_by_request(request)
 
     @api.expect(protein_schemas.f_schema)
     @api.marshal_with(protein_schemas.f_schema, code=201)

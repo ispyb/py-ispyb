@@ -24,8 +24,10 @@ __license__ = "LGPLv3+"
 
 
 from pyispyb.app.extensions import db
+from pyispyb.app.extensions.auth import auth_provider
 
 from pyispyb.core import models, schemas
+from pyispyb.core.modules import proposal, sample, protein, crystal
 
 
 def get_persons(request):
@@ -45,12 +47,41 @@ def get_person_by_params(param_dict):
     """Returns person by its id.
 
     Args:
-        person_id (int): corresponds to personId in db
+        param_dict (dict): corresponds to personId in db
 
     Returns:
         dict: info about person as dict
     """
     return db.get_db_item_by_params(models.Person, schemas.person.ma_schema, param_dict)
+
+
+def get_person_info_by_params(param_dict):
+    """Returns person by its id.
+
+    Args:
+        param_dict (dict): corresponds to personId in db
+
+    Returns:
+        dict: info about person as dict
+    """
+    person_info_dict = db.get_db_item_by_params(
+        models.Person, schemas.person.ma_schema, param_dict
+    )
+    proposal_id_list = proposal.get_proposal_ids_by_login_name(
+        person_info_dict["login"]
+    )
+    person_info_dict["proposal_ids"] = proposal_id_list
+
+    person_protein_list = []
+    for proposal_id in proposal_id_list:
+        protein_list = protein.get_proteins_by_query({"proposalId": proposal_id})
+        for protein_dict in protein_list["data"]["rows"]:
+            person_protein_list.append(protein_dict["proteinId"])
+
+    # sample_list = sample.get_samples_by_request
+    person_info_dict["protein_ids"] = person_protein_list
+
+    return person_info_dict
 
 
 def get_person_id_by_login(login_name):
@@ -66,6 +97,16 @@ def get_person_id_by_login(login_name):
         person_item = get_person_by_params({"login": login_name})
         if person_item:
             return person_item["personId"]
+
+
+def check_person_by_request(request):
+    query_params = request.args.to_dict()
+    user_info = auth_provider.get_user_info_from_auth_header(
+        request.headers.get("Authorization")
+    )
+    person_id = get_person_id_by_login(query_params.get("login_name", user_info["sub"]))
+    run_query = True if user_info.get("is_admin") else person_id is not None
+    return run_query, person_id
 
 
 def add_person(data_dict):
@@ -129,7 +170,7 @@ def delete_person(person_id):
 
 
 def get_lab_contacts(request):
-    """Returns shipments by query parameters"""
+    """Returns lab contact by query parameters"""
 
     query_params = request.args.to_dict()
 

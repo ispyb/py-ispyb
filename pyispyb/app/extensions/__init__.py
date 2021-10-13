@@ -26,11 +26,13 @@ from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql.types import LONGBLOB
 
 from pyispyb.app.extensions.logging import Logging
+
 logging = Logging()
 
 from . import api
 from .auth import auth_provider
 from .user_office_link import user_office_link
+from .report import report
 from .flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()

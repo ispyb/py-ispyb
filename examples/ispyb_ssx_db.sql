@@ -35,7 +35,7 @@ CREATE TABLE `Micrograph` (
   `crystalSlurryId` int NOT NULL,
   `url` varchar(255),
   `objectSidePixelSize` varchar(255) COMMENT 'comma separated two floats',
-  `descriptionJson` JSON
+  `descriptionJson` varchar(255)
 );
 
 CREATE TABLE `LoadedSample` (
@@ -44,7 +44,7 @@ CREATE TABLE `LoadedSample` (
   `sampleStockId` int,
   `sampleDeliveryDeviceId` int,
   `loadingPattern` int,
-  `descriptionJson` JSON
+  `descriptionJson` varchar(255)
 );
 
 CREATE TABLE `SsxDataAcquisition` (
@@ -75,14 +75,14 @@ CREATE TABLE `ExperimentalPlan` (
 CREATE TABLE `SampleDeliveryDevice` (
   `sampleDeliveryDeviceId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
   `type` ENUM ('photoChip', 'microFluidics', 'viscoousJet', 'tapeDevice'),
-  `descriptionJson` JSON
+  `descriptionJson` varchar(255)
 );
 
 CREATE TABLE `MasterTrigger` (
   `masterTriggerId` int UNIQUE PRIMARY KEY AUTO_INCREMENT,
   `nameInEventLog` varchar(255),
   `triggerDevice` int,
-  `descriptionJson` JSON
+  `descriptionJson` varchar(255)
 );
 
 CREATE TABLE `RepeatedSequence` (
