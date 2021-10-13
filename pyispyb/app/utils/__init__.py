@@ -17,6 +17,9 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
+import os
+from requests import get
+from flask import current_app
 
 
 def create_response_item(msg=None, num_items=None, data=[]):
@@ -37,3 +40,8 @@ def create_response_item(msg=None, num_items=None, data=[]):
         "data": {"total": num_items, "rows": data},
         "message": msg,
     }
+
+def download_pdb_file(pdb_filename):
+    response = get(current_app.config["PDB_URI"] + "/"+ pdb_filename)
+    if response.status_code == 200:
+        return response.content

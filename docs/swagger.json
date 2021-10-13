@@ -2484,7 +2484,7 @@
           }
         },
         "summary": "Returns all crystal items",
-        "operationId": "get_crystals",
+        "operationId": "get_crystals_by_query",
         "security": [
           {
             "apikey": []

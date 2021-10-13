@@ -40,18 +40,19 @@ class Report(object):
         html_filename = "dewar_%d_label.html" % dewar_dict["dewarId"]
         pdf_filename = "dewar_%d_label.pdf" % dewar_dict["dewarId"]
 
-        with open(self.get_static_file_path("dewar_label_template.html")) as f:
-            html_template = f.read()
+        with open(os.path.join(current_app.config["STATIC_ROOT"], "dewar_label_template.html")) as template_file:
+            html_template = template_file.read()
 
         ean = barcode.get(
             current_app.config["BARCODE_TYPE"],
             dewar_dict["barCode"],
             writer=ImageWriter(format="PNG"),
         )
-        dewar_barcode_filepath = os.path.join(current_app.config["TEMP_DIR"], "barcode")
+        dewar_barcode_filepath = os.path.join(current_app.config["TEMP_FOLDER"], "barcode")
         ean.save(dewar_barcode_filepath)
 
         html_template = html_template.format(
+            site_logo_filepath=current_app.config["SITE_LOGO_PATH"],
             dewar_barcode_filepath=dewar_barcode_filepath + ".png",
             site_name=current_app.config["SITE_NAME"],
             parcel_label=dewar_dict["code"],
@@ -67,19 +68,18 @@ class Report(object):
         )
 
         html_file = open(
-            os.path.join(current_app.config["TEMP_DIR"], html_filename), "w"
+            os.path.join(current_app.config["TEMP_FOLDER"], html_filename), "w"
         )
         html_file.write(html_template)
         html_file.close()
+
+        print(os.path.join(current_app.config["TEMP_FOLDER"], html_filename))
+        print(os.path.join(current_app.config["TEMP_FOLDER"], pdf_filename))
         pdfkit.from_file(
-            os.path.join(current_app.config["TEMP_DIR"], html_filename),
-            os.path.join(current_app.config["TEMP_DIR"], pdf_filename),
+            str(os.path.join(current_app.config["TEMP_FOLDER"], html_filename)),
+            str(os.path.join(current_app.config["TEMP_FOLDER"], pdf_filename)),
         )
 
         return html_filename, pdf_filename
-
-    def get_static_file_path(self, filename):
-        return os.path.join(current_app.root_path, "static", filename)
-
 
 report = Report()
