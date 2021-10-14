@@ -221,7 +221,7 @@
           }
         },
         "summary": "Returns all auto_proc_program attachemnt entries",
-        "operationId": "get_auto_proc_program_attachments",
+        "operationId": "get_attachments_by_query",
         "security": [
           {
             "apikey": []
