@@ -23,11 +23,12 @@ __license__ = "LGPLv3+"
 
 
 from flask import current_app
-from pyispyb.app.extensions.user_office_link.AbstractUserOfficeLink import AbstractUserOfficeLink
+from pyispyb.app.extensions.user_office_link.AbstractUserOfficeLink import (
+    AbstractUserOfficeLink,
+)
 
 
 class DummyUserOfficeLink(AbstractUserOfficeLink):
-    
     def init_app(self, app):
         """Initializes user office class.
 
@@ -35,7 +36,7 @@ class DummyUserOfficeLink(AbstractUserOfficeLink):
             app (flask app): Flask app
         """
         return
-    
+
     def sync_all(self):
         """Main method to sync with user office"""
         print("Sync with user office")
@@ -47,4 +48,4 @@ class DummyUserOfficeLink(AbstractUserOfficeLink):
             code (str): MX, SAXS, mxihr, etc
             number (int): proposals number
         """
-        print("Update proposal %s%d" %(code, number))
+        print("Update proposal %s%d" % (code, number))

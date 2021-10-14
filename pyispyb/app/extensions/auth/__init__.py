@@ -118,7 +118,7 @@ class AuthProvider:
         )
 
         # TravisCI fix
-        if type(token) != str:
+        if not isinstance(token, str):
             token = token.decode("UTF-8")
 
         return {
@@ -220,14 +220,14 @@ def authorization_required(func):
     Checks if user has role required to access the given resource.
 
     Authorization is done via AUTHORIZATION_RULES dictionary that contains
-    mapping of endpoints with user groups. For example: 
+    mapping of endpoints with user groups. For example:
 
     AUTHORIZATION_RULES = {
         "proposals": {
             "get": ["all"],
             "post": ["admin"]
         }
-    
+
     define that method GET of endpoint proposals is available for all user groups
     and method POST is accessible just for admin group.
     If an endpoint is not defined in the AUTHORIZATION_RULES then it is available

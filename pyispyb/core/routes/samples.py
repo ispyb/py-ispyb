@@ -18,12 +18,16 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
-
-from flask import request
+import io
+import os
+from flask import request, send_file, current_app, abort
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
+
+from pyispyb.app.utils import download_pdb_file
 from pyispyb.app.extensions.api import api_v1, Namespace
 from pyispyb.app.extensions.auth import token_required, authorization_required
+
 
 from pyispyb.core.schemas import sample as sample_schemas
 from pyispyb.core.schemas import crystal as crystal_schemas
@@ -105,7 +109,8 @@ class Crystals(Resource):
     @authorization_required
     def get(self):
         """Returns all crystal items"""
-        return crystal.get_crystals(request)
+        query_params = request.args.to_dict()
+        return crystal.get_crystals_by_query(query_params)
 
     @api.expect(crystal_schemas.f_schema)
     @api.marshal_with(crystal_schemas.f_schema, code=201)
@@ -152,6 +157,94 @@ class CrystalById(Resource):
     def delete(self, crystal_id):
         """Deletes a crystal by crystalId"""
         return crystal.delete_crystal(crystal_id)
+
+
+@api.route("/crystals/<int:crystal_id>/pdb", endpoint="crystal_pdb_by_id")
+@api.param("crystal_id", "Crystal id (integer)")
+@api.doc(security="apikey")
+@api.response(code=HTTPStatus.NOT_FOUND, description="Crystal not found.")
+class CrystalPdbById(Resource):
+    """Allows to get/set/delete crystal pdb item"""
+
+    @api.doc(description="crystal_id should be an integer ")
+    @token_required
+    @authorization_required
+    def get(self, crystal_id):
+        """Returns pdb file by crystalId"""
+        query_params = request.args.to_dict()
+
+        pdb_file_path = crystal.get_crystal_pdb_by_id(crystal_id)
+        if pdb_file_path:
+            if os.path.exists(pdb_file_path):
+                # Returns file
+                return send_file(pdb_file_path, as_attachment=True)
+            else:
+                # Return filename
+                return pdb_file_path
+        else:
+            # If no pdb file in the data base exists, then try to get one from pdb
+            if "pdbFileName" in query_params:
+                if not query_params["pdbFileName"].endswith(".pdb"):
+                    abort(HTTPStatus.NOT_FOUND, "Requested file should end with pdb")
+                else:
+                    if not query_params["pdbFileName"].endswith(".pdb"):
+                        query_params["pdbFileName"] += ".pdb"
+                    pdb_file = download_pdb_file(query_params["pdbFileName"])
+                    if pdb_file:
+                        return send_file(
+                            io.BytesIO(pdb_file),
+                            mimetype="text/plain",
+                            as_attachment=True,
+                            attachment_filename=query_params["pdbFileName"],
+                        )
+                    else:
+                        abort(
+                            HTTPStatus.NOT_FOUND,
+                            "Pdb entry %s not found in %s"
+                            % (
+                                query_params["pdbFileName"],
+                                current_app.config["PDB_URI"],
+                            ),
+                        )
+
+            else:
+                abort(
+                    HTTPStatus.NOT_FOUND,
+                    "No pdb file or entry associated with crystal %d" % crystal_id,
+                )
+
+    @token_required
+    @authorization_required
+    def patch(self, crystal_id):
+        """Fully updates crystal with crystal_id"""
+        query_params = request.args.to_dict()
+
+        if "file" not in request.files:
+            # No file submitted. Check if the pdb entry name exists
+            return crystal.patch_crystal_pdb_by_id(crystal_id, query_params)
+        else:
+            request_file = request.files["file"]
+            if request_file.filename.endswith(".pdb"):
+                if "pdbFileName" not in query_params:
+                    query_params["pdbFileName"] = request_file.filename
+                query_params["pdbFilePath"] = current_app.config["UPLOAD_FOLDER"]
+                request_file.save(
+                    os.path.join(
+                        current_app.config["UPLOAD_FOLDER"], request_file.filename
+                    )
+                )
+                return crystal.patch_crystal_pdb_by_id(crystal_id, query_params)
+            else:
+                return abort(
+                    HTTPStatus.FORBIDDEN, "Pdb file should end with extension .pdb"
+                )
+        # return crystal.update_crystal_pdb(crystal_id, api.payload)
+
+    # @token_required
+    # @authorization_required
+    def delete(self, crystal_id):
+        """Deletes a crystal pdb file by crystalId"""
+        # return crystal.delete_crystal_pdb(crystal_id)
 
 
 @api.route("/proteins", endpoint="proteins")

@@ -57,7 +57,10 @@ def get_sessions(request):
                 if query_params["proposalId"] in proposal_id_list:
                     run_query = True
                 else:
-                    msg = "Proposal with id %s is not associated with user" % query_params["proposalId"]
+                    msg = (
+                        "Proposal with id %s is not associated with user"
+                        % query_params["proposalId"]
+                    )
             else:
                 query_params["proposalId"] = proposal_id_list
 

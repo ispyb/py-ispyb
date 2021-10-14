@@ -60,20 +60,23 @@ class BaseConfig:
     ADMIN_ROLES = ["manager", "admin"]  # allows to access all resources
 
     BARCODE_TYPE = "code39"
-    TEMP_DIR = os.path.join(tempfile.gettempdir(), "pyispyb", "tmp")
-    if not os.path.exists(TEMP_DIR):
+    TEMP_FOLDER = os.path.join(tempfile.gettempdir(), "pyispyb", "tmp")
+    if not os.path.exists(TEMP_FOLDER):
         try:
-            os.makedirs(TEMP_DIR)
-            print("Temp dir %s created" % TEMP_DIR)
+            os.makedirs(TEMP_FOLDER)
+            print("Temp dir %s created" % TEMP_FOLDER)
         except Exception as ex:
-            print("Unable to create temp dir %s (%s)" % (TEMP_DIR, str(ex)))
-    UPLOAD_DIR = os.path.join(tempfile.gettempdir(), "pyispyb", "upload")
-    if not os.path.exists(UPLOAD_DIR):
+            print("Unable to create temp dir %s (%s)" % (TEMP_FOLDER, str(ex)))
+    
+    UPLOAD_FOLDER = os.path.join(tempfile.gettempdir(), "pyispyb", "upload")
+    if not os.path.exists(UPLOAD_FOLDER):
         try:
-            os.makedirs(UPLOAD_DIR)
-            print("Upload dir %s created" % UPLOAD_DIR)
+            os.makedirs(UPLOAD_FOLDER)
+            print("Upload dir %s created" % UPLOAD_FOLDER)
         except Exception as ex:
-            print("Unable to create upload dir %s (%s)" % (UPLOAD_DIR, str(ex)))
+            print("Unable to create upload dir %s (%s)" % (UPLOAD_FOLDER, str(ex)))
+
+    SITE_LOGO_PATH = os.path.join(STATIC_ROOT, "favicon.png")
 
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
@@ -106,6 +109,8 @@ class BaseConfig:
         for endpoint, value in self.AUTHORIZATION_RULES.items():
             for method, roles in value.items():
                 print("[%s] %s - %s" % (method, endpoint, str(roles)))
+
+    PDB_URI = "https://files.rcsb.org/download"
 
 
 class ProductionConfig(BaseConfig):

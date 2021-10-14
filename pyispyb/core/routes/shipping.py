@@ -192,7 +192,7 @@ class DewarLabelsById(Resource):
             dewar_id
         )
         return send_from_directory(
-            current_app.config["TEMP_DIR"], pdf_labels_filename, as_attachment=True
+            current_app.config["TEMP_FOLDER"], pdf_labels_filename, as_attachment=True
         )
 
 

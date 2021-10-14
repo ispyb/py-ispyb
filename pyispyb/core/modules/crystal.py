@@ -22,19 +22,19 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
+import os
+
 from pyispyb.app.extensions import db
 from pyispyb.core import models, schemas
 
 
-def get_crystals(request):
+def get_crystals_by_query(query_params):
     """
     Returns crystal entries.
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
-
     return db.get_db_items(
         models.Crystal,
         schemas.crystal.dict_schema,
@@ -100,7 +100,6 @@ def patch_crystal(crystal_id, data_dict):
     Returns:
         [type]: [description]
     """
-    id_dict = {"crystalId": crystal_id}
     return db.patch_db_item(
         models.Crystal, schemas.crystal.ma_schema, id_dict, data_dict
     )
@@ -119,3 +118,25 @@ def delete_crystal(crystal_id):
     """
     id_dict = {"crystalId": crystal_id}
     return db.delete_db_item(models.Crystal, id_dict)
+
+
+def get_crystal_pdb_by_id(crystal_id):
+    crystal_dict = get_crystal_by_id(crystal_id)
+    if crystal_dict:
+        if crystal_dict["pdbFilePath"]:
+            # Return a file path
+            return os.path.join(
+                crystal_dict["pdbFilePath"], crystal_dict["pdbFileName"]
+            )
+        elif crystal_dict["pdbFileName"]:
+            return crystal_dict["pdbFileName"]
+
+
+def patch_crystal_pdb_by_id(crystal_id, query_params):
+    print("path", crystal_id, query_params)
+    return db.patch_db_item(
+        models.Crystal,
+        schemas.crystal.ma_schema,
+        {"crystalId": crystal_id},
+        query_params,
+    )

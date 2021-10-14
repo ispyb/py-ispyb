@@ -19,6 +19,11 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+import time
+import zipfile
+from io import BytesIO
+
 
 from pyispyb.app.extensions import db
 from pyispyb.core import models, schemas
@@ -166,15 +171,13 @@ def add_auto_proc_program(data_dict):
     )
 
 
-def get_auto_proc_program_attachments(request):
+def get_attachments_by_query(query_params):
     """
     Returns auto_proc_program_attachment entries.
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
-
     return db.get_db_items(
         models.AutoProcProgramAttachment,
         schemas.auto_proc_program_attachment.dict_schema,
@@ -233,6 +236,39 @@ def get_auto_proc_program_messages(request):
         schemas.auto_proc_program_message.ma_schema,
         query_params,
     )
+
+def get_attachment_zip_by_program_id(program_id):
+    attachment_list = get_attachments_by_query(
+        {"autoProcProgramId": program_id}
+    )["data"]["rows"]
+
+    memory_file = None
+    msg = ""
+
+    if attachment_list:
+        memory_file = BytesIO()
+        with zipfile.ZipFile(memory_file, 'w') as zf:
+            for attachm_file_dict in attachment_list:
+                data = zipfile.ZipInfo(
+                    os.path.join(
+                        attachm_file_dict['fileName']
+                    )
+                )
+                data.date_time = time.localtime(time.time())[:6]
+                data.compress_type = zipfile.ZIP_DEFLATED
+                attachm_file = open(os.path.join(
+                        attachm_file_dict["filePath"],
+                        attachm_file_dict['fileName']
+                    ),
+                    "rb"
+                )
+                zf.writestr(data, attachm_file.read())
+                attachm_file.close()
+        memory_file.seek(0)
+    else:
+        msg = "No attachment with autoproc program id %d found" % program_id
+
+    return memory_file, msg
 
 
 def get_auto_proc_program_message_by_id(auto_proc_program_message_id):

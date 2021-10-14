@@ -29,6 +29,7 @@ from pyispyb.app.extensions.api import api_v1, Namespace
 from pyispyb.app.extensions.auth import token_required, authorization_required
 
 from pyispyb.core.schemas import data_collection as data_collection_schemas
+from pyispyb.core.schemas import data_collection_group as data_collection_group_schemas
 from pyispyb.core.modules import data_collection
 
 
@@ -91,4 +92,21 @@ class DataCollectionGroups(Resource):
         return data_collection.get_data_collection_groups(request)
 
 
-# DatacollectionsByShipment ?do we need this?
+@api.route("/groups/<int:data_collection_id>")
+@api.param("data_collection_group_id", "data_collection group_id (integer)")
+@api.doc(security="apikey")
+@api.response(code=HTTPStatus.NOT_FOUND, description="data collection group not found.")
+class DataCollectionGroupById(Resource):
+    """Allows to get/set/delete a data_collection group"""
+
+    @api.doc(description="data_collection_group_id should be an integer ")
+    @api.marshal_with(
+        data_collection_group_schemas.f_schema,
+        skip_none=False,
+        code=HTTPStatus.OK,
+    )
+    @token_required
+    @authorization_required
+    def get(self, data_collection_group_id):
+        """Returns a data_collection group by dataCollectionGroupId"""
+        return data_collection.get_data_collection_group_by_id(data_collection_group_id)
