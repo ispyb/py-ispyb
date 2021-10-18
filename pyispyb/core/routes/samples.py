@@ -109,8 +109,8 @@ class Crystals(Resource):
     @authorization_required
     def get(self):
         """Returns all crystal items"""
-        query_params = request.args.to_dict()
-        return crystal.get_crystals_by_query(query_params)
+        query_dict = request.args.to_dict()
+        return crystal.get_crystals_by_query(query_dict)
 
     @api.expect(crystal_schemas.f_schema)
     @api.marshal_with(crystal_schemas.f_schema, code=201)
@@ -171,7 +171,7 @@ class CrystalPdbById(Resource):
     @authorization_required
     def get(self, crystal_id):
         """Returns pdb file by crystalId"""
-        query_params = request.args.to_dict()
+        query_dict = request.args.to_dict()
 
         pdb_file_path = crystal.get_crystal_pdb_by_id(crystal_id)
         if pdb_file_path:
@@ -183,26 +183,26 @@ class CrystalPdbById(Resource):
                 return pdb_file_path
         else:
             # If no pdb file in the data base exists, then try to get one from pdb
-            if "pdbFileName" in query_params:
-                if not query_params["pdbFileName"].endswith(".pdb"):
+            if "pdbFileName" in query_dict:
+                if not query_dict["pdbFileName"].endswith(".pdb"):
                     abort(HTTPStatus.NOT_FOUND, "Requested file should end with pdb")
                 else:
-                    if not query_params["pdbFileName"].endswith(".pdb"):
-                        query_params["pdbFileName"] += ".pdb"
-                    pdb_file = download_pdb_file(query_params["pdbFileName"])
+                    if not query_dict["pdbFileName"].endswith(".pdb"):
+                        query_dict["pdbFileName"] += ".pdb"
+                    pdb_file = download_pdb_file(query_dict["pdbFileName"])
                     if pdb_file:
                         return send_file(
                             io.BytesIO(pdb_file),
                             mimetype="text/plain",
                             as_attachment=True,
-                            attachment_filename=query_params["pdbFileName"],
+                            attachment_filename=query_dict["pdbFileName"],
                         )
                     else:
                         abort(
                             HTTPStatus.NOT_FOUND,
                             "Pdb entry %s not found in %s"
                             % (
-                                query_params["pdbFileName"],
+                                query_dict["pdbFileName"],
                                 current_app.config["PDB_URI"],
                             ),
                         )
@@ -217,23 +217,23 @@ class CrystalPdbById(Resource):
     @authorization_required
     def patch(self, crystal_id):
         """Fully updates crystal with crystal_id"""
-        query_params = request.args.to_dict()
+        query_dict = request.args.to_dict()
 
         if "file" not in request.files:
             # No file submitted. Check if the pdb entry name exists
-            return crystal.patch_crystal_pdb_by_id(crystal_id, query_params)
+            return crystal.patch_crystal_pdb_by_id(crystal_id, query_dict)
         else:
             request_file = request.files["file"]
             if request_file.filename.endswith(".pdb"):
-                if "pdbFileName" not in query_params:
-                    query_params["pdbFileName"] = request_file.filename
-                query_params["pdbFilePath"] = current_app.config["UPLOAD_FOLDER"]
+                if "pdbFileName" not in query_dict:
+                    query_dict["pdbFileName"] = request_file.filename
+                query_dict["pdbFilePath"] = current_app.config["UPLOAD_FOLDER"]
                 request_file.save(
                     os.path.join(
                         current_app.config["UPLOAD_FOLDER"], request_file.filename
                     )
                 )
-                return crystal.patch_crystal_pdb_by_id(crystal_id, query_params)
+                return crystal.patch_crystal_pdb_by_id(crystal_id, query_dict)
             else:
                 return abort(
                     HTTPStatus.FORBIDDEN, "Pdb file should end with extension .pdb"

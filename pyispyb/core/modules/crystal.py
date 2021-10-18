@@ -28,7 +28,7 @@ from pyispyb.app.extensions import db
 from pyispyb.core import models, schemas
 
 
-def get_crystals_by_query(query_params):
+def get_crystals_by_query(query_dict):
     """
     Returns crystal entries.
 
@@ -39,7 +39,7 @@ def get_crystals_by_query(query_params):
         models.Crystal,
         schemas.crystal.dict_schema,
         schemas.crystal.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -54,7 +54,7 @@ def get_crystal_by_id(crystal_id):
         dict: info about crystal as dict
     """
     data_dict = {"crystalId": crystal_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.Crystal, schemas.crystal.ma_schema, data_dict
     )
 
@@ -101,7 +101,10 @@ def patch_crystal(crystal_id, data_dict):
         [type]: [description]
     """
     return db.patch_db_item(
-        models.Crystal, schemas.crystal.ma_schema, id_dict, data_dict
+        models.Crystal,
+        schemas.crystal.ma_schema,
+        {"crystalId" : crystal_id},
+        data_dict
     )
 
 
@@ -132,11 +135,10 @@ def get_crystal_pdb_by_id(crystal_id):
             return crystal_dict["pdbFileName"]
 
 
-def patch_crystal_pdb_by_id(crystal_id, query_params):
-    print("path", crystal_id, query_params)
+def patch_crystal_pdb_by_id(crystal_id, query_dict):
     return db.patch_db_item(
         models.Crystal,
         schemas.crystal.ma_schema,
         {"crystalId": crystal_id},
-        query_params,
+        query_dict,
     )

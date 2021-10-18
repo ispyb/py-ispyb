@@ -34,7 +34,7 @@ Example routes:
 
 __license__ = "LGPLv3+"
 
-from flask import request, current_app
+from flask import request, current_app, abort
 from flask_restx._http import HTTPStatus
 
 from pyispyb.flask_restx_patched import Resource
@@ -42,7 +42,7 @@ from pyispyb.flask_restx_patched import Resource
 from pyispyb.app.extensions.api import api_v1, Namespace
 from pyispyb.app.extensions.auth import token_required, authorization_required
 from pyispyb.core.schemas import proposal as proposal_schemas
-from pyispyb.core.modules import proposal
+from pyispyb.core.modules import contacts, proposal
 
 
 api = Namespace(
@@ -60,13 +60,12 @@ class Proposals(Resource):
     @authorization_required
     def get(self):
         """Returns proposals based on query parameters"""
-
         api.logger.info("Get all proposals")
-        return proposal.get_proposals_by_request(request)
+        return proposal.get_proposals_by_query(request.args.to_dict())
 
     @api.expect(proposal_schemas.f_schema)
     @api.marshal_with(proposal_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
+    #@api.errorhandler(FakeException)
     # TODO add custom exception handling
     @token_required
     @authorization_required
@@ -91,7 +90,17 @@ class ProposalById(Resource):
     @authorization_required
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
-        return proposal.get_proposal_by_id(proposal_id)
+        user_info = contacts.get_person_info(request)
+        if user_info["is_manager"] or proposal_id in user_info["proposal_ids"]:
+            return proposal.get_proposal_by_id(proposal_id)
+        else:
+            abort(
+                HTTPStatus.METHOD_NOT_ALLOWED,
+                "Permission denied. Proposal %d is not assigned to user %s" % (
+                    proposal_id,
+                    user_info["login_name"]
+                )
+            )
 
     @api.expect(proposal_schemas.f_schema)
     @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)

@@ -30,30 +30,19 @@ from pyispyb.core import models, schemas
 from pyispyb.core.modules import proposal, sample, protein, crystal
 
 
-def get_persons(request):
-    """Returns persons by query parameters"""
-
-    query_params = request.args.to_dict()
-
-    return db.get_db_items(
-        models.Person,
-        schemas.person.dict_schema,
-        schemas.person.ma_schema,
-        query_params,
+def get_person_info(request):
+    user_info = auth_provider.get_user_info_from_auth_header(
+        request.headers.get("Authorization")
     )
+    query_dict = request.args.to_dict()
+    if "login_name" in query_dict:
+        #Return info about requested login name
+        person_id = get_person_id_by_login(query_dict["login_name"])
+    else:    
+        person_id = get_person_id_by_login(user_info["sub"])
 
-
-def get_person_by_params(param_dict):
-    """Returns person by its id.
-
-    Args:
-        param_dict (dict): corresponds to personId in db
-
-    Returns:
-        dict: info about person as dict
-    """
-    return db.get_db_item_by_params(models.Person, schemas.person.ma_schema, param_dict)
-
+    person_info = get_person_info_by_params({"personId": person_id})
+    return user_info.update(person_info)
 
 def get_person_info_by_params(param_dict):
     """Returns person by its id.
@@ -64,7 +53,7 @@ def get_person_info_by_params(param_dict):
     Returns:
         dict: info about person as dict
     """
-    person_info_dict = db.get_db_item_by_params(
+    person_info_dict = db.get_db_item(
         models.Person, schemas.person.ma_schema, param_dict
     )
     proposal_id_list = proposal.get_proposal_ids_by_login_name(
@@ -83,6 +72,20 @@ def get_person_info_by_params(param_dict):
 
     return person_info_dict
 
+def get_persons_by_query(query_dict):
+    """Returns person by its id.
+
+    Args:
+        param_dict (dict): corresponds to personId in db
+
+    Returns:
+        dict: info about person as dict
+    """
+    return db.get_db_item(
+        models.Person,
+        schemas.person.ma_schema,
+        query_dict
+    )
 
 def get_person_id_by_login(login_name):
     """Returns person by login name.
@@ -97,16 +100,6 @@ def get_person_id_by_login(login_name):
         person_item = get_person_by_params({"login": login_name})
         if person_item:
             return person_item["personId"]
-
-
-def check_person_by_request(request):
-    query_params = request.args.to_dict()
-    user_info = auth_provider.get_user_info_from_auth_header(
-        request.headers.get("Authorization")
-    )
-    person_id = get_person_id_by_login(query_params.get("login_name", user_info["sub"]))
-    run_query = True if user_info.get("is_admin") else person_id is not None
-    return run_query, person_id
 
 
 def add_person(data_dict):
@@ -172,13 +165,13 @@ def delete_person(person_id):
 def get_lab_contacts(request):
     """Returns lab contact by query parameters"""
 
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.LabContact,
         schemas.lab_contact.dict_schema,
         schemas.lab_contact.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -192,7 +185,7 @@ def get_lab_contact_by_params(param_dict):
     Returns:
         [type]: [description]
     """
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.LabContact, schemas.lab_contact.ma_schema, param_dict
     )
 
@@ -263,18 +256,18 @@ def get_laboratories(request):
     Returns laboratories based on query parameters.
 
     Args:
-        query_params ([type]): [description]
+        query_dict ([type]): [description]
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.Laboratory,
         schemas.laboratory.dict_schema,
         schemas.laboratory.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -302,7 +295,7 @@ def get_laboratory_by_id(laboratory_id):
         dict: info about laboratory as dict
     """
     data_dict = {"laboratoryId": laboratory_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.Laboratory, schemas.laboratory.ma_schema, data_dict
     )
 

@@ -125,7 +125,7 @@ class SQLAlchemy(BaseSQLAlchemy):
             self, compare_type=True
         )
 
-    def get_db_items(self, sql_alchemy_model, dict_schema, ma_schema, query_params):
+    def get_db_items(self, sql_alchemy_model, dict_schema, ma_schema, query_dict):
         """
         Returns resource based on the passed models and query parameter
 
@@ -133,7 +133,7 @@ class SQLAlchemy(BaseSQLAlchemy):
             sql_alchemy_model ([type]): SQLAlchemy ORM model
             dict_schema ([type]): dict with flask fields
             ma_schema ([type]): marshmallows schema
-            query_params (dict): query parameters
+            query_dict (dict): query parameters
 
         Returns:
             dict: {"data": {"total": int, "rows": list},
@@ -141,25 +141,25 @@ class SQLAlchemy(BaseSQLAlchemy):
                     "error": str
                     }
         """
-        if "offset" in query_params.keys():
-            offset = query_params.get("offset")
+        if "offset" in query_dict.keys():
+            offset = query_dict.get("offset")
         else:
             offset = 0
-        if "limit" in query_params.keys():
-            limit = query_params.get("limit")
+        if "limit" in query_dict.keys():
+            limit = query_dict.get("limit")
         else:
             limit = current_app.config.get("PAGINATION_ITEMS_LIMIT")
 
         msg = None
         schema_keys = {}
-        multiple_value_query_params = {}
+        multiple_value_query_dict = {}
 
-        for key in query_params.keys():
+        for key in query_dict.keys():
             if key in dict_schema.keys():
-                if isinstance(query_params[key], (list, tuple)):
-                    multiple_value_query_params[key] = query_params[key]
+                if isinstance(query_dict[key], (list, tuple)):
+                    multiple_value_query_dict[key] = query_dict[key]
                 else:
-                    schema_keys[key] = query_params.get(key)
+                    schema_keys[key] = query_dict.get(key)
 
         query = sql_alchemy_model.query
 
@@ -172,8 +172,8 @@ class SQLAlchemy(BaseSQLAlchemy):
                 msg = "Unable to filter items based on query items (%s)" % str(ex)
 
         # Filter items based on  schema keys with multiple values
-        if multiple_value_query_params:
-            for key, value in multiple_value_query_params.items():
+        if multiple_value_query_dict:
+            for key, value in multiple_value_query_dict.items():
                 attr = getattr(sql_alchemy_model, key)
                 try:
                     query = query.filter(attr.in_(value))
@@ -192,7 +192,7 @@ class SQLAlchemy(BaseSQLAlchemy):
 
         return create_response_item(msg, total, items)
 
-    def get_db_item_by_params(self, sql_alchemy_model, ma_schema, item_id_dict):
+    def get_db_item(self, sql_alchemy_model, ma_schema, query_dict):
         """
         Returns data base item by its Id.
 
@@ -202,7 +202,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             dict: info dict
         """
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
+        db_item = sql_alchemy_model.query.filter_by(**query_dict).first_or_404(
             description="There is no data with item id %s" % str(item_id_dict)
         )
         # db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
@@ -211,18 +211,18 @@ class SQLAlchemy(BaseSQLAlchemy):
         return db_item_json
 
     def get_db_items_by_view(
-        self, sql_alchemy_model, dict_schema, ma_schema, query_params
+        self, sql_alchemy_model, dict_schema, ma_schema, query_dict
     ):
         msg = None
         schema_keys = {}
-        multiple_value_query_params = {}
+        multiple_value_query_dict = {}
 
-        for key in query_params.keys():
+        for key in query_dict.keys():
             if key in dict_schema.keys():
-                if isinstance(query_params[key], (list, tuple)):
-                    multiple_value_query_params[key] = query_params[key]
+                if isinstance(query_dict[key], (list, tuple)):
+                    multiple_value_query_dict[key] = query_dict[key]
                 else:
-                    schema_keys[key] = query_params.get(key)
+                    schema_keys[key] = query_dict.get(key)
 
         query = self.session.query(sql_alchemy_model)
 

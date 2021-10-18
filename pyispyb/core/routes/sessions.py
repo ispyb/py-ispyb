@@ -125,10 +125,10 @@ class SessionsByDateBeamline(Resource):
     def get(self):
         """Returns list of sessions by start_date, end_date and beamline."""
 
-        query_params = request.args.to_dict()
-        start_date = query_params.get("start_date")
-        end_date = query_params.get("end_date")
-        beamline = query_params.get("beamline")
+        query_dict = request.args.to_dict()
+        start_date = query_dict.get("start_date")
+        end_date = query_dict.get("end_date")
+        beamline = query_dict.get("beamline")
 
         if start_date is None and end_date is None:
             abort(

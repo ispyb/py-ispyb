@@ -37,7 +37,7 @@ def get_proteins_by_request(request):
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     is_admin, proposal_id_list = proposal.get_proposal_ids(request)
 
@@ -48,29 +48,29 @@ def get_proteins_by_request(request):
         if not proposal_id_list:
             msg = "No sessions returned. User has no proposals."
         else:
-            if "proposalId" in query_params.keys():
-                if query_params["proposalId"] in proposal_id_list:
+            if "proposalId" in query_dict.keys():
+                if query_dict["proposalId"] in proposal_id_list:
                     run_query = True
                 else:
                     msg = (
                         "Proposal with id %s is not associated with user"
-                        % query_params["proposalId"]
+                        % query_dict["proposalId"]
                     )
             else:
-                query_params["proposalId"] = proposal_id_list
+                query_dict["proposalId"] = proposal_id_list
 
     if run_query:
-        get_proteins_by_query(query_params)
+        get_proteins_by_query(query_dict)
     else:
         return create_response_item(msg=msg)
 
 
-def get_proteins_by_query(query_params):
+def get_proteins_by_query(query_dict):
     return db.get_db_items(
         models.Protein,
         schemas.protein.dict_schema,
         schemas.protein.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -85,7 +85,7 @@ def get_protein_by_id(protein_id):
         dict: info about protein as dict
     """
     data_dict = {"proteinId": protein_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.Protein, schemas.protein.ma_schema, data_dict
     )
 

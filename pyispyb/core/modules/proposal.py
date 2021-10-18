@@ -32,26 +32,11 @@ from pyispyb.core import models, schemas
 from pyispyb.core.modules import contacts, session
 
 
-def get_proposals_by_request(request):
-    """Returns proposals by query parameters"""
-
-    run_query, person_id = contacts.check_person_by_request(request)
-
-    if person_id:
-        query_params["personId"] = person_id
-
-    if run_query:
-        return (get_proposals_by_query(query_params), HTTPStatus.OK)
-    else:
-        msg = "No proposals associated to the username %s" % user_info["sub"]
-        return create_response_item(msg=msg), HTTPStatus.OK
-
-
-def get_proposals_by_query(query_params={}):
+def get_proposals_by_query(query_dict={}):
     """Returns proposal db items
 
     Args:
-        query_params (dict, optional): [description]. Defaults to {}.
+        query_dict (dict, optional): [description]. Defaults to {}.
 
     Returns:
         [type]: [description]
@@ -60,7 +45,7 @@ def get_proposals_by_query(query_params={}):
         models.Proposal,
         schemas.proposal.dict_schema,
         schemas.proposal.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -75,7 +60,7 @@ def get_proposal_by_id(proposal_id):
         dict: info about proposal as dict
     """
     id_dict = {"proposalId": proposal_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.Proposal, schemas.proposal.ma_schema, id_dict
     )
 
@@ -194,7 +179,7 @@ def get_proposal_ids(request):
     )
     proposal_id_list = []
 
-    user_proposals, status_code = get_proposals_by_request(request)
+    user_proposals = get_proposals_by_query(request.args.to_dict())
     for user_proposal in user_proposals["data"]["rows"]:
         proposal_id_list.append(user_proposal.get("proposalId"))
 

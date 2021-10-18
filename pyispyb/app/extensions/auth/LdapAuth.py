@@ -32,7 +32,7 @@ __license__ = "LGPLv3+"
 log = logging.getLogger(__name__)
 
 
-class EMBLAuth(AbstractAuth):
+class LdapAuth(AbstractAuth):
     def __init__(self):
         AbstractAuth.__init__(self)
 
