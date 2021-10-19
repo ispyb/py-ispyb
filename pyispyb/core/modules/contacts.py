@@ -30,6 +30,12 @@ from pyispyb.core import models, schemas
 from pyispyb.core.modules import proposal, sample, protein, crystal
 
 
+def get_person_by_id(person_id):
+    id_dict = {"personId": person_id}
+    return db.get_db_item(
+        models.Person, schemas.person.ma_schema, id_dict
+    )
+
 def get_person_info(request):
     user_info = auth_provider.get_user_info_from_auth_header(
         request.headers.get("Authorization")
@@ -97,7 +103,7 @@ def get_person_id_by_login(login_name):
         [type]: [description]
     """
     if login_name:
-        person_item = get_person_by_params({"login": login_name})
+        person_item = get_persons_by_query({"login": login_name})["data"]["rows"][0]
         if person_item:
             return person_item["personId"]
 

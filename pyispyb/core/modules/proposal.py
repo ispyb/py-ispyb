@@ -77,7 +77,7 @@ def get_proposal_info_by_id(proposal_id):
     """
     proposal_json = get_proposal_by_id(proposal_id)
 
-    person_json = contacts.get_person_by_params({"personId": proposal_json["personId"]})
+    person_json = contacts.get_person_by_id(proposal_json["personId"])
     proposal_json["person"] = person_json
 
     sessions_json = session.get_sessions({"proposalId": proposal_id})
@@ -149,16 +149,8 @@ def delete_proposal(proposal_id):
 
 
 def get_proposal_ids_by_login_name(login_name):
-    person_id = contacts.get_person_id_by_login(login_name)
-    proposal_list = get_proposals_by_query({"personId": person_id})
-
-    proposal_id_list = []
-    if proposal_list:
-        for proposal_dict in proposal_list["data"]["rows"]:
-            proposal_id_list.append(proposal_dict["proposalId"])
-
-    return proposal_id_list
-
+    person_info = contacts.get_person_info_by_params({"login": login_name})
+    return person_info["proposal_ids"]
 
 def get_proposal_ids(request):
     """

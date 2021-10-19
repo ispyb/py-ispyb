@@ -86,7 +86,7 @@ class DataCollectionById(Resource):
         """Returns a data_collection by data_collectionId"""
         return data_collection.get_data_collection_by_id(data_collection_id)
 
-@api.route("/<int:data_collection_id>/snapshot/<int:snapshot_index>/download")
+@api.route("/<int:data_collection_id>/snapshot/<int:snapshot_index>")
 @api.param("data_collection_id", "data_collection_id (integer)")
 @api.param("snapshot_index", "snapshot_index (integer)")
 @api.doc(security="apikey")
@@ -123,7 +123,7 @@ class DataCollectionSnapshot(Resource):
                     )
 
 
-@api.route("/<int:data_collection_id>/download")
+@api.route("/<int:data_collection_id>/file")
 @api.param("data_collection_id", "data_collection_id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="data collection not found.")

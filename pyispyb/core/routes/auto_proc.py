@@ -199,7 +199,7 @@ class AttachmentsByAutoProcProgramId(Resource):
     @token_required
     @authorization_required
     def get(self, program_id):
-        """Returns a auto_proc by auto_procId"""
+        """Returns list of autoproc program attachments"""
         return auto_proc.get_attachments_by_query({"autoProcProgramId": program_id})
 
 @api.route(

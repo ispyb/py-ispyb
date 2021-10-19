@@ -40,9 +40,7 @@ class Report(object):
         html_filename = "dewar_%d_label.html" % dewar_dict["dewarId"]
         pdf_filename = "dewar_%d_label.pdf" % dewar_dict["dewarId"]
 
-        with open(
-            os.path.join(current_app.config["STATIC_ROOT"], "dewar_label_template.html")
-        ) as template_file:
+        with open(current_app.config["DEWAR_LABEL_TEMPLATE_FILEPATH"]) as template_file:
             html_template = template_file.read()
 
         ean = barcode.get(
@@ -77,8 +75,6 @@ class Report(object):
         html_file.write(html_template)
         html_file.close()
 
-        print(os.path.join(current_app.config["TEMP_FOLDER"], html_filename))
-        print(os.path.join(current_app.config["TEMP_FOLDER"], pdf_filename))
         pdfkit.from_file(
             str(os.path.join(current_app.config["TEMP_FOLDER"], html_filename)),
             str(os.path.join(current_app.config["TEMP_FOLDER"], pdf_filename)),

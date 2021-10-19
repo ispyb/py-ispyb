@@ -203,7 +203,7 @@ class SQLAlchemy(BaseSQLAlchemy):
             dict: info dict
         """
         db_item = sql_alchemy_model.query.filter_by(**query_dict).first_or_404(
-            description="There is no data with item id %s" % str(item_id_dict)
+            description="There is no data with item id %s" % str(query_dict)
         )
         # db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first()
         db_item_json = ma_schema.dump(db_item)[0]

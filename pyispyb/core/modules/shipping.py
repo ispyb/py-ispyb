@@ -83,8 +83,8 @@ def get_shipping_info_by_id(shipping_id):
     shipping_dict["send_lab_contact"] = contacts.get_lab_contact_by_params(
         {"labContactId": shipping_dict["shipping"]["sendingLabContactId"]}
     )
-    shipping_dict["send_person"] = contacts.get_person_by_params(
-        {"personId": shipping_dict["send_lab_contact"]["personId"]}
+    shipping_dict["send_person"] = contacts.get_person_by_id(
+        shipping_dict["send_lab_contact"]["personId"]
     )
     shipping_dict["send_lab"] = contacts.get_laboratory_by_id(
         shipping_dict["send_person"]["laboratoryId"]

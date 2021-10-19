@@ -126,14 +126,7 @@ def delete_crystal(crystal_id):
 def get_crystal_pdb_by_id(crystal_id):
     crystal_dict = get_crystal_by_id(crystal_id)
     if crystal_dict:
-        if crystal_dict["pdbFilePath"]:
-            # Return a file path
-            return os.path.join(
-                crystal_dict["pdbFilePath"], crystal_dict["pdbFileName"]
-            )
-        elif crystal_dict["pdbFileName"]:
-            return crystal_dict["pdbFileName"]
-
+        return crystal_dict["pdbFilePath"], crystal_dict["pdbFileName"]
 
 def patch_crystal_pdb_by_id(crystal_id, query_dict):
     return db.patch_db_item(

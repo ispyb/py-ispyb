@@ -167,51 +167,56 @@ class CrystalPdbById(Resource):
     """Allows to get/set/delete crystal pdb item"""
 
     @api.doc(description="crystal_id should be an integer ")
-    @token_required
-    @authorization_required
+    #@token_required
+    #@authorization_required
     def get(self, crystal_id):
         """Returns pdb file by crystalId"""
         query_dict = request.args.to_dict()
 
-        pdb_file_path = crystal.get_crystal_pdb_by_id(crystal_id)
-        if pdb_file_path:
-            if os.path.exists(pdb_file_path):
-                # Returns file
-                return send_file(pdb_file_path, as_attachment=True)
-            else:
-                # Return filename
-                return pdb_file_path
-        else:
-            # If no pdb file in the data base exists, then try to get one from pdb
-            if "pdbFileName" in query_dict:
-                if not query_dict["pdbFileName"].endswith(".pdb"):
-                    abort(HTTPStatus.NOT_FOUND, "Requested file should end with pdb")
-                else:
-                    if not query_dict["pdbFileName"].endswith(".pdb"):
-                        query_dict["pdbFileName"] += ".pdb"
-                    pdb_file = download_pdb_file(query_dict["pdbFileName"])
-                    if pdb_file:
-                        return send_file(
-                            io.BytesIO(pdb_file),
-                            mimetype="text/plain",
-                            as_attachment=True,
-                            attachment_filename=query_dict["pdbFileName"],
-                        )
-                    else:
-                        abort(
-                            HTTPStatus.NOT_FOUND,
-                            "Pdb entry %s not found in %s"
-                            % (
-                                query_dict["pdbFileName"],
-                                current_app.config["PDB_URI"],
-                            ),
-                        )
+        pdb_file_path, pdb_file_name = crystal.get_crystal_pdb_by_id(crystal_id)
+        if pdb_file_path and pdb_file_name:
+            if os.path.exists(
+                os.path.join(
+                    pdb_file_path,
+                    pdb_file_name
+                )
+            ):
+                return send_file(
+                    os.path.join(
+                        pdb_file_path,
+                        pdb_file_name
+                    ),
+                    as_attachment=True)
+        if pdb_file_name:
+            query_dict["pdbFileName"] = pdb_file_path
 
+        # If no pdb file in the data base exists, then try to get one from pdb
+        if "pdbFileName" in query_dict:
+            if not query_dict["pdbFileName"].endswith(".pdb"):
+                query_dict["pdbFileName"] += ".pdb"
+            pdb_file = download_pdb_file(query_dict["pdbFileName"])
+            if pdb_file:
+                return send_file(
+                    io.BytesIO(pdb_file),
+                    mimetype="text/plain",
+                    as_attachment=True,
+                    attachment_filename=query_dict["pdbFileName"],
+                )
             else:
                 abort(
                     HTTPStatus.NOT_FOUND,
-                    "No pdb file or entry associated with crystal %d" % crystal_id,
-                )
+                    "Pdb entry %s not found in %s"
+                    % (
+                            query_dict["pdbFileName"],
+                            current_app.config["PDB_URI"],
+                        ),
+                    )
+
+        else:
+            abort(
+                HTTPStatus.NOT_FOUND,
+                "No pdb file or entry associated with crystal %d" % crystal_id,
+            )
 
     @token_required
     @authorization_required
