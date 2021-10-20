@@ -25,8 +25,9 @@ import os
 import logging
 
 from flask import current_app
+
 import barcode
-from barcode.writer import ImageWriter
+import qrcode
 import pdfkit
 
 
@@ -43,19 +44,26 @@ class Report(object):
         with open(current_app.config["DEWAR_LABEL_TEMPLATE_FILEPATH"]) as template_file:
             html_template = template_file.read()
 
-        ean = barcode.get(
+        barcode_image = barcode.get(
             current_app.config["BARCODE_TYPE"],
             dewar_dict["barCode"],
-            writer=ImageWriter(format="PNG"),
+            writer=barcode.writer.ImageWriter(format="PNG"),
         )
-        dewar_barcode_filepath = os.path.join(
+        barcode_filepath = os.path.join(
             current_app.config["TEMP_FOLDER"], "barcode"
         )
-        ean.save(dewar_barcode_filepath)
+        barcode_image.save(barcode_filepath)
+
+        qrcode_filepath = os.path.join(
+            current_app.config["TEMP_FOLDER"], "qrcode.png"
+        )
+        qrcode_image = qrcode.make(dewar_dict["barCode"])
+        qrcode_image.save(qrcode_filepath)
 
         html_template = html_template.format(
             site_logo_filepath=current_app.config["SITE_LOGO_PATH"],
-            dewar_barcode_filepath=dewar_barcode_filepath + ".png",
+            barcode_filepath=barcode_filepath + ".png",
+            qrcode_filepath=qrcode_filepath,
             site_name=current_app.config["SITE_NAME"],
             parcel_label=dewar_dict["code"],
             shipping_label=shipping_info_dict["shipping"]["shippingName"],

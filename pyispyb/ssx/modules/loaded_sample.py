@@ -38,14 +38,14 @@ log = logging.getLogger(__name__)
 def get_loaded_samples(request):
     """Returns loaded_samples by query parameters"""
 
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return (
         db.get_db_items(
             models.LoadedSample,
             schemas.loaded_sample.dict_schema,
             schemas.loaded_sample.ma_schema,
-            query_params,
+            query_dict,
         ),
         HTTPStatus.OK,
     )
@@ -62,7 +62,7 @@ def get_loaded_sample_by_id(loaded_sample_id):
     """
     id_dict = {"loadedSampleId": loaded_sample_id}
 
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.LoadedSample, schemas.loaded_sample.ma_schema, id_dict
     )
 
@@ -116,7 +116,7 @@ def get_all_crystal_slurry():
 
 def get_crystal_slurry_by_id(crystal_slurry_id):
     id_dict = {"crystalSlurryId": crystal_slurry_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.CrystalSlurry, schemas.crystal_slurry.ma_schema, id_dict
     )
 
@@ -182,19 +182,19 @@ def get_sample_delivery_devices(request):
     """Returns all sample delivery devices.
 
     Args:
-        query_params ([type]): [description]
+        query_dict ([type]): [description]
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return (
         db.get_db_items(
             models.SampleDeliveryDevice,
             schemas.sample_delivery_device.f_schema,
             schemas.sample_delivery_device.ma_schema,
-            query_params,
+            query_dict,
         ),
         HTTPStatus.OK,
     )
@@ -216,7 +216,7 @@ def add_sample_delivery_device(data_dict):
 
 def get_sample_delivery_device_by_id(sample_delivery_device_id):
     id_dict = {"sampleDeliveryDeviceId": sample_delivery_device_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.SampleDeliveryDevice, schemas.sample_delivery_device.ma_schema, id_dict
     )
 
@@ -246,7 +246,7 @@ def add_sample_stock(data_dict):
 
 def get_sample_stock_by_id(sample_stock_id):
     id_dict = {"sampleStockId": sample_stock_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.SampleStock, schemas.sample_stock.ma_schema, id_dict
     )
 
