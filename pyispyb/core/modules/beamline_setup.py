@@ -32,18 +32,18 @@ def get_beamline_setups(request):
     Returns beamline_setup items based on query parameters.
 
     Args:
-        query_params (dict): [description]
+        query_dict (dict): [description]
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.BeamLineSetup,
         schemas.beamline_setup.dict_schema,
         schemas.beamline_setup.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -73,7 +73,7 @@ def get_beamline_setup_by_id(beamline_setup_id):
         dict: info about beamline_setup as dict
     """
     data_dict = {"beamLineSetupId": beamline_setup_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.BeamLineSetup, schemas.beamline_setup.ma_schema, data_dict
     )
 

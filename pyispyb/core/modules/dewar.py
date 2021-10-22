@@ -28,7 +28,7 @@ from pyispyb.core import models, schemas
 from pyispyb.core.modules import contacts, proposal, shipping
 
 
-def get_dewars_by_query(query_params):
+def get_dewars_by_query(query_dict):
     """
     Returns all dewars.
 
@@ -36,7 +36,7 @@ def get_dewars_by_query(query_params):
         dict: list with dewars]
     """
     return db.get_db_items(
-        models.Dewar, schemas.dewar.dict_schema, schemas.dewar.ma_schema, query_params
+        models.Dewar, schemas.dewar.dict_schema, schemas.dewar.ma_schema, query_dict
     )
 
 
@@ -51,7 +51,7 @@ def get_dewar_by_id(dewar_id):
         dict: info about dewar as dict
     """
     id_dict = {"dewarId": dewar_id}
-    return db.get_db_item_by_params(models.Dewar, schemas.dewar.ma_schema, id_dict)
+    return db.get_db_item(models.Dewar, schemas.dewar.ma_schema, id_dict)
 
 
 def get_dewar_labels_by_id(dewar_id):

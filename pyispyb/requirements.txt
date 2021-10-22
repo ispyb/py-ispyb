@@ -19,5 +19,4 @@ mysqlclient
 ruamel.yaml
 pdfkit
 python-barcode
-
-#gevent==20.9.0
+qrcode

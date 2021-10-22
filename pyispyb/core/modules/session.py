@@ -37,12 +37,12 @@ def get_sessions(request):
     Returns session based on query parameters.
 
     Args:
-        query_params ([type]): [description]
+        query_dict ([type]): [description]
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     is_admin, proposal_id_list = proposal.get_proposal_ids(request)
 
@@ -53,23 +53,23 @@ def get_sessions(request):
         if not proposal_id_list:
             msg = "No sessions returned. User has no proposals."
         else:
-            if "proposalId" in query_params.keys():
-                if query_params["proposalId"] in proposal_id_list:
+            if "proposalId" in query_dict.keys():
+                if query_dict["proposalId"] in proposal_id_list:
                     run_query = True
                 else:
                     msg = (
                         "Proposal with id %s is not associated with user"
-                        % query_params["proposalId"]
+                        % query_dict["proposalId"]
                     )
             else:
-                query_params["proposalId"] = proposal_id_list
+                query_dict["proposalId"] = proposal_id_list
 
     if run_query:
         return db.get_db_items(
             models.BLSession,
             schemas.session.dict_schema,
             schemas.session.ma_schema,
-            query_params,
+            query_dict,
         )
     else:
         return create_response_item(msg=msg)
@@ -99,7 +99,7 @@ def get_session_by_id(session_id):
         dict: info about session as dict
     """
     data_dict = {"sessionId": session_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.BLSession, schemas.session.ma_schema, data_dict
     )
 
@@ -204,18 +204,18 @@ def get_beam_calendars(request):
     Returns beam_calendar items based on query parameters.
 
     Args:
-        query_params (dict): [description]
+        query_dict (dict): [description]
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.BeamCalendar,
         schemas.beam_calendar.dict_schema,
         schemas.beam_calendar.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -245,7 +245,7 @@ def get_beam_calendar_by_id(beam_calendar_id):
         dict: info about beam_calendar as dict
     """
     data_dict = {"beamCalendarId": beam_calendar_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.BeamCalendar, schemas.beam_calendar.ma_schema, data_dict
     )
 

@@ -47,7 +47,7 @@ class Persons(Resource):
     @authorization_required
     def get(self):
         """Returns all persons"""
-        return contacts.get_persons(request)
+        return contacts.get_persons_by_query(request.args.to_dict())
 
     @api.expect(person_schemas.f_schema)
     @api.marshal_with(person_schemas.f_schema, code=201)
@@ -68,8 +68,7 @@ class PersonById(Resource):
     @authorization_required
     def get(self, person_id):
         """Returns a person by personId"""
-        params = {"personId": person_id}
-        return contacts.get_person_by_params(params)
+        return contacts.get_person_by_id(person_id)
 
     @api.expect(person_schemas.f_schema)
     @api.marshal_with(person_schemas.f_schema, code=HTTPStatus.CREATED)

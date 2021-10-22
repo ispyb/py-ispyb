@@ -34,13 +34,13 @@ def get_samples_by_request(request):
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.BLSample,
         schemas.sample.dict_schema,
         schemas.sample.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -55,7 +55,7 @@ def get_sample_by_id(sample_id):
         dict: info about sample as dict
     """
     data_dict = {"blSampleId": sample_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.BLSample, schemas.sample.ma_schema, data_dict
     )
 

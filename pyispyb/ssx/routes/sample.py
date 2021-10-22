@@ -37,8 +37,6 @@ from pyispyb.ssx.schemas import sample_stock as sample_stock_schemas
 from pyispyb.ssx.schemas import sample_delivery_device as sample_delivery_device_schemas
 from pyispyb.ssx.modules import loaded_sample
 
-from pyispyb.connector import get_ispyb_resource
-
 
 __license__ = "LGPLv3+"
 
@@ -121,7 +119,6 @@ class CrystalSlurry(Resource):
     @authorization_required
     def post(self):
         """Adds a new crystal slury"""
-        print(api.payload)
         return loaded_sample.add_crystal_slurry(api.payload)
 
 

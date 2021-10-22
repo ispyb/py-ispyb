@@ -33,7 +33,7 @@ from pyispyb.core.modules import contacts, proposal, dewar
 def get_shippings(request):
     """Returns shippings by query parameters"""
 
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     run_query, msg = proposal.get_proposal_ids(request)
 
@@ -42,7 +42,7 @@ def get_shippings(request):
             models.Shipping,
             schemas.shipping.dict_schema,
             schemas.shipping.ma_schema,
-            query_params,
+            query_dict,
         )
     else:
         return create_response_item(msg=msg)
@@ -59,7 +59,7 @@ def get_shipping_by_id(shipping_id):
         dict: info about shipping as dict
     """
     id_dict = {"shippingId": shipping_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.Shipping, schemas.shipping.ma_schema, id_dict
     )
 
@@ -83,8 +83,8 @@ def get_shipping_info_by_id(shipping_id):
     shipping_dict["send_lab_contact"] = contacts.get_lab_contact_by_params(
         {"labContactId": shipping_dict["shipping"]["sendingLabContactId"]}
     )
-    shipping_dict["send_person"] = contacts.get_person_by_params(
-        {"personId": shipping_dict["send_lab_contact"]["personId"]}
+    shipping_dict["send_person"] = contacts.get_person_by_id(
+        shipping_dict["send_lab_contact"]["personId"]
     )
     shipping_dict["send_lab"] = contacts.get_laboratory_by_id(
         shipping_dict["send_person"]["laboratoryId"]

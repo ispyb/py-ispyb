@@ -34,13 +34,13 @@ def get_diffraction_plans(request):
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.DiffractionPlan,
         schemas.diffraction_plan.dict_schema,
         schemas.diffraction_plan.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -55,7 +55,7 @@ def get_diffraction_plan_by_id(diffraction_plan_id):
         dict: info about diffraction_plan as dict
     """
     data_dict = {"diffractionPlanId": diffraction_plan_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.DiffractionPlan, schemas.diffraction_plan.ma_schema, data_dict
     )
 

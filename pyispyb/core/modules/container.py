@@ -35,13 +35,13 @@ def get_containers(request):
         dict: list with dewars]
     """
 
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.Container,
         schemas.dewar.dict_schema,
         schemas.dewar.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -56,7 +56,7 @@ def get_container_by_id(container_id):
         dict: info about container as dict
     """
     id_dict = {"containerId": container_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.Container, schemas.container.ma_schema, id_dict
     )
 

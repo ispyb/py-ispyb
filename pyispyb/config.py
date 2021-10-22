@@ -77,7 +77,11 @@ class BaseConfig:
             print("Unable to create upload dir %s (%s)" % (UPLOAD_FOLDER, str(ex)))
 
     SITE_LOGO_PATH = os.path.join(STATIC_ROOT, "favicon.png")
-
+    DEWAR_LABEL_TEMPLATE_FILEPATH = os.path.join(
+        STATIC_ROOT,
+        "dewar_label_template.html"
+    )
+    
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
     SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB server"

@@ -36,7 +36,7 @@ from pyispyb.core import models, schemas
 def get_phasing_results(request):
     """Returns phasing_results_results by query parameters"""
 
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     query_arg_list = ("dataCollectionId", "autoProcScalingId", "phasingStepId")
 
@@ -45,7 +45,7 @@ def get_phasing_results(request):
     #    models.t_v_datacollection_summary_phasing,
     #    phasing_view.dict_schema,
     #    phasing_view.ma_schema,
-    #    query_params,
+    #    query_dict,
     # )
 
 

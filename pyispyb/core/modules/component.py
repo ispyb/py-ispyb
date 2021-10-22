@@ -33,13 +33,13 @@ def get_component_types(request):
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.ComponentType,
         schemas.component_type.dict_schema,
         schemas.component_type.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -54,7 +54,7 @@ def get_component_type_by_id(component_type_id):
         dict: info about component_type as dict
     """
     data_dict = {"componentTypeId": component_type_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.ComponentType, schemas.component_type.ma_schema, data_dict
     )
 

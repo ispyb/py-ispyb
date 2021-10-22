@@ -126,8 +126,8 @@ class Dewars(Resource):
     @authorization_required
     def get(self):
         """Returns all dewars items"""
-        query_params = request.args.to_dict()
-        return dewar.get_dewars_by_query(query_params)
+        query_dict = request.args.to_dict()
+        return dewar.get_dewars_by_query(query_dict)
 
     @token_required
     @api.expect(dewar_schemas.f_schema)
@@ -192,7 +192,9 @@ class DewarLabelsById(Resource):
             dewar_id
         )
         return send_from_directory(
-            current_app.config["TEMP_FOLDER"], pdf_labels_filename, as_attachment=True
+            current_app.config["TEMP_FOLDER"],
+            pdf_labels_filename,
+            as_attachment=True
         )
 
 

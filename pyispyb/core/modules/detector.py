@@ -32,18 +32,18 @@ def get_detectors(request):
     Returns detector items based on query parameters.
 
     Args:
-        query_params (dict): [description]
+        query_dict (dict): [description]
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.Detector,
         schemas.detector.dict_schema,
         schemas.detector.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -71,7 +71,7 @@ def get_detector_by_id(detector_id):
         dict: info about detector as dict
     """
     data_dict = {"detectorId": detector_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.Detector, schemas.detector.ma_schema, data_dict
     )
 

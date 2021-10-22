@@ -146,9 +146,7 @@ class AutoProcPrograms(Resource):
     @authorization_required
     def post(self):
         """Adds a new auto proc program"""
-
         return auto_proc.add_auto_proc_program(api.payload)
-
 
 @api.route("/programs/<int:program_id>", endpoint="program_by_id")
 @api.param("program_id", "program id (integer)")
@@ -178,8 +176,8 @@ class AutoProcProgramAttachments(Resource):
     @authorization_required
     def get(self):
         """Returns all auto_proc_program attachemnt entries"""
-        query_params = request.args.to_dict()
-        return auto_proc.get_attachments_by_query(query_params)
+        query_dict = request.args.to_dict()
+        return auto_proc.get_attachments_by_query(query_dict)
 
     @api.expect(auto_proc_program_attachment_schemas.f_schema)
     @api.marshal_with(auto_proc_program_attachment_schemas.f_schema, code=201)
@@ -201,7 +199,7 @@ class AttachmentsByAutoProcProgramId(Resource):
     @token_required
     @authorization_required
     def get(self, program_id):
-        """Returns a auto_proc by auto_procId"""
+        """Returns list of autoproc program attachments"""
         return auto_proc.get_attachments_by_query({"autoProcProgramId": program_id})
 
 @api.route(

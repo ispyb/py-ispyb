@@ -32,18 +32,18 @@ def get_robot_actions(request):
     Returns robot_action items based on query parameters.
 
     Args:
-        query_params (dict): [description]
+        query_dict (dict): [description]
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     return db.get_db_items(
         models.RobotAction,
         schemas.robot_action.dict_schema,
         schemas.robot_action.ma_schema,
-        query_params,
+        query_dict,
     )
 
 
@@ -71,7 +71,7 @@ def get_robot_action_by_id(robot_action_id):
         dict: info about robot_action as dict
     """
     data_dict = {"robotActionId": robot_action_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.RobotAction, schemas.robot_action.ma_schema, data_dict
     )
 
