@@ -167,9 +167,9 @@ class AutoProcProgramById(Resource):
         return auto_proc.get_auto_proc_program_by_id(program_id)
 
 
-@api.route("/programs/attachments", endpoint="auto_proc_program_attachments")
+@api.route("/attachments", endpoint="auto_proc_program_attachments")
 @api.doc(security="apikey")
-class AutoProcProgramAttachments(Resource):
+class Attachments(Resource):
     """Allows to get all auto proc program attachment entries"""
 
     @token_required
@@ -226,13 +226,13 @@ class DownloadAttachmentsByAutoProcProgramId(Resource):
         else:
             abort(HTTPStatus.NO_CONTENT, msg)
 
-@api.route("/programs/attachments/<int:attachment_id>", endpoint="attachment_by_id")
+@api.route("/attachments/<int:attachment_id>", endpoint="attachment_by_id")
 @api.param("attachment_id", "attachment id (integer)")
 @api.doc(security="apikey")
 @api.response(
     code=HTTPStatus.NOT_FOUND, description="auto_proc_program_attachment not found."
 )
-class AutoProcProgramAttachmentById(Resource):
+class AttachmentById(Resource):
 
     """Allows to get/set/delete a auto_proc_program"""
 
@@ -249,13 +249,13 @@ class AutoProcProgramAttachmentById(Resource):
         return auto_proc.get_auto_proc_program_attachment_by_id(attachment_id)
 
 
-@api.route("/programs/attachments/<int:attachment_id>/download", endpoint="attachment_download_by_id")
+@api.route("/attachments/<int:attachment_id>/download", endpoint="attachment_download_by_id")
 @api.param("attachment_id", "attachment id (integer)")
 @api.doc(security="apikey")
 @api.response(
     code=HTTPStatus.NOT_FOUND, description="auto_proc_program_attachment not found."
 )
-class AutoProcProgramAttachmenDownloadById(Resource):
+class AttachmenDownloadById(Resource):
     """Downloads autoproc program attachment file"""
 
     @api.doc(description="attachment_id should be an integer ")
