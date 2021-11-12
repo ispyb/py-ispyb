@@ -45,7 +45,7 @@ api_v1.add_namespace(api)
 
 @api.route("", endpoint="shippings")
 @api.doc(security="apikey")
-class shippings(Resource):
+class Shippings(Resource):
     """Allows to get all shippings"""
 
     @token_required
@@ -54,10 +54,10 @@ class shippings(Resource):
         """Returns list of shippings"""
         return shipping.get_shippings(request), HTTPStatus.OK
 
-    @api.expect(shipping_schemas.f_schema)
-    @api.marshal_with(shipping_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(shipping_schemas.f_schema)
+    @api.marshal_with(shipping_schemas.f_schema, code=201)
     def post(self):
         """Adds a new shipping"""
         return shipping.add_shipping(api.payload)
@@ -67,29 +67,29 @@ class shippings(Resource):
 @api.param("shipping_id", "shipping id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="shipping not found.")
-class shippingById(Resource):
+class ShippingById(Resource):
     """Allows to get/set/delete a shipping"""
 
-    @api.doc(description="shipping_id should be an integer ")
-    @api.marshal_with(shipping_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
+    @api.doc(description="shipping_id should be an integer ")
+    @api.marshal_with(shipping_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, shipping_id):
         """Returns a shipping by shippingId"""
         return shipping.get_shipping_by_id(shipping_id)
 
-    @api.expect(shipping_schemas.f_schema)
-    @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(shipping_schemas.f_schema)
+    @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, shipping_id):
         """Fully updates shipping with id shipping_id"""
         return shipping.update_shipping(shipping_id, api.payload)
 
-    @api.expect(shipping_schemas.f_schema)
-    @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(shipping_schemas.f_schema)
+    @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, shipping_id):
         """Partially updates shipping with id shipping_id"""
         return shipping.patch_shipping(shipping_id, api.payload)
@@ -105,13 +105,13 @@ class shippingById(Resource):
 @api.param("shipping_id", "shipping id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="shipping not found.")
-class shippingInfoById(Resource):
+class ShippingInfoById(Resource):
     """Returns full information of a shipping"""
 
-    @api.doc(description="shipping_id should be an integer ")
-    # @api.marshal_with(shipping_desc_f_schema)
     @token_required
     @authorization_required
+    @api.doc(description="shipping_id should be an integer ")
+    # @api.marshal_with(shipping_desc_f_schema)
     def get(self, shipping_id):
         """Returns a full description of a shipping by shippingId"""
         return shipping.get_shipping_info_by_id(shipping_id)
@@ -130,6 +130,7 @@ class Dewars(Resource):
         return dewar.get_dewars_by_query(query_dict)
 
     @token_required
+    @authorization_required
     @api.expect(dewar_schemas.f_schema)
     @api.marshal_with(dewar_schemas.f_schema, code=201)
     def post(self):
@@ -144,26 +145,26 @@ class Dewars(Resource):
 class DewarById(Resource):
     """Allows to get/set/delete a dewar item"""
 
-    @api.doc(description="dewar_id should be an integer ")
-    @api.marshal_with(dewar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
+    @api.doc(description="dewar_id should be an integer ")
+    @api.marshal_with(dewar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, dewar_id):
         """Returns a dewar by dewarId"""
         return dewar.get_dewar_by_id(dewar_id)
 
-    @api.expect(dewar_schemas.f_schema)
-    @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(dewar_schemas.f_schema)
+    @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, dewar_id):
         """Fully updates dewar with dewar_id"""
         return dewar.update_dewar(dewar_id, api.payload)
 
-    @api.expect(dewar_schemas.f_schema)
-    @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(dewar_schemas.f_schema)
+    @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, dewar_id):
         """Partially updates dewar with id dewarId"""
         return dewar.patch_dewar(dewar_id, api.payload)
@@ -182,9 +183,9 @@ class DewarById(Resource):
 class DewarLabelsById(Resource):
     """Returns dewar label pdf"""
 
+    @token_required
+    @authorization_required
     @api.doc(description="dewar_id should be an integer ")
-    # @token_required
-    # @authorization_required
     def get(self, dewar_id):
         """Returns a dewar labels by dewarId"""
         log.info("Generating pdf labels for dewar %d" % dewar_id)
@@ -210,6 +211,7 @@ class Containers(Resource):
         return container.get_containers(request)
 
     @token_required
+    @authorization_required
     @api.expect(container_schemas.f_schema)
     @api.marshal_with(container_schemas.f_schema, code=201)
     def post(self):
@@ -224,26 +226,26 @@ class Containers(Resource):
 class ContainerById(Resource):
     """Allows to get/set/delete a container item"""
 
-    @api.doc(description="container_id should be an integer ")
-    @api.marshal_with(container_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
+    @api.doc(description="container_id should be an integer ")
+    @api.marshal_with(container_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, container_id):
         """Returns a container by container_id"""
         return container.get_container_by_id(container_id)
 
-    @api.expect(container_schemas.f_schema)
-    @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(container_schemas.f_schema)
+    @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, container_id):
         """Fully updates container with container_id"""
         return container.update_container(container_id, api.payload)
 
-    @api.expect(container_schemas.f_schema)
-    @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(container_schemas.f_schema)
+    @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, container_id):
         """Partially updates container with id containerId"""
         return container.patch_container(container_id, api.payload)

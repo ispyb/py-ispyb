@@ -76,7 +76,6 @@ class AutoProcs(Resource):
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="auto_proc not found.")
 class AutoProcById(Resource):
-
     """Allows to get/set/delete a auto_proc"""
 
     @api.doc(description="auto_proc_id should be an integer ")
@@ -99,12 +98,12 @@ class AutoProcStatus(Resource):
         """Returns all auto_proc_status entries"""
         return auto_proc.get_auto_proc_status(request)
 
+    @token_required
+    @authorization_required
     @api.expect(auto_proc_program_schemas.f_schema)
     @api.marshal_with(auto_proc_program_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
-    @token_required
-    @authorization_required
     def post(self):
         """Adds a new auto proc program"""
         return auto_proc.add_auto_proc_status(api.payload)
@@ -115,15 +114,14 @@ class AutoProcStatus(Resource):
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="auto_proc_status not found.")
 class AutoProcStatusById(Resource):
-
     """Allows to get/set/delete a auto_proc_status"""
 
+    @token_required
+    @authorization_required
     @api.doc(description="status_id should be an integer ")
     @api.marshal_with(
         auto_proc_status_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
     )
-    @token_required
-    @authorization_required
     def get(self, status_id):
         """Returns a auto_proc by auto_procId"""
         return auto_proc.get_auto_proc_status_by_id(status_id)
@@ -140,10 +138,10 @@ class AutoProcPrograms(Resource):
         """Returns all auto_proc_program entries"""
         return auto_proc.get_auto_proc_programs(request)
 
-    @api.expect(auto_proc_program_schemas.f_schema)
-    @api.marshal_with(auto_proc_program_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(auto_proc_program_schemas.f_schema)
+    @api.marshal_with(auto_proc_program_schemas.f_schema, code=201)
     def post(self):
         """Adds a new auto proc program"""
         return auto_proc.add_auto_proc_program(api.payload)
@@ -153,15 +151,14 @@ class AutoProcPrograms(Resource):
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="auto_proc_program not found.")
 class AutoProcProgramById(Resource):
-
     """Allows to get/set/delete a auto_proc_program"""
 
+    @token_required
+    @authorization_required
     @api.doc(description="program_id should be an integer ")
     @api.marshal_with(
         auto_proc_program_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
     )
-    @token_required
-    @authorization_required
     def get(self, program_id):
         """Returns a auto_proc by auto_procId"""
         return auto_proc.get_auto_proc_program_by_id(program_id)
@@ -179,10 +176,10 @@ class Attachments(Resource):
         query_dict = request.args.to_dict()
         return auto_proc.get_attachments_by_query(query_dict)
 
-    @api.expect(auto_proc_program_attachment_schemas.f_schema)
-    @api.marshal_with(auto_proc_program_attachment_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(auto_proc_program_attachment_schemas.f_schema)
+    @api.marshal_with(auto_proc_program_attachment_schemas.f_schema, code=201)
     def post(self):
         """Adds a new auto proc program"""
         return auto_proc.add_auto_proc_program_attachment(api.payload)
@@ -192,12 +189,11 @@ class Attachments(Resource):
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="auto_proc_program not found.")
 class AttachmentsByAutoProcProgramId(Resource):
-
     """Return auto proc program attachments by auto proc program id"""
 
-    @api.doc(description="program_id should be an integer ")
     @token_required
     @authorization_required
+    @api.doc(description="program_id should be an integer ")
     def get(self, program_id):
         """Returns list of autoproc program attachments"""
         return auto_proc.get_attachments_by_query({"autoProcProgramId": program_id})
@@ -210,9 +206,9 @@ class AttachmentsByAutoProcProgramId(Resource):
 @api.response(code=HTTPStatus.NOT_FOUND, description="auto_proc_program not found.")
 class DownloadAttachmentsByAutoProcProgramId(Resource):
 
-    @api.doc(description="program_id should be an integer ")
     @token_required
     @authorization_required
+    @api.doc(description="program_id should be an integer ")
     def get(self, program_id):
         """Downloads zip file with auto proc attachment files"""
         attachment_file_zip, msg = auto_proc.get_attachment_zip_by_program_id(program_id)
@@ -233,17 +229,16 @@ class DownloadAttachmentsByAutoProcProgramId(Resource):
     code=HTTPStatus.NOT_FOUND, description="auto_proc_program_attachment not found."
 )
 class AttachmentById(Resource):
-
     """Allows to get/set/delete a auto_proc_program"""
 
+    @token_required
+    @authorization_required
     @api.doc(description="attachment_id should be an integer ")
     @api.marshal_with(
         auto_proc_program_attachment_schemas.f_schema,
         skip_none=False,
         code=HTTPStatus.OK,
     )
-    @token_required
-    @authorization_required
     def get(self, attachment_id):
         """Returns a auto_proc by attachment_id"""
         return auto_proc.get_auto_proc_program_attachment_by_id(attachment_id)
@@ -258,9 +253,9 @@ class AttachmentById(Resource):
 class AttachmenDownloadById(Resource):
     """Downloads autoproc program attachment file"""
 
-    @api.doc(description="attachment_id should be an integer ")
     @token_required
     @authorization_required
+    @api.doc(description="attachment_id should be an integer ")
     def get(self, attachment_id):
         """Downloads autoproc program attachment file by attachment_id"""
         attach_dict = auto_proc.get_auto_proc_program_attachment_by_id(attachment_id)

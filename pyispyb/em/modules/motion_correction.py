@@ -35,12 +35,12 @@ def get_motion_corrections(request):
     Returns motion_correction based on query parameters.
 
     Args:
-        query_params ([type]): [description]
+        query_dict ([type]): [description]
 
     Returns:
         [type]: [description]
     """
-    query_params = request.args.to_dict()
+    query_dict = request.args.to_dict()
 
     #is_admin, proposal_id_list = proposal.get_proposal_ids_by_username(request)
 
@@ -54,7 +54,7 @@ def get_motion_corrections(request):
             models.MotionCorrection,
             schemas.motion_correction.dict_schema,
             schemas.motion_correction.ma_schema,
-            query_params,
+            query_dict,
         )
     else:
         return create_response_item(msg=msg)
@@ -84,7 +84,7 @@ def get_motion_correction_by_id(motion_correction_id):
         dict: info about motion_correction as dict
     """
     data_dict = {"motionCorrectionId": motion_correction_id}
-    return db.get_db_item_by_params(
+    return db.get_db_item(
         models.MotionCorrection, schemas.motion_correction.ma_schema, data_dict
     )
 

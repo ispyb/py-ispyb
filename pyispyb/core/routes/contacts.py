@@ -49,10 +49,10 @@ class Persons(Resource):
         """Returns all persons"""
         return contacts.get_persons_by_query(request.args.to_dict())
 
-    @api.expect(person_schemas.f_schema)
-    @api.marshal_with(person_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(person_schemas.f_schema)
+    @api.marshal_with(person_schemas.f_schema, code=201)
     def post(self):
         return contacts.add_person(api.payload)
 
@@ -62,26 +62,26 @@ class Persons(Resource):
 class PersonById(Resource):
     """Allows to get/set/delete a person"""
 
-    @api.doc(description="person_id should be an integer ")
-    @api.marshal_with(person_schemas.f_schema)
     @token_required
     @authorization_required
+    @api.doc(description="person_id should be an integer ")
+    @api.marshal_with(person_schemas.f_schema)
     def get(self, person_id):
         """Returns a person by personId"""
         return contacts.get_person_by_id(person_id)
 
-    @api.expect(person_schemas.f_schema)
-    @api.marshal_with(person_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(person_schemas.f_schema)
+    @api.marshal_with(person_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, person_id):
         """Fully updates person with id person_id"""
         return contacts.update_person(person_id, api.payload)
 
-    @api.expect(person_schemas.f_schema)
-    @api.marshal_with(person_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(person_schemas.f_schema)
+    @api.marshal_with(person_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, person_id):
         """Partially updates person with id person_id"""
         return contacts.patch_person(person_id, api.payload)
@@ -98,9 +98,9 @@ class PersonById(Resource):
 class PersonInfoByLoginName(Resource):
     """Returns info about the person"""
 
+    @token_required
+    @authorization_required
     @api.doc(description="person_login should be a string")
-    # @token_required
-    # @authorization_required
     def get(self, person_login):
         """Returns info about a person by login"""
         params = {"login": person_login}
@@ -118,10 +118,10 @@ class LabContacts(Resource):
         """Returns list of local contacts."""
         return contacts.get_lab_contacts(request), HTTPStatus.OK
 
-    @api.expect(lab_contact_schemas.f_schema)
-    @api.marshal_with(lab_contact_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(lab_contact_schemas.f_schema)
+    @api.marshal_with(lab_contact_schemas.f_schema, code=201)
     def post(self):
         """Adds a new lab contact"""
         return contacts.add_lab_contact(api.payload)
@@ -132,27 +132,27 @@ class LabContacts(Resource):
 class LabContactById(Resource):
     """Allows to get/set/delete a lab_contact"""
 
-    @api.doc(description="lab_contact_id should be an integer ")
-    @api.marshal_with(lab_contact_schemas.f_schema)
     @token_required
     @authorization_required
+    @api.doc(description="lab_contact_id should be an integer ")
+    @api.marshal_with(lab_contact_schemas.f_schema)
     def get(self, lab_contact_id):
         """Returns a lab contact by lab_contact_id"""
         params = {"labContactId": lab_contact_id}
         return contacts.get_lab_contact_by_params(params)
 
-    @api.expect(lab_contact_schemas.f_schema)
-    @api.marshal_with(lab_contact_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(lab_contact_schemas.f_schema)
+    @api.marshal_with(lab_contact_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, lab_contact_id):
         """Fully updates person with id lab_contact_id"""
         return contacts.update_lab_contact(lab_contact_id, api.payload)
 
-    @api.expect(lab_contact_schemas.f_schema)
-    @api.marshal_with(lab_contact_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(lab_contact_schemas.f_schema)
+    @api.marshal_with(lab_contact_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, lab_contact_id):
         """Partially updates person with id lab_contact_id"""
         return contacts.patch_lab_contact(lab_contact_id, api.payload)
@@ -167,7 +167,6 @@ class LabContactById(Resource):
 @api.route("/labs", endpoint="labs")
 @api.doc(security="apikey")
 class Laboratories(Resource):
-
     """Allows to get all laboratory items"""
 
     @token_required
@@ -176,10 +175,10 @@ class Laboratories(Resource):
         """Returns all laboratory entries."""
         return contacts.get_laboratories(request)
 
-    @api.expect(laboratory_schemas.f_schema)
-    @api.marshal_with(laboratory_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(laboratory_schemas.f_schema)
+    @api.marshal_with(laboratory_schemas.f_schema, code=201)
     def post(self):
         """Adds a new laboratory"""
         return contacts.add_laboratory(api.payload)
@@ -190,29 +189,28 @@ class Laboratories(Resource):
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="Laboratory not found.")
 class LaboratoryById(Resource):
-
     """Allows to get/set/delete a laboratory item"""
 
-    @api.doc(description="lab_id should be an integer ")
-    @api.marshal_with(laboratory_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
+    @api.doc(description="lab_id should be an integer ")
+    @api.marshal_with(laboratory_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, laboratory_id):
         """Returns a laboratory by laboratoryId"""
         return contacts.get_laboratory_by_id(laboratory_id)
 
-    @api.expect(laboratory_schemas.f_schema)
-    @api.marshal_with(laboratory_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(laboratory_schemas.f_schema)
+    @api.marshal_with(laboratory_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, laboratory_id):
         """Fully updates laboratory with id laboratory_id."""
         return contacts.update_laboratory(laboratory_id, api.payload)
 
-    @api.expect(laboratory_schemas.f_schema)
-    @api.marshal_with(laboratory_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(laboratory_schemas.f_schema)
+    @api.marshal_with(laboratory_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, laboratory_id):
         """Partially updates laboratory with id laboratory_id."""
         return contacts.patch_laboratory(laboratory_id, api.payload)

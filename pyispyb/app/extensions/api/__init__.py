@@ -28,16 +28,7 @@ from .api import Api
 from .namespace import Namespace
 from .http_exceptions import abort
 
-
-api_v1 = Api(
-    version="1.0",
-    title="ISPyB",
-    description="ISPyB Flask rest server",
-    doc="/doc",
-    default="Main",
-    default_label="Main",
-)
-
+api_v1 = None
 
 def init_app(app, **kwargs):
     # pylint: disable=unused-argument
@@ -45,4 +36,14 @@ def init_app(app, **kwargs):
     API extension initialization point.
     """
     # Prevent config variable modification with runtime changes
+
+    global api_v1
+    api_v1 = Api(
+        version="1.0",
+        title="ISPyB",
+        description="ISPyB Flask rest server",
+        doc=app.config["SWAGGER_UI_URI"],
+        default="Main",
+        default_label="Main",
+    )
     api_v1.authorizations = deepcopy(app.config["AUTHORIZATIONS"])

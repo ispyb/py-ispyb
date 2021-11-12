@@ -63,12 +63,10 @@ class Proposals(Resource):
         api.logger.info("Get all proposals")
         return proposal.get_proposals_by_query(request.args.to_dict())
 
-    @api.expect(proposal_schemas.f_schema)
-    @api.marshal_with(proposal_schemas.f_schema, code=201)
-    #@api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @token_required
     @authorization_required
+    @api.expect(proposal_schemas.f_schema)
+    @api.marshal_with(proposal_schemas.f_schema, code=201)
     def post(self):
         """Adds a new proposal"""
 
@@ -79,15 +77,15 @@ class Proposals(Resource):
 @api.route("/<int:proposal_id>", endpoint="proposal_by_id")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
+@api.response(code=HTTPStatus.FOUND, description="Proposal found.", model=proposal_schemas.f_schema)
 @api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
 class ProposalById(Resource):
-
     """Allows to get/set/delete a proposal"""
 
-    @api.doc(description="proposal_id should be an integer ")
-    @api.marshal_with(proposal_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
+    @api.doc(description="proposal_id should be an integer ")
+    @api.marshal_with(proposal_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
         user_info = contacts.get_person_info(request)
@@ -102,19 +100,19 @@ class ProposalById(Resource):
                 )
             )
 
-    @api.expect(proposal_schemas.f_schema)
-    @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(proposal_schemas.f_schema)
+    @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, proposal_id):
         """Fully updates proposal with id proposal_id"""
         current_app.logger.info("Update proposal %d" % proposal_id)
         return proposal.update_proposal(proposal_id, api.payload)
 
-    @api.expect(proposal_schemas.f_schema)
-    @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(proposal_schemas.f_schema)
+    @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, proposal_id):
         """Partially updates proposal with id proposal_id"""
         return proposal.patch_proposal(proposal_id, api.payload)
@@ -122,23 +120,22 @@ class ProposalById(Resource):
     @token_required
     @authorization_required
     def delete(self, proposal_id):
-        """
-        Deletes a proposal by proposal_id"""
+        """Deletes a proposal by proposal_id"""
         return proposal.delete_proposal(proposal_id)
 
 
 @api.route("/<int:proposal_id>/info", endpoint="proposal_info_by_id")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
+@api.response(code=HTTPStatus.FOUND, description="Proposal info found.")
+@api.response(code=HTTPStatus.NOT_FOUND, description="Proposal info not found.")
 class ProposalInfoById(Resource):
-
     """Returns full information of a proposal"""
 
-    @api.doc(description="proposal_id should be an integer ")
-    # @api.marshal_with(proposal_desc_f_schema)
     @token_required
     @authorization_required
+    @api.doc(description="proposal_id should be an integer ")
+    # @api.marshal_with(proposal_desc_f_schema)
     def get(self, proposal_id):
         """Returns a full description of a proposal by proposalId"""
         return proposal.get_proposal_info_by_id(proposal_id)
