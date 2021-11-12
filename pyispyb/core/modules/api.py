@@ -36,7 +36,6 @@ def init_app(app, **kwargs):
         app ([type]): [description]
     """
     # pylint: disable=unused-argument
-    print(1)
     api_v1_blueprint = Blueprint("api", __name__, url_prefix=app.config["API_ROOT"])
     api.api_v1.init_app(api_v1_blueprint)
     app.register_blueprint(api_v1_blueprint, url_prefix=app.config["API_ROOT"])

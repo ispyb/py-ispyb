@@ -42,27 +42,25 @@ api = Namespace("Sessions", description="Session related namespace", path="/sess
 api_v1.add_namespace(api)
 
 @api.errorhandler(SQLAlchemyError)
-@api.header('My-Header',  'SQLAlchemy Error')
-def handle_sql_alchemy_exception(error):
+@api.header('ErrorType', 'SQLAlchemy Error')
+def handle_sqlalchemy_exception(error):
     '''This is a sqlalchemy error handler'''
     log.error(str(error))
-    return {'message': "Server errors: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'My-Header': 'Value'}
-
+    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'SQLAlchemyError'}
 
 @api.errorhandler(ZeroDivisionError)
-@api.header('My-Header',  'Zero division')
+@api.header('ErrorType', 'Zero division')
 def handle_zero_division_exception(error):
-    '''This is a custom error'''
+    '''This is a zero division error'''
     log.error(str(error))
-    return {'message': "Server errors: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'My-Header': 'Value'}
+    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'ZeroDivisionError'}
 
 @api.errorhandler(Exception)
-@api.header('My-Header',  'Some description')
+@api.header('ErrorType', 'Exception')
 def handle_exception(error):
-    '''This is a general error handler'''
+    '''This is a base error handler'''
     log.error(str(error))
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'My-Header': 'Value'}
-
+    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST , {'ErrorType': 'Exception'}
 
 
 @api.route("", endpoint="sessions")
@@ -100,10 +98,10 @@ class SessionById(Resource):
     #@api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
     def get(self, session_id):
         """Returns a session by sessionId"""
-        if session_id == 0:
-            a = 1 / 0
-        else:
-            print(b)
+        #if session_id == 0:
+        #    a = 1 / 0
+        #else:
+        #print(b)
         return session.get_session_by_id(session_id)
 
 
