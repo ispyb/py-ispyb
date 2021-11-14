@@ -23,6 +23,8 @@ import logging
 from datetime import datetime
 
 from flask import request
+from sqlalchemy.exc import SQLAlchemyError
+
 from pyispyb.flask_restx_patched import Resource, HTTPStatus, abort
 
 from pyispyb.app.extensions.api import api_v1, Namespace
@@ -39,6 +41,27 @@ log = logging.getLogger(__name__)
 api = Namespace("Sessions", description="Session related namespace", path="/sessions")
 api_v1.add_namespace(api)
 
+@api.errorhandler(SQLAlchemyError)
+@api.header('ErrorType', 'SQLAlchemy Error')
+def handle_sqlalchemy_exception(error):
+    '''This is a sqlalchemy error handler'''
+    log.error(str(error))
+    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'SQLAlchemyError'}
+
+@api.errorhandler(ZeroDivisionError)
+@api.header('ErrorType', 'Zero division')
+def handle_zero_division_exception(error):
+    '''This is a zero division error'''
+    log.error(str(error))
+    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'ZeroDivisionError'}
+
+@api.errorhandler(Exception)
+@api.header('ErrorType', 'Exception')
+def handle_exception(error):
+    '''This is a base error handler'''
+    log.error(str(error))
+    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST , {'ErrorType': 'Exception'}
+
 
 @api.route("", endpoint="sessions")
 @api.doc(security="apikey")
@@ -51,10 +74,10 @@ class Sessions(Resource):
         """Returns list of sessions"""
         return session.get_sessions(request)
 
-    @api.expect(session_schemas.f_schema)
-    @api.marshal_with(session_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(session_schemas.f_schema)
+    @api.marshal_with(session_schemas.f_schema, code=201)
     def post(self):
         """Adds a new session"""
         log.info("Inserts a new session")
@@ -64,31 +87,36 @@ class Sessions(Resource):
 @api.route("/<int:session_id>", endpoint="session_by_id")
 @api.param("session_id", "Session id (integer)")
 @api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="Session not found.")
+@api.response(code=HTTPStatus.FOUND, description="Session found :)", model=session_schemas.f_schema)
+@api.response(code=HTTPStatus.NOT_FOUND, description="Session not found :(")
 class SessionById(Resource):
     """Allows to get/set/delete a session"""
 
+    #@token_required
+    #@authorization_required
     @api.doc(description="session_id should be an integer ")
-    @api.marshal_with(session_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
-    @token_required
-    @authorization_required
+    #@api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
     def get(self, session_id):
         """Returns a session by sessionId"""
-
+        #if session_id == 0:
+        #    a = 1 / 0
+        #else:
+        #print(b)
         return session.get_session_by_id(session_id)
 
-    @api.expect(session_schemas.f_schema)
-    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
+
     @token_required
     @authorization_required
+    @api.expect(session_schemas.f_schema)
+    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, session_id):
         """Fully updates session with session_id"""
         return session.update_session(session_id, api.payload)
 
-    @api.expect(session_schemas.f_schema)
-    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(session_schemas.f_schema)
+    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, session_id):
         """Partially updates session with id sessionId"""
         return session.patch_session(session_id, api.payload)
@@ -107,9 +135,9 @@ class SessionById(Resource):
 class SessionInfoById(Resource):
     """Returns full information of a session"""
 
-    @api.doc(description="session_id should be an integer ")
     @token_required
     @authorization_required
+    @api.doc(description="session_id should be an integer ")
     def get(self, session_id):
         """Returns a full description of a session by sessionId"""
         return session.get_session_info_by_id(session_id)
@@ -171,10 +199,10 @@ class BeamCalendars(Resource):
         """Returns beam_calendars based on query parameters"""
         return session.get_beam_calendars(request)
 
-    @api.expect(beam_calendar_schemas.f_schema)
-    @api.marshal_with(beam_calendar_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(beam_calendar_schemas.f_schema)
+    @api.marshal_with(beam_calendar_schemas.f_schema, code=201)
     def post(self):
         """Adds a new beam_calendar"""
         return session.add_beam_calendar(api.payload)
@@ -187,13 +215,12 @@ class BeamCalendars(Resource):
 class beam_calendarById(Resource):
 
     """Allows to get/set/delete a beam_calendar"""
-
+    @token_required
+    @authorization_required
     @api.doc(description="beam_calendar_id should be an integer ")
     @api.marshal_with(
         beam_calendar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
     )
-    @token_required
-    @authorization_required
     def get(self, beam_calendar_id):
         """Returns a beam_calendar by beam_calendarId"""
         return session.get_beam_calendar_by_id(beam_calendar_id)

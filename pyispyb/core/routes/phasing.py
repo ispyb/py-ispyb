@@ -44,20 +44,19 @@ api_v1.add_namespace(api)
 class PhasingResults(Resource):
     """Allows to get all phasing_results"""
 
-    # @token_required
-    # @authorization_required
+    @token_required
+    @authorization_required
     def get(self):
         """Returns phasing_results based on query parameters"""
 
         api.logger.info("Get all phasing_results")
         return phasing.get_phasing_results(request)
 
+    @token_required
+    @authorization_required
     # @api.expect(phasing_result_schemas.f_schema)
     # @api.marshal_with(phasing_result_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
-    # @token_required
-    @authorization_required
     def post(self):
         """Adds a new phasing_result"""
 

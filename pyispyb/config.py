@@ -82,6 +82,7 @@ class BaseConfig:
         "dewar_label_template.html"
     )
     
+    SWAGGER_UI_URI = "/docs" #False disable docs
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
     SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB server"
@@ -132,6 +133,7 @@ class ProductionConfig(BaseConfig):
             "EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI"
         )
         MASTER_TOKEN = None
+        SWAGGER_UI_URI = False
 
 
 class DevelopmentConfig(BaseConfig):

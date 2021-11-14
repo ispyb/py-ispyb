@@ -20,10 +20,9 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import logging
-from datetime import datetime
 
 from flask import request
-from pyispyb.flask_restx_patched import Resource, HTTPStatus, abort
+from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
 from pyispyb.app.extensions.auth import token_required, authorization_required
@@ -52,10 +51,10 @@ class BeamlineSetups(Resource):
         """Returns list of beamline_setups"""
         return beamline_setup.get_beamline_setups(request)
 
-    @api.expect(beamline_setup_schemas.f_schema)
-    @api.marshal_with(beamline_setup_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(beamline_setup_schemas.f_schema)
+    @api.marshal_with(beamline_setup_schemas.f_schema, code=201)
     def post(self):
         """Adds a new beamline_setup"""
         log.info("Inserts a new beamline_setup")
@@ -69,28 +68,28 @@ class BeamlineSetups(Resource):
 class BeamlineSetupById(Resource):
     """Allows to get/set/delete a beamline_setup"""
 
+    @token_required
+    @authorization_required
     @api.doc(description="beamline_setup_id should be an integer ")
     @api.marshal_with(
         beamline_setup_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
     )
-    @token_required
-    @authorization_required
     def get(self, beamline_setup_id):
         """Returns a beamline_setup by beamline_setupId"""
         return beamline_setup.get_beamline_setup_by_id(beamline_setup_id)
 
-    @api.expect(beamline_setup_schemas.f_schema)
-    @api.marshal_with(beamline_setup_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(beamline_setup_schemas.f_schema)
+    @api.marshal_with(beamline_setup_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, beamline_setup_id):
         """Fully updates beamline_setup with beamline_setup_id"""
         return beamline_setup.update_beamline_setup(beamline_setup_id, api.payload)
 
-    @api.expect(beamline_setup_schemas.f_schema)
-    @api.marshal_with(beamline_setup_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(beamline_setup_schemas.f_schema)
+    @api.marshal_with(beamline_setup_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, beamline_setup_id):
         """Partially updates beamline_setup with id beamline_setupId"""
         return beamline_setup.patch_beamline_setup(beamline_setup_id, api.payload)
@@ -113,12 +112,12 @@ class RobotActions(Resource):
         """Returns list of robot_actions"""
         return robot_action.get_robot_actions(request)
 
+    @token_required
+    @authorization_required
     @api.expect(robot_action_schemas.f_schema)
     @api.marshal_with(robot_action_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
-    @token_required
-    @authorization_required
     def post(self):
         """Adds a new robot_action"""
         return robot_action.add_robot_action(api.payload)
@@ -131,28 +130,28 @@ class RobotActions(Resource):
 class RobotActionById(Resource):
     """Allows to get/set/delete a robot_action"""
 
+    @token_required
+    @authorization_required
     @api.doc(description="robot_action_id should be an integer ")
     @api.marshal_with(
         robot_action_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
     )
-    @token_required
-    @authorization_required
     def get(self, robot_action_id):
         """Returns a robot_action by robot_action_id"""
         return robot_action.get_robot_action_by_id(robot_action_id)
 
-    @api.expect(robot_action_schemas.f_schema)
-    @api.marshal_with(robot_action_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(robot_action_schemas.f_schema)
+    @api.marshal_with(robot_action_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, robot_action_id):
         """Fully updates robot_action with robot_action_id"""
         return robot_action.update_robot_action(robot_action_id, api.payload)
 
-    @api.expect(robot_action_schemas.f_schema)
-    @api.marshal_with(robot_action_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(robot_action_schemas.f_schema)
+    @api.marshal_with(robot_action_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, robot_action_id):
         """Partially updates robot_action with robot_action_id"""
         return robot_action.patch_robot_action(robot_action_id, api.payload)
@@ -175,12 +174,12 @@ class Detectors(Resource):
         """Returns list of detectors"""
         return detector.get_detectors(request)
 
+    @token_required
+    @authorization_required
     @api.expect(detector_schemas.f_schema)
     @api.marshal_with(detector_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
-    @token_required
-    @authorization_required
     def post(self):
         """Adds a new detector"""
         log.info("Inserts a new detector")
@@ -194,26 +193,26 @@ class Detectors(Resource):
 class DetectorById(Resource):
     """Allows to get/set/delete a detector"""
 
-    @api.doc(description="detector_id should be an integer ")
-    @api.marshal_with(detector_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     @token_required
     @authorization_required
+    @api.doc(description="detector_id should be an integer ")
+    @api.marshal_with(detector_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, detector_id):
         """Returns a detector by detectorId"""
         return detector.get_detector_by_id(detector_id)
 
-    @api.expect(detector_schemas.f_schema)
-    @api.marshal_with(detector_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(detector_schemas.f_schema)
+    @api.marshal_with(detector_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, detector_id):
         """Fully updates detector with detector_id"""
         return detector.update_detector(detector_id, api.payload)
 
-    @api.expect(detector_schemas.f_schema)
-    @api.marshal_with(detector_schemas.f_schema, code=HTTPStatus.CREATED)
     @token_required
     @authorization_required
+    @api.expect(detector_schemas.f_schema)
+    @api.marshal_with(detector_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, detector_id):
         """Partially updates detector with id detectorId"""
         return detector.patch_detector(detector_id, api.payload)

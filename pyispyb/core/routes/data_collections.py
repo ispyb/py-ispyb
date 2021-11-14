@@ -48,20 +48,18 @@ api_v1.add_namespace(api)
 class DataColletions(Resource):
     """Allows to get all data_collections"""
 
-    # @api.marshal_list_with(data_collection_schemas.data_collection_f_schema, skip_none=False, code=HTTPStatus.OK)
-    # TODO Define model with JSON Schema
-    #@api.errorhandler(FakeException)
     @token_required
     @authorization_required
+    @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collections"""
         query_dict = request.args.to_dict()
         return data_collection.get_data_collections(query_dict)
 
-    @api.expect(data_collection_schemas.f_schema)
-    @api.marshal_with(data_collection_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(data_collection_schemas.f_schema)
+    @api.marshal_with(data_collection_schemas.f_schema, code=201)
     def post(self):
         """Adds a new session"""
         return data_collection.add_data_collection(api.payload)
@@ -74,14 +72,14 @@ class DataColletions(Resource):
 class DataCollectionById(Resource):
     """Allows to get/set/delete a data_collection"""
 
-    @api.doc(description="data_collection_id should be an integer ")
-    #@api.marshal_with(
-    #    data_collection_schemas.f_schema,
-    #    skip_none=False,
-    #    code=HTTPStatus.OK,
-    #)
     @token_required
     @authorization_required
+    @api.doc(description="data_collection_id should be an integer ")
+    @api.marshal_with(
+        data_collection_schemas.f_schema,
+        skip_none=False,
+        code=HTTPStatus.OK,
+    )
     def get(self, data_collection_id):
         """Returns a data_collection by data_collectionId"""
         return data_collection.get_data_collection_by_id(data_collection_id)
@@ -94,9 +92,9 @@ class DataCollectionById(Resource):
 class DataCollectionSnapshot(Resource):
     """Allows to download snapshots associated to the data collection"""
 
-    @api.doc(description="data_collection_id and snapshot_id should be an integer")
     @token_required
     @authorization_required
+    @api.doc(description="data_collection_id and snapshot_id should be an integer")
     def get(self, data_collection_id, snapshot_index):
         """Downloads data collection attribute by id and attribute_name"""
         data_collection_dict = data_collection.get_data_collection_by_id(
@@ -130,9 +128,9 @@ class DataCollectionSnapshot(Resource):
 class DataCollectionFile(Resource):
     """Allows to download files associated to the data collection"""
 
-    @api.doc(description="data_collection_id should be an integer ")
     @token_required
     @authorization_required
+    @api.doc(description="data_collection_id should be an integer ")
     def get(self, data_collection_id):
         """Downloads data collection attribute by id and attribute_name"""
         data_collection_dict = data_collection.get_data_collection_by_id(
@@ -141,7 +139,9 @@ class DataCollectionFile(Resource):
         if data_collection_dict:
             query_dict = request.args.to_dict()
             if "attribute_name" in query_dict:
-                attribute_file_path = data_collection_dict.get(query_dict["attribute_name"])
+                attribute_file_path = data_collection_dict.get(
+                    query_dict["attribute_name"]
+                )
                 if attribute_file_path:
                     if os.path.exists(attribute_file_path):
                         return send_file(
@@ -157,7 +157,8 @@ class DataCollectionFile(Resource):
                 else:
                     abort(
                         HTTPStatus.NOT_FOUND,
-                        "No file associated with attribute %s" % query_dict["attribute_name"]
+                        "No file associated with attribute %s" % 
+                        query_dict["attribute_name"]
                     )
 
             else:
@@ -172,18 +173,17 @@ class DataCollectionFile(Resource):
 class DataCollectionGroups(Resource):
     """Allows to get all data collection groups and add a new one"""
 
-    # @api.marshal_list_with(data_collection_schemas.data_collection_f_schema, skip_none=False, code=HTTPStatus.OK)
-    # TODO Define model with JSON Schema
     @token_required
     @authorization_required
+    @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collection_groups"""
         return data_collection.get_data_collection_groups(request)
 
-    @api.expect(data_collection_group_schemas.f_schema)
-    @api.marshal_with(data_collection_group_schemas.f_schema, code=201)
     @token_required
     @authorization_required
+    @api.expect(data_collection_group_schemas.f_schema)
+    @api.marshal_with(data_collection_group_schemas.f_schema, code=201)
     def post(self):
         """Adds a new session"""
         return data_collection.add_data_collection_group(api.payload)
@@ -195,14 +195,14 @@ class DataCollectionGroups(Resource):
 class DataCollectionGroupById(Resource):
     """Allows to get/set/delete a data collection group"""
 
+    @token_required
+    @authorization_required
     @api.doc(description="data_collection_group_id should be an integer ")
     @api.marshal_with(
         data_collection_group_schemas.f_schema,
         skip_none=False,
         code=HTTPStatus.OK,
     )
-    @token_required
-    @authorization_required
     def get(self, data_collection_group_id):
         """Returns a data_collection group by dataCollection_group_id"""
         return data_collection.get_data_collection_group_by_id(data_collection_group_id)

@@ -20,7 +20,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-from flask import request, current_app
 from flask_restx._http import HTTPStatus
 
 from pyispyb.flask_restx_patched import Resource
@@ -56,14 +55,13 @@ class SyncAll(Resource):
 
 
 @api.route(
-    "/update_proposal/<string:proposal_code><int:proposal_number>",
-    endpoint="user_office_update_proposal",
+    "/sync_proposal/<string:proposal_code><int:proposal_number>",
+    endpoint="user_office_sync_proposal",
 )
 @api.param("proposal_code", "Proposal code (string)")
 @api.param("proposal_number", "Proposal number (integer)")
 @api.doc(security="apikey")
 class UpdateProposal(Resource):
-
     """Sync with user office"""
 
     @token_required
