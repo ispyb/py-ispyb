@@ -40,7 +40,7 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # SQLALCHEMY_POOL_RECYCLE = 2999
     # SQLALCHEMY_POOL_TIMEOUT = 20
-    PAGINATION_ITEMS_LIMIT = 10
+    PAGINATION_ITEMS_LIMIT = 1000
 
     DEBUG = True
     ERROR_404_HELP = False
@@ -67,7 +67,7 @@ class BaseConfig:
         STATIC_ROOT,
         "dewar_label_template.html"
     )
-    
+
     SWAGGER_UI_URI = "/docs" #False disable docs
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
@@ -114,9 +114,9 @@ class ProductionConfig(BaseConfig):
     def __init__(self, config_filename=None):
         super().__init__(config_filename)
 
-        SECRET_KEY = os.getenv("EXAMPLE_API_SERVER_SECRET_KEY")
+        SECRET_KEY = os.getenv("ISPYB_SECRET_KEY")
         SQLALCHEMY_DATABASE_URI = os.getenv(
-            "EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI"
+            "ISPYB_DATABASE_URI"
         )
         MASTER_TOKEN = None
         SWAGGER_UI_URI = False

@@ -36,4 +36,4 @@ else:
     port = 5000
 
 app = create_app(config_filename, run_mode)
-app.run(host='0.0.0.0', port=port, debug=False)
+app.run(host='0.0.0.0', port=port, debug=True)

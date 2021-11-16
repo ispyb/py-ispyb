@@ -41,7 +41,6 @@ def get_proteins_by_request(request):
 
     is_admin, proposal_id_list = proposal.get_proposal_ids(request)
 
-    print(is_admin, proposal_id_list)
     run_query = False
     if is_admin:
         run_query = True

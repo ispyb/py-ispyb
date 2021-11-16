@@ -18,14 +18,15 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
-
-Proposal namespace with enpoint allowing to manipulate proposal items.
+Proposal namespace with enpoint allowing to access proposals.
 
 Example routes:
 
 [GET]   /ispyb/api/v1/proposals     - Retrieves a list of proposals
-[GET]   /ispyb/api/v1/proposals/1  - Retrieves proposal #1
+[GET]   /ispyb/api/v1/proposals?proposalType=MX - Retrieves a list of MX proposals
 [POST]  /ispyb/api/v1/proposals    - Creates a new proposal
+
+[GET]   /ispyb/api/v1/proposals/1  - Retrieves proposal #1
 [PUT]   /ispyb/api/v1/proposals/1  - Updates proposal #1
 [PATCH] /ispyb/api/v1/proposals/1  - Partially updates proposal #1
 [DELETE]/ispyb/api/v1/proposals/1  - Deletes proposal #1
