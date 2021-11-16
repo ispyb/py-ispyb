@@ -61,7 +61,12 @@ class Proposals(Resource):
     def get(self):
         """Returns proposals based on query parameters"""
         api.logger.info("Get all proposals")
-        return proposal.get_proposals_by_query(request.args.to_dict())
+        user_info = contacts.get_person_info(request)
+        query_dict = request.args.to_dict()
+        if not user_info["is_admin"]:
+            query_dict["personId"] = user_info["personId"]
+        return proposal.get_proposals_by_query()
+
 
     @token_required
     @authorization_required
@@ -69,7 +74,6 @@ class Proposals(Resource):
     @api.marshal_with(proposal_schemas.f_schema, code=201)
     def post(self):
         """Adds a new proposal"""
-
         api.logger.info("Inserts a new proposal")
         return proposal.add_proposal(api.payload)
 
@@ -89,7 +93,7 @@ class ProposalById(Resource):
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
         user_info = contacts.get_person_info(request)
-        if user_info["is_manager"] or proposal_id in user_info["proposal_ids"]:
+        if user_info["is_admin"] or proposal_id in user_info["proposal_ids"]:
             return proposal.get_proposal_by_id(proposal_id)
         else:
             abort(
@@ -138,4 +142,14 @@ class ProposalInfoById(Resource):
     # @api.marshal_with(proposal_desc_f_schema)
     def get(self, proposal_id):
         """Returns a full description of a proposal by proposalId"""
-        return proposal.get_proposal_info_by_id(proposal_id)
+        user_info = contacts.get_person_info(request)
+        if user_info["is_admin"] or proposal_id in user_info["proposal_ids"]:
+            return proposal.get_proposal_info_by_id(proposal_id)
+        else:
+            abort(
+                HTTPStatus.METHOD_NOT_ALLOWED,
+                "Permission denied. Proposal %d is not assigned to user %s" % (
+                    proposal_id,
+                    user_info["login_name"]
+                )
+            )

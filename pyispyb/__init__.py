@@ -81,5 +81,20 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
     # import ispyb_service_connector
     # ispyb_service_connector.check_service_connection(app.config["SERVICE_CONNECTIONS"])
 
+    if app.config["TEMP_FOLDER"]:
+        if not os.path.exists(app.config["TEMP_FOLDER"]):
+            try:
+                os.makedirs(app.config["TEMP_FOLDER"])
+                print("Temp dir %s created" % app.config["TEMP_FOLDER"])
+            except Exception as ex:
+                print("Unable to create temp dir %s (%s)" % (app.config["TEMP_FOLDER"], str(ex)))
+    if app.config["UPLOAD_FOLDER"]:
+        if not os.path.exists(app.config["UPLOAD_FOLDER"]):
+            try:
+                os.makedirs(app.config["UPLOAD_FOLDER"])
+                print("Upload dir %s created" % app.config["UPLOAD_FOLDER"])
+            except Exception as ex:
+                print("Unable to create upload dir %s (%s)" % (app.config["UPLOAD_FOLDER"], str(ex)))
+
     app.logger.debug("ISPyB server started")
     return app

@@ -27,7 +27,7 @@ from suds.client import Client
 from suds.transport.http import HttpAuthenticated
 
 
-from pyispyb.app.extensions.user_office_link.AbstractUserOfficeLink import (
+from pyispyb.app.extensions.user_office.AbstractUserOfficeLink import (
     AbstractUserOfficeLink,
 )
 from pyispyb.core.modules import proposal

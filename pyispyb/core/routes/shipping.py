@@ -183,8 +183,8 @@ class DewarById(Resource):
 class DewarLabelsById(Resource):
     """Returns dewar label pdf"""
 
-    @token_required
-    @authorization_required
+    #@token_required
+    #@authorization_required
     @api.doc(description="dewar_id should be an integer ")
     def get(self, dewar_id):
         """Returns a dewar labels by dewarId"""

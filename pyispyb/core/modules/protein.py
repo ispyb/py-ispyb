@@ -41,6 +41,7 @@ def get_proteins_by_request(request):
 
     is_admin, proposal_id_list = proposal.get_proposal_ids(request)
 
+    print(is_admin, proposal_id_list)
     run_query = False
     if is_admin:
         run_query = True
@@ -60,7 +61,7 @@ def get_proteins_by_request(request):
                 query_dict["proposalId"] = proposal_id_list
 
     if run_query:
-        get_proteins_by_query(query_dict)
+        return get_proteins_by_query(query_dict)
     else:
         return create_response_item(msg=msg)
 

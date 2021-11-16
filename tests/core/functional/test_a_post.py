@@ -24,7 +24,8 @@ from tests.core import data
 
 def test_post(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-    headers = {"Authorization": "Bearer " + ispyb_core_token}
+    headers = {"Authorization": "bearer " + ispyb_core_token}
+
 
     route = ispyb_core_app.config["API_ROOT"] + "/contacts/labs"
     response = client.post(route, json=data.test_laboratory, headers=headers)

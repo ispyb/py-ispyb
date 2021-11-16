@@ -21,7 +21,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 from .flask_sqlalchemy import SQLAlchemy
 from .report import report
-from .user_office_link import user_office_link
+from .user_office import user_office
 from .auth import auth_provider
 from . import api
 
@@ -47,5 +47,5 @@ def init_app(app):
     Args:
         app (flask app): Flask application
     """
-    for extension in (api, auth_provider, logging, db, user_office_link):
+    for extension in (api, auth_provider, logging, db, user_office):
         extension.init_app(app)

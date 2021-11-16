@@ -37,18 +37,24 @@ def get_person_by_id(person_id):
     )
 
 def get_person_info(request):
+    print(11)
     user_info = auth_provider.get_user_info_from_auth_header(
         request.headers.get("Authorization")
     )
     query_dict = request.args.to_dict()
+    print(222, query_dict, user_info)
     if "login_name" in query_dict:
         #Return info about requested login name
         person_id = get_person_id_by_login(query_dict["login_name"])
-    else:    
+    else:
         person_id = get_person_id_by_login(user_info["sub"])
 
-    person_info = get_person_info_by_params({"personId": person_id})
-    return user_info.update(person_info)
+    if person_id:
+        person_info = get_person_info_by_params({"personId": person_id})
+        person_info["personId"] = person_id
+        user_info.update(person_info)
+
+    return user_info
 
 def get_person_info_by_params(param_dict):
     """Returns person by its id.
@@ -87,10 +93,11 @@ def get_persons_by_query(query_dict):
     Returns:
         dict: info about person as dict
     """
-    return db.get_db_item(
+    return db.get_db_items(
         models.Person,
+        schemas.person.dict_schema,
         schemas.person.ma_schema,
-        query_dict
+        query_dict,
     )
 
 def get_person_id_by_login(login_name):
@@ -103,9 +110,9 @@ def get_person_id_by_login(login_name):
         [type]: [description]
     """
     if login_name:
-        person_item = get_persons_by_query({"login": login_name})["data"]["rows"][0]
-        if person_item:
-            return person_item["personId"]
+        persons = get_persons_by_query({"login": login_name})["data"]["rows"]
+        if persons:
+            return persons[0]["personId"]
 
 
 def add_person(data_dict):

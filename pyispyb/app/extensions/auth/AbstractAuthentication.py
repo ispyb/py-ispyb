@@ -22,30 +22,32 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from flask import current_app
-from pyispyb.app.extensions.user_office_link.AbstractUserOfficeLink import (
-    AbstractUserOfficeLink,
-)
+import abc
 
 
-class DummyUserOfficeLink(AbstractUserOfficeLink):
+class AbstractAuthentication(object):
+
+    """
+    Abstract authentication class.
+
+    Base class for all site specific authentication classes
+    """
+
+    __metaclass__ = abc.ABCMeta
+
     def init_app(self, app):
-        """Initializes user office class.
+        """Initializes auth class.
 
         Args:
             app (flask app): Flask app
         """
         return
 
-    def sync_all(self):
-        """Main method to sync with user office"""
-        print("Sync with user office")
-
-    def update_proposal(self, code, number):
-        """Updates proposal based on the code and number.
+    @abc.abstractmethod
+    def get_roles(self, username, password):
+        """Returns roles associated to the user.
 
         Args:
-            code (str): MX, SAXS, mxihr, etc
-            number (int): proposals number
+            username (str): username
+            password (str): password
         """
-        print("Update proposal %s%d" % (code, number))

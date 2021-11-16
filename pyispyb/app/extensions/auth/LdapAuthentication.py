@@ -23,7 +23,7 @@ import ldap
 
 
 from flask import current_app
-from pyispyb.app.extensions.auth.AbstractAuth import AbstractAuth
+from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentication
 
 
 __license__ = "LGPLv3+"
@@ -32,9 +32,9 @@ __license__ = "LGPLv3+"
 log = logging.getLogger(__name__)
 
 
-class LdapAuth(AbstractAuth):
+class LdapAuthentication(AbstractAuthentication):
     def __init__(self):
-        AbstractAuth.__init__(self)
+        AbstractAuthentication.__init__(self)
 
         self.ldap_conn = None
 

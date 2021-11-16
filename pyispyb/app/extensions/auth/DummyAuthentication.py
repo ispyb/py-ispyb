@@ -22,10 +22,10 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from pyispyb.app.extensions.auth.AbstractAuth import AbstractAuth
+from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentication
 
 
-class DummyAuth(AbstractAuth):
+class DummyAuthentication(AbstractAuthentication):
     """Dummy authentication class."""
 
     def get_roles(self, username, password):
@@ -38,10 +38,8 @@ class DummyAuth(AbstractAuth):
             list: list of roles
         """
 
-        roles = []
+        roles = ["user"]
 
-        if "user" in username:
-            roles.append("user")
         if "manager" in username:
             roles.append("manager")
         if "admin" in username:

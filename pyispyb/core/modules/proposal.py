@@ -47,6 +47,7 @@ def get_proposals_by_query(query_dict={}):
         schemas.proposal.ma_schema,
         query_dict,
     )
+    #add proposals from proposal_has_person table
 
 
 def get_proposal_by_id(proposal_id):

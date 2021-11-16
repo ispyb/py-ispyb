@@ -48,6 +48,6 @@ def ispyb_core_token(ispyb_core_app):
     api_root = ispyb_core_app.config["API_ROOT"]
 
     response = client.get(
-        api_root + "/auth/login", headers={"username": "admin", "password": "pass"}
+        api_root + "/auth/login", headers={"username": "manager", "password": "pass"}
     )
     return response.json["token"]
