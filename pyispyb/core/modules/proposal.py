@@ -32,7 +32,7 @@ from pyispyb.core import models, schemas
 from pyispyb.core.modules import contacts, session
 
 
-def get_proposals_by_query(query_dict={}):
+def get_proposals_by_query(query_dict):
     """Returns proposal db items
 
     Args:
@@ -41,7 +41,6 @@ def get_proposals_by_query(query_dict={}):
     Returns:
         [type]: [description]
     """
-    print("get proposals ", query_dict)
     return db.get_db_items(
         models.Proposal,
         schemas.proposal.dict_schema,
@@ -49,7 +48,7 @@ def get_proposals_by_query(query_dict={}):
         query_dict,
     )
 
-def get_proposals_has_person_by_query(query_dict={}):
+def get_proposals_has_person_by_query(query_dict):
     return db.get_db_items(
         models.ProposalHasPerson,
         schemas.proposal_has_person.dict_schema,

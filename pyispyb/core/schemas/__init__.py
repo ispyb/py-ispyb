@@ -14,3 +14,9 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
+
+from . import proposal_has_person
+
+#TODO for some reason one has to import proposal_has_person here
+# So other modules can use it. Othwerwise no attribute error is raised
+# Remove this import

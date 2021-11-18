@@ -30,6 +30,7 @@ phasing_statistics,PhasingStatistics
 phasing_step,PhasingStep
 phasing_has_scaling,Phasing_has_Scaling
 proposal,Proposal
+proposal_has_person,ProposalHasPerson
 protein,Protein
 robot_action,RobotAction
 screening,Screening

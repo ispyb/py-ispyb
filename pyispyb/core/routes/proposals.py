@@ -64,7 +64,6 @@ class Proposals(Resource):
         api.logger.info("Get all proposals")
         user_info = contacts.get_person_info(request)
         query_dict = request.args.to_dict()
-        print("[GET] use info", user_info)
         if not user_info["is_admin"]:
             proposal_ids = proposal.get_proposal_ids_by_person_id(user_info["personId"])
             query_dict["proposalId"] = proposal_ids
