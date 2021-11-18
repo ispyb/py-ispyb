@@ -26,7 +26,7 @@ from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.utils import download_pdb_file
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 
 
 from pyispyb.core.schemas import sample as sample_schemas
@@ -49,13 +49,13 @@ class Sample(Resource):
     """Sample resource"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns all sample items"""
         return sample.get_samples_by_request(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(sample_schemas.f_schema)
     @api.marshal_with(sample_schemas.f_schema, code=201)
     def post(self):
@@ -71,7 +71,7 @@ class SampleById(Resource):
     """Allows to get/set/delete a sample item"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="sample_id should be an integer ")
     @api.marshal_with(sample_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, sample_id):
@@ -79,7 +79,7 @@ class SampleById(Resource):
         return sample.get_sample_by_id(sample_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(sample_schemas.f_schema)
     @api.marshal_with(sample_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, sample_id):
@@ -87,7 +87,7 @@ class SampleById(Resource):
         return sample.update_sample(sample_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(sample_schemas.f_schema)
     @api.marshal_with(sample_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, sample_id):
@@ -95,7 +95,7 @@ class SampleById(Resource):
         return sample.patch_sample(sample_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, sample_id):
         """Deletes a sample by sampleId"""
         return sample.delete_sample(sample_id)
@@ -107,14 +107,14 @@ class Crystals(Resource):
     """Crystal resource"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns all crystal items"""
         query_dict = request.args.to_dict()
         return crystal.get_crystals_by_query(query_dict)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(crystal_schemas.f_schema)
     @api.marshal_with(crystal_schemas.f_schema, code=201)
     def post(self):
@@ -130,7 +130,7 @@ class CrystalById(Resource):
     """Allows to get/set/delete a crystal item"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="crystal_id should be an integer ")
     @api.marshal_with(crystal_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, crystal_id):
@@ -138,7 +138,7 @@ class CrystalById(Resource):
         return crystal.get_crystal_by_id(crystal_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(crystal_schemas.f_schema)
     @api.marshal_with(crystal_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, crystal_id):
@@ -146,7 +146,7 @@ class CrystalById(Resource):
         return crystal.update_crystal(crystal_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(crystal_schemas.f_schema)
     @api.marshal_with(crystal_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, crystal_id):
@@ -154,7 +154,7 @@ class CrystalById(Resource):
         return crystal.patch_crystal(crystal_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, crystal_id):
         """Deletes a crystal by crystalId"""
         return crystal.delete_crystal(crystal_id)
@@ -167,8 +167,8 @@ class CrystalById(Resource):
 class CrystalPdbById(Resource):
     """Allows to get/set/delete crystal pdb item"""
 
-    @token_required
-    @authorization_required
+    #@token_required
+    #@role_required
     @api.doc(description="crystal_id should be an integer ")
     def get(self, crystal_id):
         """Returns pdb file by crystalId"""
@@ -220,7 +220,7 @@ class CrystalPdbById(Resource):
             )
 
     @token_required
-    @authorization_required
+    @role_required
     def patch(self, crystal_id):
         """Fully updates crystal with crystal_id"""
         query_dict = request.args.to_dict()
@@ -247,7 +247,7 @@ class CrystalPdbById(Resource):
         # return crystal.update_crystal_pdb(crystal_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, crystal_id):
         """Deletes a crystal pdb file by crystalId"""
         # return crystal.delete_crystal_pdb(crystal_id)
@@ -259,13 +259,13 @@ class Proteins(Resource):
     """Proteins resource"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns all protein items"""
         return protein.get_proteins_by_request(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(protein_schemas.f_schema)
     @api.marshal_with(protein_schemas.f_schema, code=201)
     def post(self):
@@ -281,7 +281,7 @@ class ProteinById(Resource):
     """Allows to get/set/delete a protein"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="protein_id should be an integer ")
     @api.marshal_with(protein_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, protein_id):
@@ -289,7 +289,7 @@ class ProteinById(Resource):
         return protein.get_protein_by_id(protein_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(protein_schemas.f_schema)
     @api.marshal_with(protein_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, protein_id):
@@ -297,7 +297,7 @@ class ProteinById(Resource):
         return protein.update_protein(protein_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(protein_schemas.f_schema)
     @api.marshal_with(protein_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, protein_id):
@@ -305,7 +305,7 @@ class ProteinById(Resource):
         return protein.patch_protein(protein_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, protein_id):
         """Deletes a protein by proteinId"""
         return protein.delete_protein(protein_id)
@@ -317,13 +317,13 @@ class DiffractionPlans(Resource):
     """Allows to get all diffraction_plans and insert a new one"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns list of diffraction_plans"""
         return diffraction_plan.get_diffraction_plans(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(diffraction_plan_schemas.f_schema)
     @api.marshal_with(diffraction_plan_schemas.f_schema, code=201)
     def post(self):
@@ -341,7 +341,7 @@ class DiffractionPlanById(Resource):
     """Allows to get/set/delete a diffraction_plan"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="diffraction_plan_id should be an integer ")
     @api.marshal_with(
         diffraction_plan_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
@@ -351,7 +351,7 @@ class DiffractionPlanById(Resource):
         return diffraction_plan.get_diffraction_plan_by_id(diffraction_plan_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(diffraction_plan_schemas.f_schema)
     @api.marshal_with(diffraction_plan_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, diffraction_plan_id):
@@ -361,7 +361,7 @@ class DiffractionPlanById(Resource):
         )
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(diffraction_plan_schemas.f_schema)
     @api.marshal_with(diffraction_plan_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, diffraction_plan_id):
@@ -369,7 +369,7 @@ class DiffractionPlanById(Resource):
         return diffraction_plan.patch_diffraction_plan(diffraction_plan_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, diffraction_plan_id):
         """Deletes a diffraction_plan by diffraction_planId"""
         return diffraction_plan.delete_diffraction_plan(diffraction_plan_id)

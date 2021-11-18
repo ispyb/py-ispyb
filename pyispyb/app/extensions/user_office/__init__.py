@@ -37,15 +37,15 @@ __license__ = "LGPLv3+"
 log = logging.getLogger(__name__)
 
 
-class UserOfficeLink:
+class UserOffice:
     """Allows to retrieve information from the user office"""
 
     def __init__(self):
         self.site_user_office = None
 
     def init_app(self, app):
-        module_name = app.config["USER_OFFICE_LINK_MODULE"]
-        class_name = app.config["USER_OFFICE_LINK_CLASS"]
+        module_name = app.config["USER_OFFICE_MODULE"]
+        class_name = app.config["USER_OFFICE_CLASS"]
         cls = getattr(importlib.import_module(module_name), class_name)
         self.site_user_office = cls()
         self.site_user_office.init_app(app)
@@ -56,11 +56,11 @@ class UserOfficeLink:
         #    app
         # )
 
-    def sync_with_user_office(self):
+    def sync_all(self):
         self.site_user_office.sync_all()
 
-    def update_proposal(self, code, number):
-        self.site_user_office.update_proposal(code, number)
+    def sync_proposal(self, code, number):
+        self.site_user_office.sync_proposal(code, number)
 
 
-user_office_link = UserOfficeLink()
+user_office = UserOffice()

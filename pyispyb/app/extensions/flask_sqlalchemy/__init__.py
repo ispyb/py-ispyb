@@ -160,7 +160,6 @@ class SQLAlchemy(BaseSQLAlchemy):
                     multiple_value_query_dict[key] = query_dict[key]
                 else:
                     schema_keys[key] = query_dict.get(key)
-
         query = sql_alchemy_model.query
 
         # Filter items based on schema keys with one value
@@ -189,7 +188,6 @@ class SQLAlchemy(BaseSQLAlchemy):
             query = query.offset(offset)
 
         items = ma_schema.dump(query, many=True)[0]
-
         return create_response_item(msg, total, items)
 
     def get_db_item(self, sql_alchemy_model, ma_schema, query_dict):

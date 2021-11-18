@@ -40,7 +40,7 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # SQLALCHEMY_POOL_RECYCLE = 2999
     # SQLALCHEMY_POOL_TIMEOUT = 20
-    PAGINATION_ITEMS_LIMIT = 100
+    PAGINATION_ITEMS_LIMIT = 1000
 
     DEBUG = True
     ERROR_404_HELP = False
@@ -52,36 +52,22 @@ class BaseConfig:
 
     AUTHORIZATION_RULES = {}
 
-    AUTH_MODULE = "pyispyb.app.extensions.auth.DummyAuth"
-    AUTH_CLASS = "DummyAuth"
+    AUTH_MODULE = "pyispyb.app.extensions.auth.DummyAuthentication"
+    AUTH_CLASS = "DummyAuthentication"
     JWT_CODING_ALGORITHM = "HS256"
-    TOKEN_EXP_TIME = 60  # in minutes
+    TOKEN_EXP_TIME = 300  # in minutes
     MASTER_TOKEN = "MasterToken"
     ADMIN_ROLES = ["manager", "admin"]  # allows to access all resources
 
     BARCODE_TYPE = "code39"
     TEMP_FOLDER = os.path.join(tempfile.gettempdir(), "pyispyb", "tmp")
-    if not os.path.exists(TEMP_FOLDER):
-        try:
-            os.makedirs(TEMP_FOLDER)
-            print("Temp dir %s created" % TEMP_FOLDER)
-        except Exception as ex:
-            print("Unable to create temp dir %s (%s)" % (TEMP_FOLDER, str(ex)))
-    
     UPLOAD_FOLDER = os.path.join(tempfile.gettempdir(), "pyispyb", "upload")
-    if not os.path.exists(UPLOAD_FOLDER):
-        try:
-            os.makedirs(UPLOAD_FOLDER)
-            print("Upload dir %s created" % UPLOAD_FOLDER)
-        except Exception as ex:
-            print("Unable to create upload dir %s (%s)" % (UPLOAD_FOLDER, str(ex)))
-
     SITE_LOGO_PATH = os.path.join(STATIC_ROOT, "favicon.png")
     DEWAR_LABEL_TEMPLATE_FILEPATH = os.path.join(
         STATIC_ROOT,
         "dewar_label_template.html"
     )
-    
+
     SWAGGER_UI_URI = "/docs" #False disable docs
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
@@ -90,11 +76,11 @@ class BaseConfig:
 
     CSRF_ENABLED = True
 
-    USER_OFFICE_LINK_MODULE = (
-        "pyispyb.app.extensions.user_office_link.DummyUserOfficeLink"
+    USER_OFFICE_MODULE = (
+        "pyispyb.app.extensions.user_office.DummyUserOffice"
     )
-    USER_OFFICE_LINK_CLASS = "DummyUserOfficeLink"
-    # USER_OFFICE_SYNC_INTERVAL = 60 * 60 * 5 #in seconds
+    USER_OFFICE_CLASS = "DummyUserOffice"
+    # user_office_SYNC_INTERVAL = 60 * 60 * 5 #in seconds
     USER_OFFICE_SYNC_INTERVAL = 30
 
     def __init__(self, config_filename=None):
@@ -128,9 +114,9 @@ class ProductionConfig(BaseConfig):
     def __init__(self, config_filename=None):
         super().__init__(config_filename)
 
-        SECRET_KEY = os.getenv("EXAMPLE_API_SERVER_SECRET_KEY")
+        SECRET_KEY = os.getenv("ISPYB_SECRET_KEY")
         SQLALCHEMY_DATABASE_URI = os.getenv(
-            "EXAMPLE_API_SERVER_SQLALCHEMY_DATABASE_URI"
+            "ISPYB_DATABASE_URI"
         )
         MASTER_TOKEN = None
         SWAGGER_UI_URI = False

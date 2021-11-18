@@ -29,7 +29,7 @@ from flask_restx._http import HTTPStatus
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 
 # from pyispyb.core.schemas import phasing_program_run as phasing_program_run_schemas
 from pyispyb.core.modules import phasing
@@ -45,7 +45,7 @@ class PhasingResults(Resource):
     """Allows to get all phasing_results"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns phasing_results based on query parameters"""
 
@@ -53,7 +53,7 @@ class PhasingResults(Resource):
         return phasing.get_phasing_results(request)
 
     @token_required
-    @authorization_required
+    @role_required
     # @api.expect(phasing_result_schemas.f_schema)
     # @api.marshal_with(phasing_result_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)

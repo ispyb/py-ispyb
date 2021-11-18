@@ -38,14 +38,14 @@ class AuthProvider:
     """Allows to authentificate users and create tokens."""
 
     def __init__(self):
-        self.site_auth = None
+        self.site_authentication = None
 
     def init_app(self, app):
         module_name = app.config["AUTH_MODULE"]
         class_name = app.config["AUTH_CLASS"]
         cls = getattr(importlib.import_module(module_name), class_name)
-        self.site_auth = cls()
-        self.site_auth.init_app(app)
+        self.site_authentication = cls()
+        self.site_authentication.init_app(app)
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 
@@ -62,7 +62,7 @@ class AuthProvider:
         Returns:
             tuple or list: tuple or list with roles associated to the username
         """
-        return self.site_auth.get_roles(username, password)
+        return self.site_authentication.get_roles(username, password)
 
     def get_user_info_from_auth_header(self, auth_header):
         """
@@ -82,7 +82,8 @@ class AuthProvider:
             token = parts[1]
             if current_app.config.get("MASTER_TOKEN") == token:
                 user_info["sub"] = "MasterToken"
-                user_info["roles"] = current_app.config.get("ADMIN_ROLES")
+                #user_info["roles"] = current_app.config.get("ADMIN_ROLES")
+                user_info["roles"] = ["manager"]
             else:
                 user_info, msg = decode_token(token)
             user_info["is_admin"] = any(
@@ -215,7 +216,7 @@ def token_required(func):
     return decorated
 
 
-def authorization_required(func):
+def role_required(func):
     """
     Checks if user has role required to access the given resource.
 
@@ -256,9 +257,6 @@ def authorization_required(func):
         methods = current_app.config.get("AUTHORIZATION_RULES").get(self.endpoint, {})
         # If no role is defined then just manager is allowed to access the resource
         roles = methods.get(func.__name__, ["manager"])
-
-        # print("User roles: %s" % str(user_info.get("roles")))
-        # print("Endpoint [%s] %s roles: %s" % (func.__name__, self.endpoint, roles))
 
         if (
             not roles

@@ -18,14 +18,15 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
-
-Proposal namespace with enpoint allowing to manipulate proposal items.
+Proposal namespace with enpoint allowing to access proposals.
 
 Example routes:
 
 [GET]   /ispyb/api/v1/proposals     - Retrieves a list of proposals
-[GET]   /ispyb/api/v1/proposals/1  - Retrieves proposal #1
+[GET]   /ispyb/api/v1/proposals?proposalType=MX - Retrieves a list of MX proposals
 [POST]  /ispyb/api/v1/proposals    - Creates a new proposal
+
+[GET]   /ispyb/api/v1/proposals/1  - Retrieves proposal #1
 [PUT]   /ispyb/api/v1/proposals/1  - Updates proposal #1
 [PATCH] /ispyb/api/v1/proposals/1  - Partially updates proposal #1
 [DELETE]/ispyb/api/v1/proposals/1  - Deletes proposal #1
@@ -40,7 +41,7 @@ from flask_restx._http import HTTPStatus
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 from pyispyb.core.schemas import proposal as proposal_schemas
 from pyispyb.core.modules import contacts, proposal
 
@@ -57,19 +58,23 @@ class Proposals(Resource):
     """Allows to get all proposals"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns proposals based on query parameters"""
         api.logger.info("Get all proposals")
-        return proposal.get_proposals_by_query(request.args.to_dict())
+        user_info = contacts.get_person_info(request)
+        query_dict = request.args.to_dict()
+        if not user_info["is_admin"]:
+            proposal_ids = proposal.get_proposal_ids_by_person_id(user_info["personId"])
+            query_dict["proposalId"] = proposal_ids
+        return proposal.get_proposals_by_query(query_dict)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(proposal_schemas.f_schema)
     @api.marshal_with(proposal_schemas.f_schema, code=201)
     def post(self):
         """Adds a new proposal"""
-
         api.logger.info("Inserts a new proposal")
         return proposal.add_proposal(api.payload)
 
@@ -83,13 +88,13 @@ class ProposalById(Resource):
     """Allows to get/set/delete a proposal"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="proposal_id should be an integer ")
     @api.marshal_with(proposal_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
         user_info = contacts.get_person_info(request)
-        if user_info["is_manager"] or proposal_id in user_info["proposal_ids"]:
+        if user_info["is_admin"] or proposal_id in user_info["proposal_ids"]:
             return proposal.get_proposal_by_id(proposal_id)
         else:
             abort(
@@ -101,7 +106,7 @@ class ProposalById(Resource):
             )
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(proposal_schemas.f_schema)
     @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, proposal_id):
@@ -110,7 +115,7 @@ class ProposalById(Resource):
         return proposal.update_proposal(proposal_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(proposal_schemas.f_schema)
     @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, proposal_id):
@@ -118,7 +123,7 @@ class ProposalById(Resource):
         return proposal.patch_proposal(proposal_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, proposal_id):
         """Deletes a proposal by proposal_id"""
         return proposal.delete_proposal(proposal_id)
@@ -133,9 +138,19 @@ class ProposalInfoById(Resource):
     """Returns full information of a proposal"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="proposal_id should be an integer ")
     # @api.marshal_with(proposal_desc_f_schema)
     def get(self, proposal_id):
         """Returns a full description of a proposal by proposalId"""
-        return proposal.get_proposal_info_by_id(proposal_id)
+        user_info = contacts.get_person_info(request)
+        if user_info["is_admin"] or proposal_id in user_info["proposal_ids"]:
+            return proposal.get_proposal_info_by_id(proposal_id)
+        else:
+            abort(
+                HTTPStatus.METHOD_NOT_ALLOWED,
+                "Permission denied. Proposal %d is not assigned to user %s" % (
+                    proposal_id,
+                    user_info["login_name"]
+                )
+            )

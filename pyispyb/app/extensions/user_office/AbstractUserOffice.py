@@ -25,18 +25,14 @@ __license__ = "LGPLv3+"
 import abc
 
 
-class AbstractAuth(object):
+class AbstractUserOffice(object):
 
-    """
-    Abstract authentication class.
-
-    Base class for all site specific authentication classes
-    """
+    """Abstract class to define link with the user office."""
 
     __metaclass__ = abc.ABCMeta
 
     def init_app(self, app):
-        """Initializes auth class.
+        """Initializes user office class.
 
         Args:
             app (flask app): Flask app
@@ -44,10 +40,14 @@ class AbstractAuth(object):
         return
 
     @abc.abstractmethod
-    def get_roles(self, username, password):
-        """Returns roles associated to the user.
+    def sync_all(self):
+        """Main method to sync with user office"""
+
+    @abc.abstractmethod
+    def sync_proposal(self, code, number):
+        """Updates proposal based on the code and number.
 
         Args:
-            username (str): username
-            password (str): password
+            code (str): MX, SAXS, mxihr, etc
+            number (int): proposals number
         """

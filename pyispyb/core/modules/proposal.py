@@ -32,7 +32,7 @@ from pyispyb.core import models, schemas
 from pyispyb.core.modules import contacts, session
 
 
-def get_proposals_by_query(query_dict={}):
+def get_proposals_by_query(query_dict):
     """Returns proposal db items
 
     Args:
@@ -48,6 +48,13 @@ def get_proposals_by_query(query_dict={}):
         query_dict,
     )
 
+def get_proposals_has_person_by_query(query_dict):
+    return db.get_db_items(
+        models.ProposalHasPerson,
+        schemas.proposal_has_person.dict_schema,
+        schemas.proposal_has_person.ma_schema,
+        query_dict,
+    )
 
 def get_proposal_by_id(proposal_id):
     """
@@ -148,9 +155,17 @@ def delete_proposal(proposal_id):
     return db.delete_db_item(models.Proposal, id_dict)
 
 
-def get_proposal_ids_by_login_name(login_name):
-    person_info = contacts.get_person_info_by_params({"login": login_name})
-    return person_info["proposal_ids"]
+def get_proposal_ids_by_person_id(person_id):
+    proposal_id_list = []
+    proposal_dict = get_proposals_by_query({"personId": person_id})
+    if proposal_dict["data"]["rows"]:
+        for proposal in proposal_dict["data"]["rows"]:
+            proposal_id_list.append(proposal["proposalId"])
+    proposal_has_person_dict = get_proposals_has_person_by_query({"personId": person_id})
+    if proposal_has_person_dict["data"]["rows"]:
+        for proposal in proposal_has_person_dict["data"]["rows"]:
+            proposal_id_list.append(proposal["proposalId"])
+    return proposal_id_list
 
 def get_proposal_ids(request):
     """

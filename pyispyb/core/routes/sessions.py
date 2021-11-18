@@ -23,12 +23,10 @@ import logging
 from datetime import datetime
 
 from flask import request
-from sqlalchemy.exc import SQLAlchemyError
-
 from pyispyb.flask_restx_patched import Resource, HTTPStatus, abort
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 
 from pyispyb.core.schemas import session as session_schemas
 from pyispyb.core.schemas import beam_calendar as beam_calendar_schemas
@@ -41,27 +39,6 @@ log = logging.getLogger(__name__)
 api = Namespace("Sessions", description="Session related namespace", path="/sessions")
 api_v1.add_namespace(api)
 
-@api.errorhandler(SQLAlchemyError)
-@api.header('ErrorType', 'SQLAlchemy Error')
-def handle_sqlalchemy_exception(error):
-    '''This is a sqlalchemy error handler'''
-    log.error(str(error))
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'SQLAlchemyError'}
-
-@api.errorhandler(ZeroDivisionError)
-@api.header('ErrorType', 'Zero division')
-def handle_zero_division_exception(error):
-    '''This is a zero division error'''
-    log.error(str(error))
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'ZeroDivisionError'}
-
-@api.errorhandler(Exception)
-@api.header('ErrorType', 'Exception')
-def handle_exception(error):
-    '''This is a base error handler'''
-    log.error(str(error))
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST , {'ErrorType': 'Exception'}
-
 
 @api.route("", endpoint="sessions")
 @api.doc(security="apikey")
@@ -69,13 +46,13 @@ class Sessions(Resource):
     """Allows to get all sessions and insert a new one"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns list of sessions"""
         return session.get_sessions(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(session_schemas.f_schema)
     @api.marshal_with(session_schemas.f_schema, code=201)
     def post(self):
@@ -92,21 +69,17 @@ class Sessions(Resource):
 class SessionById(Resource):
     """Allows to get/set/delete a session"""
 
-    #@token_required
-    #@authorization_required
+    @token_required
+    @role_required
     @api.doc(description="session_id should be an integer ")
-    #@api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
+    @api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
     def get(self, session_id):
         """Returns a session by sessionId"""
-        #if session_id == 0:
-        #    a = 1 / 0
-        #else:
-        #print(b)
         return session.get_session_by_id(session_id)
 
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(session_schemas.f_schema)
     @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, session_id):
@@ -114,7 +87,7 @@ class SessionById(Resource):
         return session.update_session(session_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(session_schemas.f_schema)
     @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, session_id):
@@ -122,7 +95,7 @@ class SessionById(Resource):
         return session.patch_session(session_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, session_id):
         """Deletes a session by sessionId"""
         return session.delete_session(session_id)
@@ -136,7 +109,7 @@ class SessionInfoById(Resource):
     """Returns full information of a session"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="session_id should be an integer ")
     def get(self, session_id):
         """Returns a full description of a session by sessionId"""
@@ -149,7 +122,7 @@ class SessionsByDateBeamline(Resource):
     """Allows to get all sessions by date and beamline"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns list of sessions by start_date, end_date and beamline."""
 
@@ -194,13 +167,13 @@ class BeamCalendars(Resource):
     """Allows to get all beam_calendars"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns beam_calendars based on query parameters"""
         return session.get_beam_calendars(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(beam_calendar_schemas.f_schema)
     @api.marshal_with(beam_calendar_schemas.f_schema, code=201)
     def post(self):
@@ -216,7 +189,7 @@ class beam_calendarById(Resource):
 
     """Allows to get/set/delete a beam_calendar"""
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="beam_calendar_id should be an integer ")
     @api.marshal_with(
         beam_calendar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK

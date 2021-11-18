@@ -21,33 +21,28 @@
 
 from flask import current_app
 from requests import get, post
-from requests import ConnectionError
 
 
 __license__ = "LGPLv3+"
 
 
 def is_resource_available(service_name):
-    status_code = 400
-    data = "ISPyB service %s is not available" % service_name
-    #000try:
-    if True:
+    try:
         headers = {
             "Authorization": "Bearer %s" % current_app.config["MASTER_TOKEN"],
             "Host": service_name}
         response = get(current_app.config["API_GATEWAY_URL"] + "/schemas/available_names", headers=headers)
         data = response.json()
         status_code = response.status_code
-    #except ConnectionError:
-    #    pass
+    except ConnectionError:
+        status_code = 400
+        data = "ISPyB service %s is not available" % service_name
     return status_code, data
 
 
 def get_ispyb_resource(service_name, path):
-    status_code, data = is_resource_available("core")
-    if status_code != 200:
-        return status_code, data
-    else:
+    status_code, data = is_resource_available(service_name)
+    if status_code == 200:
         headers = {
             "Authorization": "Bearer %s" % current_app.config["MASTER_TOKEN"],
             "Host": service_name}
@@ -55,4 +50,5 @@ def get_ispyb_resource(service_name, path):
             current_app.config["API_GATEWAY_URL"] + path,
             headers=headers)
         data = response.json()
-        return response.status_code, data
+        status_code = response.status_code
+    return status_code, data

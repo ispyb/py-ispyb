@@ -22,15 +22,12 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-import abc
+from pyispyb.app.extensions.user_office.AbstractUserOffice import (
+    AbstractUserOffice,
+)
 
 
-class AbstractUserOfficeLink(object):
-
-    """Abstract class to define link with the user office."""
-
-    __metaclass__ = abc.ABCMeta
-
+class DummyUserOffice(AbstractUserOffice):
     def init_app(self, app):
         """Initializes user office class.
 
@@ -39,15 +36,15 @@ class AbstractUserOfficeLink(object):
         """
         return
 
-    @abc.abstractmethod
     def sync_all(self):
         """Main method to sync with user office"""
+        print("Sync with user office")
 
-    @abc.abstractmethod
-    def update_proposal(self, code, number):
+    def sync_proposal(self, code, number):
         """Updates proposal based on the code and number.
 
         Args:
             code (str): MX, SAXS, mxihr, etc
             number (int): proposals number
         """
+        print("sync proposal %s%d" % (code, number))

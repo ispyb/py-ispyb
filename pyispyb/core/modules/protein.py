@@ -60,7 +60,7 @@ def get_proteins_by_request(request):
                 query_dict["proposalId"] = proposal_id_list
 
     if run_query:
-        get_proteins_by_query(query_dict)
+        return get_proteins_by_query(query_dict)
     else:
         return create_response_item(msg=msg)
 
