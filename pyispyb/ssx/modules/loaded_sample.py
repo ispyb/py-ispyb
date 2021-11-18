@@ -131,8 +131,11 @@ def add_crystal_slurry(data_dict):
         [type]: [description]
     """
     status_code, result = ispyb_service_connector.get_ispyb_resource(
-        "pyispyb.core", "/samples/crystals/%d" % data_dict["crystalId"]
+        "core", "/samples/crystals/%d" % data_dict["crystalId"]
     )
+
+    print(status_code, result)
+    return
     if status_code == 200:
         crystal_id = data_dict.get("crystalId")
         if crystal_id is None:

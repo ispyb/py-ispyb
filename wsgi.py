@@ -35,5 +35,7 @@ else:
     run_mode = "dev"
     port = 5000
 
+debug = run_mode == "dev"
+
 app = create_app(config_filename, run_mode)
-app.run(host='0.0.0.0', port=port, debug=True)
+app.run(host='0.0.0.0', port=port, debug=debug)

@@ -61,6 +61,8 @@ class Proposals(Resource):
     @authorization_required
     def get(self):
         """Returns proposals based on query parameters"""
+
+
         api.logger.info("Get all proposals")
         user_info = contacts.get_person_info(request)
         query_dict = request.args.to_dict()
@@ -93,6 +95,11 @@ class ProposalById(Resource):
     @api.marshal_with(proposal_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
+        if proposal_id == 0:
+            1 / 0
+        elif proposal_id == 1:
+            print(b)
+
         user_info = contacts.get_person_info(request)
         if user_info["is_admin"] or proposal_id in user_info["proposal_ids"]:
             return proposal.get_proposal_by_id(proposal_id)

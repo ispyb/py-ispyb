@@ -167,8 +167,8 @@ class CrystalById(Resource):
 class CrystalPdbById(Resource):
     """Allows to get/set/delete crystal pdb item"""
 
-    @token_required
-    @authorization_required
+    #@token_required
+    #@authorization_required
     @api.doc(description="crystal_id should be an integer ")
     def get(self, crystal_id):
         """Returns pdb file by crystalId"""

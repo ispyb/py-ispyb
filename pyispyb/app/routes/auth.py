@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 api = Namespace("Authentication", description="authentication namespace", path="/auth")
 api_v1.add_namespace(api)
 
-"""
+
 @api.errorhandler(SQLAlchemyError)
 @api.header('ErrorType', 'SQLAlchemy Error')
 def handle_sqlalchemy_exception(error):
@@ -55,7 +55,6 @@ def handle_exception(error):
     log.error(str(error))
     print("Got the exception")
     return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST , {'ErrorType': 'Exception'}
-"""
 
 
 @api.route("/login")

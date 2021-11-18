@@ -112,9 +112,9 @@ class CrystalSlurry(Resource):
         # app.logger.info("Return all data collections")
         return loaded_sample.get_all_crystal_slurry()
 
-    @token_required
-    @authorization_required
-    @api.expect(crystal_slurry_schemas.f_schema)
+    #@token_required
+    #@authorization_required
+    #@api.expect(crystal_slurry_schemas.f_schema)
     # @api.marshal_with(crystal_slurry_schemas.f_schema, code=201)
     def post(self):
         """Adds a new crystal slury"""
