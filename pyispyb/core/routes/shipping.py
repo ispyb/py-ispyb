@@ -24,7 +24,7 @@ from flask import current_app, request, send_from_directory
 from flask_restx._http import HTTPStatus
 
 from pyispyb.flask_restx_patched import Resource
-from pyispyb.app.extensions.auth import token_required, authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 from pyispyb.app.extensions.api import api_v1, Namespace
 
 from pyispyb.core.modules import container, dewar, shipping
@@ -49,13 +49,13 @@ class Shippings(Resource):
     """Allows to get all shippings"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns list of shippings"""
         return shipping.get_shippings(request), HTTPStatus.OK
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(shipping_schemas.f_schema)
     @api.marshal_with(shipping_schemas.f_schema, code=201)
     def post(self):
@@ -71,7 +71,7 @@ class ShippingById(Resource):
     """Allows to get/set/delete a shipping"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="shipping_id should be an integer ")
     @api.marshal_with(shipping_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, shipping_id):
@@ -79,7 +79,7 @@ class ShippingById(Resource):
         return shipping.get_shipping_by_id(shipping_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(shipping_schemas.f_schema)
     @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, shipping_id):
@@ -87,7 +87,7 @@ class ShippingById(Resource):
         return shipping.update_shipping(shipping_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(shipping_schemas.f_schema)
     @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, shipping_id):
@@ -95,7 +95,7 @@ class ShippingById(Resource):
         return shipping.patch_shipping(shipping_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, shipping_id):
         """Deletes shipping by shipping_id"""
         return shipping.delete_shipping(shipping_id)
@@ -109,7 +109,7 @@ class ShippingInfoById(Resource):
     """Returns full information of a shipping"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="shipping_id should be an integer ")
     # @api.marshal_with(shipping_desc_f_schema)
     def get(self, shipping_id):
@@ -123,14 +123,14 @@ class Dewars(Resource):
     """Dewars resource"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns all dewars items"""
         query_dict = request.args.to_dict()
         return dewar.get_dewars_by_query(query_dict)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(dewar_schemas.f_schema)
     @api.marshal_with(dewar_schemas.f_schema, code=201)
     def post(self):
@@ -146,7 +146,7 @@ class DewarById(Resource):
     """Allows to get/set/delete a dewar item"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="dewar_id should be an integer ")
     @api.marshal_with(dewar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, dewar_id):
@@ -154,7 +154,7 @@ class DewarById(Resource):
         return dewar.get_dewar_by_id(dewar_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(dewar_schemas.f_schema)
     @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, dewar_id):
@@ -162,7 +162,7 @@ class DewarById(Resource):
         return dewar.update_dewar(dewar_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(dewar_schemas.f_schema)
     @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, dewar_id):
@@ -170,7 +170,7 @@ class DewarById(Resource):
         return dewar.patch_dewar(dewar_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, dewar_id):
         """Deletes a dewar by dewarId"""
         return dewar.delete_dewar(dewar_id)
@@ -184,7 +184,7 @@ class DewarLabelsById(Resource):
     """Returns dewar label pdf"""
 
     #@token_required
-    #@authorization_required
+    #@role_required
     @api.doc(description="dewar_id should be an integer ")
     def get(self, dewar_id):
         """Returns a dewar labels by dewarId"""
@@ -205,13 +205,13 @@ class Containers(Resource):
     """Containers resource"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns all container items"""
         return container.get_containers(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(container_schemas.f_schema)
     @api.marshal_with(container_schemas.f_schema, code=201)
     def post(self):
@@ -227,7 +227,7 @@ class ContainerById(Resource):
     """Allows to get/set/delete a container item"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="container_id should be an integer ")
     @api.marshal_with(container_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, container_id):
@@ -235,7 +235,7 @@ class ContainerById(Resource):
         return container.get_container_by_id(container_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(container_schemas.f_schema)
     @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, container_id):
@@ -243,7 +243,7 @@ class ContainerById(Resource):
         return container.update_container(container_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(container_schemas.f_schema)
     @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, container_id):
@@ -251,7 +251,7 @@ class ContainerById(Resource):
         return container.patch_container(container_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, container_id):
         """Deletes a container by containerId"""
         return container.delete_container(container_id)

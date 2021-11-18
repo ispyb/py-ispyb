@@ -216,7 +216,7 @@ def token_required(func):
     return decorated
 
 
-def authorization_required(func):
+def role_required(func):
     """
     Checks if user has role required to access the given resource.
 

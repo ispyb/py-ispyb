@@ -25,7 +25,7 @@ from flask import request, send_file, abort
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 
 from pyispyb.core.schemas import data_collection as data_collection_schemas
 from pyispyb.core.schemas import data_collection_group as data_collection_group_schemas
@@ -49,7 +49,7 @@ class DataColletions(Resource):
     """Allows to get all data_collections"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collections"""
@@ -57,7 +57,7 @@ class DataColletions(Resource):
         return data_collection.get_data_collections(query_dict)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(data_collection_schemas.f_schema)
     @api.marshal_with(data_collection_schemas.f_schema, code=201)
     def post(self):
@@ -73,7 +73,7 @@ class DataCollectionById(Resource):
     """Allows to get/set/delete a data_collection"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="data_collection_id should be an integer ")
     @api.marshal_with(
         data_collection_schemas.f_schema,
@@ -93,7 +93,7 @@ class DataCollectionSnapshot(Resource):
     """Allows to download snapshots associated to the data collection"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="data_collection_id and snapshot_id should be an integer")
     def get(self, data_collection_id, snapshot_index):
         """Downloads data collection attribute by id and attribute_name"""
@@ -129,7 +129,7 @@ class DataCollectionFile(Resource):
     """Allows to download files associated to the data collection"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="data_collection_id should be an integer ")
     def get(self, data_collection_id):
         """Downloads data collection attribute by id and attribute_name"""
@@ -174,14 +174,14 @@ class DataCollectionGroups(Resource):
     """Allows to get all data collection groups and add a new one"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collection_groups"""
         return data_collection.get_data_collection_groups(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(data_collection_group_schemas.f_schema)
     @api.marshal_with(data_collection_group_schemas.f_schema, code=201)
     def post(self):
@@ -196,7 +196,7 @@ class DataCollectionGroupById(Resource):
     """Allows to get/set/delete a data collection group"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="data_collection_group_id should be an integer ")
     @api.marshal_with(
         data_collection_group_schemas.f_schema,

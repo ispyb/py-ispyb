@@ -25,7 +25,7 @@ import importlib
 from flask import current_app
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 from pyispyb.core import schemas
 
 
@@ -40,7 +40,7 @@ api_v1.add_namespace(api)
 class SchemasList(Resource):
 
     #@token_required
-    #@authorization_required
+    #@role_required
     def get(self):
         """Returns list of available schemas
 
@@ -63,7 +63,7 @@ class SchemasList(Resource):
 class Schemas(Resource):
 
     #token_required
-    #@authorization_required
+    #@role_required
     def get(self, name):
         """Returns json schema
 

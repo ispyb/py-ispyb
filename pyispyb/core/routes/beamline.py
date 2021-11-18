@@ -25,7 +25,7 @@ from flask import request
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 
 from pyispyb.core.schemas import beamline_setup as beamline_setup_schemas
 from pyispyb.core.schemas import robot_action as robot_action_schemas
@@ -46,13 +46,13 @@ class BeamlineSetups(Resource):
     """Allows to get all beamline_setups and insert a new one"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns list of beamline_setups"""
         return beamline_setup.get_beamline_setups(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(beamline_setup_schemas.f_schema)
     @api.marshal_with(beamline_setup_schemas.f_schema, code=201)
     def post(self):
@@ -69,7 +69,7 @@ class BeamlineSetupById(Resource):
     """Allows to get/set/delete a beamline_setup"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="beamline_setup_id should be an integer ")
     @api.marshal_with(
         beamline_setup_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
@@ -79,7 +79,7 @@ class BeamlineSetupById(Resource):
         return beamline_setup.get_beamline_setup_by_id(beamline_setup_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(beamline_setup_schemas.f_schema)
     @api.marshal_with(beamline_setup_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, beamline_setup_id):
@@ -87,7 +87,7 @@ class BeamlineSetupById(Resource):
         return beamline_setup.update_beamline_setup(beamline_setup_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(beamline_setup_schemas.f_schema)
     @api.marshal_with(beamline_setup_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, beamline_setup_id):
@@ -95,7 +95,7 @@ class BeamlineSetupById(Resource):
         return beamline_setup.patch_beamline_setup(beamline_setup_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, beamline_setup_id):
         """Deletes a beamline_setup by beamline_setupId"""
         return beamline_setup.delete_beamline_setup(beamline_setup_id)
@@ -107,13 +107,13 @@ class RobotActions(Resource):
     """Allows to get robot action db items and insert a new one"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns list of robot_actions"""
         return robot_action.get_robot_actions(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(robot_action_schemas.f_schema)
     @api.marshal_with(robot_action_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
@@ -131,7 +131,7 @@ class RobotActionById(Resource):
     """Allows to get/set/delete a robot_action"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="robot_action_id should be an integer ")
     @api.marshal_with(
         robot_action_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
@@ -141,7 +141,7 @@ class RobotActionById(Resource):
         return robot_action.get_robot_action_by_id(robot_action_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(robot_action_schemas.f_schema)
     @api.marshal_with(robot_action_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, robot_action_id):
@@ -149,7 +149,7 @@ class RobotActionById(Resource):
         return robot_action.update_robot_action(robot_action_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(robot_action_schemas.f_schema)
     @api.marshal_with(robot_action_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, robot_action_id):
@@ -157,7 +157,7 @@ class RobotActionById(Resource):
         return robot_action.patch_robot_action(robot_action_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, robot_action_id):
         """Deletes a robot_action by robot_action_id"""
         return robot_action.delete_robot_action(robot_action_id)
@@ -169,13 +169,13 @@ class Detectors(Resource):
     """Allows to get all detectors and insert a new one"""
 
     @token_required
-    @authorization_required
+    @role_required
     def get(self):
         """Returns list of detectors"""
         return detector.get_detectors(request)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(detector_schemas.f_schema)
     @api.marshal_with(detector_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
@@ -194,7 +194,7 @@ class DetectorById(Resource):
     """Allows to get/set/delete a detector"""
 
     @token_required
-    @authorization_required
+    @role_required
     @api.doc(description="detector_id should be an integer ")
     @api.marshal_with(detector_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, detector_id):
@@ -202,7 +202,7 @@ class DetectorById(Resource):
         return detector.get_detector_by_id(detector_id)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(detector_schemas.f_schema)
     @api.marshal_with(detector_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, detector_id):
@@ -210,7 +210,7 @@ class DetectorById(Resource):
         return detector.update_detector(detector_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     @api.expect(detector_schemas.f_schema)
     @api.marshal_with(detector_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, detector_id):
@@ -218,7 +218,7 @@ class DetectorById(Resource):
         return detector.patch_detector(detector_id, api.payload)
 
     @token_required
-    @authorization_required
+    @role_required
     def delete(self, detector_id):
         """Deletes a detector by detectorId"""
         return detector.delete_detector(detector_id)

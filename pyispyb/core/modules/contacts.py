@@ -66,8 +66,8 @@ def get_person_info_by_params(param_dict):
     person_info_dict = db.get_db_item(
         models.Person, schemas.person.ma_schema, param_dict
     )
-    proposal_id_list = proposal.get_proposal_ids_by_login_name(
-        person_info_dict["login"]
+    proposal_id_list = proposal.get_proposal_ids_by_person_id(
+        person_info_dict["personId"]
     )
     person_info_dict["proposal_ids"] = proposal_id_list
 
