@@ -26,7 +26,7 @@ from flask_restx._http import HTTPStatus
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth import authentication_required, authorization_required
 
 from pyispyb.ssx.schemas import loaded_sample as loaded_sample_schemas
 from pyispyb.ssx.schemas import crystal_slurry as crystal_slurry_schemas
@@ -51,16 +51,16 @@ api_v1.add_namespace(api)
 class LoadedSample(Resource):
     """Loaded sample resource"""
 
-    # @token_required
+    # @authentication_required
     def get(self):
         """Returns all loaded samples"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_loaded_samples(request)
 
-    # @token_required
+    # @authentication_required
     @api.expect(loaded_sample_schemas.f_schema)
     # @api.marshal_with(loaded_sample_schemas.f_schema, code=201)
-    # @role_required
+    # @authorization_required
     def post(self):
         """Adds a new loaded sample"""
         return loaded_sample.add_loaded_sample(api.payload)
@@ -73,8 +73,8 @@ class LoadedSample(Resource):
 class LoadedSampleById(Resource):
     """Allows to get/set/delete a loaded_sample"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     @api.doc(description="loaded_sample_id should be an integer ")
     @api.marshal_with(
         loaded_sample_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
@@ -91,8 +91,8 @@ class LoadedSampleById(Resource):
 class LoadedSampleInfoById(Resource):
     """Returns full information of a loaded_sample"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     @api.doc(description="loaded_sample_id should be an integer ")
     # @api.marshal_with(loaded_sample_desc_f_schema)
     def get(self, loaded_sample_id):
@@ -105,15 +105,15 @@ class LoadedSampleInfoById(Resource):
 class CrystalSlurry(Resource):
     """Crystal slurry resource"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     def get(self):
         """Returns all crystal slurry"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_all_crystal_slurry()
 
-    #@token_required
-    #@role_required
+    #@authentication_required
+    #@authorization_required
     #@api.expect(crystal_slurry_schemas.f_schema)
     # @api.marshal_with(crystal_slurry_schemas.f_schema, code=201)
     def post(self):
@@ -126,15 +126,15 @@ class CrystalSlurry(Resource):
 class CrystalSizeDistribution(Resource):
     """Crystal size distribution resource"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     def get(self):
         """Returns all crystal size distributions"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_crystal_size_distributions()
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     @api.expect(crystal_size_distribution_schemas.f_schema)
     # @api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
     def post(self):
@@ -147,15 +147,15 @@ class CrystalSizeDistribution(Resource):
 class SampleStocks(Resource):
     """Sample stocks resource"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     def get(self):
         """Returns all sample stocks"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_sample_stocks()
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     @api.expect(sample_stock_schemas.f_schema)
     # @api.marshal_with(crystal_slurry_schemas.crystal_slurry_f_schema, code=201)
     def post(self):
@@ -168,14 +168,14 @@ class SampleStocks(Resource):
 class SamplDeliveryDevices(Resource):
     """SampleDeliveryDevice resource"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     def get(self):
         """Returns sample delivery devices"""
         return loaded_sample.get_sample_delivery_devices(request)
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     @api.expect(sample_delivery_device_schemas.f_schema)
     # @api.marshal_with(sample_delivery_device_schemas.f_schema, code=201)
     def post(self):

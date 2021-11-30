@@ -25,7 +25,8 @@ __license__ = "LGPLv3+"
 
 from flask_restx._http import HTTPStatus
 
-from pyispyb.app.extensions import db, auth_provider
+from pyispyb.app.extensions import db
+from pyispyb.app.extensions.authentication import authentication_provider 
 from pyispyb.app.utils import create_response_item
 
 from pyispyb.core import models, schemas

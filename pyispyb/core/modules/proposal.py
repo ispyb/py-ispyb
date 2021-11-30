@@ -25,7 +25,8 @@ __license__ = "LGPLv3+"
 
 from flask_restx._http import HTTPStatus
 
-from pyispyb.app.extensions import db, auth_provider
+from pyispyb.app.extensions import db
+from pyispyb.app.extensions.authentication import authentication_provider 
 from pyispyb.app.utils import create_response_item
 
 from pyispyb.core import models, schemas
@@ -181,7 +182,7 @@ def get_proposal_ids(request):
         bool, str: true if user can run query, if False then msg describes the reason
     """
 
-    user_info = auth_provider.get_user_info_from_auth_header(
+    user_info = authentication_provider.get_user_info_from_auth_header(
         request.headers.get("Authorization")
     )
     proposal_id_list = []

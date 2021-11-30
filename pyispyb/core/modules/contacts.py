@@ -24,7 +24,7 @@ __license__ = "LGPLv3+"
 
 
 from pyispyb.app.extensions import db
-from pyispyb.app.extensions.auth import auth_provider
+from pyispyb.app.extensions.authentication import authentication_provider
 
 from pyispyb.core import models, schemas
 from pyispyb.core.modules import proposal, sample, protein, crystal
@@ -37,7 +37,7 @@ def get_person_by_id(person_id):
     )
 
 def get_person_info(request):
-    user_info = auth_provider.get_user_info_from_auth_header(
+    user_info = authentication_provider.get_user_info_from_auth_header(
         request.headers.get("Authorization")
     )
     query_dict = request.args.to_dict()

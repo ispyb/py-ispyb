@@ -21,9 +21,8 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import ldap
 
-
 from flask import current_app
-from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentication
+from pyispyb.app.extensions.authentication.AbstractAuthentication import AbstractAuthentication
 
 
 __license__ = "LGPLv3+"
