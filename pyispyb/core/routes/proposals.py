@@ -66,8 +66,7 @@ class Proposals(Resource):
         user_info = contacts.get_person_info(request)
         query_dict = request.args.to_dict()
         if not user_info["is_admin"]:
-            proposal_ids = proposal.get_proposal_ids_by_person_id(user_info["personId"])
-            query_dict["proposalId"] = proposal_ids
+            query_dict["proposalId"] = proposal.get_proposal_ids(request)
         return proposal.get_proposals_by_query(query_dict)
 
     @authentication_required

@@ -162,7 +162,9 @@ def get_proposal_ids_by_person_id(person_id):
     if proposal_dict["data"]["rows"]:
         for proposal in proposal_dict["data"]["rows"]:
             proposal_id_list.append(proposal["proposalId"])
-    proposal_has_person_dict = get_proposals_has_person_by_query({"personId": person_id})
+    proposal_has_person_dict = get_proposals_has_person_by_query(
+        {"personId": person_id}
+    )
     if proposal_has_person_dict["data"]["rows"]:
         for proposal in proposal_has_person_dict["data"]["rows"]:
             proposal_id_list.append(proposal["proposalId"])
@@ -185,10 +187,13 @@ def get_proposal_ids(request):
     user_info = authentication_provider.get_user_info_from_auth_header(
         request.headers.get("Authorization")
     )
-    proposal_id_list = []
-
-    user_proposals = get_proposals_by_query(request.args.to_dict())
-    for user_proposal in user_proposals["data"]["rows"]:
-        proposal_id_list.append(user_proposal.get("proposalId"))
-
-    return user_info.get("is_admin"), proposal_id_list
+    
+    if user_info["is_admin"]:
+        proposal_dict = get_proposals_by_query({})
+        proposal_ids = []
+        for proposal in proposal_dict["data"]["rows"]:
+            proposal_ids.append(proposal["proposalId"])
+        return proposal_ids
+    else:
+        person_id = contacts.get_person_id_by_login(user_info["sub"])
+        return get_proposal_ids_by_person_id(person_id)

@@ -49,7 +49,7 @@ def get_person_info(request):
 
     if person_id:
         person_info = get_person_info_by_params({"personId": person_id})
-        person_info["personId"] = person_id
+        person_info["person_id"] = person_id
         user_info.update(person_info)
 
     return user_info

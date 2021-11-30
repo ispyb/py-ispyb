@@ -28,6 +28,7 @@ from flask import current_app, request
 from flask_restx._http import HTTPStatus
 
 from pyispyb.app.extensions.authentication import authentication_provider
+from pyispyb.core.modules import contacts, proposal
 
 
 __license__ = "LGPLv3+"
@@ -69,18 +70,16 @@ def authorization_required(func):
         Returns:
             [type]: [description]
         """
-
-        query_dict = request.args.to_dict()
-        user_info = authentication_provider.get_user_info_from_auth_header(
-            request.headers.get("Authorization")
-        )
+        user_info = contacts.get_person_info(request)
+        print(user_info)
 
         methods = current_app.config.get("AUTHORIZATION_RULES").get(self.endpoint, {})
         # If no role is defined then just manager is allowed to access the resource
         roles = methods.get(func.__name__, ["manager"])
+        
 
         user_allowed = False
-        msg = "User %s is not to allowed to access the resource %s" % (
+        msg = "User %s is not to allowed to access the resource %s. " % (
             user_info.get("sub"),
             str(self.endpoint)
         )
@@ -92,10 +91,13 @@ def authorization_required(func):
             or "all" in roles
             or any(role in list(roles) for role in list(user_info.get("roles", [])))
         ):
-            if not "proposalId" in query_dict:
-                msg += "No proposalId in query arguments"
-            elif query_dict["proposalId"] not in user_info["propoal_ids"]:
-                msg += "Proposal with id %d not associated with the user" % query_dict["proposalId"]
+
+            proposal_id = int(request.headers.get("proposal_id"))
+            proposal_ids = proposal.get_proposal_ids(request)
+            if not proposal_id:
+                msg += "No proposal_id in header"
+            elif proposal_id not in proposal_ids:
+                msg += "Proposal with id %d not associated with the user" % proposal_id
             else:
                 user_allowed = True
 
