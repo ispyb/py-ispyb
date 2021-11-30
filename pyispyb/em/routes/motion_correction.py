@@ -27,7 +27,7 @@ from flask_restx._http import HTTPStatus
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth import authentication_required, authorization_required
 from pyispyb.em.schemas import motion_correction as motion_correction_schemas
 from pyispyb.em.modules import motion_correction
 
@@ -43,8 +43,8 @@ api_v1.add_namespace(api)
 class MotionCorrections(Resource):
     """Allows to get all motion_corrections"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     def get(self):
         """Returns motion_corrections based on query parameters"""
 
@@ -56,8 +56,8 @@ class MotionCorrections(Resource):
     @api.marshal_with(motion_correction_schemas.f_schema, code=201)
     # @api.errorhandler(FakeException)
     # TODO add custom exception handling
-    @token_required
-    @role_required
+    @authentication_required
+    @authorization_required
     def post(self):
         """Adds a new motion_correction"""
 

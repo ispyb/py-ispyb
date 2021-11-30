@@ -22,7 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentication
+from pyispyb.app.extensions.authentication.AbstractAuthentication import AbstractAuthentication
 
 
 class DummyAuthentication(AbstractAuthentication):
