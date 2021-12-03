@@ -20,14 +20,13 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-__license__ = "LGPLv3+"
-
-
 from pyispyb.app.extensions import db
 from pyispyb.app.utils import create_response_item
-
 from pyispyb.core import models, schemas
 from pyispyb.core.modules import beamline_setup, proposal
+
+
+__license__ = "LGPLv3+"
 
 
 def get_sessions(request):

@@ -24,9 +24,11 @@ import time
 import zipfile
 from io import BytesIO
 
-
 from pyispyb.app.extensions import db
 from pyispyb.core import models, schemas
+
+
+__license__ = "LGPLv3+"
 
 
 def get_auto_procs(request):

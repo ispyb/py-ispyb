@@ -186,7 +186,7 @@ class BeamCalendars(Resource):
 @api.param("beam_calendar_id", "beam_calendar id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="beam_calendar not found.")
-class beam_calendarById(Resource):
+class BeamCalendarById(Resource):
 
     """Allows to get/set/delete a beam_calendar"""
     @authentication_required

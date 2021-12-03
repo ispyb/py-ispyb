@@ -32,9 +32,6 @@ Example routes:
 [DELETE]/ispyb/api/v1/proposals/1  - Deletes proposal #1
 """
 
-
-__license__ = "LGPLv3+"
-
 from flask import request, current_app, abort
 from flask_restx._http import HTTPStatus
 
@@ -45,6 +42,9 @@ from pyispyb.app.extensions.authentication import authentication_required
 from pyispyb.app.extensions.authorization import authorization_required
 from pyispyb.core.schemas import proposal as proposal_schemas
 from pyispyb.core.modules import contacts, proposal
+
+
+__license__ = "LGPLv3+"
 
 
 api = Namespace(
@@ -63,11 +63,7 @@ class Proposals(Resource):
     def get(self):
         """Returns proposals based on query parameters"""
         api.logger.info("Get all proposals")
-        user_info = contacts.get_person_info(request)
-        query_dict = request.args.to_dict()
-        if not user_info["is_admin"]:
-            query_dict["proposalId"] = proposal.get_proposal_ids(request)
-        return proposal.get_proposals_by_query(query_dict)
+        return proposal.get_proposals(request)
 
     @authentication_required
     @authorization_required

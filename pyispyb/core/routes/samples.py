@@ -53,7 +53,7 @@ class Sample(Resource):
     @authorization_required
     def get(self):
         """Returns all sample items"""
-        return sample.get_samples_by_request(request)
+        return sample.get_samples(request)
 
     @authentication_required
     @authorization_required
@@ -111,8 +111,7 @@ class Crystals(Resource):
     @authorization_required
     def get(self):
         """Returns all crystal items"""
-        query_dict = request.args.to_dict()
-        return crystal.get_crystals_by_query(query_dict)
+        return crystal.get_crystals(request)
 
     @authentication_required
     @authorization_required
@@ -263,7 +262,7 @@ class Proteins(Resource):
     @authorization_required
     def get(self):
         """Returns all protein items"""
-        return protein.get_proteins_by_request(request)
+        return protein.get_proteins(request)
 
     @authentication_required
     @authorization_required
@@ -372,5 +371,5 @@ class DiffractionPlanById(Resource):
     @authentication_required
     @authorization_required
     def delete(self, diffraction_plan_id):
-        """Deletes a diffraction_plan by diffraction_planId"""
+        """Deletes a diffraction_plan by diffractionPlanId"""
         return diffraction_plan.delete_diffraction_plan(diffraction_plan_id)

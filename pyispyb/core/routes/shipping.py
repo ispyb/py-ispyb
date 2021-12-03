@@ -53,7 +53,7 @@ class Shippings(Resource):
     @authorization_required
     def get(self):
         """Returns list of shippings"""
-        return shipping.get_shippings(request), HTTPStatus.OK
+        return shipping.get_shippings(request)
 
     @authentication_required
     @authorization_required
@@ -127,8 +127,7 @@ class Dewars(Resource):
     @authorization_required
     def get(self):
         """Returns all dewars items"""
-        query_dict = request.args.to_dict()
-        return dewar.get_dewars_by_query(query_dict)
+        return dewar.get_dewars(request)
 
     @authentication_required
     @authorization_required

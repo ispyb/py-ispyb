@@ -54,8 +54,7 @@ class DataColletions(Resource):
     @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collections"""
-        query_dict = request.args.to_dict()
-        return data_collection.get_data_collections(query_dict)
+        return data_collection.get_data_collections(request)
 
     @authentication_required
     @authorization_required

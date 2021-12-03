@@ -48,7 +48,7 @@ class Persons(Resource):
     @authorization_required
     def get(self):
         """Returns all persons"""
-        return contacts.get_persons_by_query(request.args.to_dict())
+        return contacts.get_persons(request)
 
     @authentication_required
     @authorization_required
