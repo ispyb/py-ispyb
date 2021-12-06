@@ -26,6 +26,7 @@ __license__ = "LGPLv3+"
 import os
 import tempfile
 import ruamel.yaml
+from ruamel.yaml.main import YAML
 
 
 class BaseConfig:
@@ -43,7 +44,7 @@ class BaseConfig:
     PAGINATION_ITEMS_LIMIT = 1000
 
     DEBUG = True
-    ERROR_404_HELP = False
+    RESTX_ERROR_404_HELP = False
     REVERSE_PROXY_SETUP = bool(os.getenv("EXAMPLE_API_REVERSE_PROXY_SETUP", ""))
 
     AUTHORIZATIONS = {
@@ -85,7 +86,8 @@ class BaseConfig:
 
     def __init__(self, config_filename=None):
         with open(config_filename) as f:
-            config = ruamel.yaml.load(f.read(), ruamel.yaml.RoundTripLoader)
+            yaml=YAML(typ='unsafe', pure=True)
+            config = yaml.load(f.read())
 
             for key, value in config["server"].items():
                 setattr(self, key, value)

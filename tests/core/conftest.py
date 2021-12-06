@@ -34,10 +34,10 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, ROOT_DIR)
 
 from pyispyb import create_app
+app = create_app("ispyb_core_config.yml", "test")
 
 @pytest.fixture(scope="session")
 def ispyb_core_app():
-    app = create_app("ispyb_core_config.yml", "test")
     with app.app_context():
         yield app
 

@@ -18,50 +18,20 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+from tests.core.functional.data.get import test_data
 
 def test_get(ispyb_core_app, ispyb_core_token):
     client = ispyb_core_app.test_client()
-
-    endpoint_list = [
-        "/proposals",
-        "/proposals?offset=1&limit=1",
-        "/proposals?proposalCode=cm",
-        "/contacts/labs",
-        "/contacts/labs?offset=1&limit=1",
-        "/contacts/labs?city=City",
-        "/contacts/lab_contacts",
-        "/contacts/lab_contacts?offset=1&limit=1",
-        "/contacts/lab_contacts?defaultCourrierCompany=DHL",
-        "/contacts/persons",
-        "/contacts/persons?offset=1&limit=1",
-        "/contacts/persons?login=boaty",
-        "/data_collections",
-        "/data_collections?offset=1&limit=1",
-        "/beamline/detectors",
-        "/beamline/detectors?offset=1&limit=1",
-        "/beamline/detectors?detectorModel=T1",
-        "/beamline/setups",
-        "/beamline/setups?offset=1&limit=1",
-        "/beamline/setups?beamlineName=testBeamline",
-        "/samples/proteins",
-        "/samples/proteins?offset=1&limit=1",
-        "/samples/proteins?acronym=ancr",
-        "/samples/diffraction_plans",
-        "/samples/diffraction_plans?offset=1&limit=1",
-        "/samples/diffraction_plans?experimentKind=OSC",
-        "/samples/crystals",
-        "/samples/crystals?offset=1&limit=1",
-        "/samples/crystals?spaceGroup=P4" "/samples",
-        "/samples?offset=1&limit=1",
-        "/samples?holderLength=22",
-    ]
-
     headers = {"Authorization": "Bearer " + ispyb_core_token}
 
-    for endpoint in endpoint_list:
-        route = ispyb_core_app.config["API_ROOT"] + endpoint
-        response = client.get(route, headers=headers)
-        data = response.json
+    for test_elem in test_data:
+        test_route = ispyb_core_app.config["API_ROOT"] + test_elem['route']
+        test_code = test_elem['code']
 
-        assert response.status_code == 200, "[GET] %s " % (route)
-        assert data, "[GET] %s No data returned" % route
+        response = client.get(test_route, headers=headers)
+        res = response.json
+
+        assert response.status_code == test_code, "[GET] %s " % (test_route)
+        assert res, "[GET] %s No data returned" % (test_route)
+
+    
