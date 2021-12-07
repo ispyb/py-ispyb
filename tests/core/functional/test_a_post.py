@@ -22,14 +22,14 @@
 from tests.core.functional.data.post import test_data
 
 
-def test_post(ispyb_core_app, ispyb_core_token):
-    client = ispyb_core_app.test_client()
-    headers = {"Authorization": "bearer " + ispyb_core_token}
+def test_post(ispyb_app, manager_token):
+    client = ispyb_app.test_client()
+    headers = {"Authorization": "bearer " + manager_token}
 
     prev = {}
     for test_elem in test_data:
 
-        test_route = ispyb_core_app.config["API_ROOT"] + test_elem['route']
+        test_route = ispyb_app.config["API_ROOT"] + test_elem['route']
         test_json = test_elem['json'](prev)
         test_name = test_elem['name']
         response = client.post(test_route, json=test_json, headers=headers)

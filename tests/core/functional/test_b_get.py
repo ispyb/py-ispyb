@@ -20,12 +20,13 @@
 
 from tests.core.functional.data.get import test_data
 
-def test_get(ispyb_core_app, ispyb_core_token):
-    client = ispyb_core_app.test_client()
-    headers = {"Authorization": "Bearer " + ispyb_core_token}
+
+def test_get(ispyb_app, manager_token):
+    client = ispyb_app.test_client()
+    headers = {"Authorization": "Bearer " + manager_token}
 
     for test_elem in test_data:
-        test_route = ispyb_core_app.config["API_ROOT"] + test_elem['route']
+        test_route = ispyb_app.config["API_ROOT"] + test_elem['route']
         test_code = test_elem['code']
 
         response = client.get(test_route, headers=headers)
@@ -33,5 +34,3 @@ def test_get(ispyb_core_app, ispyb_core_token):
 
         assert response.status_code == test_code, "[GET] %s " % (test_route)
         assert res, "[GET] %s No data returned" % (test_route)
-
-    
