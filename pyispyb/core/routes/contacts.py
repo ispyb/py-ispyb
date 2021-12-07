@@ -42,7 +42,7 @@ api_v1.add_namespace(api)
 @api.route("/persons", endpoint="persons")
 @api.doc(security="apikey")
 class Persons(Resource):
-    """Allows to get all persons"""
+    """Allows to get and post persons"""
 
     @authentication_required
     @authorization_required
@@ -55,6 +55,7 @@ class Persons(Resource):
     @api.expect(person_schemas.f_schema)
     @api.marshal_with(person_schemas.f_schema, code=201)
     def post(self):
+        """Adds a new person"""
         return contacts.add_person(api.payload)
 
 

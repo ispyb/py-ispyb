@@ -20,20 +20,20 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-__license__ = "LGPLv3+"
-
 from datetime import datetime, timedelta
 from suds.client import Client
 from suds.transport.http import HttpAuthenticated
 
 
-from pyispyb.app.extensions.user_office.AbstractUserOfficeLink import (
-    AbstractUserOfficeLink,
+from pyispyb.app.extensions.user_office.AbstractUserOffice import (
+    AbstractUserOffice,
 )
 from pyispyb.core.modules import proposal
 
 
-class SmisLink(AbstractUserOfficeLink):
+__license__ = "LGPLv3+"
+
+class SmisLink(AbstractUserOffice):
     def init_app(self, app):
         """Initializes user office class.
 
@@ -54,7 +54,7 @@ class SmisLink(AbstractUserOfficeLink):
         past_str = datetime.strftime(datetime.now() - timedelta(days=30), "%d/%m/%YYYY")
         now_str = datetime.strftime(datetime.now(), "%d/%m/%YYYY")
         smis_proposals = self.smis_ws.service.findNewMXProposalPKs(past_str, now_str)
-        current_proposals = proposal.get_proposals_by_query()
+        current_proposals = proposal.get_proposals_by_query({})
 
         print(smis_proposals)
         print(current_proposals)

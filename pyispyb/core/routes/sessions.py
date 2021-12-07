@@ -36,6 +36,7 @@ from pyispyb.core.modules import session
 
 __license__ = "LGPLv3+"
 
+
 log = logging.getLogger(__name__)
 api = Namespace("Sessions", description="Session related namespace", path="/sessions")
 api_v1.add_namespace(api)

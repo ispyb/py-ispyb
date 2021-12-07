@@ -208,7 +208,9 @@ class DownloadAttachmentsByAutoProcProgramId(Resource):
     @api.doc(description="program_id should be an integer ")
     def get(self, program_id):
         """Downloads zip file with auto proc attachment files"""
-        attachment_file_zip, msg = auto_proc.get_attachment_zip_by_program_id(program_id)
+        attachment_file_zip, msg = auto_proc.get_attachment_zip_by_program_id(
+            program_id
+        )
 
         if attachment_file_zip:
             return send_file(

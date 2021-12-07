@@ -51,7 +51,11 @@ class DataColletions(Resource):
 
     @authentication_required
     @authorization_required
-    @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @api.marshal_list_with(
+        data_collection_schemas.f_schema,
+        skip_none=False,
+        code=HTTPStatus.OK
+    )
     def get(self):
         """Returns list of data_collections"""
         return data_collection.get_data_collections(request)
@@ -175,7 +179,11 @@ class DataCollectionGroups(Resource):
 
     @authentication_required
     @authorization_required
-    @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
+    @api.marshal_list_with(
+        data_collection_schemas.f_schema,
+        skip_none=False,
+        code=HTTPStatus.OK
+    )
     def get(self):
         """Returns list of data_collection_groups"""
         return data_collection.get_data_collection_groups(request)

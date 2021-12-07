@@ -19,20 +19,19 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
-__license__ = "LGPLv3+"
-
-
 import logging
 
 from flask_restx import abort
 from flask_restx._http import HTTPStatus
 
-
-from pyispyb.app.extensions import db, auth_provider
+from pyispyb.app.extensions import db
 from pyispyb.ssx import models, schemas
 from pyispyb import connector as ispyb_service_connector
 
 log = logging.getLogger(__name__)
+
+
+__license__ = "LGPLv3+"
 
 
 def get_loaded_samples(request):

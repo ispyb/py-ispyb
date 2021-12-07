@@ -44,14 +44,13 @@ from pyispyb.core.schemas import proposal as proposal_schemas
 from pyispyb.core.modules import contacts, proposal
 
 
-__license__ = "LGPLv3+"
-
-
 api = Namespace(
     "Proposals", description="Proposal related namespace", path="/proposals"
 )
 api_v1.add_namespace(api)
 
+
+__license__ = "LGPLv3+"
 
 @api.route("", endpoint="proposals")
 @api.doc(security="apikey")
