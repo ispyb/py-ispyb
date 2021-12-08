@@ -38,6 +38,8 @@ class LdapAuthentication(AbstractAuthentication):
 
         self.ldap_conn = None
 
+        raise Exception("TODO: adapt class to new AbstractAuthentication")
+
     def init_app(self, app):
         """
         Initializes ldap connection
@@ -66,7 +68,8 @@ class LdapAuthentication(AbstractAuthentication):
             msg = "LDAP login: try to authenticate user %s as internal user" % username
             log.debug(msg)
             search_str = (
-                "uid=" + username + "," + current_app.config["LDAP_BASE_INTERNAL"]
+                "uid=" + username + "," +
+                current_app.config["LDAP_BASE_INTERNAL"]
             )
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(
@@ -93,7 +96,8 @@ class LdapAuthentication(AbstractAuthentication):
             msg = "LDAP login: try to authenticate user %s as external user" % username
             log.debug(msg)
             search_str = (
-                "uid=" + username + "," + current_app.config["LDAP_BASE_EXTERNAL"]
+                "uid=" + username + "," +
+                current_app.config["LDAP_BASE_EXTERNAL"]
             )
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(

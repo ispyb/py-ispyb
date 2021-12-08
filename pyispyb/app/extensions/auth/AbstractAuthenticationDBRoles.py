@@ -23,29 +23,32 @@ __license__ = "LGPLv3+"
 
 
 import abc
+from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentication
+from pyispyb.app.extensions.auth.models import Roles
+from pyispyb.app.extensions import db
+import json
 
 
-class AbstractAuthentication(object):
-
-    """
-    Abstract authentication class.
-
-    Base class for all site specific authentication classes
-    """
-
-    __metaclass__ = abc.ABCMeta
+class AbstractAuthenticationDBRoles(AbstractAuthentication):
+    """Keycloak authentication class."""
 
     def init_app(self, app):
-        """Initializes auth class.
+        pass
 
-        Args:
-            app (flask app): Flask app
-        """
-        return
+    def get_auth(self, request):
+        username = self.get_username(request)
+        if not username:
+            return None, None
+        roles = Roles.query.filter_by(username=username).first()
+        if not roles:
+            roles = Roles(username=username, roles="[]")
+            db.session.add(roles)
+            db.session.commit()
+        return username, json.loads(roles.roles)
 
     @abc.abstractmethod
-    def get_auth(self, request):
-        """Returns roles associated to the user.
+    def get_username(self, request):
+        """Returns username associated to the user.
 
         Args:
             request: request object
