@@ -30,31 +30,34 @@ from pyispyb.app.extensions import auth_provider
 __license__ = "LGPLv3+"
 
 log = logging.getLogger(__name__)
-api = Namespace("Authentication", description="authentication namespace", path="/auth")
+api = Namespace("Authentication",
+                description="authentication namespace", path="/auth")
 api_v1.add_namespace(api)
 
 
-@api.errorhandler(SQLAlchemyError)
-@api.header('ErrorType', 'SQLAlchemy Error')
-def handle_sqlalchemy_exception(error):
-    '''This is a sqlalchemy error handler'''
-    log.error(str(error))
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'SQLAlchemyError'}
+# @api.errorhandler(SQLAlchemyError)
+# @api.header('ErrorType', 'SQLAlchemy Error')
+# def handle_sqlalchemy_exception(error):
+#     '''This is a sqlalchemy error handler'''
+#     log.error(str(error))
+#     return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'SQLAlchemyError'}
 
-@api.errorhandler(ZeroDivisionError)
-@api.header('ErrorType', 'Zero division')
-def handle_zero_division_exception(error):
-    '''This is a zero division error'''
-    log.error(str(error))
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'ZeroDivisionError'}
 
-@api.errorhandler(Exception)
-@api.header('ErrorType', 'Exception')
-def handle_exception(error):
-    '''This is a base error handler'''
-    log.error(str(error))
-    print("Got the exception")
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST , {'ErrorType': 'Exception'}
+# @api.errorhandler(ZeroDivisionError)
+# @api.header('ErrorType', 'Zero division')
+# def handle_zero_division_exception(error):
+#     '''This is a zero division error'''
+#     log.error(str(error))
+#     return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'ZeroDivisionError'}
+
+
+# @api.errorhandler(Exception)
+# @api.header('ErrorType', 'Exception')
+# def handle_exception(error):
+#     '''This is a base error handler'''
+#     log.error(str(error))
+#     print("Got the exception")
+#     return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'Exception'}
 
 
 @api.route("/login")
@@ -62,30 +65,30 @@ class Login(Resource):
     """Login resource"""
 
     def get(self):
-        authorization = request.authorization
+        # authorization = request.authorization
 
-        if (
-            not authorization
-            or not authorization.username
-            or not authorization.password
-        ):
-            if not request.headers.get("username") or not request.headers.get(
-                "password"
-            ):
-                return make_response(
-                    "Could not verify",
-                    401,
-                    {"WWW-Authenticate": 'Basic realm="Login required!"'},
-                )
-            else:
-                username = request.headers.get("username")
-                password = request.headers.get("password")
-        else:
-            username = authorization.username
-            password = authorization.password
+        # if (
+        #     not authorization
+        #     or not authorization.username
+        #     or not authorization.password
+        # ):
+        #     if not request.headers.get("username") or not request.headers.get(
+        #         "password"
+        #     ):
+        #         return make_response(
+        #             "Could not verify",
+        #             401,
+        #             {"WWW-Authenticate": 'Basic realm="Login required!"'},
+        #         )
+        #     else:
+        #         username = request.headers.get("username")
+        #         password = request.headers.get("password")
+        # else:
+        #     username = authorization.username
+        #     password = authorization.password
 
-        roles = auth_provider.get_roles(username, password)
-        if not roles:
+        username, roles = auth_provider.get_auth(request)
+        if not username or not roles:
             return make_response(
                 "Could not verify",
                 401,

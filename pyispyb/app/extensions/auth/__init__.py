@@ -38,18 +38,21 @@ class AuthProvider:
     """Allows to authentificate users and create tokens."""
 
     def __init__(self):
-        self.site_authentication = None
+        self.site_authentications = []
 
     def init_app(self, app):
-        module_name = app.config["AUTH_MODULE"]
-        class_name = app.config["AUTH_CLASS"]
-        cls = getattr(importlib.import_module(module_name), class_name)
-        self.site_authentication = cls()
-        self.site_authentication.init_app(app)
+        auth_list = app.config["AUTH"]
+        for auth_module in auth_list:
+            module_name = auth_module["AUTH_MODULE"]
+            class_name = auth_module["AUTH_CLASS"]
+            cls = getattr(importlib.import_module(module_name), class_name)
+            instance = cls()
+            instance.init_app(app)
+            self.site_authentications.append(instance)
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 
-    def get_roles(self, username, password):
+    def get_auth(self, request):
         """
         Returns roles associated to user. Basically this is the main
         authentification method where site_auth is site specific authentication
@@ -62,7 +65,11 @@ class AuthProvider:
         Returns:
             tuple or list: tuple or list with roles associated to the username
         """
-        return self.site_authentication.get_roles(username, password)
+        for site_authentication in self.site_authentications:
+            roles = site_authentication.get_auth(request)
+            if roles is not None:
+                return roles
+        return None
 
     def get_user_info_from_auth_header(self, auth_header):
         """
@@ -254,7 +261,8 @@ def role_required(func):
             request.headers.get("Authorization")
         )
 
-        methods = current_app.config.get("AUTHORIZATION_RULES").get(self.endpoint, {})
+        methods = current_app.config.get(
+            "AUTHORIZATION_RULES").get(self.endpoint, {})
         # If no role is defined then just manager is allowed to access the resource
         roles = methods.get(func.__name__, ["manager"])
 
