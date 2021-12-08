@@ -20,3 +20,5 @@ ruamel.yaml
 pdfkit
 python-barcode
 qrcode
+
+python-keycloak==0.26.1
