@@ -19,11 +19,11 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-__license__ = "LGPLv3+"
-
-
 from flask_restx.errors import abort as restplus_abort
 from flask_restx._http import HTTPStatus
+
+
+__license__ = "LGPLv3+"
 
 
 API_DEFAULT_HTTP_CODE_MESSAGES = {

@@ -33,7 +33,9 @@ from pyispyb.core.modules import proposal
 
 __license__ = "LGPLv3+"
 
+
 class SmisLink(AbstractUserOffice):
+
     def init_app(self, app):
         """Initializes user office class.
 
