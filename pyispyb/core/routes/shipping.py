@@ -24,7 +24,7 @@ from flask import current_app, request, send_from_directory
 from flask_restx._http import HTTPStatus
 
 from pyispyb.flask_restx_patched import Resource
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 from pyispyb.app.extensions.api import api_v1, Namespace
 
 from pyispyb.core.modules import container, dewar, shipping
@@ -183,8 +183,8 @@ class DewarById(Resource):
 class DewarLabelsById(Resource):
     """Returns dewar label pdf"""
 
-    #@token_required
-    #@role_required
+    # @token_required
+    # @role_required
     @api.doc(description="dewar_id should be an integer ")
     def get(self, dewar_id):
         """Returns a dewar labels by dewarId"""

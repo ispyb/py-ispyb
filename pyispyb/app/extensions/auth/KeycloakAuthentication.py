@@ -26,6 +26,7 @@ from keycloak.exceptions import KeycloakAuthenticationError
 from keycloak import KeycloakOpenID
 
 from pyispyb.app.extensions.auth.AbstractAuthenticationDBRoles import AbstractAuthenticationDBRoles
+from pyispyb.core.models import Person
 
 
 class KeycloakAuthentication(AbstractAuthenticationDBRoles):
@@ -43,14 +44,18 @@ class KeycloakAuthentication(AbstractAuthenticationDBRoles):
                                               client_secret_key=client_secret_key,
                                               verify=True)
 
-    def get_username(self, request):
-        keycloak_token = request.headers.get("Keycloak-Token")
-        if not keycloak_token:
+    def get_person(self, username, password, token):
+        if not token:
             return None
         try:
-            userinfo = self.keycloak_openid.userinfo(keycloak_token)
+            userinfo = self.keycloak_openid.userinfo(token)
             print(userinfo)
-            return userinfo["preferred_username"]
+            return Person(
+                login=userinfo["preferred_username"],
+                familyName=userinfo["family_name"],
+                givenName=userinfo["given_name"],
+                emailAddress=userinfo["email"],
+            )
         except KeycloakAuthenticationError as e:
             print(e)
             return None

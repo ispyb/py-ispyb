@@ -28,7 +28,7 @@ from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentic
 class DummyAuthentication(AbstractAuthentication):
     """Dummy authentication class."""
 
-    def get_auth(self, request):
+    def get_auth(self, username, password, token):
         """Returns roles
 
         Args:
@@ -37,20 +37,11 @@ class DummyAuthentication(AbstractAuthentication):
         Returns:
             list: list of roles
         """
-        username = None
-        authorization = request.authorization
-        if authorization:
-            username = authorization.username
-        if not username:
-            username = request.headers.get("username")
         if not username:
             return None, None
 
-        roles = ["user"]
-
-        if "manager" in username:
-            roles.append("manager")
-        if "admin" in username:
-            roles.append("admin")
+        roles = []
+        if password:
+            roles = password.split(",")
 
         return username, roles

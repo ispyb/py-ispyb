@@ -25,22 +25,23 @@ import importlib
 from flask import current_app
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 from pyispyb.core import schemas
 
 
 __license__ = "LGPLv3+"
 
 
-api = Namespace("Schemas", description="Schemas related namespace", path="/schemas")
+api = Namespace(
+    "Schemas", description="Schemas related namespace", path="/schemas")
 api_v1.add_namespace(api)
 
 
 @api.route("/available_names", endpoint="available_schemas_names")
 class SchemasList(Resource):
 
-    #@token_required
-    #@role_required
+    # @token_required
+    # @role_required
     def get(self):
         """Returns list of available schemas
 
@@ -62,8 +63,8 @@ class SchemasList(Resource):
 @api.doc(description="name should be a string")
 class Schemas(Resource):
 
-    #token_required
-    #@role_required
+    # token_required
+    # @role_required
     def get(self, name):
         """Returns json schema
 
@@ -74,7 +75,8 @@ class Schemas(Resource):
             json: schema as json
         """
         try:
-            schemas_module = importlib.import_module("pyispyb.core.schemas." + name)
+            schemas_module = importlib.import_module(
+                "pyispyb.core.schemas." + name)
             return getattr(schemas_module, "json_schema")
         except Exception as ex:
             return (

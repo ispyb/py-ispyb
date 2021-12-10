@@ -25,7 +25,7 @@ from flask_restx._http import HTTPStatus
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 from pyispyb.app.extensions.user_office import user_office
 
 
@@ -72,6 +72,7 @@ class UpdateProposal(Resource):
     def post(self, proposal_code, proposal_number):
         """Sync with user office"""
 
-        api.logger.info("Updates proposal %s%d" % (proposal_code, proposal_number))
+        api.logger.info("Updates proposal %s%d" %
+                        (proposal_code, proposal_number))
         user_office.sync_proposal(proposal_code, proposal_number)
         return HTTPStatus.OK, {"message": "Done!"}

@@ -29,13 +29,14 @@ from flask_restx._http import HTTPStatus
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 
 # from pyispyb.core.schemas import phasing_program_run as phasing_program_run_schemas
 from pyispyb.core.modules import phasing
 
 
-api = Namespace("Phasing", description="Phasing related namespace", path="/phasing")
+api = Namespace(
+    "Phasing", description="Phasing related namespace", path="/phasing")
 api_v1.add_namespace(api)
 
 

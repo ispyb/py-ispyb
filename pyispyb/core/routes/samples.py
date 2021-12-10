@@ -26,7 +26,7 @@ from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.utils import download_pdb_file
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 
 
 from pyispyb.core.schemas import sample as sample_schemas
@@ -39,7 +39,8 @@ from pyispyb.core.modules import sample, crystal, diffraction_plan, protein
 __license__ = "LGPLv3+"
 
 
-api = Namespace("Samples", description="Sample related namespace", path="/samples")
+api = Namespace(
+    "Samples", description="Sample related namespace", path="/samples")
 api_v1.add_namespace(api)
 
 
@@ -167,14 +168,15 @@ class CrystalById(Resource):
 class CrystalPdbById(Resource):
     """Allows to get/set/delete crystal pdb item"""
 
-    #@token_required
-    #@role_required
+    # @token_required
+    # @role_required
     @api.doc(description="crystal_id should be an integer ")
     def get(self, crystal_id):
         """Returns pdb file by crystalId"""
         query_dict = request.args.to_dict()
 
-        pdb_file_path, pdb_file_name = crystal.get_crystal_pdb_by_id(crystal_id)
+        pdb_file_path, pdb_file_name = crystal.get_crystal_pdb_by_id(
+            crystal_id)
         if pdb_file_path and pdb_file_name:
             if os.path.exists(
                 os.path.join(
@@ -208,10 +210,10 @@ class CrystalPdbById(Resource):
                     HTTPStatus.NOT_FOUND,
                     "Pdb entry %s not found in %s"
                     % (
-                            query_dict["pdbFileName"],
-                            current_app.config["PDB_URI"],
-                        ),
-                    )
+                        query_dict["pdbFileName"],
+                        current_app.config["PDB_URI"],
+                    ),
+                )
 
         else:
             abort(

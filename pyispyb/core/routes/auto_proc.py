@@ -24,7 +24,7 @@ from flask import request, send_file, abort
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 
 from pyispyb.core.schemas import auto_proc as auto_proc_schemas
 from pyispyb.core.schemas import auto_proc_program as auto_proc_program_schemas
@@ -146,6 +146,7 @@ class AutoProcPrograms(Resource):
         """Adds a new auto proc program"""
         return auto_proc.add_auto_proc_program(api.payload)
 
+
 @api.route("/programs/<int:program_id>", endpoint="program_by_id")
 @api.param("program_id", "program id (integer)")
 @api.doc(security="apikey")
@@ -184,6 +185,7 @@ class Attachments(Resource):
         """Adds a new auto proc program"""
         return auto_proc.add_auto_proc_program_attachment(api.payload)
 
+
 @api.route("/programs/<int:program_id>/attachments", endpoint="attachments_by_program_id")
 @api.param("program_id", "program id (integer)")
 @api.doc(security="apikey")
@@ -198,6 +200,7 @@ class AttachmentsByAutoProcProgramId(Resource):
         """Returns list of autoproc program attachments"""
         return auto_proc.get_attachments_by_query({"autoProcProgramId": program_id})
 
+
 @api.route(
     "/programs/<int:program_id>/attachments/download",
     endpoint="download_attachments_by_program_id")
@@ -211,7 +214,8 @@ class DownloadAttachmentsByAutoProcProgramId(Resource):
     @api.doc(description="program_id should be an integer ")
     def get(self, program_id):
         """Downloads zip file with auto proc attachment files"""
-        attachment_file_zip, msg = auto_proc.get_attachment_zip_by_program_id(program_id)
+        attachment_file_zip, msg = auto_proc.get_attachment_zip_by_program_id(
+            program_id)
 
         if attachment_file_zip:
             return send_file(
@@ -221,6 +225,7 @@ class DownloadAttachmentsByAutoProcProgramId(Resource):
             )
         else:
             abort(HTTPStatus.NO_CONTENT, msg)
+
 
 @api.route("/attachments/<int:attachment_id>", endpoint="attachment_by_id")
 @api.param("attachment_id", "attachment id (integer)")
@@ -258,7 +263,8 @@ class AttachmenDownloadById(Resource):
     @api.doc(description="attachment_id should be an integer ")
     def get(self, attachment_id):
         """Downloads autoproc program attachment file by attachment_id"""
-        attach_dict = auto_proc.get_auto_proc_program_attachment_by_id(attachment_id)
+        attach_dict = auto_proc.get_auto_proc_program_attachment_by_id(
+            attachment_id)
         path = os.path.join(
             attach_dict["filePath"],
             attach_dict["fileName"]
