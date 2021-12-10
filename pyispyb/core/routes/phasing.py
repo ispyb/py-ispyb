@@ -21,13 +21,9 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-__license__ = "LGPLv3+"
-
-from flask import request, current_app
-from flask_restx._http import HTTPStatus
+from flask import request
 
 from pyispyb.flask_restx_patched import Resource
-
 from pyispyb.app.extensions.api import api_v1, Namespace
 from pyispyb.app.extensions.authentication import authentication_required
 from pyispyb.app.extensions.authorization import authorization_required
@@ -35,6 +31,8 @@ from pyispyb.app.extensions.authorization import authorization_required
 # from pyispyb.core.schemas import phasing_program_run as phasing_program_run_schemas
 from pyispyb.core.modules import phasing
 
+
+__license__ = "LGPLv3+"
 
 api = Namespace("Phasing", description="Phasing related namespace", path="/phasing")
 api_v1.add_namespace(api)

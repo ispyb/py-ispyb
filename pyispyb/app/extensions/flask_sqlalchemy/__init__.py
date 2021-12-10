@@ -23,7 +23,6 @@ __license__ = "LGPLv3+"
 
 
 import sys
-import sqlite3
 
 from flask_restx import abort
 from flask_restx._http import HTTPStatus
@@ -34,27 +33,6 @@ import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy as BaseSQLAlchemy
 
 from pyispyb.app.utils import create_response_item
-
-
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    # pylint: disable=unused-argument
-    """
-    SQLite supports FOREIGN KEY syntax when emitting CREATE statements for tables.
-
-    By default these constraints have no effect on the
-    operation of the table.
-
-    http://docs.sqlalchemy.org/en/latest/dialects/sqlite.html#foreign-key-support
-
-    Args:
-        dbapi_connection ([type]): [description]
-        connection_record ([type]): [description]
-    """
-    if not isinstance(dbapi_connection, sqlite3.Connection):
-        return
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.close()
 
 
 class AlembicDatabaseMigrationConfig:
@@ -116,10 +94,10 @@ class SQLAlchemy(BaseSQLAlchemy):
         if not database_uri or database_uri == "sqlite:///:memory:":
             raise Exception("SQLALCHEMY_DATABASE_URI must be configured!")
         # assert database_uri, "SQLALCHEMY_DATABASE_URI must be configured!"
-        if database_uri.startswith("sqlite:"):
-            self.event.listens_for(sqlalchemy.engine.Engine, "connect")(
-                set_sqlite_pragma
-            )
+        #if database_uri.startswith("sqlite:"):
+        #    self.event.listens_for(sqlalchemy.engine.Engine, "connect")(
+        #        set_sqlite_pragma
+        #    )
 
         app.extensions["migrate"] = AlembicDatabaseMigrationConfig(
             self, compare_type=True

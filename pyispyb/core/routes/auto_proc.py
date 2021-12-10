@@ -63,8 +63,6 @@ class AutoProcs(Resource):
 
     @api.expect(auto_proc_schemas.f_schema)
     @api.marshal_with(auto_proc_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     @authentication_required
     @authorization_required
     def post(self):
@@ -103,8 +101,6 @@ class AutoProcStatus(Resource):
     @authorization_required
     @api.expect(auto_proc_program_schemas.f_schema)
     @api.marshal_with(auto_proc_program_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     def post(self):
         """Adds a new auto proc program"""
         return auto_proc.add_auto_proc_status(api.payload)
@@ -212,12 +208,15 @@ class DownloadAttachmentsByAutoProcProgramId(Resource):
     @api.doc(description="program_id should be an integer ")
     def get(self, program_id):
         """Downloads zip file with auto proc attachment files"""
-        attachment_file_zip, msg = auto_proc.get_attachment_zip_by_program_id(program_id)
+        attachment_file_zip, msg = auto_proc.get_attachment_zip_by_program_id(
+            program_id
+        )
 
         if attachment_file_zip:
             return send_file(
                 attachment_file_zip,
-                attachment_filename='auto_proc_attachments_%d.zip' % program_id,
+                attachment_filename='auto_proc_attachments_%d.zip' % 
+                program_id,
                 as_attachment=True
             )
         else:

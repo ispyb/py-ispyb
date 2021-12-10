@@ -36,6 +36,7 @@ from pyispyb.core.modules import beamline_setup, robot_action, detector
 
 __license__ = "LGPLv3+"
 
+
 log = logging.getLogger(__name__)
 api = Namespace("Beamline", description="Beamline related namespace", path="/beamline")
 api_v1.add_namespace(api)
@@ -117,8 +118,6 @@ class RobotActions(Resource):
     @authorization_required
     @api.expect(robot_action_schemas.f_schema)
     @api.marshal_with(robot_action_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     def post(self):
         """Adds a new robot_action"""
         return robot_action.add_robot_action(api.payload)
@@ -179,8 +178,6 @@ class Detectors(Resource):
     @authorization_required
     @api.expect(detector_schemas.f_schema)
     @api.marshal_with(detector_schemas.f_schema, code=201)
-    # @api.errorhandler(FakeException)
-    # TODO add custom exception handling
     def post(self):
         """Adds a new detector"""
         log.info("Inserts a new detector")

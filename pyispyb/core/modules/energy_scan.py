@@ -20,18 +20,25 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
+from pyispyb.app.extensions import db
 from pyispyb.core import models, schemas
 
 
 __license__ = "LGPLv3+"
 
 
-def get_energy_scans():
+def get_energy_scans(request):
     """
     Returns list of energy scans.
 
     Returns:
         [type]: [description]
     """
-    energy_scan_list = models.EnergyScan.query.all()
-    return schemas.energy_scan.ma_schema.dump(energy_scan_list)
+    query_dict = request.args.to_dict()
+
+    return db.get_db_items(
+        models.EnergyScan,
+        schemas.energy_scan.dict_schema,
+        schemas.energy_scan.ma_schema,
+        query_dict,
+    )

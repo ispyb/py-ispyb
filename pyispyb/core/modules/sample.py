@@ -20,14 +20,14 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-__license__ = "LGPLv3+"
-
-
 from pyispyb.app.extensions import db
 from pyispyb.core import models, schemas
 
 
-def get_samples_by_request(request):
+__license__ = "LGPLv3+"
+
+
+def get_samples(request):
     """
     Returns sample entries.
 
@@ -70,6 +70,9 @@ def add_sample(data_dict):
     Returns:
         [type]: [description]
     """
+    
+
+
     return db.add_db_item(models.BLSample, schemas.sample.ma_schema, data_dict)
 
 

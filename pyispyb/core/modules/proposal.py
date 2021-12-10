@@ -27,13 +27,12 @@ from flask_restx._http import HTTPStatus
 
 from pyispyb.app.extensions import db
 from pyispyb.app.extensions.authentication import authentication_provider 
-from pyispyb.app.utils import create_response_item
 
 from pyispyb.core import models, schemas
 from pyispyb.core.modules import contacts, session
 
 
-def get_proposals_by_query(query_dict):
+def get_proposals(request):
     """Returns proposal db items
 
     Args:
@@ -42,6 +41,14 @@ def get_proposals_by_query(query_dict):
     Returns:
         [type]: [description]
     """
+    query_dict = request.args.to_dict()
+
+    user_info = contacts.get_person_info(request)
+    if not user_info["is_admin"]:
+        query_dict["proposalId"] = get_proposal_ids(request)
+    return get_proposals_by_query(query_dict)
+
+def get_proposals_by_query(query_dict):
     return db.get_db_items(
         models.Proposal,
         schemas.proposal.dict_schema,
@@ -157,43 +164,42 @@ def delete_proposal(proposal_id):
 
 
 def get_proposal_ids_by_person_id(person_id):
-    proposal_id_list = []
+    proposal_ids = []
     proposal_dict = get_proposals_by_query({"personId": person_id})
     if proposal_dict["data"]["rows"]:
         for proposal in proposal_dict["data"]["rows"]:
-            proposal_id_list.append(proposal["proposalId"])
+            proposal_ids.append(proposal["proposalId"])
     proposal_has_person_dict = get_proposals_has_person_by_query(
         {"personId": person_id}
     )
     if proposal_has_person_dict["data"]["rows"]:
         for proposal in proposal_has_person_dict["data"]["rows"]:
-            proposal_id_list.append(proposal["proposalId"])
-    return proposal_id_list
+            proposal_ids.append(proposal["proposalId"])
+    return proposal_ids
 
 def get_proposal_ids(request):
     """
-    Checks if user can run query.
-    Manager role allows to run query without restrictions.
-    Otherwise proposal with proposalId in the query parameters should belong
-    to the user calling the requests
+    Returns proposal ids
 
     Args:
         request (request): [description]
 
     Returns:
-        bool, str: true if user can run query, if False then msg describes the reason
+        list: list of proposal ids
     """
 
     user_info = authentication_provider.get_user_info_from_auth_header(
         request.headers.get("Authorization")
     )
-    
+
+    proposal_ids = []
     if user_info["is_admin"]:
         proposal_dict = get_proposals_by_query({})
-        proposal_ids = []
+        
         for proposal in proposal_dict["data"]["rows"]:
             proposal_ids.append(proposal["proposalId"])
-        return proposal_ids
     else:
         person_id = contacts.get_person_id_by_login(user_info["sub"])
-        return get_proposal_ids_by_person_id(person_id)
+        proposal_ids = get_proposal_ids_by_person_id(person_id)
+    
+    return proposal_ids

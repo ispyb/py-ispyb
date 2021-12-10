@@ -26,7 +26,8 @@ from flask_restx._http import HTTPStatus
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import authentication_required, authorization_required
+from pyispyb.app.extensions.authentication import authentication_required
+from pyispyb.app.extensions.authorization import authorization_required
 
 from pyispyb.ssx.schemas import loaded_sample as loaded_sample_schemas
 from pyispyb.ssx.schemas import crystal_slurry as crystal_slurry_schemas
@@ -51,16 +52,17 @@ api_v1.add_namespace(api)
 class LoadedSample(Resource):
     """Loaded sample resource"""
 
-    # @authentication_required
+    @authentication_required
+    @authorization_required
     def get(self):
         """Returns all loaded samples"""
         # app.logger.info("Return all data collections")
         return loaded_sample.get_loaded_samples(request)
 
-    # @authentication_required
+    @authentication_required
+    @authorization_required
     @api.expect(loaded_sample_schemas.f_schema)
-    # @api.marshal_with(loaded_sample_schemas.f_schema, code=201)
-    # @authorization_required
+    @api.marshal_with(loaded_sample_schemas.f_schema, code=201)
     def post(self):
         """Adds a new loaded sample"""
         return loaded_sample.add_loaded_sample(api.payload)
@@ -112,8 +114,8 @@ class CrystalSlurry(Resource):
         # app.logger.info("Return all data collections")
         return loaded_sample.get_all_crystal_slurry()
 
-    #@authentication_required
-    #@authorization_required
+    @authentication_required
+    @authorization_required
     #@api.expect(crystal_slurry_schemas.f_schema)
     # @api.marshal_with(crystal_slurry_schemas.f_schema, code=201)
     def post(self):

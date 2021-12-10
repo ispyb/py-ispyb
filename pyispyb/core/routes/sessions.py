@@ -36,6 +36,7 @@ from pyispyb.core.modules import session
 
 __license__ = "LGPLv3+"
 
+
 log = logging.getLogger(__name__)
 api = Namespace("Sessions", description="Session related namespace", path="/sessions")
 api_v1.add_namespace(api)
@@ -186,7 +187,7 @@ class BeamCalendars(Resource):
 @api.param("beam_calendar_id", "beam_calendar id (integer)")
 @api.doc(security="apikey")
 @api.response(code=HTTPStatus.NOT_FOUND, description="beam_calendar not found.")
-class beam_calendarById(Resource):
+class BeamCalendarById(Resource):
 
     """Allows to get/set/delete a beam_calendar"""
     @authentication_required

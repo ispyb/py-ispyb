@@ -20,12 +20,12 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-__license__ = "LGPLv3+"
-
-
 from flask import Blueprint
 
 from pyispyb.app.extensions import api
+
+
+__license__ = "LGPLv3+"
 
 
 def init_app(app, **kwargs):
