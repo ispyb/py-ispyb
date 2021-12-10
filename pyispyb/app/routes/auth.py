@@ -59,35 +59,29 @@ api_v1.add_namespace(api)
 #     print("Got the exception")
 #     return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'Exception'}
 
+def get_param(request, name):
+    res = request.headers.get(name)
+    if not res:
+        if request.json and request.json[name]:
+            res = request.json[name]
+    return res
+
 
 @api.route("/login")
 class Login(Resource):
     """Login resource"""
 
     def get(self):
-        # authorization = request.authorization
 
-        # if (
-        #     not authorization
-        #     or not authorization.username
-        #     or not authorization.password
-        # ):
-        #     if not request.headers.get("username") or not request.headers.get(
-        #         "password"
-        #     ):
-        #         return make_response(
-        #             "Could not verify",
-        #             401,
-        #             {"WWW-Authenticate": 'Basic realm="Login required!"'},
-        #         )
-        #     else:
-        #         username = request.headers.get("username")
-        #         password = request.headers.get("password")
-        # else:
-        #     username = authorization.username
-        #     password = authorization.password
+        module = get_param(request, "module")
+        username = get_param(request, "username")
+        password = get_param(request, "password")
+        token = get_param(request, "token")
 
-        username, roles = auth_provider.get_auth(request)
+        username, roles = auth_provider.get_auth(
+            module, username, password, token
+        )
+
         if not username or not roles:
             return make_response(
                 "Could not verify",

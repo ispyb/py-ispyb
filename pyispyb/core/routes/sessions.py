@@ -26,7 +26,7 @@ from flask import request
 from pyispyb.flask_restx_patched import Resource, HTTPStatus, abort
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 
 from pyispyb.core.schemas import session as session_schemas
 from pyispyb.core.schemas import beam_calendar as beam_calendar_schemas
@@ -36,7 +36,8 @@ from pyispyb.core.modules import session
 __license__ = "LGPLv3+"
 
 log = logging.getLogger(__name__)
-api = Namespace("Sessions", description="Session related namespace", path="/sessions")
+api = Namespace(
+    "Sessions", description="Session related namespace", path="/sessions")
 api_v1.add_namespace(api)
 
 
@@ -76,7 +77,6 @@ class SessionById(Resource):
     def get(self, session_id):
         """Returns a session by sessionId"""
         return session.get_session_by_id(session_id)
-
 
     @token_required
     @role_required

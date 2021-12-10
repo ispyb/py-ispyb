@@ -24,9 +24,17 @@ __license__ = "LGPLv3+"
 
 import abc
 from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentication
-from pyispyb.app.extensions.auth.models import Roles
 from pyispyb.app.extensions import db
-import json
+
+from pyispyb.core.models import Person
+
+
+def get_person_permissions(person):
+    permissions = []
+    for group in person.UserGroup:
+        for permission in group.permissions:
+            permissions.append(permission.type)
+    return list(dict.fromkeys(permissions))
 
 
 class AbstractAuthenticationDBRoles(AbstractAuthentication):
@@ -35,21 +43,23 @@ class AbstractAuthenticationDBRoles(AbstractAuthentication):
     def init_app(self, app):
         pass
 
-    def get_auth(self, request):
-        username = self.get_username(request)
-        if not username:
+    def get_auth(self, username, password, token):
+        person = self.get_person(username, password, token)
+        if not person:
             return None, None
-        roles = Roles.query.filter_by(username=username).first()
-        if not roles:
-            roles = Roles(username=username, roles="[]")
-            db.session.add(roles)
+        db_person = Person.query.filter_by(login=person.login).first()
+        if not db_person:
+            db_person = person
+            db.session.add(db_person)
             db.session.commit()
-        return username, json.loads(roles.roles)
+        return db_person.login, get_person_permissions(db_person)
 
     @abc.abstractmethod
-    def get_username(self, request):
+    def get_person(self, username, password, token):
         """Returns username associated to the user.
 
         Args:
             request: request object
+
+        Returns: Person
         """

@@ -25,7 +25,6 @@ __license__ = "LGPLv3+"
 
 import os
 import tempfile
-import ruamel.yaml
 from ruamel.yaml.main import YAML
 
 
@@ -34,6 +33,8 @@ class BaseConfig:
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
+    RESOURCES_ROOT = os.path.join(PROJECT_ROOT, "resources")
+    QUERIES_DIR = os.path.join(RESOURCES_ROOT, "queries")
 
     SITE_NAME = "Generic"
     API_ROOT = "/ispyb/api/v1"
@@ -45,7 +46,8 @@ class BaseConfig:
 
     DEBUG = True
     RESTX_ERROR_404_HELP = False
-    REVERSE_PROXY_SETUP = bool(os.getenv("EXAMPLE_API_REVERSE_PROXY_SETUP", ""))
+    REVERSE_PROXY_SETUP = bool(
+        os.getenv("EXAMPLE_API_REVERSE_PROXY_SETUP", ""))
 
     AUTHORIZATIONS = {
         "apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}
@@ -53,8 +55,6 @@ class BaseConfig:
 
     AUTHORIZATION_RULES = {}
 
-    AUTH_MODULE = "pyispyb.app.extensions.auth.DummyAuthentication"
-    AUTH_CLASS = "DummyAuthentication"
     JWT_CODING_ALGORITHM = "HS256"
     TOKEN_EXP_TIME = 300  # in minutes
     MASTER_TOKEN = "MasterToken"
@@ -69,7 +69,7 @@ class BaseConfig:
         "dewar_label_template.html"
     )
 
-    SWAGGER_UI_URI = "/docs" #False disable docs
+    SWAGGER_UI_URI = "/docs"  # False disable docs
     SWAGGER_UI_JSONEDITOR = True
     SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
     SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB server"
@@ -86,7 +86,7 @@ class BaseConfig:
 
     def __init__(self, config_filename=None):
         with open(config_filename) as f:
-            yaml=YAML(typ='unsafe', pure=True)
+            yaml = YAML(typ='unsafe', pure=True)
             config = yaml.load(f.read())
 
             for key, value in config["server"].items():

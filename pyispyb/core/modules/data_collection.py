@@ -22,10 +22,30 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
-
+import json
+import os
+from flask.globals import current_app
 from pyispyb.app.extensions import db
+from pyispyb.app.utils import getSQLQuery, queryResultToDict
 
 from pyispyb.core import models, schemas
+
+
+def get_data_collections_groups_infos(proposal_id, session_id):
+    """
+    Returns data collection info list for session.
+
+    Args:
+        session_id ([type]): [int]
+
+    Returns:
+        [type]: [description]
+    """
+
+    sql = getSQLQuery("dataCollectionGroup")
+    sql = sql.bindparams(proposalId=proposal_id, sessionId=session_id)
+    group_list = db.engine.execute(sql)
+    return queryResultToDict(group_list)
 
 
 def get_data_collections(query_dict):

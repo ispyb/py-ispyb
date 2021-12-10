@@ -17,9 +17,12 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
+from datetime import datetime
+from decimal import Decimal
 import os
 from requests import get
 from flask import current_app
+from sqlalchemy import text
 
 
 def create_response_item(msg=None, num_items=None, data=[]):
@@ -46,3 +49,28 @@ def download_pdb_file(pdb_filename):
     response = get(current_app.config["PDB_URI"] + "/" + pdb_filename)
     if response.status_code == 200:
         return response.content
+
+
+def getSQLQuery(name):
+    path = os.path.join(current_app.config["QUERIES_DIR"], name+".sql")
+    file = open(path)
+    query = text(file.read())
+    return query
+
+
+def queryResultToDict(result):
+    res = []
+
+    for row in result:
+        row_dict = {}
+        for field in row.items():
+            field_name = field[0]
+            field_value = field[1]
+            if type(field_value) is datetime:
+                field_value = field_value.isoformat()
+            if type(field_value) is Decimal:
+                field_value = float(field_value)
+            row_dict[field_name] = field_value
+        res.append(row_dict)
+
+    return res

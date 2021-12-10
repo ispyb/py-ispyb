@@ -27,6 +27,8 @@ import jwt
 from flask import current_app, request
 from flask_restx._http import HTTPStatus
 
+from pyispyb.app.utils import getSQLQuery, queryResultToDict
+
 
 __license__ = "LGPLv3+"
 
@@ -38,21 +40,22 @@ class AuthProvider:
     """Allows to authentificate users and create tokens."""
 
     def __init__(self):
-        self.site_authentications = []
+        self.site_authentications = {}
 
     def init_app(self, app):
         auth_list = app.config["AUTH"]
         for auth_module in auth_list:
-            module_name = auth_module["AUTH_MODULE"]
-            class_name = auth_module["AUTH_CLASS"]
-            cls = getattr(importlib.import_module(module_name), class_name)
-            instance = cls()
-            instance.init_app(app)
-            self.site_authentications.append(instance)
+            for auth_name in auth_module:
+                module_name = auth_module[auth_name]["AUTH_MODULE"]
+                class_name = auth_module[auth_name]["AUTH_CLASS"]
+                cls = getattr(importlib.import_module(module_name), class_name)
+                instance = cls()
+                instance.init_app(app)
+                self.site_authentications[auth_name] = instance
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 
-    def get_auth(self, request):
+    def get_auth(self, module, username, password, token):
         """
         Returns roles associated to user. Basically this is the main
         authentification method where site_auth is site specific authentication
@@ -65,11 +68,14 @@ class AuthProvider:
         Returns:
             tuple or list: tuple or list with roles associated to the username
         """
-        for site_authentication in self.site_authentications:
-            roles = site_authentication.get_auth(request)
-            if roles is not None:
-                return roles
-        return None
+        if not self.site_authentications[module]:
+            return None
+        username, roles = self.site_authentications[module].get_auth(
+            username, password, token
+        )
+        if roles is not None and username is not None:
+            return username, roles
+        return None, None
 
     def get_user_info_from_auth_header(self, auth_header):
         """
@@ -160,127 +166,3 @@ def decode_token(token):
         current_app.logger.info(msg)
 
     return user_info, msg
-
-
-def token_required(func):
-    """
-    Token required decorator.
-
-    Checks if the token is valid
-
-    Args:
-        func (method): python method
-
-    Returns:
-        func: if success
-    """
-
-    @wraps(func)
-    def decorated(*args, **kwargs):
-        """
-        Actual decorator function
-
-        Returns:
-            [type]: [description]
-        """
-        token = None
-
-        auth = request.headers.get("Authorization", None)
-        if not auth:
-            return (
-                {"message": "Authorization header is expected"},
-                HTTPStatus.UNAUTHORIZED,
-            )
-
-        parts = auth.split()
-
-        if parts[0].lower() != "bearer":
-            return (
-                {"message": "Authorization header must start with Bearer"},
-                HTTPStatus.UNAUTHORIZED,
-            )
-        elif len(parts) == 1:
-            return {"message": "Token not found"}, HTTPStatus.UNAUTHORIZED
-        elif len(parts) > 2:
-            return (
-                {"message": "Authorization header must be Bearer token"},
-                HTTPStatus.UNAUTHORIZED,
-            )
-
-        token = parts[1]
-
-        if current_app.config.get("MASTER_TOKEN"):
-            if current_app.config["MASTER_TOKEN"] == token:
-                current_app.logger.info("Master token validated")
-                return func(*args, **kwargs)
-
-        user_info, msg = decode_token(token)
-        if not user_info:
-            return {"message": msg}, HTTPStatus.UNAUTHORIZED
-        else:
-            return func(*args, **kwargs)
-
-    return decorated
-
-
-def role_required(func):
-    """
-    Checks if user has role required to access the given resource.
-
-    Authorization is done via AUTHORIZATION_RULES dictionary that contains
-    mapping of endpoints with user groups. For example:
-
-    AUTHORIZATION_RULES = {
-        "proposals": {
-            "get": ["all"],
-            "post": ["admin"]
-        }
-
-    define that method GET of endpoint proposals is available for all user groups
-    and method POST is accessible just for admin group.
-    If an endpoint is not defined in the AUTHORIZATION_RULES then it is available
-    for all user groups.
-
-    Args:
-        func (function): function
-
-    Returns:
-        function: [description]
-    """
-
-    @wraps(func)
-    def decorated(self, *args, **kwargs):
-        """
-        Actual decorator function
-
-        Returns:
-            [type]: [description]
-        """
-
-        user_info = auth_provider.get_user_info_from_auth_header(
-            request.headers.get("Authorization")
-        )
-
-        methods = current_app.config.get(
-            "AUTHORIZATION_RULES").get(self.endpoint, {})
-        # If no role is defined then just manager is allowed to access the resource
-        roles = methods.get(func.__name__, ["manager"])
-
-        if (
-            not roles
-            or "all" in roles
-            or any(role in list(roles) for role in list(user_info.get("roles", [])))
-        ):
-            return func(self, *args, **kwargs)
-        else:
-            msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (
-                user_info.get("sub"),
-                str(user_info.get("roles")),
-                str(roles),
-            )
-            msg += " to execute method."
-            return {"message": msg}, HTTPStatus.UNAUTHORIZED
-
-        return func(self, *args, **kwargs)
-
-    return decorated

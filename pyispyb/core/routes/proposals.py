@@ -41,7 +41,7 @@ from flask_restx._http import HTTPStatus
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 from pyispyb.core.schemas import proposal as proposal_schemas
 from pyispyb.core.modules import contacts, proposal
 
@@ -64,8 +64,10 @@ class Proposals(Resource):
         api.logger.info("Get all proposals")
         user_info = contacts.get_person_info(request)
         query_dict = request.args.to_dict()
-        if not user_info["is_admin"]:
-            proposal_ids = proposal.get_proposal_ids_by_person_id(user_info["personId"])
+        if not "all_proposals" in request.roles:
+            proposal_ids = proposal.get_proposal_ids_by_person_id(
+                user_info["personId"]
+            )
             query_dict["proposalId"] = proposal_ids
         return proposal.get_proposals_by_query(query_dict)
 
@@ -94,7 +96,7 @@ class ProposalById(Resource):
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
         user_info = contacts.get_person_info(request)
-        if user_info["is_admin"] or proposal_id in user_info["proposal_ids"]:
+        if "all_proposals" in request.roles or proposal_id in user_info["proposal_ids"]:
             return proposal.get_proposal_by_id(proposal_id)
         else:
             abort(
@@ -140,11 +142,10 @@ class ProposalInfoById(Resource):
     @token_required
     @role_required
     @api.doc(description="proposal_id should be an integer ")
-    # @api.marshal_with(proposal_desc_f_schema)
     def get(self, proposal_id):
         """Returns a full description of a proposal by proposalId"""
         user_info = contacts.get_person_info(request)
-        if user_info["is_admin"] or proposal_id in user_info["proposal_ids"]:
+        if "all_proposals" in request.roles or proposal_id in user_info["proposal_ids"]:
             return proposal.get_proposal_info_by_id(proposal_id)
         else:
             abort(

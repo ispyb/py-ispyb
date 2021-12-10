@@ -25,7 +25,7 @@ from flask import request
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 
 from pyispyb.core.schemas import beamline_setup as beamline_setup_schemas
 from pyispyb.core.schemas import robot_action as robot_action_schemas
@@ -36,7 +36,8 @@ from pyispyb.core.modules import beamline_setup, robot_action, detector
 __license__ = "LGPLv3+"
 
 log = logging.getLogger(__name__)
-api = Namespace("Beamline", description="Beamline related namespace", path="/beamline")
+api = Namespace(
+    "Beamline", description="Beamline related namespace", path="/beamline")
 api_v1.add_namespace(api)
 
 

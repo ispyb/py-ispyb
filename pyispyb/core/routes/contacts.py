@@ -23,7 +23,7 @@ from flask import request
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import token_required, role_required
 
 from pyispyb.core.schemas import person as person_schemas
 from pyispyb.core.schemas import lab_contact as lab_contact_schemas
@@ -34,7 +34,8 @@ from pyispyb.core.modules import contacts
 __license__ = "LGPLv3+"
 
 
-api = Namespace("Contacts", description="Contact related namespace", path="/contacts")
+api = Namespace(
+    "Contacts", description="Contact related namespace", path="/contacts")
 api_v1.add_namespace(api)
 
 

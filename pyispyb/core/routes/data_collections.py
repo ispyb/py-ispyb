@@ -25,7 +25,7 @@ from flask import request, send_file, abort
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import check_proposal_authorization, token_required, role_required
 
 from pyispyb.core.schemas import data_collection as data_collection_schemas
 from pyispyb.core.schemas import data_collection_group as data_collection_group_schemas
@@ -41,6 +41,20 @@ api = Namespace(
     path="/data_collections",
 )
 api_v1.add_namespace(api)
+
+
+@api.route("/groups/infos/proposal/<int:proposal_id>/session/<int:session_id>", endpoint="data_collection_groups_infos")
+@api.doc(security="apikey")
+class DataColletionGroupsInfos(Resource):
+    """Allows to get all data_collections"""
+
+    @token_required
+    @role_required
+    @check_proposal_authorization
+    def get(self, proposal_id, session_id):
+        """Returns list of data_collections"""
+        query_dict = request.args.to_dict()
+        return data_collection.get_data_collections_groups_infos(proposal_id, session_id)
 
 
 @api.route("")
@@ -84,6 +98,7 @@ class DataCollectionById(Resource):
         """Returns a data_collection by data_collectionId"""
         return data_collection.get_data_collection_by_id(data_collection_id)
 
+
 @api.route("/<int:data_collection_id>/snapshot/<int:snapshot_index>")
 @api.param("data_collection_id", "data_collection_id (integer)")
 @api.param("snapshot_index", "snapshot_index (integer)")
@@ -101,14 +116,15 @@ class DataCollectionSnapshot(Resource):
             data_collection_id
         )
         if data_collection_dict:
-            snapshot_path = data_collection_dict.get("xtalSnapshotFullPath%d" % snapshot_index)
+            snapshot_path = data_collection_dict.get(
+                "xtalSnapshotFullPath%d" % snapshot_index)
             if snapshot_path:
                 if os.path.exists(snapshot_path):
                     return send_file(
-                            snapshot_path,
-                            attachment_filename=os.path.basename(snapshot_path),
-                            as_attachment=True
-                        )
+                        snapshot_path,
+                        attachment_filename=os.path.basename(snapshot_path),
+                        as_attachment=True
+                    )
                 else:
                     abort(
                         HTTPStatus.NOT_FOUND,
@@ -118,7 +134,7 @@ class DataCollectionSnapshot(Resource):
                 abort(
                     HTTPStatus.NOT_FOUND,
                     "No file name associated with xtalSnapshotFullPath%d" % snapshot_index
-                    )
+                )
 
 
 @api.route("/<int:data_collection_id>/file")
@@ -146,7 +162,8 @@ class DataCollectionFile(Resource):
                     if os.path.exists(attribute_file_path):
                         return send_file(
                             attribute_file_path,
-                            attachment_filename=os.path.basename(attribute_file_path),
+                            attachment_filename=os.path.basename(
+                                attribute_file_path),
                             as_attachment=True
                         )
                     else:
@@ -157,7 +174,7 @@ class DataCollectionFile(Resource):
                 else:
                     abort(
                         HTTPStatus.NOT_FOUND,
-                        "No file associated with attribute %s" % 
+                        "No file associated with attribute %s" %
                         query_dict["attribute_name"]
                     )
 
@@ -165,7 +182,7 @@ class DataCollectionFile(Resource):
                 abort(
                     HTTPStatus.NOT_FOUND,
                     "No attribute_name in query parameters"
-                    )
+                )
 
 
 @api.route("/groups")
@@ -187,6 +204,7 @@ class DataCollectionGroups(Resource):
     def post(self):
         """Adds a new session"""
         return data_collection.add_data_collection_group(api.payload)
+
 
 @api.route("/groups/<int:data_collection_group_id>")
 @api.param("data_collection_group_id", "data_collection group_id (integer)")
