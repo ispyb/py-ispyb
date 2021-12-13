@@ -37,6 +37,7 @@ CONFIG_NAME_MAPPER = {
     "prod": "ProductionConfig",
 }
 
+
 def create_app(config_path=None, run_mode="dev", **kwargs):
     """
     Entry point to the Flask RESTful Server application.
@@ -71,7 +72,8 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
 
     extensions.init_app(app)
 
-    service_module = importlib.import_module("pyispyb." + app.config["SERVICE_NAME"])
+    service_module = importlib.import_module(
+        "pyispyb." + app.config["SERVICE_NAME"])
     service_module.init_app(app)
 
     from pyispyb.app import routes
@@ -90,7 +92,7 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
                 print("Unable to create temp dir %s (%s)" % (
                     app.config["TEMP_FOLDER"],
                     str(ex)
-                    )
+                )
                 )
     if app.config["UPLOAD_FOLDER"]:
         if not os.path.exists(app.config["UPLOAD_FOLDER"]):
@@ -101,7 +103,7 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
                 print("Unable to create upload dir %s (%s)" % (
                     app.config["UPLOAD_FOLDER"],
                     str(ex)
-                    )
+                )
                 )
 
     app.logger.debug("ISPyB server started")

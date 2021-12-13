@@ -35,7 +35,7 @@ dict_schema = {
         'phasingAnalysisId': f_fields.Integer(required=True, description='Related phasing analysis item'),
         'autoProcScalingId': f_fields.Integer(required=True, description='Related autoProcScaling item'),
         'datasetNumber': f_fields.Integer(required=False, description='serial number of the dataset and always reserve 0 for the reference'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description=''),
+        'recordTimeStamp': f_fields.DateTime(required=True, description=''),
         }
 
 class Phasing_has_ScalingSchema(Schema):

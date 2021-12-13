@@ -18,21 +18,19 @@ You should have received a copy of the GNU Lesser General Public License
 along
 """
 
-
-from pyispyb import create_app
-__license__ = "LGPLv3+"
-
-
 import os
 import sys
 import pytest
+from pyispyb import create_app
 from pyispyb.app.extensions import db
+from tests.core.utils import clean_db, get_all_permissions_token
 
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, ROOT_DIR)
 
-app = create_app(ROOT_DIR+"/tests/ispyb_core_config_test.yml", "test")
+app = create_app(
+    ROOT_DIR+"/ispyb_core_config_test_empty_db.yml", "test")
 
 
 @pytest.fixture()
@@ -41,32 +39,18 @@ def ispyb_app():
         yield app
 
 
-def _clean_db():
-    tables = db.engine.execute(
-        "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'pydb_test' AND TABLE_TYPE = 'BASE TABLE';")
-    for table in tables:
-        db.engine.execute('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE ' +
-                          table[0]+';')
-
-
 @pytest.fixture()
 def clean_db_before_test(ispyb_app):
-    _clean_db()
+    clean_db(db)
     yield
 
 
 @pytest.fixture()
 def clean_db_after_test(ispyb_app):
     yield
-    _clean_db()
+    clean_db(db)
 
 
 @pytest.fixture()
 def manager_token(ispyb_app):
-    client = ispyb_app.test_client()
-    api_root = ispyb_app.config["API_ROOT"]
-
-    response = client.get(
-        api_root + "/auth/login", headers={"username": "manager", "password": "pass"}
-    )
-    yield response.json["token"]
+    yield get_all_permissions_token(ispyb_app)

@@ -40,7 +40,7 @@ dict_schema = {
         'enantiomorph': f_fields.Integer(required=False, description='0 or 1'),
         'lowRes': f_fields.String(required=False, description=''),
         'highRes': f_fields.String(required=False, description=''),
-        'recordTimeStamp': f_fields.DateTime(required=False, description=''),
+        'recordTimeStamp': f_fields.DateTime(required=True, description=''),
         }
 
 class PhasingSchema(Schema):

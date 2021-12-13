@@ -50,18 +50,7 @@ dict_schema = {
         'returnCourier': f_fields.String(required=False, description=''),
         'dateOfShippingToUser': f_fields.DateTime(required=False, description=''),
         'shippingType': f_fields.String(required=False, description=''),
-        'SAFETYLEVEL': f_fields.String(required=False, description=''),
-        'deliveryAgent_flightCodeTimestamp': f_fields.DateTime(required=False, description='Date flight code created, if automatic'),
-        'deliveryAgent_label': f_fields.String(required=False, description='Base64 encoded pdf of airway label'),
-        'readyByTime': f_fields.String(required=False, description='Time shipment will be ready'),
-        'closeTime': f_fields.String(required=False, description='Time after which shipment cannot be picked up'),
-        'physicalLocation': f_fields.String(required=False, description='Where shipment can be picked up from: i.e. Stores'),
-        'deliveryAgent_pickupConfirmationTimestamp': f_fields.DateTime(required=False, description='Date picked confirmed'),
-        'deliveryAgent_pickupConfirmation': f_fields.String(required=False, description='Confirmation number of requested pickup'),
-        'deliveryAgent_readyByTime': f_fields.String(required=False, description='Confirmed ready-by time'),
-        'deliveryAgent_callinTime': f_fields.String(required=False, description='Confirmed courier call-in time'),
-        'deliveryAgent_productcode': f_fields.String(required=False, description='A code that identifies which shipment service was used'),
-        'deliveryAgent_flightCodePersonId': f_fields.Integer(required=False, description='The person who created the AWB (for auditing)'),
+        'safetyLevel': f_fields.String(required=False, description=''),
         }
 
 class ShippingSchema(Schema):
@@ -86,18 +75,7 @@ class ShippingSchema(Schema):
     returnCourier = ma_fields.String()
     dateOfShippingToUser = ma_fields.DateTime()
     shippingType = ma_fields.String()
-    SAFETYLEVEL = ma_fields.String()
-    deliveryAgent_flightCodeTimestamp = ma_fields.DateTime()
-    deliveryAgent_label = ma_fields.String()
-    readyByTime = ma_fields.String()
-    closeTime = ma_fields.String()
-    physicalLocation = ma_fields.String()
-    deliveryAgent_pickupConfirmationTimestamp = ma_fields.DateTime()
-    deliveryAgent_pickupConfirmation = ma_fields.String()
-    deliveryAgent_readyByTime = ma_fields.String()
-    deliveryAgent_callinTime = ma_fields.String()
-    deliveryAgent_productcode = ma_fields.String()
-    deliveryAgent_flightCodePersonId = ma_fields.Integer()
+    safetyLevel = ma_fields.String()
 
 f_schema = api.model('Shipping', dict_schema)
 ma_schema = ShippingSchema()

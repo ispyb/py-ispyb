@@ -22,11 +22,9 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
-
-from flask_restx._http import HTTPStatus
-
 from pyispyb.app.extensions import db, auth_provider
-from pyispyb.app.utils import create_response_item, getSQLQuery, queryResultToDict
+
+from pyispyb.app.utils import getSQLQuery
 
 from pyispyb.core import models, schemas
 from pyispyb.core.modules import contacts, session
@@ -162,3 +160,43 @@ def loginAuthorizedForProposal(login, proposalId):
     sql = sql.bindparams(login=login, proposalId=proposalId)
     isAuthorized = db.engine.execute(sql)
     return isAuthorized.first()[0] > 0
+
+
+def get_proposal_ids_by_person_id(person_id):
+    proposal_id_list = []
+    proposal_dict = get_proposals_by_query({"personId": person_id})
+    if proposal_dict["data"]["rows"]:
+        for proposal in proposal_dict["data"]["rows"]:
+            proposal_id_list.append(proposal["proposalId"])
+    proposal_has_person_dict = get_proposals_has_person_by_query(
+        {"personId": person_id})
+    if proposal_has_person_dict["data"]["rows"]:
+        for proposal in proposal_has_person_dict["data"]["rows"]:
+            proposal_id_list.append(proposal["proposalId"])
+    return proposal_id_list
+
+
+def get_proposal_ids(request):
+    """
+    Checks if user can run query.
+    Manager role allows to run query without restrictions.
+    Otherwise proposal with proposalId in the query parameters should belong
+    to the user calling the requests
+
+    Args:
+        request (request): [description]
+
+    Returns:
+        bool, str: true if user can run query, if False then msg describes the reason
+    """
+
+    user_info = auth_provider.get_user_info_from_auth_header(
+        request.headers.get("Authorization")
+    )
+    proposal_id_list = []
+
+    user_proposals = get_proposals_by_query(request.args.to_dict())
+    for user_proposal in user_proposals["data"]["rows"]:
+        proposal_id_list.append(user_proposal.get("proposalId"))
+
+    return user_info.get("is_admin"), proposal_id_list

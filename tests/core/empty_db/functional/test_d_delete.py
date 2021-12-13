@@ -18,21 +18,29 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+import pytest
+from tests.core.empty_db.functional.data.delete import test_data
 
-from tests.core.functional.data.post import test_data
+# Need to fix test: empty database - nothing to patch
+pytestmark = pytest.mark.skip
 
 
-def test_post(ispyb_app, manager_token):
+@pytest.mark.parametrize("test_elem", test_data)
+def test_delete(ispyb_app, manager_token, test_elem):
     client = ispyb_app.test_client()
-    headers = {"Authorization": "bearer " + manager_token}
+    headers = {"Authorization": "Bearer " + manager_token}
 
-    prev = {}
-    for test_elem in test_data:
+    test_route = ispyb_app.config["API_ROOT"] + test_elem["route"]
+    test_code = test_elem["code"]
+    test_id = test_elem["id"]
 
-        test_route = ispyb_app.config["API_ROOT"] + test_elem['route']
-        test_json = test_elem['json'](prev)
-        test_name = test_elem['name']
-        response = client.post(test_route, json=test_json, headers=headers)
+    response = client.get(test_route, headers=headers)
 
-        assert response.status_code == 200, "[POST] %s failed" % test_route
-        prev[test_name] = response.json
+    item_id = response.json["data"]["rows"][-1][test_id]
+    del_route = (
+        test_route
+        + "/"
+        + str(item_id)
+    )
+    response = client.delete(del_route, headers=headers)
+    assert response.status_code == test_code, "[DELETE] %s " % (del_route)

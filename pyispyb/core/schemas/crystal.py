@@ -53,7 +53,7 @@ dict_schema = {
         'pdbFilePath': f_fields.String(required=False, description='pdb file path'),
         'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
         'abundance': f_fields.Float(required=False, description=''),
-        'theoreticalDensity': f_fields.Float(required=False, description=''),
+        'packingFraction': f_fields.Float(required=False, description=''),
         }
 
 class CrystalSchema(Schema):
@@ -81,7 +81,7 @@ class CrystalSchema(Schema):
     pdbFilePath = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
     abundance = ma_fields.Float()
-    theoreticalDensity = ma_fields.Float()
+    packingFraction = ma_fields.Float()
 
 f_schema = api.model('Crystal', dict_schema)
 ma_schema = CrystalSchema()
