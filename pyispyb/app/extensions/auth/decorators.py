@@ -3,10 +3,9 @@ from functools import wraps
 from flask import current_app, request
 from flask_restx._http import HTTPStatus
 
-from pyispyb.app.utils import getSQLQuery, queryResultToDict
-
 from pyispyb.app.extensions.auth import auth_provider, decode_token
-from pyispyb.app.extensions import db
+from pyispyb.core.modules.proposal import loginAuthorizedForProposal
+from pyispyb.core.modules.session import loginAuthorizedForSession
 
 
 def token_required(func):
@@ -153,14 +152,10 @@ def check_proposal_authorization(func):
         if "all_proposals" in roles:
             return func(self, *args, **kwargs)
         elif "own_proposals" in roles:
-            sql = getSQLQuery("personProposalIds")
-            sql = sql.bindparams(login=user_info["sub"])
-            proposalId_list = db.engine.execute(sql)
-            proposalId_list = queryResultToDict(proposalId_list)
-            isAutorized = any(
-                proposal_id == id_dict["proposalId"] for id_dict in proposalId_list
+            isAutorized = loginAuthorizedForProposal(
+                user_info["sub"],
+                proposal_id
             )
-
             if isAutorized:
                 return func(self, *args, **kwargs)
             else:
@@ -174,6 +169,52 @@ def check_proposal_authorization(func):
                 user_info.get("sub"),
                 str(user_info.get("roles")),
                 str(["all_proposals", "own_proposals"]),
+            )
+
+        return {"message": msg}, HTTPStatus.UNAUTHORIZED
+
+    return decorated
+
+
+def check_session_authorization(func):
+
+    @wraps(func)
+    def decorated(self, *args, **kwargs):
+
+        session_id = request.view_args["session_id"]
+        if not session_id:
+            session_id = request.view_args["sessionId"]
+
+        if not session_id:
+            return {"message": "No session_id specified"}, HTTPStatus.UNAUTHORIZED
+
+        user_info = auth_provider.get_user_info_from_auth_header(
+            request.headers.get("Authorization")
+        )
+        roles = user_info.get("roles", [])
+
+        msg = ""
+
+        if "all_sessions" in roles:
+            return func(self, *args, **kwargs)
+        elif "own_sessions" in roles:
+            isAutorized = loginAuthorizedForSession(
+                user_info["sub"],
+                session_id
+            )
+            if isAutorized:
+                return func(self, *args, **kwargs)
+            else:
+                msg = "User %s (roles assigned: %s) is not authorized to access session %s." % (
+                    user_info.get("sub"),
+                    str(user_info.get("roles")),
+                    str(session_id),
+                )
+        else:
+            msg = "User %s (roles assigned: %s) has no appropriate role (%s) to execute method." % (
+                user_info.get("sub"),
+                str(user_info.get("roles")),
+                str(["all_sessions", "own_sessions"]),
             )
 
         return {"message": msg}, HTTPStatus.UNAUTHORIZED

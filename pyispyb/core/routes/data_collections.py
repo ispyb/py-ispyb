@@ -25,7 +25,7 @@ from flask import request, send_file, abort
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth.decorators import check_proposal_authorization, token_required, role_required
+from pyispyb.app.extensions.auth.decorators import check_proposal_authorization, check_session_authorization, token_required, role_required
 
 from pyispyb.core.schemas import data_collection as data_collection_schemas
 from pyispyb.core.schemas import data_collection_group as data_collection_group_schemas
@@ -43,18 +43,18 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("/groups/infos/proposal/<int:proposal_id>/session/<int:session_id>", endpoint="data_collection_groups_infos")
+@api.route("/groups/infos/session/<int:session_id>", endpoint="data_collection_groups_infos")
 @api.doc(security="apikey")
 class DataColletionGroupsInfos(Resource):
     """Allows to get all data_collections"""
 
     @token_required
     @role_required
-    @check_proposal_authorization
-    def get(self, proposal_id, session_id):
+    @check_session_authorization
+    def get(self, session_id):
         """Returns list of data_collections"""
         query_dict = request.args.to_dict()
-        return data_collection.get_data_collections_groups_infos(proposal_id, session_id)
+        return data_collection.get_data_collections_groups_infos(session_id)
 
 
 @api.route("")
