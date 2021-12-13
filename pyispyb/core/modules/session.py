@@ -25,7 +25,7 @@ __license__ = "LGPLv3+"
 
 from pyispyb.app.extensions import db
 from pyispyb.app.extensions.auth import auth_provider
-from pyispyb.app.utils import create_response_item
+from pyispyb.app.utils import create_response_item, getSQLQuery
 
 from pyispyb.core import models, schemas
 
@@ -297,3 +297,10 @@ def delete_beam_calendar(beam_calendar_id):
     """
     id_dict = {"beamCalendarId": beam_calendar_id}
     return db.delete_db_item(models.BeamCalendar, id_dict)
+
+
+def loginAuthorizedForSession(login, sessionId):
+    sql = getSQLQuery("loginAuthorizedSession")
+    sql = sql.bindparams(login=login, sessionId=sessionId)
+    isAuthorized = db.engine.execute(sql)
+    return isAuthorized.first()[0] > 0

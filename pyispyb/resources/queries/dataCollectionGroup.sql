@@ -216,7 +216,6 @@ from
     v_datacollection_summary
 where
     DataCollectionGroup_sessionId = :sessionId
-    and BLSession_proposalId = :proposalId
 group by
     v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId
 order by

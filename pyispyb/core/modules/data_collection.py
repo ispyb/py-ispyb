@@ -31,7 +31,7 @@ from pyispyb.app.utils import getSQLQuery, queryResultToDict
 from pyispyb.core import models, schemas
 
 
-def get_data_collections_groups_infos(proposal_id, session_id):
+def get_data_collections_groups_infos(session_id):
     """
     Returns data collection info list for session.
 
@@ -43,7 +43,7 @@ def get_data_collections_groups_infos(proposal_id, session_id):
     """
 
     sql = getSQLQuery("dataCollectionGroup")
-    sql = sql.bindparams(proposalId=proposal_id, sessionId=session_id)
+    sql = sql.bindparams(sessionId=session_id)
     group_list = db.engine.execute(sql)
     return queryResultToDict(group_list)
 
