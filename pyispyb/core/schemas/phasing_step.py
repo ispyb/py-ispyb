@@ -37,12 +37,13 @@ dict_schema = {
         'spaceGroupId': f_fields.Integer(required=False, description=''),
         'autoProcScalingId': f_fields.Integer(required=False, description=''),
         'phasingAnalysisId': f_fields.Integer(required=False, description=''),
-        'phasingStepType': f_fields.String(required=False, description='enum(PREPARE,SUBSTRUCTUREDETERMINATION,PHASING,MODELBUILDING)'),
+        'phasingStepType': f_fields.String(required=False, description='enum(PREPARE,SUBSTRUCTUREDETERMINATION,PHASING,MODELBUILDING,REFINEMENT,LIGAND_FIT)'),
         'method': f_fields.String(required=False, description=''),
         'solventContent': f_fields.String(required=False, description=''),
         'enantiomorph': f_fields.String(required=False, description=''),
         'lowRes': f_fields.String(required=False, description=''),
         'highRes': f_fields.String(required=False, description=''),
+        'groupName': f_fields.String(required=False, description=''),
         'recordTimeStamp': f_fields.DateTime(required=True, description=''),
         }
 
@@ -61,6 +62,7 @@ class PhasingStepSchema(Schema):
     enantiomorph = ma_fields.String()
     lowRes = ma_fields.String()
     highRes = ma_fields.String()
+    groupName = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
 
 f_schema = api.model('PhasingStep', dict_schema)

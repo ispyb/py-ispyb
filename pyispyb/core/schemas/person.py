@@ -41,10 +41,11 @@ dict_schema = {
         'emailAddress': f_fields.String(required=False, description=''),
         'phoneNumber': f_fields.String(required=False, description=''),
         'login': f_fields.String(required=False, description=''),
+        'passwd': f_fields.String(required=False, description=''),
         'faxNumber': f_fields.String(required=False, description=''),
         'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
-        'cache': f_fields.String(required=False, description=''),
         'externalId': f_fields.Integer(required=False, description=''),
+        'cache': f_fields.String(required=False, description=''),
         }
 
 class PersonSchema(Schema):
@@ -60,10 +61,11 @@ class PersonSchema(Schema):
     emailAddress = ma_fields.String()
     phoneNumber = ma_fields.String()
     login = ma_fields.String()
+    passwd = ma_fields.String()
     faxNumber = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
-    cache = ma_fields.String()
     externalId = ma_fields.Integer()
+    cache = ma_fields.String()
 
 f_schema = api.model('Person', dict_schema)
 ma_schema = PersonSchema()

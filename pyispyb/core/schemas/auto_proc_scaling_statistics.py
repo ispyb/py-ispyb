@@ -53,7 +53,13 @@ dict_schema = {
         'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
         'anomalous': f_fields.Integer(required=False, description='boolean type:0 noanoum - 1 anoum'),
         'ccHalf': f_fields.Float(required=False, description='information from XDS'),
-        'ccAnomalous': f_fields.Float(required=False, description=''),
+        'ccAno': f_fields.Float(required=False, description=''),
+        'sigAno': f_fields.String(required=False, description=''),
+        'isa': f_fields.String(required=False, description=''),
+        'completenessSpherical': f_fields.Float(required=False, description='Completeness calculated assuming isotropic diffraction'),
+        'completenessEllipsoidal': f_fields.Float(required=False, description='Completeness calculated allowing for anisotropic diffraction'),
+        'anomalousCompletenessSpherical': f_fields.Float(required=False, description='Anomalous completeness calculated assuming isotropic diffraction'),
+        'anomalousCompletenessEllipsoidal': f_fields.Float(required=False, description='Anisotropic completeness calculated allowing for anisotropic diffraction'),
         }
 
 class AutoProcScalingStatisticsSchema(Schema):
@@ -81,7 +87,13 @@ class AutoProcScalingStatisticsSchema(Schema):
     recordTimeStamp = ma_fields.DateTime()
     anomalous = ma_fields.Integer()
     ccHalf = ma_fields.Float()
-    ccAnomalous = ma_fields.Float()
+    ccAno = ma_fields.Float()
+    sigAno = ma_fields.String()
+    isa = ma_fields.String()
+    completenessSpherical = ma_fields.Float()
+    completenessEllipsoidal = ma_fields.Float()
+    anomalousCompletenessSpherical = ma_fields.Float()
+    anomalousCompletenessEllipsoidal = ma_fields.Float()
 
 f_schema = api.model('AutoProcScalingStatistics', dict_schema)
 ma_schema = AutoProcScalingStatisticsSchema()

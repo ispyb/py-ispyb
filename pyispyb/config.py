@@ -58,7 +58,7 @@ class BaseConfig:
     JWT_CODING_ALGORITHM = "HS256"
     TOKEN_EXP_TIME = 300  # in minutes
     MASTER_TOKEN = "MasterToken"
-    ADMIN_ROLES = ["manager", "admin"]  # allows to access all resources
+    ADMIN_ROLES = ["administrate"]  # allows to access all resources
 
     BARCODE_TYPE = "code39"
     TEMP_FOLDER = os.path.join(tempfile.gettempdir(), "pyispyb", "tmp")

@@ -15,8 +15,6 @@ proposal_create = [
                 'country': 'Country',
                 'url': 'url',
                 'organization': 'Test org',
-                'laboratoryPk': 0,
-                'postcode': 'Test code',
             },
             'person': {
                 'laboratoryId': None,
@@ -54,8 +52,6 @@ proposal_create = [
                 'country': 'Country',
                 'url': 'url',
                 'organization': 'Test org',
-                'laboratoryPk': 0,
-                'postcode': 'Test code',
             },
             'person': {
                 'laboratoryId': None,
@@ -79,7 +75,7 @@ proposal_create = [
             }
         },
         'expected': {
-            'code': 400
+            'code': 406
         }
     }
 ]

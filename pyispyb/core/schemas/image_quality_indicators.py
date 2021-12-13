@@ -31,10 +31,9 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'dataCollectionId': f_fields.Integer(required=True, description=''),
-        'imageNumber': f_fields.Integer(required=True, description=''),
+        'imageQualityIndicatorsId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'imageId': f_fields.Integer(required=False, description=''),
-        'autoProcProgramId': f_fields.Integer(required=False, description='Foreign key to the AutoProcProgram table'),
+        'autoProcProgramId': f_fields.Integer(required=True, description='Foreign key to the AutoProcProgram table'),
         'spotTotal': f_fields.Integer(required=False, description='Total number of spots'),
         'inResTotal': f_fields.Integer(required=False, description='Total number of spots in resolution range'),
         'goodBraggCandidates': f_fields.Integer(required=False, description='Total number of Bragg diffraction spots'),
@@ -48,14 +47,14 @@ dict_schema = {
         'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
         'totalIntegratedSignal': f_fields.String(required=False, description=''),
         'dozor_score': f_fields.String(required=False, description='dozor_score'),
-        'driftFactor': f_fields.Float(required=False, description='EM movie drift factor'),
+        'dataCollectionId': f_fields.Integer(required=False, description=''),
+        'imageNumber': f_fields.Integer(required=False, description=''),
         }
 
 class ImageQualityIndicatorsSchema(Schema):
     """Marshmallows schema class representing ImageQualityIndicators table"""
 
-    dataCollectionId = ma_fields.Integer()
-    imageNumber = ma_fields.Integer()
+    imageQualityIndicatorsId = ma_fields.Integer()
     imageId = ma_fields.Integer()
     autoProcProgramId = ma_fields.Integer()
     spotTotal = ma_fields.Integer()
@@ -71,7 +70,8 @@ class ImageQualityIndicatorsSchema(Schema):
     recordTimeStamp = ma_fields.DateTime()
     totalIntegratedSignal = ma_fields.String()
     dozor_score = ma_fields.String()
-    driftFactor = ma_fields.Float()
+    dataCollectionId = ma_fields.Integer()
+    imageNumber = ma_fields.Integer()
 
 f_schema = api.model('ImageQualityIndicators', dict_schema)
 ma_schema = ImageQualityIndicatorsSchema()

@@ -36,8 +36,8 @@ dict_schema = {
         'title': f_fields.String(required=False, description=''),
         'proposalCode': f_fields.String(required=False, description=''),
         'proposalNumber': f_fields.String(required=False, description=''),
-        'bltimeStamp': f_fields.DateTime(required=True, description=''),
         'proposalType': f_fields.String(required=False, description='Proposal type: MX, BX'),
+        'bltimeStamp': f_fields.DateTime(required=True, description=''),
         'externalId': f_fields.Integer(required=False, description=''),
         'state': f_fields.String(required=False, description='enum(Open,Closed,Cancelled)'),
         }
@@ -50,8 +50,8 @@ class ProposalSchema(Schema):
     title = ma_fields.String()
     proposalCode = ma_fields.String()
     proposalNumber = ma_fields.String()
-    bltimeStamp = ma_fields.DateTime()
     proposalType = ma_fields.String()
+    bltimeStamp = ma_fields.DateTime()
     externalId = ma_fields.Integer()
     state = ma_fields.String()
 

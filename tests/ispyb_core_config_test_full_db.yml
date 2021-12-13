@@ -1,0 +1,25 @@
+server:
+  SERVICE_NAME: "core"
+  API_ROOT: "/ispyb/api/v1"
+  SQLALCHEMY_DATABASE_URI: "mysql://root:pyispybTestDB2021@160.103.246.44/pydb"
+
+  AUTH:
+    - dummy:
+        AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
+        AUTH_CLASS: "DummyAuthentication"
+  MASTER_TOKEN: "MasterToken"
+
+  SECRET_KEY: "TOTO"
+
+authorization_rules:
+  proposals:
+    { "get": ["all_proposals", "own_proposals"], "post": ["write_proposals"] }
+  proposal_by_id:
+    {
+      "get": ["all_proposals", "own_proposals"],
+      "put": ["write_proposals"],
+      "patch": ["write_proposals"],
+      "delete": ["write_proposals"],
+    }
+  proposal_info_by_id: { "get": ["all_proposals", "own_proposals"] }
+  data_collection_groups_infos: { "get": ["all_proposals", "own_proposals"] }

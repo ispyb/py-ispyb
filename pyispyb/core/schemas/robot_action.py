@@ -37,7 +37,7 @@ dict_schema = {
         'actionType': f_fields.String(required=False, description='enum(LOAD,UNLOAD,DISPOSE,STORE,WASH,ANNEAL)'),
         'startTimestamp': f_fields.DateTime(required=True, description=''),
         'endTimestamp': f_fields.DateTime(required=True, description=''),
-        'status': f_fields.String(required=False, description='enum(SUCCESS,ERROR,CRITICAL,WARNING,EPICSFAIL,COMMANDNOTSENT)'),
+        'status': f_fields.String(required=False, description='enum(SUCCESS,ERROR,CRITICAL,WARNING,COMMANDNOTSENT)'),
         'message': f_fields.String(required=False, description=''),
         'containerLocation': f_fields.Integer(required=False, description=''),
         'dewarLocation': f_fields.Integer(required=False, description=''),

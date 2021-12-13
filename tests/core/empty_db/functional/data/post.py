@@ -15,8 +15,6 @@ test_data = [
             "country": "Country",
             "url": "url",
             "organization": "Test org",
-            "laboratoryPk": 0,
-            "postcode": "Test code",
         }
     },
     {
@@ -70,8 +68,8 @@ test_data = [
             "detectorModel": "T1",
             "detectorPixelSizeHorizontal": 0.75,
             "detectorPixelSizeVertical": 0.75,
-            "DETECTORMAXRESOLUTION": 0.6,
-            "DETECTORMINRESOLUTION": 6,
+            "detectorMaxResolution": 0.6,
+            "detectorMinResolution": 6,
             "detectorSerialNumber": uuid.uuid4().hex.upper()[0:6],
             "detectorDistanceMin": "100",
             "detectorDistanceMax": "1000",
@@ -84,10 +82,6 @@ test_data = [
             "detectorMode": "testMode",
             "density": 1,
             "composition": "comp",
-            "numberOfPixelsX": 8000,
-            "numberOfPixelsY": 8000,
-            "detectorRollMin": "1",
-            "detectorRollMax": "2",
             "localName": "TestDetector",
         }
     },
@@ -95,7 +89,6 @@ test_data = [
         'route': '/beamline/setups',
         'name': 'beamLineSetup',
         'json': lambda prev: {
-            "detectorId": prev['detector']["detectorId"],
             "synchrotronMode": "Test mode",
             "undulatorType1": "Si111",
             "focalSpotSizeAtSample": 10,
@@ -107,29 +100,9 @@ test_data = [
             "setupDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "synchrotronName": "TestSynch",
             "maxExpTimePerDataCollection": "0.04",
-            "maxExposureTimePerImage": 10,
             "minExposureTimePerImage": "0",
             "goniostatMaxOscillationSpeed": "1",
-            "goniostatMaxOscillationWidth": "1",
             "goniostatMinOscillationWidth": "1",
-            "maxTransmission": "100",
-            "minTransmission": "0",
-            "beamlineName": "testBeamline",
-            "beamSizeXMin": 10,
-            "beamSizeXMax": 200,
-            "beamSizeYMin": 10,
-            "beamSizeYMax": 200,
-            "energyMin": 5,
-            "energyMax": 15,
-            "omegaMin": 0,
-            "omegaMax": 360,
-            "kappaMin": 0,
-            "kappaMax": 360,
-            "phiMin": 0,
-            "phiMax": 180,
-            "active": 0,
-            "numberOfImagesMax": 1000000,
-            "numberOfImagesMin": 1,
         }
     },
     {
@@ -148,7 +121,6 @@ test_data = [
         'route': '/samples/diffraction_plans',
         'name': 'diffractionPlan',
         'json': lambda prev: {
-            "name": "Test",
             "presetForProposalId": prev['proposal']["proposalId"],
             "detectorId": prev['detector']["detectorId"],
             "experimentKind": "OSC",
@@ -163,7 +135,7 @@ test_data = [
             "preferredBeamSizeY": 20,
             "preferredBeamDiameter": 20,
             "comments": "Test comment",
-            "DIFFRACTIONPLANUUID": "uuid",
+            "diffractionPlanUUID": "uuid",
             "aimedCompleteness": "99",
             "aimedIOverSigmaAtHighestRes": "1",
             "aimedMultiplicity": "1",
@@ -211,7 +183,6 @@ test_data = [
             "pdbFileName": "pdf_filename",
             "pdbFilePath": "pdf_filen_path",
             "abundance": 0,
-            "theoreticalDensity": 0,
         }
     },
     {
@@ -229,20 +200,7 @@ test_data = [
             "comments": "Comment",
             "sendingLabContactId": prev['labContact']["labContactId"],
             "returnLabContactId": prev['labContact']["labContactId"],
-            "deliveryAgent_flightCodePersonId": prev['person']["personId"],
             "returnCourier": "DHL",
-            "deliveryAgent_label": "Label",
-            "physicalLocation": "Store",
-        }
-    },
-    {
-        'route': '/sessions/beam_calendars',
-        'name': 'beamCalendar',
-        'json': lambda prev: {
-            "run": "1",
-            "beamStatus": "Open",
-            "endDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "startDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }
     },
     {
@@ -253,9 +211,7 @@ test_data = [
             "proposalId": prev['proposal']["proposalId"],
             "beamLineName": "i03",
             "visit_number": 2,
-            "archived": 0,
             "beamLineSetupId": prev['beamLineSetup']["beamLineSetupId"],
-            "beamCalendarId":prev['beamCalendar']["beamCalendarId"],
             "endDate": "2015-12-21 16:20:44",
             "startDate": "2015-12-21 16:20:44",
         }
@@ -277,9 +233,6 @@ test_data = [
             "trackingNumberToSynchrotron": "00001",
             "trackingNumberFromSynchrotron": "00002",
             "type": "Dewar",
-            "FACILITYCODE": "fac",
-            "weight": 30,
-            "deliveryAgent_barcode": "test",
         }
     }
 ]

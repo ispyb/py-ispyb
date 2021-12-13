@@ -19,28 +19,29 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 import pytest
-from tests.core.functional.data.delete import test_data
+from tests.core.empty_db.functional.data.patch import test_data
 
-# Need to fix test: empty database - nothing to patch
+# Need to fix test: empty database - nothing to delete
 pytestmark = pytest.mark.skip
 
 
-def test_delete(ispyb_app, manager_token):
+@pytest.mark.parametrize("test_elem", test_data)
+def test_patch(ispyb_app, manager_token, test_elem):
     client = ispyb_app.test_client()
     headers = {"Authorization": "Bearer " + manager_token}
 
-    for test_elem in test_data:
-        test_route = ispyb_app.config["API_ROOT"] + test_elem["route"]
-        test_code = test_elem["code"]
-        test_id = test_elem["id"]
+    test_route = ispyb_app.config["API_ROOT"] + test_elem["route"]
+    test_code = test_elem["code"]
+    test_id = test_elem["id"]
+    test_patch = test_elem["patch"]
 
-        response = client.get(test_route, headers=headers)
+    response = client.get(test_route, headers=headers)
 
-        item_id = response.json["data"]["rows"][-1][test_id]
-        del_route = (
-            test_route
-            + "/"
-            + str(item_id)
-        )
-        response = client.delete(del_route, headers=headers)
-        assert response.status_code == test_code, "[DELETE] %s " % (del_route)
+    item_id = response.json["data"]["rows"][-1][test_id]
+    patch_route = (
+        test_route
+        + "/"
+        + str(item_id)
+    )
+    response = client.patch(patch_route, json=test_patch, headers=headers)
+    assert response.status_code == test_code, "[PATCH] %s " % (patch_route)

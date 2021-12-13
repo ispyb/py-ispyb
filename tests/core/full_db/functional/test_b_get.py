@@ -18,19 +18,20 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
-from tests.core.functional.data.get import test_data
+from tests.core.full_db.functional.data.get import test_data
+import pytest
 
 
-def test_get(ispyb_app, manager_token):
+@pytest.mark.parametrize("test_elem", test_data)
+def test_get(ispyb_app, manager_token, test_elem):
     client = ispyb_app.test_client()
     headers = {"Authorization": "Bearer " + manager_token}
 
-    for test_elem in test_data:
-        test_route = ispyb_app.config["API_ROOT"] + test_elem['route']
-        test_code = test_elem['code']
+    test_route = ispyb_app.config["API_ROOT"] + test_elem['route']
+    test_code = test_elem['code']
 
-        response = client.get(test_route, headers=headers)
-        res = response.json
+    response = client.get(test_route, headers=headers)
+    res = response.json
 
-        assert response.status_code == test_code, "[GET] %s " % (test_route)
-        assert res, "[GET] %s No data returned" % (test_route)
+    assert response.status_code == test_code, "[GET] %s " % (test_route)
+    assert res, "[GET] %s No data returned" % (test_route)

@@ -1,0 +1,1 @@
+python -m pytest tests/core/full_db && python -m pytest tests/core/empty_db

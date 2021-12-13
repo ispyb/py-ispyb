@@ -36,13 +36,14 @@ def get_person_by_id(person_id):
         models.Person, schemas.person.ma_schema, id_dict
     )
 
+
 def get_person_info(request):
     user_info = auth_provider.get_user_info_from_auth_header(
         request.headers.get("Authorization")
     )
     query_dict = request.args.to_dict()
     if "login_name" in query_dict:
-        #Return info about requested login name
+        # Return info about requested login name
         person_id = get_person_id_by_login(query_dict["login_name"])
     else:
         person_id = get_person_id_by_login(user_info["sub"])
@@ -53,6 +54,7 @@ def get_person_info(request):
         user_info.update(person_info)
 
     return user_info
+
 
 def get_person_info_by_params(param_dict):
     """Returns person by its id.
@@ -73,7 +75,8 @@ def get_person_info_by_params(param_dict):
 
     person_protein_list = []
     for proposal_id in proposal_id_list:
-        protein_list = protein.get_proteins_by_query({"proposalId": proposal_id})
+        protein_list = protein.get_proteins_by_query(
+            {"proposalId": proposal_id})
         for protein_dict in protein_list["data"]["rows"]:
             person_protein_list.append(protein_dict["proteinId"])
 
@@ -81,6 +84,7 @@ def get_person_info_by_params(param_dict):
     person_info_dict["protein_ids"] = person_protein_list
 
     return person_info_dict
+
 
 def get_persons_by_query(query_dict):
     """Returns person by its id.
@@ -97,6 +101,7 @@ def get_persons_by_query(query_dict):
         schemas.person.ma_schema,
         query_dict,
     )
+
 
 def get_person_id_by_login(login_name):
     """Returns person by login name.

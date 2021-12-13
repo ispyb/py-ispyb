@@ -32,8 +32,8 @@ from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
         'diffractionPlanId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'experimentKind': f_fields.String(required=False, description='enum(Default,MXPressE,MXPressO,MXPressE_SAD,MXScore,MXPressM,MAD,SAD,Fixed,Ligand binding,Refinement,OSC,MAD - Inverse Beam,SAD - Inverse Beam,MESH,XFE,Stepped transmission)'),
+        'xmlDocumentId': f_fields.Integer(required=False, description=''),
+        'experimentKind': f_fields.String(required=False, description='enum(Default,MXPressE,MXPressF,MXPressO,MXPressP,MXPressP_SAD,MXPressI,MXPressE_SAD,MXScore,MXPressM,MAD,SAD,Fixed,Ligand binding,Refinement,OSC,MAD - Inverse Beam,SAD - Inverse Beam)'),
         'observedResolution': f_fields.Float(required=False, description=''),
         'minimalResolution': f_fields.Float(required=False, description=''),
         'exposureTime': f_fields.Float(required=False, description=''),
@@ -46,7 +46,6 @@ dict_schema = {
         'preferredBeamSizeY': f_fields.Float(required=False, description=''),
         'preferredBeamDiameter': f_fields.Float(required=False, description=''),
         'comments': f_fields.String(required=False, description=''),
-        'DIFFRACTIONPLANUUID': f_fields.String(required=False, description=''),
         'aimedCompleteness': f_fields.String(required=False, description=''),
         'aimedIOverSigmaAtHighestRes': f_fields.String(required=False, description=''),
         'aimedMultiplicity': f_fields.String(required=False, description=''),
@@ -67,6 +66,12 @@ dict_schema = {
         'radiationSensitivityGamma': f_fields.String(required=False, description=''),
         'minOscWidth': f_fields.Float(required=False, description=''),
         'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
+        'diffractionPlanUUID': f_fields.String(required=False, description=''),
+        'dataCollectionPlanGroupId': f_fields.Integer(required=False, description=''),
+        'detectorId': f_fields.Integer(required=False, description=''),
+        'distance': f_fields.String(required=False, description=''),
+        'orientation': f_fields.String(required=False, description=''),
+        'monoBandwidth': f_fields.String(required=False, description=''),
         'monochromator': f_fields.String(required=False, description='DMM or DCM'),
         'energy': f_fields.Float(required=False, description='eV'),
         'transmission': f_fields.Float(required=False, description='Decimal fraction in range [0,1]'),
@@ -78,18 +83,14 @@ dict_schema = {
         'numberOfImages': f_fields.Integer(required=False, description='The number of images requested'),
         'presetForProposalId': f_fields.Integer(required=False, description='Indicates this plan is available to all sessions on given proposal'),
         'beamLineName': f_fields.String(required=False, description='Indicates this plan is available to all sessions on given beamline'),
-        'detectorId': f_fields.Integer(required=False, description=''),
-        'distance': f_fields.String(required=False, description=''),
-        'orientation': f_fields.String(required=False, description=''),
-        'monoBandwidth': f_fields.String(required=False, description=''),
-        'centringMethod': f_fields.String(required=False, description='enum(xray,loop,diffraction,optical)'),
+        'userPath': f_fields.String(required=False, description='User-specified relative "root" path inside the session directory to be used for holding collected data'),
         }
 
 class DiffractionPlanSchema(Schema):
     """Marshmallows schema class representing DiffractionPlan table"""
 
     diffractionPlanId = ma_fields.Integer()
-    name = ma_fields.String()
+    xmlDocumentId = ma_fields.Integer()
     experimentKind = ma_fields.String()
     observedResolution = ma_fields.Float()
     minimalResolution = ma_fields.Float()
@@ -103,7 +104,6 @@ class DiffractionPlanSchema(Schema):
     preferredBeamSizeY = ma_fields.Float()
     preferredBeamDiameter = ma_fields.Float()
     comments = ma_fields.String()
-    DIFFRACTIONPLANUUID = ma_fields.String()
     aimedCompleteness = ma_fields.String()
     aimedIOverSigmaAtHighestRes = ma_fields.String()
     aimedMultiplicity = ma_fields.String()
@@ -124,6 +124,12 @@ class DiffractionPlanSchema(Schema):
     radiationSensitivityGamma = ma_fields.String()
     minOscWidth = ma_fields.Float()
     recordTimeStamp = ma_fields.DateTime()
+    diffractionPlanUUID = ma_fields.String()
+    dataCollectionPlanGroupId = ma_fields.Integer()
+    detectorId = ma_fields.Integer()
+    distance = ma_fields.String()
+    orientation = ma_fields.String()
+    monoBandwidth = ma_fields.String()
     monochromator = ma_fields.String()
     energy = ma_fields.Float()
     transmission = ma_fields.Float()
@@ -135,11 +141,7 @@ class DiffractionPlanSchema(Schema):
     numberOfImages = ma_fields.Integer()
     presetForProposalId = ma_fields.Integer()
     beamLineName = ma_fields.String()
-    detectorId = ma_fields.Integer()
-    distance = ma_fields.String()
-    orientation = ma_fields.String()
-    monoBandwidth = ma_fields.String()
-    centringMethod = ma_fields.String()
+    userPath = ma_fields.String()
 
 f_schema = api.model('DiffractionPlan', dict_schema)
 ma_schema = DiffractionPlanSchema()
