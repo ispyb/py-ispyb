@@ -50,6 +50,7 @@ class BeamlineSetups(Resource):
     @role_required
     def get(self):
         """Returns list of beamline_setups"""
+        # TODO implement authorization
         return beamline_setup.get_beamline_setups(request)
 
     @token_required
@@ -58,6 +59,7 @@ class BeamlineSetups(Resource):
     @api.marshal_with(beamline_setup_schemas.f_schema, code=201)
     def post(self):
         """Adds a new beamline_setup"""
+        # TODO implement authorization
         log.info("Inserts a new beamline_setup")
         return beamline_setup.add_beamline_setup(api.payload)
 
@@ -77,6 +79,7 @@ class BeamlineSetupById(Resource):
     )
     def get(self, beamline_setup_id):
         """Returns a beamline_setup by beamline_setupId"""
+        # TODO implement authorization
         return beamline_setup.get_beamline_setup_by_id(beamline_setup_id)
 
     @token_required
@@ -85,6 +88,7 @@ class BeamlineSetupById(Resource):
     @api.marshal_with(beamline_setup_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, beamline_setup_id):
         """Fully updates beamline_setup with beamline_setup_id"""
+        # TODO implement authorization
         return beamline_setup.update_beamline_setup(beamline_setup_id, api.payload)
 
     @token_required
@@ -93,12 +97,14 @@ class BeamlineSetupById(Resource):
     @api.marshal_with(beamline_setup_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, beamline_setup_id):
         """Partially updates beamline_setup with id beamline_setupId"""
+        # TODO implement authorization
         return beamline_setup.patch_beamline_setup(beamline_setup_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, beamline_setup_id):
         """Deletes a beamline_setup by beamline_setupId"""
+        # TODO implement authorization
         return beamline_setup.delete_beamline_setup(beamline_setup_id)
 
 
@@ -111,6 +117,7 @@ class RobotActions(Resource):
     @role_required
     def get(self):
         """Returns list of robot_actions"""
+        # TODO implement authorization
         return robot_action.get_robot_actions(request)
 
     @token_required
@@ -121,6 +128,7 @@ class RobotActions(Resource):
     # TODO add custom exception handling
     def post(self):
         """Adds a new robot_action"""
+        # TODO implement authorization
         return robot_action.add_robot_action(api.payload)
 
 
@@ -139,6 +147,7 @@ class RobotActionById(Resource):
     )
     def get(self, robot_action_id):
         """Returns a robot_action by robot_action_id"""
+        # TODO implement authorization
         return robot_action.get_robot_action_by_id(robot_action_id)
 
     @token_required
@@ -147,6 +156,7 @@ class RobotActionById(Resource):
     @api.marshal_with(robot_action_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, robot_action_id):
         """Fully updates robot_action with robot_action_id"""
+        # TODO implement authorization
         return robot_action.update_robot_action(robot_action_id, api.payload)
 
     @token_required
@@ -155,12 +165,14 @@ class RobotActionById(Resource):
     @api.marshal_with(robot_action_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, robot_action_id):
         """Partially updates robot_action with robot_action_id"""
+        # TODO implement authorization
         return robot_action.patch_robot_action(robot_action_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, robot_action_id):
         """Deletes a robot_action by robot_action_id"""
+        # TODO implement authorization
         return robot_action.delete_robot_action(robot_action_id)
 
 
@@ -173,6 +185,7 @@ class Detectors(Resource):
     @role_required
     def get(self):
         """Returns list of detectors"""
+        # TODO implement authorization
         return detector.get_detectors(request)
 
     @token_required
@@ -183,6 +196,7 @@ class Detectors(Resource):
     # TODO add custom exception handling
     def post(self):
         """Adds a new detector"""
+        # TODO implement authorization
         log.info("Inserts a new detector")
         return detector.add_detector(api.payload)
 
@@ -200,6 +214,7 @@ class DetectorById(Resource):
     @api.marshal_with(detector_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, detector_id):
         """Returns a detector by detectorId"""
+        # TODO implement authorization
         return detector.get_detector_by_id(detector_id)
 
     @token_required
@@ -208,6 +223,7 @@ class DetectorById(Resource):
     @api.marshal_with(detector_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, detector_id):
         """Fully updates detector with detector_id"""
+        # TODO implement authorization
         return detector.update_detector(detector_id, api.payload)
 
     @token_required
@@ -216,10 +232,12 @@ class DetectorById(Resource):
     @api.marshal_with(detector_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, detector_id):
         """Partially updates detector with id detectorId"""
+        # TODO implement authorization
         return detector.patch_detector(detector_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, detector_id):
         """Deletes a detector by detectorId"""
+        # TODO implement authorization
         return detector.delete_detector(detector_id)

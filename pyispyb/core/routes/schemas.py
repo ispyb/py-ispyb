@@ -48,6 +48,7 @@ class SchemasList(Resource):
         Returns:
             list: list of names
         """
+        # TODO implement authorization
         current_app.logger.info("Get all schemas")
         # TODO I guess there is oneliner fancy code that can do this...
         result = []
@@ -74,6 +75,7 @@ class Schemas(Resource):
         Returns:
             json: schema as json
         """
+        # TODO implement authorization
         try:
             schemas_module = importlib.import_module(
                 "pyispyb.core.schemas." + name)

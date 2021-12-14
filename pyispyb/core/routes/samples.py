@@ -53,6 +53,7 @@ class Sample(Resource):
     @role_required
     def get(self):
         """Returns all sample items"""
+        # TODO implement authorization
         return sample.get_samples_by_request(request)
 
     @token_required
@@ -61,6 +62,7 @@ class Sample(Resource):
     @api.marshal_with(sample_schemas.f_schema, code=201)
     def post(self):
         """Adds a new sample item"""
+        # TODO implement authorization
         return sample.add_sample(api.payload)
 
 
@@ -77,6 +79,7 @@ class SampleById(Resource):
     @api.marshal_with(sample_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, sample_id):
         """Returns a sample by sampleId"""
+        # TODO implement authorization
         return sample.get_sample_by_id(sample_id)
 
     @token_required
@@ -85,6 +88,7 @@ class SampleById(Resource):
     @api.marshal_with(sample_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, sample_id):
         """Fully updates sample with sample_id"""
+        # TODO implement authorization
         return sample.update_sample(sample_id, api.payload)
 
     @token_required
@@ -93,12 +97,14 @@ class SampleById(Resource):
     @api.marshal_with(sample_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, sample_id):
         """Partially updates sample with id sampleId"""
+        # TODO implement authorization
         return sample.patch_sample(sample_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, sample_id):
         """Deletes a sample by sampleId"""
+        # TODO implement authorization
         return sample.delete_sample(sample_id)
 
 
@@ -111,6 +117,7 @@ class Crystals(Resource):
     @role_required
     def get(self):
         """Returns all crystal items"""
+        # TODO implement authorization
         query_dict = request.args.to_dict()
         return crystal.get_crystals_by_query(query_dict)
 
@@ -120,6 +127,7 @@ class Crystals(Resource):
     @api.marshal_with(crystal_schemas.f_schema, code=201)
     def post(self):
         """Adds a new crystal item"""
+        # TODO implement authorization
         return crystal.add_crystal(api.payload)
 
 
@@ -136,6 +144,7 @@ class CrystalById(Resource):
     @api.marshal_with(crystal_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, crystal_id):
         """Returns a crystal by crystalId"""
+        # TODO implement authorization
         return crystal.get_crystal_by_id(crystal_id)
 
     @token_required
@@ -144,6 +153,7 @@ class CrystalById(Resource):
     @api.marshal_with(crystal_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, crystal_id):
         """Fully updates crystal with crystal_id"""
+        # TODO implement authorization
         return crystal.update_crystal(crystal_id, api.payload)
 
     @token_required
@@ -152,12 +162,14 @@ class CrystalById(Resource):
     @api.marshal_with(crystal_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, crystal_id):
         """Partially updates crystal with id crystalId"""
+        # TODO implement authorization
         return crystal.patch_crystal(crystal_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, crystal_id):
         """Deletes a crystal by crystalId"""
+        # TODO implement authorization
         return crystal.delete_crystal(crystal_id)
 
 
@@ -173,6 +185,7 @@ class CrystalPdbById(Resource):
     @api.doc(description="crystal_id should be an integer ")
     def get(self, crystal_id):
         """Returns pdb file by crystalId"""
+        # TODO implement authorization
         query_dict = request.args.to_dict()
 
         pdb_file_path, pdb_file_name = crystal.get_crystal_pdb_by_id(
@@ -225,6 +238,7 @@ class CrystalPdbById(Resource):
     @role_required
     def patch(self, crystal_id):
         """Fully updates crystal with crystal_id"""
+        # TODO implement authorization
         query_dict = request.args.to_dict()
 
         if "file" not in request.files:
@@ -252,6 +266,7 @@ class CrystalPdbById(Resource):
     @role_required
     def delete(self, crystal_id):
         """Deletes a crystal pdb file by crystalId"""
+        # TODO implement authorization
         # return crystal.delete_crystal_pdb(crystal_id)
 
 
@@ -264,6 +279,7 @@ class Proteins(Resource):
     @role_required
     def get(self):
         """Returns all protein items"""
+        # TODO implement authorization
         return protein.get_proteins_by_request(request)
 
     @token_required
@@ -272,6 +288,7 @@ class Proteins(Resource):
     @api.marshal_with(protein_schemas.f_schema, code=201)
     def post(self):
         """Adds a new protein item"""
+        # TODO implement authorization
         return protein.add_protein(api.payload)
 
 
@@ -288,6 +305,7 @@ class ProteinById(Resource):
     @api.marshal_with(protein_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, protein_id):
         """Returns a protein by proteinId"""
+        # TODO implement authorization
         return protein.get_protein_by_id(protein_id)
 
     @token_required
@@ -296,6 +314,7 @@ class ProteinById(Resource):
     @api.marshal_with(protein_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, protein_id):
         """Fully updates protein with proteinId"""
+        # TODO implement authorization
         return protein.update_protein(protein_id, api.payload)
 
     @token_required
@@ -304,12 +323,14 @@ class ProteinById(Resource):
     @api.marshal_with(protein_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, protein_id):
         """Partially updates protein with proteinId"""
+        # TODO implement authorization
         return protein.patch_protein(protein_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, protein_id):
         """Deletes a protein by proteinId"""
+        # TODO implement authorization
         return protein.delete_protein(protein_id)
 
 
@@ -322,6 +343,7 @@ class DiffractionPlans(Resource):
     @role_required
     def get(self):
         """Returns list of diffraction_plans"""
+        # TODO implement authorization
         return diffraction_plan.get_diffraction_plans(request)
 
     @token_required
@@ -330,6 +352,7 @@ class DiffractionPlans(Resource):
     @api.marshal_with(diffraction_plan_schemas.f_schema, code=201)
     def post(self):
         """Adds a new diffraction_plan"""
+        # TODO implement authorization
         return diffraction_plan.add_diffraction_plan(api.payload)
 
 
@@ -350,6 +373,7 @@ class DiffractionPlanById(Resource):
     )
     def get(self, diffraction_plan_id):
         """Returns a diffraction_plan by diffraction_planId"""
+        # TODO implement authorization
         return diffraction_plan.get_diffraction_plan_by_id(diffraction_plan_id)
 
     @token_required
@@ -358,6 +382,7 @@ class DiffractionPlanById(Resource):
     @api.marshal_with(diffraction_plan_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, diffraction_plan_id):
         """Fully updates diffraction_plan with diffraction_plan_id"""
+        # TODO implement authorization
         return diffraction_plan.update_diffraction_plan(
             diffraction_plan_id, api.payload
         )
@@ -368,10 +393,12 @@ class DiffractionPlanById(Resource):
     @api.marshal_with(diffraction_plan_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, diffraction_plan_id):
         """Partially updates diffraction_plan with id diffraction_planId"""
+        # TODO implement authorization
         return diffraction_plan.patch_diffraction_plan(diffraction_plan_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, diffraction_plan_id):
         """Deletes a diffraction_plan by diffraction_planId"""
+        # TODO implement authorization
         return diffraction_plan.delete_diffraction_plan(diffraction_plan_id)

@@ -26,7 +26,7 @@ from flask import request
 from pyispyb.flask_restx_patched import Resource, HTTPStatus, abort
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth.decorators import token_required, role_required
+from pyispyb.app.extensions.auth.decorators import check_session_authorization, token_required, role_required
 
 from pyispyb.core.schemas import session as session_schemas
 from pyispyb.core.schemas import beam_calendar as beam_calendar_schemas
@@ -50,6 +50,7 @@ class Sessions(Resource):
     @role_required
     def get(self):
         """Returns list of sessions"""
+        # TODO implement authorization
         return session.get_sessions(request)
 
     @token_required
@@ -59,6 +60,7 @@ class Sessions(Resource):
     def post(self):
         """Adds a new session"""
         log.info("Inserts a new session")
+        # TODO implement authorization
         return session.add_session(api.payload)
 
 
@@ -72,6 +74,7 @@ class SessionById(Resource):
 
     @token_required
     @role_required
+    @check_session_authorization
     @api.doc(description="session_id should be an integer ")
     @api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
     def get(self, session_id):
@@ -80,6 +83,7 @@ class SessionById(Resource):
 
     @token_required
     @role_required
+    @check_session_authorization
     @api.expect(session_schemas.f_schema)
     @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, session_id):
@@ -88,6 +92,7 @@ class SessionById(Resource):
 
     @token_required
     @role_required
+    @check_session_authorization
     @api.expect(session_schemas.f_schema)
     @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, session_id):
@@ -96,6 +101,7 @@ class SessionById(Resource):
 
     @token_required
     @role_required
+    @check_session_authorization
     def delete(self, session_id):
         """Deletes a session by sessionId"""
         return session.delete_session(session_id)
@@ -110,6 +116,7 @@ class SessionInfoById(Resource):
 
     @token_required
     @role_required
+    @check_session_authorization
     @api.doc(description="session_id should be an integer ")
     def get(self, session_id):
         """Returns a full description of a session by sessionId"""
@@ -125,7 +132,7 @@ class SessionsByDateBeamline(Resource):
     @role_required
     def get(self):
         """Returns list of sessions by start_date, end_date and beamline."""
-
+        # TODO implement authorization
         query_dict = request.args.to_dict()
         start_date = query_dict.get("start_date")
         end_date = query_dict.get("end_date")
@@ -170,6 +177,7 @@ class BeamCalendars(Resource):
     @role_required
     def get(self):
         """Returns beam_calendars based on query parameters"""
+        # TODO implement authorization
         return session.get_beam_calendars(request)
 
     @token_required
@@ -178,6 +186,7 @@ class BeamCalendars(Resource):
     @api.marshal_with(beam_calendar_schemas.f_schema, code=201)
     def post(self):
         """Adds a new beam_calendar"""
+        # TODO implement authorization
         return session.add_beam_calendar(api.payload)
 
 
@@ -196,4 +205,5 @@ class beam_calendarById(Resource):
     )
     def get(self, beam_calendar_id):
         """Returns a beam_calendar by beam_calendarId"""
+        # TODO implement authorization
         return session.get_beam_calendar_by_id(beam_calendar_id)

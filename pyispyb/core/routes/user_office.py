@@ -48,6 +48,7 @@ class SyncAll(Resource):
     @role_required
     def post(self):
         """Sync with user office"""
+        # TODO implement authorization
 
         api.logger.info("Sync with uer office")
         user_office.sync_all()
@@ -71,6 +72,7 @@ class UpdateProposal(Resource):
     )
     def post(self, proposal_code, proposal_number):
         """Sync with user office"""
+        # TODO implement authorization
 
         api.logger.info("Updates proposal %s%d" %
                         (proposal_code, proposal_number))

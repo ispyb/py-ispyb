@@ -58,6 +58,7 @@ class AutoProcs(Resource):
     @role_required
     def get(self):
         """Returns auto proc entries"""
+        # TODO implement authorization
         return auto_proc.get_auto_procs(request)
 
     @api.expect(auto_proc_schemas.f_schema)
@@ -68,6 +69,7 @@ class AutoProcs(Resource):
     @role_required
     def post(self):
         """Adds a new auto proc"""
+        # TODO implement authorization
         return auto_proc.add_auto_proc(api.payload)
 
 
@@ -84,6 +86,7 @@ class AutoProcById(Resource):
     @role_required
     def get(self, auto_proc_id):
         """Returns a auto_proc by auto_procId"""
+        # TODO implement authorization
         return auto_proc.get_auto_proc_by_id(auto_proc_id)
 
 
@@ -96,6 +99,7 @@ class AutoProcStatus(Resource):
     @role_required
     def get(self):
         """Returns all auto_proc_status entries"""
+        # TODO implement authorization
         return auto_proc.get_auto_proc_status(request)
 
     @token_required
@@ -106,6 +110,7 @@ class AutoProcStatus(Resource):
     # TODO add custom exception handling
     def post(self):
         """Adds a new auto proc program"""
+        # TODO implement authorization
         return auto_proc.add_auto_proc_status(api.payload)
 
 
@@ -124,6 +129,7 @@ class AutoProcStatusById(Resource):
     )
     def get(self, status_id):
         """Returns a auto_proc by auto_procId"""
+        # TODO implement authorization
         return auto_proc.get_auto_proc_status_by_id(status_id)
 
 
@@ -136,6 +142,7 @@ class AutoProcPrograms(Resource):
     @role_required
     def get(self):
         """Returns all auto_proc_program entries"""
+        # TODO implement authorization
         return auto_proc.get_auto_proc_programs(request)
 
     @token_required
@@ -144,6 +151,7 @@ class AutoProcPrograms(Resource):
     @api.marshal_with(auto_proc_program_schemas.f_schema, code=201)
     def post(self):
         """Adds a new auto proc program"""
+        # TODO implement authorization
         return auto_proc.add_auto_proc_program(api.payload)
 
 
@@ -162,6 +170,7 @@ class AutoProcProgramById(Resource):
     )
     def get(self, program_id):
         """Returns a auto_proc by auto_procId"""
+        # TODO implement authorization
         return auto_proc.get_auto_proc_program_by_id(program_id)
 
 
@@ -174,6 +183,7 @@ class Attachments(Resource):
     @role_required
     def get(self):
         """Returns all auto_proc_program attachemnt entries"""
+        # TODO implement authorization
         query_dict = request.args.to_dict()
         return auto_proc.get_attachments_by_query(query_dict)
 
@@ -183,6 +193,7 @@ class Attachments(Resource):
     @api.marshal_with(auto_proc_program_attachment_schemas.f_schema, code=201)
     def post(self):
         """Adds a new auto proc program"""
+        # TODO implement authorization
         return auto_proc.add_auto_proc_program_attachment(api.payload)
 
 
@@ -198,6 +209,7 @@ class AttachmentsByAutoProcProgramId(Resource):
     @api.doc(description="program_id should be an integer ")
     def get(self, program_id):
         """Returns list of autoproc program attachments"""
+        # TODO implement authorization
         return auto_proc.get_attachments_by_query({"autoProcProgramId": program_id})
 
 
@@ -214,6 +226,7 @@ class DownloadAttachmentsByAutoProcProgramId(Resource):
     @api.doc(description="program_id should be an integer ")
     def get(self, program_id):
         """Downloads zip file with auto proc attachment files"""
+        # TODO implement authorization
         attachment_file_zip, msg = auto_proc.get_attachment_zip_by_program_id(
             program_id)
 
@@ -246,6 +259,7 @@ class AttachmentById(Resource):
     )
     def get(self, attachment_id):
         """Returns a auto_proc by attachment_id"""
+        # TODO implement authorization
         return auto_proc.get_auto_proc_program_attachment_by_id(attachment_id)
 
 
@@ -263,6 +277,7 @@ class AttachmenDownloadById(Resource):
     @api.doc(description="attachment_id should be an integer ")
     def get(self, attachment_id):
         """Downloads autoproc program attachment file by attachment_id"""
+        # TODO implement authorization
         attach_dict = auto_proc.get_auto_proc_program_attachment_by_id(
             attachment_id)
         path = os.path.join(

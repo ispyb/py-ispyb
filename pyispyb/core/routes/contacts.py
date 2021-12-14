@@ -48,6 +48,7 @@ class Persons(Resource):
     @role_required
     def get(self):
         """Returns all persons"""
+        # TODO implement authorization
         return contacts.get_persons_by_query(request.args.to_dict())
 
     @token_required
@@ -55,6 +56,7 @@ class Persons(Resource):
     @api.expect(person_schemas.f_schema)
     @api.marshal_with(person_schemas.f_schema, code=201)
     def post(self):
+        # TODO implement authorization
         return contacts.add_person(api.payload)
 
 
@@ -69,6 +71,7 @@ class PersonById(Resource):
     @api.marshal_with(person_schemas.f_schema)
     def get(self, person_id):
         """Returns a person by personId"""
+        # TODO implement authorization
         return contacts.get_person_by_id(person_id)
 
     @token_required
@@ -77,6 +80,7 @@ class PersonById(Resource):
     @api.marshal_with(person_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, person_id):
         """Fully updates person with id person_id"""
+        # TODO implement authorization
         return contacts.update_person(person_id, api.payload)
 
     @token_required
@@ -85,12 +89,14 @@ class PersonById(Resource):
     @api.marshal_with(person_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, person_id):
         """Partially updates person with id person_id"""
+        # TODO implement authorization
         return contacts.patch_person(person_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, person_id):
         """Deletes person by person_id"""
+        # TODO implement authorization
         return contacts.delete_person(person_id)
 
 
@@ -104,6 +110,7 @@ class PersonInfoByLoginName(Resource):
     @api.doc(description="person_login should be a string")
     def get(self, person_login):
         """Returns info about a person by login"""
+        # TODO implement authorization
         params = {"login": person_login}
         return contacts.get_person_info_by_params(params)
 
@@ -117,6 +124,7 @@ class LabContacts(Resource):
     @role_required
     def get(self):
         """Returns list of local contacts."""
+        # TODO implement authorization
         return contacts.get_lab_contacts(request), HTTPStatus.OK
 
     @token_required
@@ -125,6 +133,7 @@ class LabContacts(Resource):
     @api.marshal_with(lab_contact_schemas.f_schema, code=201)
     def post(self):
         """Adds a new lab contact"""
+        # TODO implement authorization
         return contacts.add_lab_contact(api.payload)
 
 
@@ -139,6 +148,7 @@ class LabContactById(Resource):
     @api.marshal_with(lab_contact_schemas.f_schema)
     def get(self, lab_contact_id):
         """Returns a lab contact by lab_contact_id"""
+        # TODO implement authorization
         params = {"labContactId": lab_contact_id}
         return contacts.get_lab_contact_by_params(params)
 
@@ -148,6 +158,7 @@ class LabContactById(Resource):
     @api.marshal_with(lab_contact_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, lab_contact_id):
         """Fully updates person with id lab_contact_id"""
+        # TODO implement authorization
         return contacts.update_lab_contact(lab_contact_id, api.payload)
 
     @token_required
@@ -156,12 +167,14 @@ class LabContactById(Resource):
     @api.marshal_with(lab_contact_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, lab_contact_id):
         """Partially updates person with id lab_contact_id"""
+        # TODO implement authorization
         return contacts.patch_lab_contact(lab_contact_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, lab_contact_id):
         """Deletes lab contact by lab_contact_id"""
+        # TODO implement authorization
         return contacts.delete_lab_contact(lab_contact_id)
 
 
@@ -174,6 +187,7 @@ class Laboratories(Resource):
     @role_required
     def get(self):
         """Returns all laboratory entries."""
+        # TODO implement authorization
         return contacts.get_laboratories(request)
 
     @token_required
@@ -182,6 +196,7 @@ class Laboratories(Resource):
     @api.marshal_with(laboratory_schemas.f_schema, code=201)
     def post(self):
         """Adds a new laboratory"""
+        # TODO implement authorization
         return contacts.add_laboratory(api.payload)
 
 
@@ -198,6 +213,7 @@ class LaboratoryById(Resource):
     @api.marshal_with(laboratory_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, laboratory_id):
         """Returns a laboratory by laboratoryId"""
+        # TODO implement authorization
         return contacts.get_laboratory_by_id(laboratory_id)
 
     @token_required
@@ -206,6 +222,7 @@ class LaboratoryById(Resource):
     @api.marshal_with(laboratory_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, laboratory_id):
         """Fully updates laboratory with id laboratory_id."""
+        # TODO implement authorization
         return contacts.update_laboratory(laboratory_id, api.payload)
 
     @token_required
@@ -214,10 +231,12 @@ class LaboratoryById(Resource):
     @api.marshal_with(laboratory_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, laboratory_id):
         """Partially updates laboratory with id laboratory_id."""
+        # TODO implement authorization
         return contacts.patch_laboratory(laboratory_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, laboratory_id):
         """Deletes laboratory by laboratory_id."""
+        # TODO implement authorization
         return contacts.delete_laboratory(laboratory_id)
