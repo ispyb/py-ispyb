@@ -9,7 +9,6 @@ def get_token(app, permissions, user="test"):
             "password": ",".join(permissions)
         }
     )
-    print(response)
     return response.json["token"]
 
 
@@ -27,7 +26,6 @@ def get_all_permissions_token(app, user="test"):
 def clean_db(db_module):
     tables = db_module.engine.execute(
         "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = (SELECT DATABASE()) AND TABLE_TYPE = 'BASE TABLE';")
-    print(tables)
     for table in tables:
         db_module.engine.execute('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE ' +
                                  table[0]+';')
