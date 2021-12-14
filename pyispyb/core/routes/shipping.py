@@ -52,6 +52,7 @@ class Shippings(Resource):
     @role_required
     def get(self):
         """Returns list of shippings"""
+        # TODO implement authorization
         return shipping.get_shippings(request), HTTPStatus.OK
 
     @token_required
@@ -60,6 +61,7 @@ class Shippings(Resource):
     @api.marshal_with(shipping_schemas.f_schema, code=201)
     def post(self):
         """Adds a new shipping"""
+        # TODO implement authorization
         return shipping.add_shipping(api.payload)
 
 
@@ -76,6 +78,7 @@ class ShippingById(Resource):
     @api.marshal_with(shipping_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, shipping_id):
         """Returns a shipping by shippingId"""
+        # TODO implement authorization
         return shipping.get_shipping_by_id(shipping_id)
 
     @token_required
@@ -84,6 +87,7 @@ class ShippingById(Resource):
     @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, shipping_id):
         """Fully updates shipping with id shipping_id"""
+        # TODO implement authorization
         return shipping.update_shipping(shipping_id, api.payload)
 
     @token_required
@@ -92,12 +96,14 @@ class ShippingById(Resource):
     @api.marshal_with(shipping_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, shipping_id):
         """Partially updates shipping with id shipping_id"""
+        # TODO implement authorization
         return shipping.patch_shipping(shipping_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, shipping_id):
         """Deletes shipping by shipping_id"""
+        # TODO implement authorization
         return shipping.delete_shipping(shipping_id)
 
 
@@ -114,6 +120,7 @@ class ShippingInfoById(Resource):
     # @api.marshal_with(shipping_desc_f_schema)
     def get(self, shipping_id):
         """Returns a full description of a shipping by shippingId"""
+        # TODO implement authorization
         return shipping.get_shipping_info_by_id(shipping_id)
 
 
@@ -126,6 +133,7 @@ class Dewars(Resource):
     @role_required
     def get(self):
         """Returns all dewars items"""
+        # TODO implement authorization
         query_dict = request.args.to_dict()
         return dewar.get_dewars_by_query(query_dict)
 
@@ -135,6 +143,7 @@ class Dewars(Resource):
     @api.marshal_with(dewar_schemas.f_schema, code=201)
     def post(self):
         """Adds a new dewar item"""
+        # TODO implement authorization
         return dewar.add_dewar(api.payload)
 
 
@@ -151,6 +160,7 @@ class DewarById(Resource):
     @api.marshal_with(dewar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, dewar_id):
         """Returns a dewar by dewarId"""
+        # TODO implement authorization
         return dewar.get_dewar_by_id(dewar_id)
 
     @token_required
@@ -159,6 +169,7 @@ class DewarById(Resource):
     @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, dewar_id):
         """Fully updates dewar with dewar_id"""
+        # TODO implement authorization
         return dewar.update_dewar(dewar_id, api.payload)
 
     @token_required
@@ -167,12 +178,14 @@ class DewarById(Resource):
     @api.marshal_with(dewar_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, dewar_id):
         """Partially updates dewar with id dewarId"""
+        # TODO implement authorization
         return dewar.patch_dewar(dewar_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, dewar_id):
         """Deletes a dewar by dewarId"""
+        # TODO implement authorization
         return dewar.delete_dewar(dewar_id)
 
 
@@ -188,6 +201,7 @@ class DewarLabelsById(Resource):
     @api.doc(description="dewar_id should be an integer ")
     def get(self, dewar_id):
         """Returns a dewar labels by dewarId"""
+        # TODO implement authorization
         log.info("Generating pdf labels for dewar %d" % dewar_id)
         html_labels_filename, pdf_labels_filename = dewar.get_dewar_labels_by_id(
             dewar_id
@@ -208,6 +222,7 @@ class Containers(Resource):
     @role_required
     def get(self):
         """Returns all container items"""
+        # TODO implement authorization
         return container.get_containers(request)
 
     @token_required
@@ -216,6 +231,7 @@ class Containers(Resource):
     @api.marshal_with(container_schemas.f_schema, code=201)
     def post(self):
         """Adds a new container item"""
+        # TODO implement authorization
         return container.add_container(api.payload)
 
 
@@ -232,6 +248,7 @@ class ContainerById(Resource):
     @api.marshal_with(container_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, container_id):
         """Returns a container by container_id"""
+        # TODO implement authorization
         return container.get_container_by_id(container_id)
 
     @token_required
@@ -240,6 +257,7 @@ class ContainerById(Resource):
     @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, container_id):
         """Fully updates container with container_id"""
+        # TODO implement authorization
         return container.update_container(container_id, api.payload)
 
     @token_required
@@ -248,10 +266,12 @@ class ContainerById(Resource):
     @api.marshal_with(container_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, container_id):
         """Partially updates container with id containerId"""
+        # TODO implement authorization
         return container.patch_container(container_id, api.payload)
 
     @token_required
     @role_required
     def delete(self, container_id):
         """Deletes a container by containerId"""
+        # TODO implement authorization
         return container.delete_container(container_id)

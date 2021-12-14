@@ -67,6 +67,7 @@ class DataColletions(Resource):
     @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collections"""
+        # TODO implement authorization
         query_dict = request.args.to_dict()
         return data_collection.get_data_collections(query_dict)
 
@@ -76,6 +77,7 @@ class DataColletions(Resource):
     @api.marshal_with(data_collection_schemas.f_schema, code=201)
     def post(self):
         """Adds a new session"""
+        # TODO implement authorization
         return data_collection.add_data_collection(api.payload)
 
 
@@ -96,6 +98,7 @@ class DataCollectionById(Resource):
     )
     def get(self, data_collection_id):
         """Returns a data_collection by data_collectionId"""
+        # TODO implement authorization
         return data_collection.get_data_collection_by_id(data_collection_id)
 
 
@@ -112,6 +115,7 @@ class DataCollectionSnapshot(Resource):
     @api.doc(description="data_collection_id and snapshot_id should be an integer")
     def get(self, data_collection_id, snapshot_index):
         """Downloads data collection attribute by id and attribute_name"""
+        # TODO implement authorization
         data_collection_dict = data_collection.get_data_collection_by_id(
             data_collection_id
         )
@@ -148,6 +152,7 @@ class DataCollectionFile(Resource):
     @role_required
     @api.doc(description="data_collection_id should be an integer ")
     def get(self, data_collection_id):
+        # TODO implement authorization
         """Downloads data collection attribute by id and attribute_name"""
         data_collection_dict = data_collection.get_data_collection_by_id(
             data_collection_id
@@ -195,6 +200,7 @@ class DataCollectionGroups(Resource):
     @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collection_groups"""
+        # TODO implement authorization
         return data_collection.get_data_collection_groups(request)
 
     @token_required
@@ -203,6 +209,7 @@ class DataCollectionGroups(Resource):
     @api.marshal_with(data_collection_group_schemas.f_schema, code=201)
     def post(self):
         """Adds a new session"""
+        # TODO implement authorization
         return data_collection.add_data_collection_group(api.payload)
 
 
@@ -223,4 +230,5 @@ class DataCollectionGroupById(Resource):
     )
     def get(self, data_collection_group_id):
         """Returns a data_collection group by dataCollection_group_id"""
+        # TODO implement authorization
         return data_collection.get_data_collection_group_by_id(data_collection_group_id)

@@ -49,6 +49,7 @@ class PhasingResults(Resource):
     @role_required
     def get(self):
         """Returns phasing_results based on query parameters"""
+        # TODO implement authorization
 
         api.logger.info("Get all phasing_results")
         return phasing.get_phasing_results(request)
@@ -60,6 +61,7 @@ class PhasingResults(Resource):
     # @api.errorhandler(FakeException)
     def post(self):
         """Adds a new phasing_result"""
+        # TODO implement authorization
 
         api.logger.info("Inserts a new phasing_result")
         return phasing.add_phasing_results(api.payload)
