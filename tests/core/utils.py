@@ -19,6 +19,7 @@ def get_all_permissions_token(app, user="test"):
         'own_sessions',
         'all_sessions',
         'write_proposals',
+        "write_sessions",
         'administrate',
     ], user=user)
 

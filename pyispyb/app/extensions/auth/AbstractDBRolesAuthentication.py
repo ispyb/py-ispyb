@@ -37,7 +37,7 @@ def get_person_permissions(person):
     return list(dict.fromkeys(permissions))
 
 
-class AbstractAuthenticationDBRoles(AbstractAuthentication):
+class AbstractDBRolesAuthentication(AbstractAuthentication):
     """Keycloak authentication class."""
 
     def init_app(self, app):
@@ -59,7 +59,9 @@ class AbstractAuthenticationDBRoles(AbstractAuthentication):
         """Returns username associated to the user.
 
         Args:
-            request: request object
+            username : username if present in the request
+            password : password if present in the request
+            token : token if present in the request
 
         Returns: Person
         """

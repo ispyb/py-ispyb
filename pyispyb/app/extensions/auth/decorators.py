@@ -8,7 +8,7 @@ from pyispyb.core.modules.proposal import loginAuthorizedForProposal
 from pyispyb.core.modules.session import loginAuthorizedForSession
 
 
-def token_required(func):
+def authentication_required(func):
     """
     Token required decorator.
 
@@ -69,7 +69,7 @@ def token_required(func):
     return decorated
 
 
-def role_required(func):
+def permission_required(func):
     """
     Checks if user has role required to access the given resource.
 
@@ -130,7 +130,7 @@ def role_required(func):
     return decorated
 
 
-def check_proposal_authorization(func):
+def proposal_authorization_required(func):
 
     @wraps(func)
     def decorated(self, *args, **kwargs):
@@ -176,7 +176,7 @@ def check_proposal_authorization(func):
     return decorated
 
 
-def check_session_authorization(func):
+def session_authorization_required(func):
 
     @wraps(func)
     def decorated(self, *args, **kwargs):

@@ -22,7 +22,11 @@ import pytest
 from tests.core.empty_db.functional.data.proposal import proposal_create
 
 
-@pytest.mark.parametrize("test_elem", proposal_create)
+def get_elem_description(test_elem):
+    return test_elem["description"]
+
+
+@pytest.mark.parametrize("test_elem", proposal_create, ids=get_elem_description)
 def test_proposal_create(ispyb_app, manager_token, clean_db_before_test, test_elem):
     client = ispyb_app.test_client()
     headers = {"Authorization": "bearer " + manager_token}
