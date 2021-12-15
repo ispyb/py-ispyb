@@ -7,7 +7,6 @@ server:
     - dummy:
         AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
         AUTH_CLASS: "DummyAuthentication"
-  MASTER_TOKEN: "MasterToken"
 
   SECRET_KEY: "TOTO"
 

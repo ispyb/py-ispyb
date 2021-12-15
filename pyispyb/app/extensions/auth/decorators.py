@@ -55,11 +55,6 @@ def authentication_required(func):
 
         token = parts[1]
 
-        if current_app.config.get("MASTER_TOKEN"):
-            if current_app.config["MASTER_TOKEN"] == token:
-                current_app.logger.info("Master token validated")
-                return func(*args, **kwargs)
-
         user_info, msg = decode_token(token)
         if not user_info:
             return {"message": msg}, HTTPStatus.UNAUTHORIZED

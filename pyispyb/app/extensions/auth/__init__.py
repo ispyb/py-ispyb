@@ -93,12 +93,7 @@ class AuthProvider:
         try:
             parts = auth_header.split()
             token = parts[1]
-            if current_app.config.get("MASTER_TOKEN") == token:
-                user_info["sub"] = "MasterToken"
-                #user_info["roles"] = current_app.config.get("ADMIN_ROLES")
-                user_info["roles"] = ["manager"]
-            else:
-                user_info, msg = decode_token(token)
+            user_info, msg = decode_token(token)
             user_info["is_admin"] = any(
                 role in current_app.config.get("ADMIN_ROLES", [])
                 for role in user_info["roles"]
