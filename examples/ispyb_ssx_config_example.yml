@@ -10,4 +10,3 @@ server:
         AUTH_CLASS: "KeycloakAuthentication",
       }
     ]
-    MASTER_TOKEN : "MasterToken"

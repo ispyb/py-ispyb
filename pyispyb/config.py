@@ -57,7 +57,6 @@ class BaseConfig:
 
     JWT_CODING_ALGORITHM = "HS256"
     TOKEN_EXP_TIME = 300  # in minutes
-    MASTER_TOKEN = "MasterToken"
     ADMIN_ROLES = ["administrate"]  # allows to access all resources
 
     BARCODE_TYPE = "code39"
@@ -120,7 +119,6 @@ class ProductionConfig(BaseConfig):
         SQLALCHEMY_DATABASE_URI = os.getenv(
             "ISPYB_DATABASE_URI"
         )
-        MASTER_TOKEN = None
         SWAGGER_UI_URI = False
 
 
