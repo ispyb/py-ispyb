@@ -25,7 +25,7 @@ from flask import request, send_file, abort
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth.decorators import check_proposal_authorization, check_session_authorization, token_required, role_required
+from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, session_authorization_required, authentication_required, permission_required
 
 from pyispyb.core.schemas import data_collection as data_collection_schemas
 from pyispyb.core.schemas import data_collection_group as data_collection_group_schemas
@@ -48,9 +48,9 @@ api_v1.add_namespace(api)
 class DataColletionGroupsInfos(Resource):
     """Allows to get all data_collections"""
 
-    @token_required
-    @role_required
-    @check_session_authorization
+    @authentication_required
+    @permission_required
+    @session_authorization_required
     def get(self, session_id):
         """Returns list of data_collections"""
         query_dict = request.args.to_dict()
@@ -62,8 +62,8 @@ class DataColletionGroupsInfos(Resource):
 class DataColletions(Resource):
     """Allows to get all data_collections"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @permission_required
     @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collections"""
@@ -71,8 +71,8 @@ class DataColletions(Resource):
         query_dict = request.args.to_dict()
         return data_collection.get_data_collections(query_dict)
 
-    @token_required
-    @role_required
+    @authentication_required
+    @permission_required
     @api.expect(data_collection_schemas.f_schema)
     @api.marshal_with(data_collection_schemas.f_schema, code=201)
     def post(self):
@@ -88,8 +88,8 @@ class DataColletions(Resource):
 class DataCollectionById(Resource):
     """Allows to get/set/delete a data_collection"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @permission_required
     @api.doc(description="data_collection_id should be an integer ")
     @api.marshal_with(
         data_collection_schemas.f_schema,
@@ -110,8 +110,8 @@ class DataCollectionById(Resource):
 class DataCollectionSnapshot(Resource):
     """Allows to download snapshots associated to the data collection"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @permission_required
     @api.doc(description="data_collection_id and snapshot_id should be an integer")
     def get(self, data_collection_id, snapshot_index):
         """Downloads data collection attribute by id and attribute_name"""
@@ -148,8 +148,8 @@ class DataCollectionSnapshot(Resource):
 class DataCollectionFile(Resource):
     """Allows to download files associated to the data collection"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @permission_required
     @api.doc(description="data_collection_id should be an integer ")
     def get(self, data_collection_id):
         # TODO implement authorization
@@ -195,16 +195,16 @@ class DataCollectionFile(Resource):
 class DataCollectionGroups(Resource):
     """Allows to get all data collection groups and add a new one"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @permission_required
     @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collection_groups"""
         # TODO implement authorization
         return data_collection.get_data_collection_groups(request)
 
-    @token_required
-    @role_required
+    @authentication_required
+    @permission_required
     @api.expect(data_collection_group_schemas.f_schema)
     @api.marshal_with(data_collection_group_schemas.f_schema, code=201)
     def post(self):
@@ -220,8 +220,8 @@ class DataCollectionGroups(Resource):
 class DataCollectionGroupById(Resource):
     """Allows to get/set/delete a data collection group"""
 
-    @token_required
-    @role_required
+    @authentication_required
+    @permission_required
     @api.doc(description="data_collection_group_id should be an integer ")
     @api.marshal_with(
         data_collection_group_schemas.f_schema,

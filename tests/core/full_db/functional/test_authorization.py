@@ -4,6 +4,10 @@ from tests.core.full_db.functional.data.authorization import test_data_session, 
 from tests.core.utils import get_token
 
 
+def get_elem_name(test_elem):
+    return test_elem["name"]
+
+
 def _run_authorization_t(ispyb_app, test_elem):
     name = test_elem["name"]
 
@@ -25,11 +29,11 @@ def _run_authorization_t(ispyb_app, test_elem):
     assert response.status_code == code, "[GET] %s " % (name)
 
 
-@pytest.mark.parametrize("test_elem", test_data_session)
+@pytest.mark.parametrize("test_elem", test_data_session, ids=get_elem_name)
 def test_authorization_session(ispyb_app, test_elem):
     _run_authorization_t(ispyb_app, test_elem)
 
 
-@pytest.mark.parametrize("test_elem", test_data_proposal)
+@pytest.mark.parametrize("test_elem", test_data_proposal, ids=get_elem_name)
 def test_authorization_proposal(ispyb_app, test_elem):
     _run_authorization_t(ispyb_app, test_elem)

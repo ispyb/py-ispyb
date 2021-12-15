@@ -22,7 +22,11 @@ from tests.core.full_db.functional.data.get import test_data
 import pytest
 
 
-@pytest.mark.parametrize("test_elem", test_data)
+def get_elem_route(test_elem):
+    return test_elem["route"]
+
+
+@pytest.mark.parametrize("test_elem", test_data, ids=get_elem_route)
 def test_get(ispyb_app, manager_token, test_elem):
     client = ispyb_app.test_client()
     headers = {"Authorization": "Bearer " + manager_token}
