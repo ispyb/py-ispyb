@@ -63,6 +63,16 @@ class Sessions(Resource):
         # TODO implement authorization
         return session.add_session(api.payload)
 
+@api.route("/infos", endpoint="sessions_infos")
+@api.doc(security="apikey")
+class SessionsInfos(Resource):
+    """Allows to get all sessions and insert a new one"""
+
+    @authentication_required
+    @permission_required
+    def get(self):
+        """Returns list of sessions"""
+        return session.get_session_infos_login(request.user['sub'])
 
 @api.route("/<int:session_id>", endpoint="session_by_id")
 @api.param("session_id", "Session id (integer)")
