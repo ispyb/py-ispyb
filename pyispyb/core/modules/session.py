@@ -29,7 +29,7 @@ from pyispyb.app.utils import create_response_item, getSQLQuery, queryResultToDi
 
 from pyispyb.core import models, schemas
 
-from pyispyb.core.modules import beamline_setup, session, proposal
+from pyispyb.core.modules import  proposal
 
 def get_session_infos_login(login):
     """
@@ -39,7 +39,7 @@ def get_session_infos_login(login):
         [type]: [description]
     """
 
-    sql = getSQLQuery("sessionsInfosLogin")
+    sql = getSQLQuery("session/sessionsInfosLogin")
     sql = sql.bindparams(login=login)
     res = db.engine.execute(sql)
     return queryResultToDict(res)
@@ -116,30 +116,6 @@ def get_session_by_id(session_id):
     )
 
 
-def get_session_info_by_id(session_id):
-    """
-    Returns session info by its sessionId.
-
-    Args:
-        session_id (int): corresponds to sessionId in db
-
-    Returns:
-        dict: info about session as dict
-    """
-    session_json = get_session_by_id(session_id)
-    if session_json:
-        session_json["local_contact"] = session.get_session_by_id(
-            session_json["sessionId"]
-        )
-        session_json["beamline_setup"] = beamline_setup.get_beamline_setup_by_id(
-            session_json["beamLineSetupId"]
-        )
-        # session_json["data_collections_groups"] = data_collection.
-        # get_data_collection_groups({"sessionId" : session_id})["data"]["rows"]
-
-    return session_json
-
-
 def get_sessions_by_date(start_date=None, end_date=None, beamline=None):
     """
     Returns list of sessions by start_date, end_date and beamline.
@@ -211,108 +187,8 @@ def delete_session(session_id):
     return db.delete_db_item(models.BLSession, id_dict)
 
 
-def get_beam_calendars(request):
-    """
-    Returns beam_calendar items based on query parameters.
-
-    Args:
-        query_dict (dict): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    query_dict = request.args.to_dict()
-
-    return db.get_db_items(
-        models.BeamCalendar,
-        schemas.beam_calendar.dict_schema,
-        schemas.beam_calendar.ma_schema,
-        query_dict,
-    )
-
-
-def add_beam_calendar(data_dict):
-    """
-    Adds data collection item.
-
-    Args:
-        beam_calendar_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    return db.add_db_item(
-        models.BeamCalendar, schemas.beam_calendar.ma_schema, data_dict
-    )
-
-
-def get_beam_calendar_by_id(beam_calendar_id):
-    """
-    Returns beam_calendar by its beam_calendarId.
-
-    Args:
-        beam_calendar_id (int): corresponds to beamlineSetupId in db
-
-    Returns:
-        dict: info about beam_calendar as dict
-    """
-    data_dict = {"beamCalendarId": beam_calendar_id}
-    return db.get_db_item(
-        models.BeamCalendar, schemas.beam_calendar.ma_schema, data_dict
-    )
-
-
-def update_beam_calendar(beam_calendar_id, data_dict):
-    """
-    Updates beam_calendar.
-
-    Args:
-        beam_calendar_id ([type]): [description]
-        beam_calendar_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    id_dict = {"beamCalendarId": beam_calendar_id}
-    return db.update_db_item(
-        models.BeamCalendar, schemas.beam_calendar.ma_schema, id_dict, data_dict
-    )
-
-
-def patch_beam_calendar(beam_calendar_id, data_dict):
-    """
-    Patch a beam_calendar.
-
-    Args:
-        beam_calendar_id ([type]): [description]
-        data_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    id_dict = {"beamCalendarId": beam_calendar_id}
-    return db.patch_db_item(
-        models.BeamCalendar, schemas.beam_calendar.ma_schema, id_dict, data_dict
-    )
-
-
-def delete_beam_calendar(beam_calendar_id):
-    """
-    Deletes beam_calendar item from db.
-
-    Args:
-        beam_calendar_id (int): beam_calendarId column in db
-
-    Returns:
-        bool: True if the beam_calendar exists and deleted successfully,
-        otherwise return False
-    """
-    id_dict = {"beamCalendarId": beam_calendar_id}
-    return db.delete_db_item(models.BeamCalendar, id_dict)
-
-
 def loginAuthorizedForSession(login, sessionId):
-    sql = getSQLQuery("loginAuthorizedSession")
+    sql = getSQLQuery("session/loginAuthorizedSession")
     sql = sql.bindparams(login=login, sessionId=sessionId)
     isAuthorized = db.engine.execute(sql)
     return isAuthorized.first()[0] > 0
