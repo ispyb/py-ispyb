@@ -18,13 +18,19 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+import json
 import logging
 from flask import request, make_response
 from sqlalchemy.exc import SQLAlchemyError
+import hashlib
 
 from pyispyb.flask_restx_patched import HTTPStatus, Resource
 from pyispyb.app.extensions.api import api_v1, Namespace
 from pyispyb.app.extensions import auth_provider
+from pyispyb.app.extensions import db
+
+from pyispyb.core import models
 
 
 __license__ = "LGPLv3+"
@@ -90,4 +96,15 @@ class Login(Resource):
             )
         else:
             token_info = auth_provider.generate_token(username, roles)
+            token_ispyb = hashlib.sha1(
+                token_info["token"].encode('utf-8')).hexdigest()
+            bd_login = models.Login(
+                token=token_ispyb,
+                username=token_info["sub"],
+                roles=json.dumps(token_info["roles"]),
+                expirationTime=datetime.datetime.strptime(
+                    token_info["exp"], "%Y-%m-%d %H:%M:%S"),
+            )
+            db.session.add(bd_login)
+            db.session.commit()
             return token_info

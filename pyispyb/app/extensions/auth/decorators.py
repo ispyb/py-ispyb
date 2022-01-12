@@ -56,6 +56,7 @@ def authentication_required(func):
         token = parts[1]
 
         user_info, msg = decode_token(token)
+        request.user = user_info
         if not user_info:
             return {"message": msg}, HTTPStatus.UNAUTHORIZED
         else:
