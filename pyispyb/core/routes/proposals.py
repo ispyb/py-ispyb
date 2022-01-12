@@ -43,7 +43,7 @@ from pyispyb.flask_restx_patched import Resource
 from pyispyb.app.extensions.api import api_v1, Namespace
 from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, authentication_required, permission_required
 from pyispyb.core.schemas import proposal as proposal_schemas
-from pyispyb.core.modules import contacts, proposal
+from pyispyb.core.modules import proposal
 
 
 api = Namespace(
@@ -62,13 +62,8 @@ class Proposals(Resource):
     def get(self):
         """Returns proposals based on query parameters"""
         api.logger.info("Get all proposals")
-        user_info = contacts.get_person_info(request)
         query_dict = request.args.to_dict()
-        if not "all_proposals" in request.roles:
-            proposal_ids = proposal.get_proposal_ids_by_person_id(
-                user_info["personId"]
-            )
-            query_dict["proposalId"] = proposal_ids
+        # TODO implement authorization
         return proposal.get_proposals_by_query(query_dict)
 
     @authentication_required
