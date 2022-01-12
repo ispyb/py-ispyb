@@ -51,10 +51,11 @@ def download_pdb_file(pdb_filename):
         return response.content
 
 
-def getSQLQuery(name):
+def getSQLQuery(name, append=""):
     path = os.path.join(current_app.config["QUERIES_DIR"], name+".sql")
     file = open(path)
-    query = text(file.read())
+    queryString = file.read() + append
+    query = text(queryString)
     return query
 
 
