@@ -29,6 +29,8 @@ from .namespace import Namespace
 from .http_exceptions import abort
 
 api_v1 = None
+legacy_api = None
+
 
 def init_app(app, **kwargs):
     # pylint: disable=unused-argument
@@ -47,3 +49,9 @@ def init_app(app, **kwargs):
         default_label="Main",
     )
     api_v1.authorizations = deepcopy(app.config["AUTHORIZATIONS"])
+
+    global legacy_api
+    legacy_api = Namespace(
+        "Legacy", description="Java ISPyB legacy routes", path="/legacy"
+    )
+    api_v1.add_namespace(legacy_api)
