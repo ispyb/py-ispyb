@@ -25,8 +25,8 @@ from datetime import datetime
 from flask import request
 from pyispyb.flask_restx_patched import Resource, HTTPStatus, abort
 
-from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth.decorators import session_authorization_required, authentication_required, permission_required
+from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
+from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, session_authorization_required, authentication_required, permission_required
 
 from pyispyb.core.schemas import session as session_schemas
 from pyispyb.core.modules import session
@@ -43,8 +43,6 @@ api_v1.add_namespace(api)
 @api.route("", endpoint="sessions")
 @api.doc(security="apikey")
 class Sessions(Resource):
-    """Allows to get all sessions and insert a new one"""
-
     @authentication_required
     @permission_required
     def get(self):
@@ -62,16 +60,29 @@ class Sessions(Resource):
         # TODO implement authorization
         return session.add_session(api.payload)
 
+
 @api.route("/infos", endpoint="sessions_infos")
+@legacy_api.route("/<token>/session/list")
 @api.doc(security="apikey")
 class SessionsInfos(Resource):
-    """Allows to get all sessions and insert a new one"""
-
     @authentication_required
     @permission_required
-    def get(self):
+    def get(self, **kwargs):
         """Returns list of sessions"""
         return session.get_session_infos_login(request.user['sub'])
+
+
+@api.route("/proposal/<int:proposal_id>/infos", endpoint="sessions_infos_proposal")
+@legacy_api.route("/<token>/proposal/<proposal_id>/session/list")
+@api.doc(security="apikey")
+class SessionsInfosProposal(Resource):
+    @authentication_required
+    @permission_required
+    @proposal_authorization_required
+    def get(self, proposal_id, **kwargs):
+        """Returns list of sessions"""
+        return session.get_session_infos_login_proposal(request.user['sub'], proposal_id)
+
 
 @api.route("/<int:session_id>", endpoint="session_by_id")
 @api.param("session_id", "Session id (integer)")
@@ -155,6 +166,3 @@ class SessionsByDateBeamline(Resource):
                 )
 
         return session.get_sessions_by_date(start_date, end_date, beamline)
-
-
-

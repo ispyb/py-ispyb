@@ -29,7 +29,8 @@ from pyispyb.app.utils import create_response_item, getSQLQuery, queryResultToDi
 
 from pyispyb.core import models, schemas
 
-from pyispyb.core.modules import  proposal
+from pyispyb.core.modules import proposal
+
 
 def get_session_infos_login(login):
     """
@@ -43,6 +44,22 @@ def get_session_infos_login(login):
     sql = sql.bindparams(login=login)
     res = db.engine.execute(sql)
     return queryResultToDict(res)
+
+
+def get_session_infos_login_proposal(login, proposalId):
+    """
+    Returns sessions info list.
+
+    Returns:
+        [type]: [description]
+    """
+
+    sql = getSQLQuery("session/sessionsInfosLogin",
+                      append=" and proposalId = :proposalId")
+    sql = sql.bindparams(login=login, proposalId=proposalId)
+    res = db.engine.execute(sql)
+    return queryResultToDict(res)
+
 
 def get_sessions(request):
     """

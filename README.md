@@ -56,7 +56,7 @@ cd ..
 * `python3 wsgi.py`
 * `invoke app.run`
 
-Now you can go to http://localhost:5000/ispyb/api/v1/doc and explore py-ispyb via swagger ui.
+Now you can go to http://localhost:5000/ispyb/api/v1/docs and explore py-ispyb via swagger ui.
 For authentication json web tokens (jwt) are used. In the web browser call http://localhost:5000/ispyb/api/v1/auth/login , enter user credentials and retrieve access token from the response:
 
 ```bash
