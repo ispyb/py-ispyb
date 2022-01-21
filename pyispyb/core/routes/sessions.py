@@ -41,36 +41,33 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("/infos", endpoint="sessions_infos")
+@api.route("")
 @legacy_api.route("/<token>/session/list")
-@api.doc(security="apikey")
 class SessionsInfos(Resource):
     @authentication_required
     @permission_required("any", ["own_sessions"])
     def get(self, **kwargs):
-        """Returns list of sessions"""
+        """Returns list of sessions associated to user"""
         return session.get_session_infos_login(request.user['sub'])
 
 
-@api.route("/date/<string:startDate>/<string:endDate>/infos", endpoint="sessions_infos_proposal_dates")
+@api.route("/date/<string:startDate>/<string:endDate>")
 @legacy_api.route("/<token>/proposal/session/date/<startDate>/<endDate>/list")
-@api.doc(security="apikey")
-class SessionsInfosProposal(Resource):
+class SessionsInfosProposalDates(Resource):
     @authentication_required
     @permission_required("any", ["own_sessions"])
     def get(self, startDate, endDate, **kwargs):
-        """Returns list of sessions"""
-        return session.get_session_infos_dates(request.user['sub'], startDate, endDate)
+        """Returns list of sessions associated to user in between the two dates"""
+        return session.get_session_infos_login_dates(request.user['sub'], startDate, endDate)
 
 
-@api.route("/proposal/<int:proposal_id>/infos", endpoint="sessions_infos_proposal")
+@api.route("/proposal/<int:proposal_id>")
 @legacy_api.route("/<token>/proposal/<proposal_id>/session/list")
-@api.doc(security="apikey")
 class SessionsInfosProposal(Resource):
     @authentication_required
     @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, **kwargs):
-        """Returns list of sessions"""
+        """Returns list of sessions associated to user and proposal"""
         proposal_id = findProposalId(proposal_id)
         return session.get_session_infos_login_proposal(request.user['sub'], proposal_id)

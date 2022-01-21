@@ -39,7 +39,7 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("/groups/session/<int:session_id>", endpoint="data_collection_groups")
+@api.route("/groups/session/<int:session_id>")
 @api.doc(security="apikey")
 class DataColletionGroups(Resource):
 
@@ -47,4 +47,5 @@ class DataColletionGroups(Resource):
     @permission_required("any", ["own_sessions", "all_sessions"])
     @session_authorization_required
     def get(self, session_id):
+        """Returns list of data collection groups relative to session"""
         return data_collections.get_data_collections_groups(session_id)

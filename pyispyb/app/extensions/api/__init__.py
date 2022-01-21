@@ -52,6 +52,6 @@ def init_app(app, **kwargs):
 
     global legacy_api
     legacy_api = Namespace(
-        "Legacy", description="Java ISPyB legacy routes", path="/legacy"
+        "Legacy", description="Legacy routes for Java ISPyB compatibility", path="/legacy"
     )
     api_v1.add_namespace(legacy_api)
