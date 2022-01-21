@@ -40,7 +40,7 @@ from flask_restx._http import HTTPStatus
 
 from pyispyb.flask_restx_patched import Resource
 
-from pyispyb.app.extensions.api import api_v1, Namespace
+from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
 from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, authentication_required, permission_required
 from pyispyb.core.schemas import proposal as proposal_schemas
 from pyispyb.core.modules import proposal
@@ -76,6 +76,18 @@ class Proposals(Resource):
         return proposal.add_proposal(api.payload)
 
 
+@api.route("/infos", endpoint="proposals_infos")
+@legacy_api.route("/<token>/proposal/list")
+@api.doc(security="apikey")
+class ProposalsInfosLogin(Resource):
+    """Allows to get proposals associated to login"""
+
+    @authentication_required
+    @permission_required
+    def get(self, **kwargs):
+        return proposal.get_proposals_infos_login(request.user['sub'])
+
+
 @api.route("/<int:proposal_id>", endpoint="proposal_by_id")
 @api.param("proposal_id", "Proposal id (integer)")
 @api.doc(security="apikey")
@@ -91,6 +103,7 @@ class ProposalById(Resource):
     @api.marshal_with(proposal_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self, proposal_id):
         """Returns a proposal by proposalId"""
+        proposal_id = proposal.findProposalId(proposal_id)
         return proposal.get_proposal_by_id(proposal_id)
 
     @authentication_required
@@ -100,6 +113,7 @@ class ProposalById(Resource):
     @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     def put(self, proposal_id):
         """Fully updates proposal with id proposal_id"""
+        proposal_id = proposal.findProposalId(proposal_id)
         current_app.logger.info("Update proposal %d" % proposal_id)
         return proposal.update_proposal(proposal_id, api.payload)
 
@@ -110,6 +124,7 @@ class ProposalById(Resource):
     @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
     def patch(self, proposal_id):
         """Partially updates proposal with id proposal_id"""
+        proposal_id = proposal.findProposalId(proposal_id)
         return proposal.patch_proposal(proposal_id, api.payload)
 
     @authentication_required
@@ -117,6 +132,7 @@ class ProposalById(Resource):
     @proposal_authorization_required
     def delete(self, proposal_id):
         """Deletes a proposal by proposal_id"""
+        proposal_id = proposal.findProposalId(proposal_id)
         return proposal.delete_proposal(proposal_id)
 
 
@@ -134,4 +150,5 @@ class ProposalInfoById(Resource):
     @api.doc(description="proposal_id should be an integer ")
     def get(self, proposal_id):
         """Returns a full description of a proposal by proposalId"""
+        proposal_id = proposal.findProposalId(proposal_id)
         return proposal.get_proposal_info_by_id(proposal_id)

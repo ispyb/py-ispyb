@@ -77,32 +77,33 @@ class AuthProvider:
             return username, roles
         return None, None
 
-    def get_user_info_from_auth_header(self, auth_header):
-        """
-        Returns dict with user info based on auth header.
-
-        Args:
-            auth_header ([type]): [description]
-
-        Returns:
-            dict: {"username": "", "roles": [], "is_admin": bool}
-        """
-        user_info = {}
+    def get_user_info(self, request):
         token = None
 
-        try:
-            parts = auth_header.split()
+        auth = request.headers.get("Authorization", None)
+        if auth is not None:
+            # AUTH HEADER -> TOKEN IS IN HEADER
+            parts = auth.split()
+            if parts[0].lower() != "bearer":
+                None, "Authorization header must start with Bearer"
+            elif len(parts) == 1:
+                return None, "Token not found"
+            elif len(parts) > 2:
+                return None, "Authorization header must be Bearer token"
             token = parts[1]
-            user_info, msg = decode_token(token)
-            user_info["is_admin"] = any(
-                role in current_app.config.get("ADMIN_ROLES", [])
-                for role in user_info["roles"]
-            )
+        else:
+            # NO AUTH HEADER -> TOKEN IS IN PARAMS (LEGACY ROUTES)
+            token = request.view_args["token"]
 
-        except BaseException as ex:
-            print("Unable to extract token from Authorization header (%s)" % str(ex))
+        if not token:
+            return None, "Authorization header is expected"
 
-        return user_info
+        user_info, msg = decode_token(token)
+        user_info["is_admin"] = any(
+            role in current_app.config.get("ADMIN_ROLES", [])
+            for role in user_info["roles"]
+        )
+        return user_info, msg
 
     def generate_token(self, username, roles):
         """

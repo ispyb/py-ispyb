@@ -24,9 +24,24 @@ __license__ = "LGPLv3+"
 
 from pyispyb.app.extensions import db, auth_provider
 
-from pyispyb.app.utils import getSQLQuery
+from pyispyb.app.utils import getSQLQuery, queryResultToDict
 
 from pyispyb.core import models, schemas
+
+
+def get_proposals_infos_login(login):
+    """
+    Returns sessions info list.
+
+    Returns:
+        [type]: [description]
+    """
+
+    sql = getSQLQuery("proposal/proposalsInfosLogin")
+    sql = sql.bindparams(login=login)
+    res = db.engine.execute(sql)
+    return queryResultToDict(res)
+
 
 def get_proposals_by_query(query_dict):
     """Returns proposal db items
@@ -130,3 +145,15 @@ def loginAuthorizedForProposal(login, proposalId):
     return isAuthorized.first()[0] > 0
 
 
+def findProposalId(idOrName):
+    sql = getSQLQuery("proposal/findProposalId")
+    sql = sql.bindparams(name=idOrName)
+    res = db.engine.execute(sql)
+    res = queryResultToDict(res)
+    if len(res) == 1:
+        return res[0]["proposalId"]
+    if len(res) > 1:
+        raise Exception(f"More than one proposal found for {idOrName}")
+    if len(res) > 1:
+        raise Exception(f"No proposal found for {idOrName}")
+    return None

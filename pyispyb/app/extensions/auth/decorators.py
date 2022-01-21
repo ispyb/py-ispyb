@@ -4,7 +4,7 @@ from flask import current_app, request
 from flask_restx._http import HTTPStatus
 
 from pyispyb.app.extensions.auth import auth_provider, decode_token
-from pyispyb.core.modules.proposal import loginAuthorizedForProposal
+from pyispyb.core.modules.proposal import findProposalId, loginAuthorizedForProposal
 from pyispyb.core.modules.session import loginAuthorizedForSession
 
 
@@ -29,33 +29,8 @@ def authentication_required(func):
         Returns:
             [type]: [description]
         """
-        token = None
 
-        auth = request.headers.get("Authorization", None)
-        if not auth:
-            return (
-                {"message": "Authorization header is expected"},
-                HTTPStatus.UNAUTHORIZED,
-            )
-
-        parts = auth.split()
-
-        if parts[0].lower() != "bearer":
-            return (
-                {"message": "Authorization header must start with Bearer"},
-                HTTPStatus.UNAUTHORIZED,
-            )
-        elif len(parts) == 1:
-            return {"message": "Token not found"}, HTTPStatus.UNAUTHORIZED
-        elif len(parts) > 2:
-            return (
-                {"message": "Authorization header must be Bearer token"},
-                HTTPStatus.UNAUTHORIZED,
-            )
-
-        token = parts[1]
-
-        user_info, msg = decode_token(token)
+        user_info, msg = auth_provider.get_user_info(request)
         request.user = user_info
         if not user_info:
             return {"message": msg}, HTTPStatus.UNAUTHORIZED
@@ -99,9 +74,10 @@ def permission_required(func):
             [type]: [description]
         """
 
-        user_info = auth_provider.get_user_info_from_auth_header(
-            request.headers.get("Authorization")
-        )
+        user_info, msg = auth_provider.get_user_info(request)
+        if not user_info:
+            return {"message": msg}, HTTPStatus.UNAUTHORIZED
+
         request.roles = user_info.get("roles", [])
 
         methods = current_app.config.get(
@@ -138,9 +114,12 @@ def proposal_authorization_required(func):
         if not proposal_id:
             return {"message": "No proposal_id specified"}, HTTPStatus.UNAUTHORIZED
 
-        user_info = auth_provider.get_user_info_from_auth_header(
-            request.headers.get("Authorization")
-        )
+        proposal_id = findProposalId(proposal_id)
+
+        user_info, msg = auth_provider.get_user_info(request)
+        if not user_info:
+            return {"message": msg}, HTTPStatus.UNAUTHORIZED
+
         roles = user_info.get("roles", [])
 
         msg = ""
@@ -184,9 +163,10 @@ def session_authorization_required(func):
         if not session_id:
             return {"message": "No session_id specified"}, HTTPStatus.UNAUTHORIZED
 
-        user_info = auth_provider.get_user_info_from_auth_header(
-            request.headers.get("Authorization")
-        )
+        user_info, msg = auth_provider.get_user_info(request)
+        if not user_info:
+            return {"message": msg}, HTTPStatus.UNAUTHORIZED
+
         roles = user_info.get("roles", [])
 
         msg = ""

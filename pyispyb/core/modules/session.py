@@ -61,6 +61,32 @@ def get_session_infos_login_proposal(login, proposalId):
     return queryResultToDict(res)
 
 
+def get_session_infos_dates(login, startDate, endDate):
+    """
+    Returns sessions info list.
+
+    Returns:
+        [type]: [description]
+    """
+
+    sql = getSQLQuery("session/sessionsInfosLogin",
+                      append=""" 
+    and (
+        (BLSession_startDate >= :startDate and BLSession_startDate <= :endDate)
+        or
+        (BLSession_endDate >= :startDate and BLSession_endDate <= :endDate)
+        or
+        (BLSession_endDate >= :endDate and BLSession_startDate <= :startDate)
+        or
+        (BLSession_endDate <= :endDate and BLSession_startDate >= :startDate)
+        )
+    order by v_session.sessionId DESC
+    """)
+    sql = sql.bindparams(login=login, startDate=startDate, endDate=endDate)
+    res = db.engine.execute(sql)
+    return queryResultToDict(res)
+
+
 def get_sessions(request):
     """
     Returns session based on query parameters.

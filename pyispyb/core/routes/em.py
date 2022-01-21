@@ -2,6 +2,7 @@
 __license__ = "LGPLv3+"
 
 
+from pyispyb.core.modules.proposal import findProposalId
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
@@ -30,6 +31,7 @@ class Movies(Resource):
     @permission_required
     @proposal_authorization_required
     def get(self, proposal_id, dataCollection_id, **kwargs):
+        proposal_id = findProposalId(proposal_id)
         return em.get_movies_data_by_dataCollection_id(proposal_id, dataCollection_id)
 
 
@@ -42,6 +44,7 @@ class MovieThumbnail(Resource):
     @permission_required
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
+        proposal_id = findProposalId(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
         if path:
             path = path["movie_thumbnail"]
@@ -60,6 +63,7 @@ class MovieMotionCorrectionThumbnail(Resource):
     @permission_required
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
+        proposal_id = findProposalId(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
         if path:
             path = path["motion_correction_thumbnail"]
@@ -78,6 +82,7 @@ class MovieCTFThumbnail(Resource):
     @permission_required
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
+        proposal_id = findProposalId(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
         if path:
             path = path["ctf_thumbnail"]
@@ -96,6 +101,7 @@ class MovieMotionCorrectionDrift(Resource):
     @permission_required
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
+        proposal_id = findProposalId(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
         if path:
             path = path["motion_correction_drift"]
@@ -129,6 +135,7 @@ class StatsDataCollectionIds(Resource):
     @permission_required
     @proposal_authorization_required
     def get(self, proposal_id, data_collections_ids):
+        proposal_id = findProposalId(proposal_id)
         return em.get_stats_by_data_collections_ids(proposal_id, data_collections_ids)
 
 
@@ -140,6 +147,7 @@ class StatsDataCollectionGroupId(Resource):
     @permission_required
     @proposal_authorization_required
     def get(self, proposal_id, data_collections_group_id, **kwargs):
+        proposal_id = findProposalId(proposal_id)
         return em.get_stats_by_data_collections_group_id(proposal_id, data_collections_group_id)
 
 ############################
@@ -156,4 +164,5 @@ class DataCollectionGroup(Resource):
     @permission_required
     @proposal_authorization_required
     def get(self, proposal_id, session_id, **kwargs):
+        proposal_id = findProposalId(proposal_id)
         return em.get_data_collections_groups(proposal_id, session_id)
