@@ -1,9 +1,9 @@
 from functools import wraps
 
-from flask import current_app, request
+from flask import request
 from flask_restx._http import HTTPStatus
 
-from pyispyb.app.extensions.auth import auth_provider, decode_token
+from pyispyb.app.extensions.auth import auth_provider
 from pyispyb.core.modules.proposal import findProposalId, loginAuthorizedForProposal
 from pyispyb.core.modules.session import loginAuthorizedForSession
 

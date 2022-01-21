@@ -25,7 +25,6 @@ __license__ = "LGPLv3+"
 from pyispyb.app.extensions import db
 
 from pyispyb.app.utils import getSQLQuery, queryResultToDict
-from pyispyb.core import models, schemas
 from pyispyb.core.modules import data_collections
 
 ############################

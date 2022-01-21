@@ -20,7 +20,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
 from .flask_sqlalchemy import SQLAlchemy
-from .report import report
 from .user_office import user_office
 from .auth import auth_provider
 from . import api
