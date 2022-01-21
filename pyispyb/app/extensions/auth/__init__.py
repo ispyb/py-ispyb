@@ -21,13 +21,9 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import datetime
 import importlib
-from functools import wraps
 
 import jwt
-from flask import current_app, request
-from flask_restx._http import HTTPStatus
-
-from pyispyb.app.utils import getSQLQuery, queryResultToDict
+from flask import current_app
 
 
 __license__ = "LGPLv3+"

@@ -22,7 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
-from pyispyb.app.extensions import db, auth_provider
+from pyispyb.app.extensions import db
 
 from pyispyb.app.utils import getSQLQuery, queryResultToDict
 

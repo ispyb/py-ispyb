@@ -27,12 +27,9 @@ from functools import wraps
 import logging
 
 import flask_marshmallow
-import sqlalchemy
 
 from flask_restx import Namespace as BaseNamespace
-from flask_restx._http import HTTPStatus
 
-from . import http_exceptions
 from .webargs_parser import CustomWebargsParser
 
 

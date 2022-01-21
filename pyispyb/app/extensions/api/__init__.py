@@ -26,7 +26,6 @@ from copy import deepcopy
 
 from .api import Api
 from .namespace import Namespace
-from .http_exceptions import abort
 
 api_v1 = None
 legacy_api = None

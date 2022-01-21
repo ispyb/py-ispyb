@@ -20,16 +20,14 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import logging
-from datetime import datetime
 
 from flask import request
 from pyispyb.core.modules.proposal import findProposalId
-from pyispyb.flask_restx_patched import Resource, HTTPStatus, abort
+from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
-from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, session_authorization_required, authentication_required, permission_required
+from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, authentication_required, permission_required
 
-from pyispyb.core.schemas import session as session_schemas
 from pyispyb.core.modules import session
 
 
