@@ -23,6 +23,7 @@ import logging
 from datetime import datetime
 
 from flask import request
+from pyispyb.core.modules.proposal import findProposalId
 from pyispyb.flask_restx_patched import Resource, HTTPStatus, abort
 
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
@@ -72,6 +73,17 @@ class SessionsInfos(Resource):
         return session.get_session_infos_login(request.user['sub'])
 
 
+@api.route("/date/<string:startDate>/<string:endDate>/infos", endpoint="sessions_infos_proposal_dates")
+@legacy_api.route("/<token>/proposal/session/date/<startDate>/<endDate>/list")
+@api.doc(security="apikey")
+class SessionsInfosProposal(Resource):
+    @authentication_required
+    @permission_required
+    def get(self, startDate, endDate, **kwargs):
+        """Returns list of sessions"""
+        return session.get_session_infos_dates(request.user['sub'], startDate, endDate)
+
+
 @api.route("/proposal/<int:proposal_id>/infos", endpoint="sessions_infos_proposal")
 @legacy_api.route("/<token>/proposal/<proposal_id>/session/list")
 @api.doc(security="apikey")
@@ -81,6 +93,7 @@ class SessionsInfosProposal(Resource):
     @proposal_authorization_required
     def get(self, proposal_id, **kwargs):
         """Returns list of sessions"""
+        proposal_id = findProposalId(proposal_id)
         return session.get_session_infos_login_proposal(request.user['sub'], proposal_id)
 
 
