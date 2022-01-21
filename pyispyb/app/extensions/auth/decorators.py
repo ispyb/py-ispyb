@@ -40,71 +40,86 @@ def authentication_required(func):
     return decorated
 
 
-def permission_required(func):
-    """
-    Checks if user has role required to access the given resource.
+def permission_required(operator, roles):
+    operator = operator.lower()
+    if operator != "any" and operator != "all":
+        raise Exception("operator must be 'any' or 'all'.")
 
-    Authorization is done via AUTHORIZATION_RULES dictionary that contains
-    mapping of endpoints with user groups. For example:
-
-    AUTHORIZATION_RULES = {
-        "proposals": {
-            "get": ["all"],
-            "post": ["admin"]
-        }
-
-    define that method GET of endpoint proposals is available for all user groups
-    and method POST is accessible just for admin group.
-    If an endpoint is not defined in the AUTHORIZATION_RULES then it is available
-    for all user groups.
-
-    Args:
-        func (function): function
-
-    Returns:
-        function: [description]
-    """
-
-    @wraps(func)
-    def decorated(self, *args, **kwargs):
+    def decorator(func):
         """
-        Actual decorator function
+        Checks if user has role required to access the given resource.
+
+        Authorization is done via AUTHORIZATION_RULES dictionary that contains
+        mapping of endpoints with user groups. For example:
+
+        AUTHORIZATION_RULES = {
+            "proposals": {
+                "get": ["all"],
+                "post": ["admin"]
+            }
+
+        define that method GET of endpoint proposals is available for all user groups
+        and method POST is accessible just for admin group.
+        If an endpoint is not defined in the AUTHORIZATION_RULES then it is available
+        for all user groups.
+
+        Args:
+            func (function): function
 
         Returns:
-            [type]: [description]
+            function: [description]
         """
 
-        user_info, msg = auth_provider.get_user_info(request)
-        if not user_info:
-            return {"message": msg}, HTTPStatus.UNAUTHORIZED
+        @wraps(func)
+        def decorated(self, *args, **kwargs):
+            """
+            Actual decorator function
 
-        request.roles = user_info.get("roles", [])
+            Returns:
+                [type]: [description]
+            """
 
-        methods = current_app.config.get(
-            "AUTHORIZATION_RULES").get(self.endpoint, {})
-        # If no role is defined then just administrate is allowed to access the resource
-        roles = methods.get(func.__name__, ["administrate"])
+            user_info, msg = auth_provider.get_user_info(request)
+            if not user_info:
+                return {"message": msg}, HTTPStatus.UNAUTHORIZED
 
-        if (
-            "all" in roles
-            or any(role in list(roles) for role in list(user_info.get("roles", [])))
-        ):
-            return func(self, *args, **kwargs)
-        else:
-            msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (
-                user_info.get("sub"),
-                str(user_info.get("roles")),
-                str(roles),
-            )
-            msg += " to execute method."
-            return {"message": msg}, HTTPStatus.UNAUTHORIZED
+            request.roles = user_info.get("roles", [])
 
-    return decorated
+            if (
+                (
+                    operator == "any" and
+                    (
+                        "all" in roles
+                        or any(role in list(roles) for role in list(user_info.get("roles", [])))
+                    )
+                )
+                or
+                (
+                    operator == "all" and
+                    (
+                        all(role in list(roles)
+                            for role in list(user_info.get("roles", [])))
+                    )
+                )
+
+            ):
+                return func(self, *args, **kwargs)
+            else:
+                msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (
+                    user_info.get("sub"),
+                    str(user_info.get("roles")),
+                    str(roles),
+                )
+                msg += " to execute method."
+                return {"message": msg}, HTTPStatus.UNAUTHORIZED
+
+        return decorated
+    return decorator
 
 
 def proposal_authorization_required(func):
 
-    @wraps(func)
+    @ wraps(func)
     def decorated(self, *args, **kwargs):
 
         proposal_id = request.view_args["proposal_id"]
@@ -153,7 +168,7 @@ def proposal_authorization_required(func):
 
 def session_authorization_required(func):
 
-    @wraps(func)
+    @ wraps(func)
     def decorated(self, *args, **kwargs):
 
         session_id = request.view_args["session_id"]

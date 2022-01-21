@@ -41,33 +41,12 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("", endpoint="sessions")
-@api.doc(security="apikey")
-class Sessions(Resource):
-    @authentication_required
-    @permission_required
-    def get(self):
-        """Returns list of sessions"""
-        # TODO implement authorization
-        return session.get_sessions(request)
-
-    @authentication_required
-    @permission_required
-    @api.expect(session_schemas.f_schema)
-    @api.marshal_with(session_schemas.f_schema, code=201)
-    def post(self):
-        """Adds a new session"""
-        log.info("Inserts a new session")
-        # TODO implement authorization
-        return session.add_session(api.payload)
-
-
 @api.route("/infos", endpoint="sessions_infos")
 @legacy_api.route("/<token>/session/list")
 @api.doc(security="apikey")
 class SessionsInfos(Resource):
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_sessions"])
     def get(self, **kwargs):
         """Returns list of sessions"""
         return session.get_session_infos_login(request.user['sub'])
@@ -78,7 +57,7 @@ class SessionsInfos(Resource):
 @api.doc(security="apikey")
 class SessionsInfosProposal(Resource):
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_sessions"])
     def get(self, startDate, endDate, **kwargs):
         """Returns list of sessions"""
         return session.get_session_infos_dates(request.user['sub'], startDate, endDate)
@@ -89,93 +68,9 @@ class SessionsInfosProposal(Resource):
 @api.doc(security="apikey")
 class SessionsInfosProposal(Resource):
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, **kwargs):
         """Returns list of sessions"""
         proposal_id = findProposalId(proposal_id)
         return session.get_session_infos_login_proposal(request.user['sub'], proposal_id)
-
-
-@api.route("/<int:session_id>", endpoint="session_by_id")
-@api.param("session_id", "Session id (integer)")
-@api.doc(security="apikey")
-@api.response(code=HTTPStatus.FOUND, description="Session found :)", model=session_schemas.f_schema)
-@api.response(code=HTTPStatus.NOT_FOUND, description="Session not found :(")
-class SessionById(Resource):
-    """Allows to get/set/delete a session"""
-
-    @authentication_required
-    @permission_required
-    @session_authorization_required
-    @api.doc(description="session_id should be an integer ")
-    @api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
-    def get(self, session_id):
-        """Returns a session by sessionId"""
-        return session.get_session_by_id(session_id)
-
-    @authentication_required
-    @permission_required
-    @session_authorization_required
-    @api.expect(session_schemas.f_schema)
-    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
-    def put(self, session_id):
-        """Fully updates session with session_id"""
-        return session.update_session(session_id, api.payload)
-
-    @authentication_required
-    @permission_required
-    @session_authorization_required
-    @api.expect(session_schemas.f_schema)
-    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
-    def patch(self, session_id):
-        """Partially updates session with id sessionId"""
-        return session.patch_session(session_id, api.payload)
-
-    @authentication_required
-    @permission_required
-    @session_authorization_required
-    def delete(self, session_id):
-        """Deletes a session by sessionId"""
-        return session.delete_session(session_id)
-
-
-@api.route("/date", endpoint="sessions_by_date")
-@api.doc(security="apikey")
-class SessionsByDateBeamline(Resource):
-    """Allows to get all sessions by date and beamline"""
-
-    @authentication_required
-    @permission_required
-    def get(self):
-        """Returns list of sessions by start_date, end_date and beamline."""
-        # TODO implement authorization
-        query_dict = request.args.to_dict()
-        start_date = query_dict.get("start_date")
-        end_date = query_dict.get("end_date")
-        beamline = query_dict.get("beamline")
-
-        if start_date is None and end_date is None:
-            abort(
-                HTTPStatus.NOT_ACCEPTABLE, "No start_date or end_date argument provided"
-            )
-
-        if start_date:
-            try:
-                start_date = datetime.strptime(start_date, "%Y%m%d")
-            except ValueError as ex:
-                abort(
-                    HTTPStatus.NOT_ACCEPTABLE,
-                    "start_date should be in YYYYMMDD format (%s)" % str(ex),
-                )
-
-        if end_date:
-            try:
-                end_date = datetime.strptime(end_date, "%Y%m%d")
-            except ValueError as ex:
-                abort(
-                    HTTPStatus.NOT_ACCEPTABLE,
-                    "end_date should be in YYYYMMDD format (%s)" % str(ex),
-                )
-
-        return session.get_sessions_by_date(start_date, end_date, beamline)
