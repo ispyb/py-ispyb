@@ -91,17 +91,6 @@ class BaseConfig:
             for key, value in config["server"].items():
                 setattr(self, key, value)
 
-            if config.get("authorization_rules") is not None:
-                self.AUTHORIZATION_RULES = {}
-                for key, value in config["authorization_rules"].items():
-                    self.AUTHORIZATION_RULES[key] = value
-
-        print("Authorization rules: ")
-        print("[method] Endpoint - Allowed roles")
-        for endpoint, value in self.AUTHORIZATION_RULES.items():
-            for method, roles in value.items():
-                print("[%s] %s - %s" % (method, endpoint, str(roles)))
-
     PDB_URI = "https://files.rcsb.org/download"
 
 

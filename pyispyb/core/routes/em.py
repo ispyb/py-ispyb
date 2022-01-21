@@ -23,12 +23,12 @@ api_v1.add_namespace(api)
 
 
 @api.route("/proposal/<int:proposal_id>/datacollection/<int:dataCollection_id>/movies", endpoint="em_movies")
-@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<dataCollection_id>/movie/all")
+@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<dataCollection_id>/movie/all", endpoint="em_moviesl_l")
 @api.doc(security="apikey")
 class Movies(Resource):
 
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, dataCollection_id, **kwargs):
         proposal_id = findProposalId(proposal_id)
@@ -41,7 +41,7 @@ class Movies(Resource):
 class MovieThumbnail(Resource):
 
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
         proposal_id = findProposalId(proposal_id)
@@ -60,7 +60,7 @@ class MovieThumbnail(Resource):
 class MovieMotionCorrectionThumbnail(Resource):
 
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
         proposal_id = findProposalId(proposal_id)
@@ -79,7 +79,7 @@ class MovieMotionCorrectionThumbnail(Resource):
 class MovieCTFThumbnail(Resource):
 
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
         proposal_id = findProposalId(proposal_id)
@@ -98,7 +98,7 @@ class MovieCTFThumbnail(Resource):
 class MovieMotionCorrectionDrift(Resource):
 
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
         proposal_id = findProposalId(proposal_id)
@@ -121,7 +121,7 @@ class MovieMotionCorrectionDrift(Resource):
 class StatsSession(Resource):
 
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_sessions", "all_sessions"])
     @session_authorization_required
     def get(self, session_id, **kwargs):
         return em.get_stats_by_session_id(session_id)
@@ -132,7 +132,7 @@ class StatsSession(Resource):
 class StatsDataCollectionIds(Resource):
 
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, data_collections_ids):
         proposal_id = findProposalId(proposal_id)
@@ -144,7 +144,7 @@ class StatsDataCollectionIds(Resource):
 class StatsDataCollectionGroupId(Resource):
 
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, data_collections_group_id, **kwargs):
         proposal_id = findProposalId(proposal_id)
@@ -161,7 +161,7 @@ class StatsDataCollectionGroupId(Resource):
 class DataCollectionGroup(Resource):
 
     @authentication_required
-    @permission_required
+    @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, session_id, **kwargs):
         proposal_id = findProposalId(proposal_id)
