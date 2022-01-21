@@ -38,8 +38,6 @@ class LdapAuthentication(AbstractAuthentication):
 
         self.ldap_conn = None
 
-        raise Exception("TODO: adapt class to new AbstractAuthentication")
-
     def init_app(self, app):
         """
         Initializes ldap connection
@@ -49,7 +47,7 @@ class LdapAuthentication(AbstractAuthentication):
         """
         self.ldap_conn = ldap.initialize(app.config["LDAP_URI"])
 
-    def get_roles(self, username, password):
+    def get_auth(self, username, password, token):
         """
         Returns list of roles based on username and password.
 
@@ -80,11 +78,16 @@ class LdapAuthentication(AbstractAuthentication):
             )
             if result:
                 roles.append("manager")
+                roles.append("own_proposals")
+                roles.append("all_proposals")
+                roles.append("own_sessions")
+                roles.append("all_sessions")
                 msg = (
                     "LDAP login: user %s authenticated as internal user (manager role)"
                     % username
                 )
                 log.debug(msg)
+                return username, roles
         except ldap.INVALID_CREDENTIALS as ex:
             msg = "LDAP login: unable to authenticate user %s (%s)" % (
                 username,
@@ -108,11 +111,14 @@ class LdapAuthentication(AbstractAuthentication):
             )
             if result:
                 roles.append("user")
+                roles.append("own_proposals")
+                roles.append("own_sessions")
                 msg = (
                     "LDAP login: user %s authenticated as external user (user role)"
                     % username
                 )
                 log.debug(msg)
+                return username, roles
         except ldap.INVALID_CREDENTIALS as ex:
             msg = "LDAP login: unable to authenticate user %s (%s)" % (
                 username,
@@ -120,4 +126,4 @@ class LdapAuthentication(AbstractAuthentication):
             )
             log.exception(msg)
 
-        return roles
+        return None
