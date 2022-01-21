@@ -61,7 +61,7 @@ def get_session_infos_login_proposal(login, proposalId):
     return queryResultToDict(res)
 
 
-def get_session_infos_dates(login, startDate, endDate):
+def get_session_infos_login_dates(login, startDate, endDate):
     """
     Returns sessions info list.
 

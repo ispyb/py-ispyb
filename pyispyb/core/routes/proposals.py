@@ -52,13 +52,12 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("/infos", endpoint="proposals_infos")
+@api.route("")
 @legacy_api.route("/<token>/proposal/list")
-@api.doc(security="apikey")
 class ProposalsInfosLogin(Resource):
-    """Allows to get proposals associated to login"""
 
     @authentication_required
     @permission_required("any", "own_proposals")
     def get(self, **kwargs):
+        """Returns list of proposals associated to login"""
         return proposal.get_proposals_infos_login(request.user['sub'])

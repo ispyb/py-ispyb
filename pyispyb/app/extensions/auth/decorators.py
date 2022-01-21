@@ -105,9 +105,10 @@ def permission_required(operator, roles):
             ):
                 return func(self, *args, **kwargs)
             else:
-                msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (
+                msg = "User %s (roles assigned: %s) has no appropriate role (%s: %s) " % (
                     user_info.get("sub"),
                     str(user_info.get("roles")),
+                    operator,
                     str(roles),
                 )
                 msg += " to execute method."
