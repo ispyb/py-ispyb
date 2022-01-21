@@ -3,20 +3,29 @@
 [![codecov](https://codecov.io/gh/ispyb/py-ispyb/branch/master/graph/badge.svg)](https://codecov.io/gh/ispyb/py-ispyb)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
-
 ISPyB backend server based on python flask-restx.
 
+## Further documentation
+
+Further documentation can be found in the `/docs` directory. A web documentation is available :
+
+```bash
+pip install mkdocs
+cd /docs
+mkdocs serve
+```
+
+Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ## Dependencies
 
-* [**Python**](https://www.python.org/) 3.5+ / pypy2
-* [**flask-restx**](https://github.com/python-restx/flask-restx) (+
-  [*flask*](http://flask.pocoo.org/))
-* [**sqlalchemy**](http://www.sqlalchemy.org/) (+
-  [*flask-sqlalchemy*](http://flask-sqlalchemy.pocoo.org/)) - Database ORM.
-* [**marshmallow**](http://marshmallow.rtfd.org/)
-* [**ruamel.yaml**](https://pypi.org/project/ruamel.yaml/)
-
+-   [**Python**](https://www.python.org/) 3.5+ / pypy2
+-   [**flask-restx**](https://github.com/python-restx/flask-restx) (+
+    [_flask_](http://flask.pocoo.org/))
+-   [**sqlalchemy**](http://www.sqlalchemy.org/) (+
+    [_flask-sqlalchemy_](http://flask-sqlalchemy.pocoo.org/)) - Database ORM.
+-   [**marshmallow**](http://marshmallow.rtfd.org/)
+-   [**ruamel.yaml**](https://pypi.org/project/ruamel.yaml/)
 
 ## How to run py-ispyb
 
@@ -53,8 +62,8 @@ cd ..
 
 ### Run application in debug mode
 
-* `python3 wsgi.py`
-* `invoke app.run`
+-   `python3 wsgi.py`
+-   `invoke app.run`
 
 Now you can go to http://localhost:5000/ispyb/api/v1/docs and explore py-ispyb via swagger ui.
 For authentication json web tokens (jwt) are used. In the web browser call http://localhost:5000/ispyb/api/v1/auth/login , enter user credentials and retrieve access token from the response:
@@ -72,7 +81,7 @@ Corresponding curl command:
 
 `curl -u USER:PASS -i -H "Accept:application/json" http://localhost:5000/ispyb/api/v1/auth/login`
 
-In the case of dummy authentication username _user_ will grant _user_ role and _manager_ will grant _user_ and _manager_ roles. 
+In the case of dummy authentication username _user_ will grant _user_ role and _manager_ will grant _user_ and _manager_ roles.
 
 For requests use the token in the `Authorization` header: `Bearer YOUR_JWT_TOKEN`. For example to retrieve proposals call:
 
@@ -80,7 +89,6 @@ For requests use the token in the `Authorization` header: `Bearer YOUR_JWT_TOKEN
 
 ## Misc
 
-* Swagger documentation: https://raw.githubusercontent.com/ispyb/py-ispyb/master/docs/swagger.json
-* For deployment options see `deploy` directory.
-* Status codes: https://www.flaskapi.org/api-guide/status-codes/
-
+-   Swagger documentation: https://raw.githubusercontent.com/ispyb/py-ispyb/master/docs/swagger.json
+-   For deployment options see `deploy` directory.
+-   Status codes: https://www.flaskapi.org/api-guide/status-codes/
