@@ -40,7 +40,7 @@ from flask import request
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
-from pyispyb.app.extensions.auth.decorators import authentication_required, permission_required
+from pyispyb.app.extensions.auth.decorators import authentication_required, permission_required, proposal_authorization_required
 from pyispyb.core.modules import proposal
 
 
@@ -55,7 +55,21 @@ api_v1.add_namespace(api)
 class ProposalsInfosLogin(Resource):
 
     @authentication_required
-    @permission_required("any", "own_proposals")
+    @permission_required("any", ["own_proposals"])
     def get(self, **kwargs):
         """Returns list of proposals associated to login"""
+        if "manager" in request.user['roles']:
+            return proposal.get_proposals_infos_manager()
         return proposal.get_proposals_infos_login(request.user['sub'])
+
+
+@api.route("proposal/<proposal_id>")
+@legacy_api.route("/<token>/proposal/<proposal_id>/info/get")
+class ProposalsInfosLogin(Resource):
+
+    @authentication_required
+    @permission_required("any", ["own_proposals", "all_proposals"])
+    @proposal_authorization_required
+    def get(self, proposal_id, **kwargs):
+        proposal_id = proposal.findProposalId(proposal_id)
+        return proposal.get_proposal_infos(proposal_id)

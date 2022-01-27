@@ -25,7 +25,7 @@ from flask import request, make_response
 import hashlib
 
 from pyispyb.flask_restx_patched import Resource
-from pyispyb.app.extensions.api import api_v1, Namespace
+from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
 from pyispyb.app.extensions import auth_provider
 from pyispyb.app.extensions import db
 
@@ -45,19 +45,30 @@ def get_param(request, name):
     if not res:
         if request.json and request.json[name]:
             res = request.json[name]
+    if not res:
+        if request.args and request.args.get(name, default=False):
+            res = request.args.get(name, default=None)
+    if not res:
+        if request.form and request.form.get(name, default=False):
+            res = request.form.get(name, default=None)
     return res
 
 
 @api.route("/login")
+@legacy_api.route("/authenticate")
 class Login(Resource):
     """Login resource"""
 
-    def get(self):
+    def post(self):
 
         module = get_param(request, "module")
         username = get_param(request, "username")
+        if username is None:
+            username = get_param(request, "login")
         password = get_param(request, "password")
         token = get_param(request, "token")
+
+        print(str(request.form))
 
         username, roles = auth_provider.get_auth(
             module, username, password, token

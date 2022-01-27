@@ -31,7 +31,7 @@ from pyispyb.core import models, schemas
 
 def get_proposals_infos_login(login):
     """
-    Returns sessions info list.
+    Returns proposal info list.
 
     Returns:
         [type]: [description]
@@ -41,6 +41,30 @@ def get_proposals_infos_login(login):
     sql = sql.bindparams(login=login)
     res = db.engine.execute(sql)
     return queryResultToDict(res)
+
+
+def get_proposals_infos_manager():
+    """
+    Returns proposal info list.
+
+    Returns:
+        [type]: [description]
+    """
+
+    sql = getSQLQuery("proposal/proposalsInfosManager")
+    res = db.engine.execute(sql)
+    return queryResultToDict(res)
+
+
+def get_proposal_infos(proposal_id):
+    return {
+        "proposal": db.get_db_items(
+            models.Proposal,
+            schemas.proposal.dict_schema,
+            schemas.proposal.ma_schema,
+            {'proposalId': proposal_id},
+        )["data"]["rows"]
+    }
 
 
 def get_proposals_by_query(query_dict):
