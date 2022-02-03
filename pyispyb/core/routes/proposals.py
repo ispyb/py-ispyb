@@ -63,7 +63,7 @@ class ProposalsInfosLogin(Resource):
         return proposal.get_proposals_infos_login(request.user['sub'])
 
 
-@api.route("proposal/<proposal_id>")
+@api.route("/<proposal_id>")
 @legacy_api.route("/<token>/proposal/<proposal_id>/info/get")
 class ProposalsInfosLogin(Resource):
 

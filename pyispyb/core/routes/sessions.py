@@ -43,10 +43,10 @@ api_v1.add_namespace(api)
 @legacy_api.route("/<token>/session/list")
 class SessionsInfos(Resource):
     @authentication_required
-    @permission_required("any", ["own_sessions"])
+    @permission_required("any", ["own_sessions", "all_sessions"])
     def get(self, **kwargs):
         """Returns list of sessions associated to user"""
-        if "manager" in request.user['roles']:
+        if "all_sessions" in request.user['roles']:
             return session.get_session_infos_manager()
         return session.get_session_infos_login(request.user['sub'])
 
@@ -55,10 +55,10 @@ class SessionsInfos(Resource):
 @legacy_api.route("/<token>/proposal/session/date/<startDate>/<endDate>/list")
 class SessionsInfosProposalDates(Resource):
     @authentication_required
-    @permission_required("any", ["own_sessions"])
+    @permission_required("any", ["own_sessions", "all_sessions"])
     def get(self, startDate, endDate, **kwargs):
         """Returns list of sessions associated to user in between the two dates"""
-        if "manager" in request.user['roles']:
+        if "all_sessions" in request.user['roles']:
             return session.get_session_infos_manager_dates(startDate, endDate)
         return session.get_session_infos_login_dates(request.user['sub'], startDate, endDate)
 
@@ -72,6 +72,6 @@ class SessionsInfosProposal(Resource):
     def get(self, proposal_id, **kwargs):
         """Returns list of sessions associated to user and proposal"""
         proposal_id = findProposalId(proposal_id)
-        if "manager" in request.user['roles']:
+        if "all_sessions" in request.user['roles']:
             return session.get_session_infos_manager_proposal(proposal_id)
         return session.get_session_infos_login_proposal(request.user['sub'], proposal_id)
