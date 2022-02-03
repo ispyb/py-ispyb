@@ -2,7 +2,7 @@ def get_token(app, permissions, user="test"):
     client = app.test_client()
     api_root = app.config["API_ROOT"]
 
-    response = client.get(
+    response = client.post(
         api_root + "/auth/login", headers={
             "module": "dummy",
             "username": user,
@@ -20,7 +20,7 @@ def get_all_permissions_token(app, user="test"):
         'all_sessions',
         'write_proposals',
         "write_sessions",
-        'administrate',
+        'manager',
     ], user=user)
 
 

@@ -6,7 +6,7 @@ test_data_session = [
                 "all_sessions",
             ],
             "username":"admin",
-            "route":"/sessions/4583"
+            "route":"/em/session/4583/stats"
         },
         "expected":{
             "code": 200
@@ -19,7 +19,7 @@ test_data_session = [
                 "none"
             ],
             "username":"admin",
-            "route":"/sessions/4583"
+            "route":"/em/session/4583/stats"
         },
         "expected":{
             "code": 401
@@ -32,7 +32,7 @@ test_data_session = [
                 "own_sessions",
             ],
             "username":"DI MARCO",
-            "route":"/sessions/4583"
+            "route":"/em/session/4583/stats"
         },
         "expected":{
             "code": 200
@@ -45,25 +45,25 @@ test_data_session = [
                 "none"
             ],
             "username":"DI MARCO",
-            "route":"/sessions/4583"
+            "route":"/em/session/4583/stats"
         },
         "expected":{
             "code": 401
         }
     },
-    # { # ignored: fails because user with givemName "SHEPARD" has empty username in DB
-    #     "name": "own_sessions permission OK (Session_has_Person.personId)",
-    #     "input": {
-    #         "permissions": [
-    #             "own_sessions",
-    #         ],
-    #         "username":"SHEPARD",
-    #         "route":"/sessions/4583"
-    #     },
-    #     "expected":{
-    #         "code": 200
-    #     }
-    # },
+    {
+        "name": "own_sessions permission OK (Session_has_Person.personId)",
+        "input": {
+            "permissions": [
+                "own_sessions",
+            ],
+            "username":"SERRE",
+            "route":"/em/session/8569/stats"
+        },
+        "expected":{
+            "code": 200
+        }
+    },
     {
         "name": "no own_sessions permission DENIED (Session_has_Person.personId)",
         "input": {
@@ -71,7 +71,7 @@ test_data_session = [
                 "none",
             ],
             "username":"SHEPARD",
-            "route":"/sessions/4583"
+            "route":"/em/session/4583/stats"
         },
         "expected":{
             "code": 401
@@ -84,7 +84,7 @@ test_data_session = [
                 "own_sessions",
             ],
             "username":"user",
-            "route":"/sessions/4583"
+            "route":"/em/session/4583/stats"
         },
         "expected":{
             "code": 401
