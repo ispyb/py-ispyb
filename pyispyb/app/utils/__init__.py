@@ -64,7 +64,7 @@ def queryResultToDict(result):
 
     for row in result:
         row_dict = {}
-        for field in row.items():
+        for field in row._mapping.items():
             field_name = field[0]
             field_value = field[1]
             if type(field_value) is datetime:
