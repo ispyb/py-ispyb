@@ -108,7 +108,6 @@ class ProductionConfig(BaseConfig):
         SQLALCHEMY_DATABASE_URI = os.getenv(
             "ISPYB_DATABASE_URI"
         )
-        SWAGGER_UI_URI = False
 
 
 class DevelopmentConfig(BaseConfig):

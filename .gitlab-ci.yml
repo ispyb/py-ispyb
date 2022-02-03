@@ -1,0 +1,40 @@
+image: python:3.8.10
+
+variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+cache:
+    paths:
+        - .cache/pip
+        - venv/
+
+stages:
+    - test
+    - package
+    - deploy
+
+test:
+    stage: test
+    script:
+        - apt-get update && apt-get install -y libsasl2-dev python-dev libldap2-dev libssl-dev
+        - pip install -r requirements.txt
+        - sh run_tests.sh
+
+pages:
+    stage: deploy
+    script:
+        - pip install mkdocs
+        - mkdocs build --strict --verbose
+    artifacts:
+        paths:
+            - public
+    only:
+        - master
+
+package:
+    stage: package
+    image: docker:latest
+    script:
+        - docker build -t "pyispyb" .
+        - echo "TODO publish"
+    only:
+        - master
