@@ -2,9 +2,9 @@
 
 ---
 
-## Modules
+## Plugins
 
-py-ISPyB is using the following authentication modules, which you can find in `pyispyb/app/extension/auth`.
+py-ISPyB is using the following authentication plugins, which you can find in `pyispyb/app/extension/auth`.
 
 ### `DummyAuthentication`
 
@@ -18,18 +18,18 @@ Provides authentication using keycloak with DB-managed roles.
 
 Provides authentication using LDAP users and roles.
 
-### Implementing new modules
+### Implementing new plugins
 
-New modules should implement one of the two following classes :
+New plugins should implement one of the two following classes :
 
--   **AbstractAuthentication** : module should override `get_auth(self, username, password, token)` method and return a tuple `(username, [roles])`
--   **AbstractDBRolesAuthentication** : module should override `get_person(self, username, password, token)` methode and return a `pyispyb.core.models.Person` object. Roles managment is delegated to ISPyB database.
+-   **AbstractAuthentication** : plugin should override `get_auth(self, username, password, token)` method and return a tuple `(username, [roles])`
+-   **AbstractDBRolesAuthentication** : plugin should override `get_person(self, username, password, token)` methode and return a `pyispyb.core.models.Person` object. Roles managment is delegated to ISPyB database.
 
 ---
 
 ## Configuration
 
-Authentication modules to be activated are configured in the `ispyb_core_config.yml` file like this:
+Authentication plugins to be activated are configured in the `ispyb_core_config.yml` file like this:
 
 ```yml
 server:
@@ -42,7 +42,7 @@ server:
               AUTH_CLASS: "DummyAuthentication"
 ```
 
-Some modules require additional config, for instance Keycloak configuration:
+Some plugins require additional config, for instance Keycloak configuration:
 
 ```yml
 server:
@@ -56,7 +56,7 @@ server:
 
 ## Database roles
 
-Fore some authentication modules (for instance `KeycloakDBRolesAuthentication`), roles are configured in the **database** using the following tables:
+Fore some authentication plugins (for instance `KeycloakDBRolesAuthentication`), roles are configured in the **database** using the following tables:
 
 -   **Permission**
 -   **UserGroup_has_Permission**
@@ -69,7 +69,7 @@ Fore some authentication modules (for instance `KeycloakDBRolesAuthentication`),
 
 To authentify their requests, users should get a py-ISPyB token. This token is provided by the `/auth/login` route with `GET` method and the following request headers:
 
--   **module** - name of the module to be used for authentication, as specified in configuration
+-   **plugin** - name of the plugin to be used for authentication, as specified in configuration
 -   **username** _(optional)_
 -   **password** _(optional)_
 -   **token** _(optional)_

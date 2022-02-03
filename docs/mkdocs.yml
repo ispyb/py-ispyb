@@ -1,6 +1,0 @@
-site_name: py-ISPyB
-nav:
-  - Home: index.md
-  - Authentication and authorization: auth.md
-  - Routes: routes.md
-theme: readthedocs

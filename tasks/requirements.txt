@@ -1,5 +1,4 @@
 invoke
 colorlog
 lockfile
-requests
 ruamel.yaml
