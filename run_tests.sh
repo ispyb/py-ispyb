@@ -1,1 +1,1 @@
-python -m pytest -v --random-order tests/core/full_db && python -m pytest -v --random-order tests/core/empty_db
+python -m pytest -v --random-order tests/core/full_db
