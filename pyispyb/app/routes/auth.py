@@ -43,7 +43,7 @@ api_v1.add_namespace(api)
 def get_param(request, name):
     res = request.headers.get(name)
     if not res:
-        if request.json and request.json[name]:
+        if request.json and name in request.json:
             res = request.json[name]
     if not res:
         if request.args and request.args.get(name, default=False):
@@ -61,20 +61,18 @@ class Login(Resource):
 
     def post(self):
 
-        module = get_param(request, "module")
+        module = get_param(request, "plugin")
         username = get_param(request, "username")
         if username is None:
             username = get_param(request, "login")
         password = get_param(request, "password")
         token = get_param(request, "token")
 
-        print(str(request.form))
-
         username, roles = auth_provider.get_auth(
             module, username, password, token
         )
 
-        if not username or not roles:
+        if not username:
             return make_response(
                 "Could not verify",
                 401,
