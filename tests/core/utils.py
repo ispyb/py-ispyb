@@ -4,7 +4,7 @@ def get_token(app, permissions, user="test"):
 
     response = client.post(
         api_root + "/auth/login", headers={
-            "module": "dummy",
+            "plugin": "dummy",
             "username": user,
             "password": ",".join(permissions)
         }
