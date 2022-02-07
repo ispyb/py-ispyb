@@ -51,6 +51,7 @@ api_v1.add_namespace(api)
 
 
 @api.route("")
+@api.doc(security="apikey")
 @legacy_api.route("/<token>/proposal/list")
 class ProposalsInfosLogin(Resource):
 
@@ -64,6 +65,7 @@ class ProposalsInfosLogin(Resource):
 
 
 @api.route("/<proposal_id>")
+@api.doc(security="apikey")
 @legacy_api.route("/<token>/proposal/<proposal_id>/info/get")
 class ProposalsInfosLogin(Resource):
 
