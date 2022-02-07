@@ -61,7 +61,7 @@ class Login(Resource):
 
     def post(self):
 
-        module = get_param(request, "plugin")
+        plugin = get_param(request, "plugin")
         username = get_param(request, "username")
         if username is None:
             username = get_param(request, "login")
@@ -69,7 +69,7 @@ class Login(Resource):
         token = get_param(request, "token")
 
         username, roles = auth_provider.get_auth(
-            module, username, password, token
+            plugin, username, password, token
         )
 
         if not username:
