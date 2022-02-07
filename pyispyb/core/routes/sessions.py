@@ -40,6 +40,7 @@ api_v1.add_namespace(api)
 
 
 @api.route("")
+@api.doc(security="apikey")
 @legacy_api.route("/<token>/session/list")
 class SessionsInfos(Resource):
     @authentication_required
@@ -52,6 +53,7 @@ class SessionsInfos(Resource):
 
 
 @api.route("/date/<string:startDate>/<string:endDate>")
+@api.doc(security="apikey")
 @legacy_api.route("/<token>/proposal/session/date/<startDate>/<endDate>/list")
 class SessionsInfosProposalDates(Resource):
     @authentication_required
@@ -63,12 +65,12 @@ class SessionsInfosProposalDates(Resource):
         return session.get_session_infos_login_dates(request.user['sub'], startDate, endDate)
 
 
-@api.route("/proposal/<int:proposal_id>")
+@api.route("/proposal/<proposal_id>")
+@api.doc(security="apikey")
 @legacy_api.route("/<token>/proposal/<proposal_id>/session/list")
 class SessionsInfosProposal(Resource):
     @authentication_required
-    @permission_required("any", ["own_proposal", "all_proposals"])
-    @proposal_authorization_required
+    @permission_required("any", ["own_sessions", "all_sessions"])
     def get(self, proposal_id, **kwargs):
         """Returns list of sessions associated to user and proposal"""
         proposal_id = findProposalId(proposal_id)

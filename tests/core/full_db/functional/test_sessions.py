@@ -1,6 +1,6 @@
 
 import pytest
-from tests.core.full_db.functional.data.sessions import test_data_session_list, test_data_session_dates_list
+from tests.core.full_db.functional.data.sessions import test_data_session_proposal_list, test_data_session_list, test_data_session_dates_list
 from tests.core.utils import get_token
 
 
@@ -38,4 +38,8 @@ def test_session_list(ispyb_app, test_elem):
 
 @pytest.mark.parametrize("test_elem", test_data_session_dates_list, ids=get_elem_name)
 def test_session_dates_list(ispyb_app, test_elem):
+    _run_session_t(ispyb_app, test_elem)
+
+@pytest.mark.parametrize("test_elem", test_data_session_proposal_list, ids=get_elem_name)
+def test_session_proposal_list(ispyb_app, test_elem):
     _run_session_t(ispyb_app, test_elem)
