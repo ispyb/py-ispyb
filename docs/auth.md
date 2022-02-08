@@ -67,7 +67,7 @@ Fore some authentication plugins (for instance `KeycloakDBRolesAuthentication`),
 
 ## How to authentify
 
-To authentify their requests, users should get a py-ISPyB token. This token is provided by the `/auth/login` route with `GET` method and the following request headers:
+To authentify their requests, users should get a py-ISPyB token. This token is provided by the `/auth/login` route with `POST` method and the following parameters in json body:
 
 -   **plugin** - name of the plugin to be used for authentication, as specified in configuration
 -   **username** _(optional)_
