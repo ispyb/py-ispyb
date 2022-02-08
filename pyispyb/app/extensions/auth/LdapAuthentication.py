@@ -22,7 +22,6 @@ import logging
 import ldap
 
 
-from flask import current_app
 from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentication
 
 
@@ -37,15 +36,13 @@ class LdapAuthentication(AbstractAuthentication):
         AbstractAuthentication.__init__(self)
 
         self.ldap_conn = None
+        self.ldap_base_internal = None
+        self.ldap_base_groups = None
 
-    def init_app(self, app):
-        """
-        Initializes ldap connection
-
-        Args:
-            app (flask app): current flask app
-        """
-        self.ldap_conn = ldap.initialize(app.config["LDAP_URI"])
+    def configure(self, config):
+        self.ldap_conn = ldap.initialize(config["LDAP_URI"])
+        self.ldap_base_internal = config["LDAP_BASE_INTERNAL"]
+        self.ldap_base_groups = config["LDAP_BASE_GROUPS"]
 
     def get_user_and_groups(self, username, password, token):
         
@@ -58,11 +55,11 @@ class LdapAuthentication(AbstractAuthentication):
             attrs = ["*"]
             search_str = (
                 "uid=" + username + "," +
-                current_app.config["LDAP_BASE_INTERNAL"]
+                self.ldap_base_internal
             )
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(
-                current_app.config["LDAP_BASE_INTERNAL"],
+                self.ldap_base_internal,
                 ldap.SCOPE_ONELEVEL,
                 search_filter,
                 attrs,
@@ -83,11 +80,11 @@ class LdapAuthentication(AbstractAuthentication):
             attrs = ["cn"]
             search_str = (
                 "uid=" + username + "," +
-                current_app.config["LDAP_BASE_INTERNAL"]
+                self.ldap_base_internal
             )
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(
-                current_app.config["LDAP_BASE_GROUPS"],
+                self.ldap_base_groups,
                 ldap.SCOPE_SUBTREE,
                 search_filter,
                 attrs,

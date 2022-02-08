@@ -42,12 +42,17 @@ class AuthProvider:
         auth_list = app.config["AUTH"]
         for auth_plugin in auth_list:
             for auth_name in auth_plugin:
-                module_name = auth_plugin[auth_name]["AUTH_MODULE"]
-                class_name = auth_plugin[auth_name]["AUTH_CLASS"]
-                cls = getattr(importlib.import_module(module_name), class_name)
-                instance = cls()
-                instance.init_app(app)
-                self.site_authentications[auth_name] = instance
+                enabled = auth_plugin[auth_name]["ENABLED"]
+                if enabled:
+                    module_name = auth_plugin[auth_name]["AUTH_MODULE"]
+                    class_name = auth_plugin[auth_name]["AUTH_CLASS"]
+                    config = {}
+                    if "CONFIG" in auth_plugin[auth_name]:
+                        config = auth_plugin[auth_name]["CONFIG"]
+                    cls = getattr(importlib.import_module(module_name), class_name)
+                    instance = cls()
+                    instance.configure(config)
+                    self.site_authentications[auth_name] = instance
 
         assert app.config["SECRET_KEY"], "SECRET_KEY must be configured!"
 
@@ -64,8 +69,8 @@ class AuthProvider:
         Returns:
             tuple or list: tuple or list with roles associated to the username
         """
-        if not self.site_authentications[plugin]:
-            return None
+        if plugin not in self.site_authentications:
+            return None, None, None
         username, groups, permissions = self.site_authentications[plugin].get_auth(
             username, password, token
         )
