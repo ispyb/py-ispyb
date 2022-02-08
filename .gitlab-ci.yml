@@ -7,17 +7,31 @@ cache:
         - .cache/pip
         - venv/
 
+before_script:
+    - python --version # For debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+
 stages:
+    - lint
     - test
     - package
     - deploy
+
+lint:
+    stage: lint
+    script:
+        - apt-get update && apt-get install -y libsasl2-dev python-dev libldap2-dev libssl-dev
+        - pip install tox
+        - tox -e flake8
 
 test:
     stage: test
     script:
         - apt-get update && apt-get install -y libsasl2-dev python-dev libldap2-dev libssl-dev
         - pip install tox
-        - tox
+        - tox -e py38
 
 pages:
     stage: deploy

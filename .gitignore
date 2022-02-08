@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *swp
-.vscode*
 
 ispyb_core_config.yml
 ispyb_ssx_config.yml
