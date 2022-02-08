@@ -16,8 +16,8 @@ test:
     stage: test
     script:
         - apt-get update && apt-get install -y libsasl2-dev python-dev libldap2-dev libssl-dev
-        - pip install -r requirements.txt
-        - python -m pytest -v --random-order tests/core/full_db
+        - pip install tox
+        - tox
 
 pages:
     stage: deploy
