@@ -25,11 +25,11 @@ __license__ = "LGPLv3+"
 from keycloak.exceptions import KeycloakAuthenticationError
 from keycloak.keycloak_openid import KeycloakOpenID
 
-from pyispyb.app.extensions.auth.AbstractDBRolesAuthentication import AbstractDBRolesAuthentication
+from pyispyb.app.extensions.auth.AbstractDBGroupsAuthentication import AbstractDBGroupsAuthentication
 from pyispyb.core.models import Person
 
 
-class KeycloakDBRolesAuthentication(AbstractDBRolesAuthentication):
+class KeycloakDBGroupsAuthentication(AbstractDBGroupsAuthentication):
     """Keycloak authentication class."""
 
     def init_app(self, app):

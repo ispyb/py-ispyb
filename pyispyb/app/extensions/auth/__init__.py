@@ -66,12 +66,12 @@ class AuthProvider:
         """
         if not self.site_authentications[plugin]:
             return None
-        username, roles = self.site_authentications[plugin].get_auth(
+        username, groups, permissions = self.site_authentications[plugin].get_auth(
             username, password, token
         )
-        if roles is not None and username is not None:
-            return username, roles
-        return None, None
+        if username is not None and groups is not None and permissions is not None:
+            return username, groups, permissions
+        return None, None, None
 
     def get_user_info(self, request):
         token = None
@@ -95,19 +95,16 @@ class AuthProvider:
             return None, "Authorization header is expected"
 
         user_info, msg = decode_token(token)
-        user_info["is_admin"] = any(
-            role in current_app.config.get("ADMIN_ROLES", [])
-            for role in user_info["roles"]
-        )
         return user_info, msg
 
-    def generate_token(self, username, roles):
+    def generate_token(self, username, groups, permissions):
         """
         Generates token.
 
         Args:
             username (string): username
-            roles (list): list of roles associated to the user
+            groups (list): list of groups associated to the user
+            permissions (list): list of permissions associated to the user
 
         Returns:
             str: token
@@ -118,7 +115,7 @@ class AuthProvider:
         )
 
         token = jwt.encode(
-            {"sub": username, "roles": roles, "iat": iat, "exp": exp},
+            {"username": username, "groups": groups, "permissions":permissions, "iat": iat, "exp": exp},
             current_app.config["SECRET_KEY"],
             algorithm=current_app.config["JWT_CODING_ALGORITHM"],
         )
@@ -128,11 +125,12 @@ class AuthProvider:
             token = token.decode("UTF-8")
 
         return {
-            "sub": username,
+            "username": username,
             "token": token,
             "iat": iat.strftime("%Y-%m-%d %H:%M:%S"),
             "exp": exp.strftime("%Y-%m-%d %H:%M:%S"),
-            "roles": roles,
+            "groups": groups,
+            "permissions":permissions
         }
 
 

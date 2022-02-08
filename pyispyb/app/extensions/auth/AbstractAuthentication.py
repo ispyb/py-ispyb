@@ -24,6 +24,15 @@ __license__ = "LGPLv3+"
 
 import abc
 
+from pyispyb.core.models import UserGroup
+
+def get_groups_permissions(groups):
+    permissions = []
+    for group_name in groups:
+        db_group = UserGroup.query.filter_by(name=group_name).first()
+        for permission in db_group.permissions:
+            permissions.append(permission.type)
+    return permissions
 
 class AbstractAuthentication(object):
 
@@ -43,10 +52,26 @@ class AbstractAuthentication(object):
         """
         return
 
-    @abc.abstractmethod
     def get_auth(self, username, password, token):
-        """Returns roles associated to the user.
+        """Returns username, groups and permissions associated to the user.
 
         Args:
-            request: request object
+            username, password, token
+        Returns:
+            username, groups, permissions
+        """
+        username, groups = self.get_user_and_groups(username, password, token)
+        if username is None or groups is None:
+            return None, None, None
+        return username, groups, get_groups_permissions(groups)
+
+    
+    @abc.abstractmethod
+    def get_user_and_groups(self, username, password, token):
+        """Returns username, groups associated to the user.
+
+        Args:
+            username, password, token
+        Returns:
+            username, groups
         """

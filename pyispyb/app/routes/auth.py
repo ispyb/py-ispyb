@@ -68,7 +68,7 @@ class Login(Resource):
         password = get_param(request, "password")
         token = get_param(request, "token")
 
-        username, roles = auth_provider.get_auth(
+        username, groups, permissions = auth_provider.get_auth(
             plugin, username, password, token
         )
 
@@ -78,13 +78,13 @@ class Login(Resource):
                 401,
             )
         else:
-            token_info = auth_provider.generate_token(username, roles)
+            token_info = auth_provider.generate_token(username, groups, permissions)
             token_ispyb = hashlib.sha1(
                 token_info["token"].encode('utf-8')).hexdigest()
             bd_login = models.Login(
                 token=token_ispyb,
-                username=token_info["sub"],
-                roles=json.dumps(token_info["roles"]),
+                username=token_info["username"],
+                roles=json.dumps(token_info["groups"]),
                 expirationTime=datetime.datetime.strptime(
                     token_info["exp"], "%Y-%m-%d %H:%M:%S"),
             )
