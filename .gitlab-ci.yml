@@ -34,7 +34,7 @@ package:
     stage: package
     image: docker:latest
     script:
-        - docker build -t "pyispyb" .
+        #        - docker build -t "pyispyb" .
         - echo "TODO publish"
     only:
         - master
