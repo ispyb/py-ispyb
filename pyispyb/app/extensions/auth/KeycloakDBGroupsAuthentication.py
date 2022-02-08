@@ -32,11 +32,11 @@ from pyispyb.core.models import Person
 class KeycloakDBGroupsAuthentication(AbstractDBGroupsAuthentication):
     """Keycloak authentication class."""
 
-    def init_app(self, app):
-        server_url = app.config["KEYCLOAK_SERVER_URL"]
-        client_id = app.config["KEYCLOAK_CLIENT_ID"]
-        realm_name = app.config["KEYCLOAK_REALM_NAME"]
-        client_secret_key = app.config["KEYCLOAK_CLIENT_SECRET_KEY"]
+    def configure(self, config):
+        server_url = config["KEYCLOAK_SERVER_URL"]
+        client_id = config["KEYCLOAK_CLIENT_ID"]
+        realm_name = config["KEYCLOAK_REALM_NAME"]
+        client_secret_key = config["KEYCLOAK_CLIENT_SECRET_KEY"]
 
         self.keycloak_openid = KeycloakOpenID(server_url=server_url,
                                               client_id=client_id,
