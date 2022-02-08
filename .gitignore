@@ -11,3 +11,5 @@ ispyb_em_config.yml
 build/
 dist/
 pyispyb.egg-info/
+
+.tox*
