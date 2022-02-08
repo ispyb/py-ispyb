@@ -47,17 +47,7 @@ class LdapAuthentication(AbstractAuthentication):
         """
         self.ldap_conn = ldap.initialize(app.config["LDAP_URI"])
 
-    def get_auth(self, username, password, token):
-        """
-        Returns list of roles based on username and password.
-
-        Args:
-            username (str): user name
-            password (str): password
-
-        Returns:
-            list: [list of roles as strings
-        """
+    def get_user_and_groups(self, username, password, token):
         
         user = None
         groups = None
@@ -106,12 +96,6 @@ class LdapAuthentication(AbstractAuthentication):
                 groups = [groupName.decode("utf-8") for group in result for groupName in group[1]["cn"]]
                 if not groups :
                     groups = ["User"]
-                if "User" in groups or "Manager" in groups:
-                    groups.append("own_proposals")
-                    groups.append("own_sessions")
-                if "Manager" in groups:
-                    groups.append("all_proposals")
-                    groups.append("all_sessions")
         except ldap.INVALID_CREDENTIALS as ex:
             msg = "LDAP login: unable to authenticate user %s (%s)" % (
                 username,

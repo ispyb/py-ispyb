@@ -40,34 +40,14 @@ def authentication_required(func):
     return decorated
 
 
-def permission_required(operator, roles):
+def permission_required(operator, permissions):
     operator = operator.lower()
     if operator != "any" and operator != "all":
         raise Exception("operator must be 'any' or 'all'.")
 
     def decorator(func):
         """
-        Checks if user has role required to access the given resource.
-
-        Authorization is done via AUTHORIZATION_RULES dictionary that contains
-        mapping of endpoints with user groups. For example:
-
-        AUTHORIZATION_RULES = {
-            "proposals": {
-                "get": ["all"],
-                "post": ["admin"]
-            }
-
-        define that method GET of endpoint proposals is available for all user groups
-        and method POST is accessible just for admin group.
-        If an endpoint is not defined in the AUTHORIZATION_RULES then it is available
-        for all user groups.
-
-        Args:
-            func (function): function
-
-        Returns:
-            function: [description]
+        Checks if user has permissions required to access the given resource.
         """
 
         @wraps(func)
@@ -83,33 +63,33 @@ def permission_required(operator, roles):
             if not user_info:
                 return {"message": msg}, HTTPStatus.UNAUTHORIZED
 
-            request.roles = user_info.get("roles", [])
+            request.permissions = user_info.get("permissions", [])
 
             if (
                 (
                     operator == "any" and
                     (
-                        "all" in roles
-                        or any(role in list(roles) for role in list(user_info.get("roles", [])))
+                        "all" in permissions
+                        or any(permission in list(permissions) for permission in list(user_info.get("permissions", [])))
                     )
                 )
                 or
                 (
                     operator == "all" and
                     (
-                        all(role in list(roles)
-                            for role in list(user_info.get("roles", [])))
+                        all(permission in list(permissions)
+                            for permission in list(user_info.get("permissions", [])))
                     )
                 )
 
             ):
                 return func(self, *args, **kwargs)
             else:
-                msg = "User %s (roles assigned: %s) has no appropriate role (%s: %s) " % (
-                    user_info.get("sub"),
-                    str(user_info.get("roles")),
+                msg = "User %s (permissions assigned: %s) has no appropriate permission (%s: %s) " % (
+                    user_info.get("username"),
+                    str(user_info.get("permissions")),
                     operator,
-                    str(roles),
+                    str(permissions),
                 )
                 msg += " to execute method."
                 return {"message": msg}, HTTPStatus.UNAUTHORIZED
@@ -120,7 +100,7 @@ def permission_required(operator, roles):
 
 def proposal_authorization_required(func):
 
-    @ wraps(func)
+    @wraps(func)
     def decorated(self, *args, **kwargs):
 
         proposal_id = request.view_args["proposal_id"]
@@ -136,29 +116,29 @@ def proposal_authorization_required(func):
         if not user_info:
             return {"message": msg}, HTTPStatus.UNAUTHORIZED
 
-        roles = user_info.get("roles", [])
+        permissions = user_info.get("permissions", [])
 
         msg = ""
 
-        if "all_proposals" in roles:
+        if "all_proposals" in permissions:
             return func(self, *args, **kwargs)
-        elif "own_proposals" in roles:
+        elif "own_proposals" in permissions:
             isAutorized = loginAuthorizedForProposal(
-                user_info["sub"],
+                user_info["username"],
                 proposal_id
             )
             if isAutorized:
                 return func(self, *args, **kwargs)
             else:
-                msg = "User %s (roles assigned: %s) is not authorized to access proposal %s." % (
-                    user_info.get("sub"),
-                    str(user_info.get("roles")),
+                msg = "User %s (permissions assigned: %s) is not authorized to access proposal %s." % (
+                    user_info.get("username"),
+                    str(user_info.get("permissions")),
                     str(proposal_id),
                 )
         else:
-            msg = "User %s (roles assigned: %s) has no appropriate role (%s) to execute method." % (
-                user_info.get("sub"),
-                str(user_info.get("roles")),
+            msg = "User %s (permissions assigned: %s) has no appropriate permissions (%s) to execute method." % (
+                user_info.get("username"),
+                str(user_info.get("permissions")),
                 str(["all_proposals", "own_proposals"]),
             )
 
@@ -183,29 +163,29 @@ def session_authorization_required(func):
         if not user_info:
             return {"message": msg}, HTTPStatus.UNAUTHORIZED
 
-        roles = user_info.get("roles", [])
+        permissions = user_info.get("permissions", [])
 
         msg = ""
 
-        if "all_sessions" in roles:
+        if "all_sessions" in permissions:
             return func(self, *args, **kwargs)
-        elif "own_sessions" in roles:
+        elif "own_sessions" in permissions:
             isAutorized = loginAuthorizedForSession(
-                user_info["sub"],
+                user_info["username"],
                 session_id
             )
             if isAutorized:
                 return func(self, *args, **kwargs)
             else:
-                msg = "User %s (roles assigned: %s) is not authorized to access session %s." % (
-                    user_info.get("sub"),
-                    str(user_info.get("roles")),
+                msg = "User %s (permissions assigned: %s) is not authorized to access session %s." % (
+                    user_info.get("username"),
+                    str(user_info.get("permissions")),
                     str(session_id),
                 )
         else:
-            msg = "User %s (roles assigned: %s) has no appropriate role (%s) to execute method." % (
-                user_info.get("sub"),
-                str(user_info.get("roles")),
+            msg = "User %s (permissions assigned: %s) has no appropriate permissions (%s) to execute method." % (
+                user_info.get("username"),
+                str(user_info.get("permissions")),
                 str(["all_sessions", "own_sessions"]),
             )
 

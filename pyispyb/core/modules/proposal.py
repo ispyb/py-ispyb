@@ -43,7 +43,7 @@ def get_proposals_infos_login(login):
     return queryResultToDict(res)
 
 
-def get_proposals_infos_manager():
+def get_proposals_infos_all():
     """
     Returns proposal info list.
 
@@ -51,7 +51,7 @@ def get_proposals_infos_manager():
         [type]: [description]
     """
 
-    sql = getSQLQuery("proposal/proposalsInfosManager")
+    sql = getSQLQuery("proposal/proposalsInfosAll")
     res = db.engine.execute(sql)
     return queryResultToDict(res)
 

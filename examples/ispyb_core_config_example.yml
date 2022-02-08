@@ -5,8 +5,8 @@ server:
 
     AUTH:
         - keycloak:
-              AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBRolesAuthentication"
-              AUTH_CLASS: "KeycloakDBRolesAuthentication"
+              AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
+              AUTH_CLASS: "KeycloakDBGroupsAuthentication"
         - ldap:
               AUTH_MODULE: "pyispyb.app.extensions.auth.LdapAuthentication"
               AUTH_CLASS: "LdapAuthentication"
