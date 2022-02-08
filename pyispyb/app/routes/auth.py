@@ -76,7 +76,6 @@ class Login(Resource):
             return make_response(
                 "Could not verify",
                 401,
-                {"WWW-Authenticate": 'Basic realm="Login required!"'},
             )
         else:
             token_info = auth_provider.generate_token(username, roles)
