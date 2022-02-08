@@ -39,7 +39,8 @@ dict_schema = {
         'phasingStartTime': f_fields.DateTime(required=False, description='Processing start time'),
         'phasingEndTime': f_fields.DateTime(required=False, description='Processing end time'),
         'phasingEnvironment': f_fields.String(required=False, description='Cpus, Nodes,...'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description=''),
+        'phasingDirectory': f_fields.String(required=False, description='Directory of execution'),
+        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
         }
 
 class PhasingProgramRunSchema(Schema):
@@ -53,6 +54,7 @@ class PhasingProgramRunSchema(Schema):
     phasingStartTime = ma_fields.DateTime()
     phasingEndTime = ma_fields.DateTime()
     phasingEnvironment = ma_fields.String()
+    phasingDirectory = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
 
 f_schema = api.model('PhasingProgramRun', dict_schema)

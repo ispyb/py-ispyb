@@ -33,9 +33,10 @@ from pyispyb.app.extensions.api import api_v1 as api
 dict_schema = {
         'phasingProgramAttachmentId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
         'phasingProgramRunId': f_fields.Integer(required=True, description='Related program item'),
-        'fileType': f_fields.String(required=False, description='file typeenum(Map,Logfile,PDB,CSV,INS,RES,TXT)'),
+        'fileType': f_fields.String(required=False, description='file typeenum(DSIGMA_RESOLUTION,OCCUPANCY_SITENUMBER,CONTRAST_CYCLE,CCALL_CCWEAK,IMAGE,Map,Logfile,PDB,CSV,INS,RES,TXT)'),
         'fileName': f_fields.String(required=False, description='file name'),
         'filePath': f_fields.String(required=False, description='file path'),
+        'input': f_fields.Integer(required=False, description=''),
         'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
         }
 
@@ -47,6 +48,7 @@ class PhasingProgramAttachmentSchema(Schema):
     fileType = ma_fields.String()
     fileName = ma_fields.String()
     filePath = ma_fields.String()
+    input = ma_fields.Integer()
     recordTimeStamp = ma_fields.DateTime()
 
 f_schema = api.model('PhasingProgramAttachment', dict_schema)

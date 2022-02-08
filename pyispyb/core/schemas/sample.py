@@ -50,24 +50,17 @@ dict_schema = {
         'blSampleStatus': f_fields.String(required=False, description=''),
         'isInSampleChanger': f_fields.Integer(required=False, description=''),
         'lastKnownCenteringPosition': f_fields.String(required=False, description=''),
-        'POSITIONID': f_fields.Integer(required=False, description=''),
         'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
         'SMILES': f_fields.String(required=False, description='the symbolic description of the structure of a chemical compound'),
-        'blSubSampleId': f_fields.Integer(required=False, description=''),
         'lastImageURL': f_fields.String(required=False, description=''),
+        'positionId': f_fields.Integer(required=False, description=''),
+        'blSubSampleId': f_fields.Integer(required=False, description=''),
         'screenComponentGroupId': f_fields.Integer(required=False, description=''),
         'volume': f_fields.Float(required=False, description=''),
         'dimension1': f_fields.String(required=False, description=''),
         'dimension2': f_fields.String(required=False, description=''),
         'dimension3': f_fields.String(required=False, description=''),
         'shape': f_fields.String(required=False, description=''),
-        'packingFraction': f_fields.Float(required=False, description=''),
-        'preparationTemeprature': f_fields.Integer(required=False, description='Sample preparation temperature, Units: kelvin'),
-        'preparationHumidity': f_fields.Float(required=False, description='Sample preparation humidity, Units: %'),
-        'blottingTime': f_fields.Integer(required=False, description='Blotting time, Units: sec'),
-        'blottingForce': f_fields.Float(required=False, description='Force used when blotting sample, Units: N?'),
-        'blottingDrainTime': f_fields.Integer(required=False, description='Time sample left to drain after blotting, Units: sec'),
-        'support': f_fields.String(required=False, description='Sample support material'),
         'subLocation': f_fields.Integer(required=False, description='Indicates the samples location on a multi-sample pin, where 1 is closest to the pin base'),
         }
 
@@ -93,24 +86,17 @@ class SampleSchema(Schema):
     blSampleStatus = ma_fields.String()
     isInSampleChanger = ma_fields.Integer()
     lastKnownCenteringPosition = ma_fields.String()
-    POSITIONID = ma_fields.Integer()
     recordTimeStamp = ma_fields.DateTime()
     SMILES = ma_fields.String()
-    blSubSampleId = ma_fields.Integer()
     lastImageURL = ma_fields.String()
+    positionId = ma_fields.Integer()
+    blSubSampleId = ma_fields.Integer()
     screenComponentGroupId = ma_fields.Integer()
     volume = ma_fields.Float()
     dimension1 = ma_fields.String()
     dimension2 = ma_fields.String()
     dimension3 = ma_fields.String()
     shape = ma_fields.String()
-    packingFraction = ma_fields.Float()
-    preparationTemeprature = ma_fields.Integer()
-    preparationHumidity = ma_fields.Float()
-    blottingTime = ma_fields.Integer()
-    blottingForce = ma_fields.Float()
-    blottingDrainTime = ma_fields.Integer()
-    support = ma_fields.String()
     subLocation = ma_fields.Integer()
 
 f_schema = api.model('Sample', dict_schema)

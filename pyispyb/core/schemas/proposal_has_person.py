@@ -34,7 +34,6 @@ dict_schema = {
         'proposalHasPersonId': f_fields.Integer(required=True, description=''),
         'proposalId': f_fields.Integer(required=True, description=''),
         'personId': f_fields.Integer(required=True, description=''),
-        'role': f_fields.String(required=False, description='enum(Co-Investigator,Principal Investigator,Alternate Contact)'),
         }
 
 class ProposalHasPersonSchema(Schema):
@@ -43,7 +42,6 @@ class ProposalHasPersonSchema(Schema):
     proposalHasPersonId = ma_fields.Integer()
     proposalId = ma_fields.Integer()
     personId = ma_fields.Integer()
-    role = ma_fields.String()
 
 f_schema = api.model('ProposalHasPerson', dict_schema)
 ma_schema = ProposalHasPersonSchema()

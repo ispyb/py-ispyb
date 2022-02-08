@@ -22,7 +22,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 import os
-import logging
 
 from flask import current_app
 
@@ -84,7 +83,8 @@ class Report(object):
         html_file.close()
 
         pdfkit.from_file(
-            str(os.path.join(current_app.config["TEMP_FOLDER"], html_filename)),
+            str(os.path.join(
+                current_app.config["TEMP_FOLDER"], html_filename)),
             str(os.path.join(current_app.config["TEMP_FOLDER"], pdf_filename)),
         )
 

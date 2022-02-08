@@ -22,7 +22,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-import sys
 import sqlite3
 
 from flask_restx import abort
@@ -168,7 +167,8 @@ class SQLAlchemy(BaseSQLAlchemy):
                 query = query.filter_by(**schema_keys)
             except sqlalchemy.exc.InvalidRequestError as ex:
                 print(ex)
-                msg = "Unable to filter items based on query items (%s)" % str(ex)
+                msg = "Unable to filter items based on query items (%s)" % str(
+                    ex)
 
         # Filter items based on  schema keys with multiple values
         if multiple_value_query_dict:
@@ -178,7 +178,8 @@ class SQLAlchemy(BaseSQLAlchemy):
                     query = query.filter(attr.in_(value))
                 except sqlalchemy.exc.InvalidRequestError as ex:
                     print(ex)
-                    msg = "Unable to filter items based on query items (%s)" % str(ex)
+                    msg = "Unable to filter items based on query items (%s)" % str(
+                        ex)
 
         total = query.count()
 
@@ -250,15 +251,18 @@ class SQLAlchemy(BaseSQLAlchemy):
         except TypeError as ex:
             self.session.rollback()
             print(ex)
-            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s)" % str(ex))
+            abort(HTTPStatus.NOT_ACCEPTABLE,
+                  "Unable to add db item (%s)" % str(ex))
         except sqlalchemy.exc.DataError as ex:
             self.session.rollback()
             print(ex)
-            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s)" % str(ex))
+            abort(HTTPStatus.NOT_ACCEPTABLE,
+                  "Unable to add db item (%s)" % str(ex))
         except Exception as ex:
             self.session.rollback()
             print(ex)
-            abort(HTTPStatus.NOT_ACCEPTABLE, "Unable to add db item (%s)" % str(ex))
+            abort(HTTPStatus.NOT_ACCEPTABLE,
+                  "Unable to add db item (%s)" % str(ex))
 
     def update_db_item(
         self, sql_alchemy_model, ma_schema, item_id_dict, item_update_dict

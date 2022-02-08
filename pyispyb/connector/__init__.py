@@ -20,7 +20,7 @@
 
 
 from flask import current_app
-from requests import get, post
+from requests import get
 
 
 __license__ = "LGPLv3+"
@@ -31,7 +31,8 @@ def is_resource_available(service_name):
         headers = {
             "Authorization": "Bearer %s" % current_app.config["MASTER_TOKEN"],
             "Host": service_name}
-        response = get(current_app.config["API_GATEWAY_URL"] + "/schemas/available_names", headers=headers)
+        response = get(
+            current_app.config["API_GATEWAY_URL"] + "/schemas/available_names", headers=headers)
         data = response.json()
         status_code = response.status_code
     except ConnectionError:

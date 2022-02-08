@@ -1,0 +1,11 @@
+server:
+    SERVICE_NAME: "core"
+    API_ROOT: "/ispyb/api/v1"
+    SQLALCHEMY_DATABASE_URI: "mysql://root:pyispybTestDB2021@160.103.246.44/pydb"
+
+    AUTH:
+        - dummy:
+              AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
+              AUTH_CLASS: "DummyAuthentication"
+
+    SECRET_KEY: "TOTO"

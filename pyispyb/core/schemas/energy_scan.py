@@ -36,6 +36,7 @@ dict_schema = {
         'blSampleId': f_fields.Integer(required=False, description=''),
         'fluorescenceDetector': f_fields.String(required=False, description=''),
         'scanFileFullPath': f_fields.String(required=False, description=''),
+        'choochFileFullPath': f_fields.String(required=False, description=''),
         'jpegChoochFileFullPath': f_fields.String(required=False, description=''),
         'element': f_fields.String(required=False, description=''),
         'startEnergy': f_fields.Float(required=False, description=''),
@@ -58,13 +59,15 @@ dict_schema = {
         'filename': f_fields.String(required=False, description=''),
         'beamSizeVertical': f_fields.Float(required=False, description=''),
         'beamSizeHorizontal': f_fields.Float(required=False, description=''),
-        'choochFileFullPath': f_fields.String(required=False, description=''),
         'crystalClass': f_fields.String(required=False, description=''),
         'comments': f_fields.String(required=False, description=''),
         'flux': f_fields.String(required=False, description='flux measured before the energyScan'),
         'flux_end': f_fields.String(required=False, description='flux measured after the energyScan'),
         'workingDirectory': f_fields.String(required=False, description=''),
         'blSubSampleId': f_fields.Integer(required=False, description=''),
+        'remoteEnergy': f_fields.Float(required=False, description=''),
+        'remoteFPrime': f_fields.Float(required=False, description=''),
+        'remoteFDoublePrime': f_fields.Float(required=False, description=''),
         }
 
 class EnergyScanSchema(Schema):
@@ -75,6 +78,7 @@ class EnergyScanSchema(Schema):
     blSampleId = ma_fields.Integer()
     fluorescenceDetector = ma_fields.String()
     scanFileFullPath = ma_fields.String()
+    choochFileFullPath = ma_fields.String()
     jpegChoochFileFullPath = ma_fields.String()
     element = ma_fields.String()
     startEnergy = ma_fields.Float()
@@ -97,13 +101,15 @@ class EnergyScanSchema(Schema):
     filename = ma_fields.String()
     beamSizeVertical = ma_fields.Float()
     beamSizeHorizontal = ma_fields.Float()
-    choochFileFullPath = ma_fields.String()
     crystalClass = ma_fields.String()
     comments = ma_fields.String()
     flux = ma_fields.String()
     flux_end = ma_fields.String()
     workingDirectory = ma_fields.String()
     blSubSampleId = ma_fields.Integer()
+    remoteEnergy = ma_fields.Float()
+    remoteFPrime = ma_fields.Float()
+    remoteFDoublePrime = ma_fields.Float()
 
 f_schema = api.model('EnergyScan', dict_schema)
 ma_schema = EnergyScanSchema()

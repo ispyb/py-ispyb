@@ -44,10 +44,9 @@ class AbstractAuthentication(object):
         return
 
     @abc.abstractmethod
-    def get_roles(self, username, password):
+    def get_auth(self, username, password, token):
         """Returns roles associated to the user.
 
         Args:
-            username (str): username
-            password (str): password
+            request: request object
         """

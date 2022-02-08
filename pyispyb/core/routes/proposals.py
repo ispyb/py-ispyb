@@ -35,15 +35,13 @@ Example routes:
 
 __license__ = "LGPLv3+"
 
-from flask import request, current_app, abort
-from flask_restx._http import HTTPStatus
+from flask import request
 
 from pyispyb.flask_restx_patched import Resource
 
-from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
-from pyispyb.core.schemas import proposal as proposal_schemas
-from pyispyb.core.modules import contacts, proposal
+from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
+from pyispyb.app.extensions.auth.decorators import authentication_required, permission_required, proposal_authorization_required
+from pyispyb.core.modules import proposal
 
 
 api = Namespace(
@@ -52,105 +50,28 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("", endpoint="proposals")
+@api.route("")
 @api.doc(security="apikey")
-class Proposals(Resource):
-    """Allows to get all proposals"""
+@legacy_api.route("/<token>/proposal/list")
+class ProposalsInfosLogin(Resource):
 
-    @token_required
-    @role_required
-    def get(self):
-        """Returns proposals based on query parameters"""
-        api.logger.info("Get all proposals")
-        user_info = contacts.get_person_info(request)
-        query_dict = request.args.to_dict()
-        if not user_info["is_admin"]:
-            proposal_ids = proposal.get_proposal_ids_by_person_id(user_info["personId"])
-            query_dict["proposalId"] = proposal_ids
-        return proposal.get_proposals_by_query(query_dict)
-
-    @token_required
-    @role_required
-    @api.expect(proposal_schemas.f_schema)
-    @api.marshal_with(proposal_schemas.f_schema, code=201)
-    def post(self):
-        """Adds a new proposal"""
-        api.logger.info("Inserts a new proposal")
-        return proposal.add_proposal(api.payload)
+    @authentication_required
+    @permission_required("any", ["own_proposals"])
+    def get(self, **kwargs):
+        """Returns list of proposals associated to login"""
+        if "manager" in request.user['roles']:
+            return proposal.get_proposals_infos_manager()
+        return proposal.get_proposals_infos_login(request.user['sub'])
 
 
-@api.route("/<int:proposal_id>", endpoint="proposal_by_id")
-@api.param("proposal_id", "Proposal id (integer)")
+@api.route("/<proposal_id>")
 @api.doc(security="apikey")
-@api.response(code=HTTPStatus.FOUND, description="Proposal found.", model=proposal_schemas.f_schema)
-@api.response(code=HTTPStatus.NOT_FOUND, description="Proposal not found.")
-class ProposalById(Resource):
-    """Allows to get/set/delete a proposal"""
+@legacy_api.route("/<token>/proposal/<proposal_id>/info/get")
+class ProposalsInfosLogin(Resource):
 
-    @token_required
-    @role_required
-    @api.doc(description="proposal_id should be an integer ")
-    @api.marshal_with(proposal_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
-    def get(self, proposal_id):
-        """Returns a proposal by proposalId"""
-        user_info = contacts.get_person_info(request)
-        if user_info["is_admin"] or proposal_id in user_info["proposal_ids"]:
-            return proposal.get_proposal_by_id(proposal_id)
-        else:
-            abort(
-                HTTPStatus.METHOD_NOT_ALLOWED,
-                "Permission denied. Proposal %d is not assigned to user %s" % (
-                    proposal_id,
-                    user_info["login_name"]
-                )
-            )
-
-    @token_required
-    @role_required
-    @api.expect(proposal_schemas.f_schema)
-    @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
-    def put(self, proposal_id):
-        """Fully updates proposal with id proposal_id"""
-        current_app.logger.info("Update proposal %d" % proposal_id)
-        return proposal.update_proposal(proposal_id, api.payload)
-
-    @token_required
-    @role_required
-    @api.expect(proposal_schemas.f_schema)
-    @api.marshal_with(proposal_schemas.f_schema, code=HTTPStatus.CREATED)
-    def patch(self, proposal_id):
-        """Partially updates proposal with id proposal_id"""
-        return proposal.patch_proposal(proposal_id, api.payload)
-
-    @token_required
-    @role_required
-    def delete(self, proposal_id):
-        """Deletes a proposal by proposal_id"""
-        return proposal.delete_proposal(proposal_id)
-
-
-@api.route("/<int:proposal_id>/info", endpoint="proposal_info_by_id")
-@api.param("proposal_id", "Proposal id (integer)")
-@api.doc(security="apikey")
-@api.response(code=HTTPStatus.FOUND, description="Proposal info found.")
-@api.response(code=HTTPStatus.NOT_FOUND, description="Proposal info not found.")
-class ProposalInfoById(Resource):
-    """Returns full information of a proposal"""
-
-    @token_required
-    @role_required
-    @api.doc(description="proposal_id should be an integer ")
-    # @api.marshal_with(proposal_desc_f_schema)
-    def get(self, proposal_id):
-        """Returns a full description of a proposal by proposalId"""
-        user_info = contacts.get_person_info(request)
-        if user_info["is_admin"] or proposal_id in user_info["proposal_ids"]:
-            return proposal.get_proposal_info_by_id(proposal_id)
-        else:
-            abort(
-                HTTPStatus.METHOD_NOT_ALLOWED,
-                "Permission denied. Proposal %d is not assigned to user %s" % (
-                    proposal_id,
-                    user_info["login_name"]
-                )
-            )
+    @authentication_required
+    @permission_required("any", ["own_proposals", "all_proposals"])
+    @proposal_authorization_required
+    def get(self, proposal_id, **kwargs):
+        proposal_id = proposal.findProposalId(proposal_id)
+        return proposal.get_proposal_infos(proposal_id)

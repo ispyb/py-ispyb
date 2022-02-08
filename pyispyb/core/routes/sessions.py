@@ -20,180 +20,60 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import logging
-from datetime import datetime
 
 from flask import request
-from pyispyb.flask_restx_patched import Resource, HTTPStatus, abort
+from pyispyb.core.modules.proposal import findProposalId
+from pyispyb.flask_restx_patched import Resource
 
-from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.auth import token_required, role_required
+from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
+from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, authentication_required, permission_required
 
-from pyispyb.core.schemas import session as session_schemas
-from pyispyb.core.schemas import beam_calendar as beam_calendar_schemas
 from pyispyb.core.modules import session
 
 
 __license__ = "LGPLv3+"
 
 log = logging.getLogger(__name__)
-api = Namespace("Sessions", description="Session related namespace", path="/sessions")
+api = Namespace(
+    "Sessions", description="Session related namespace", path="/sessions")
 api_v1.add_namespace(api)
 
 
-@api.route("", endpoint="sessions")
+@api.route("")
 @api.doc(security="apikey")
-class Sessions(Resource):
-    """Allows to get all sessions and insert a new one"""
-
-    @token_required
-    @role_required
-    def get(self):
-        """Returns list of sessions"""
-        return session.get_sessions(request)
-
-    @token_required
-    @role_required
-    @api.expect(session_schemas.f_schema)
-    @api.marshal_with(session_schemas.f_schema, code=201)
-    def post(self):
-        """Adds a new session"""
-        log.info("Inserts a new session")
-        return session.add_session(api.payload)
+@legacy_api.route("/<token>/session/list")
+class SessionsInfos(Resource):
+    @authentication_required
+    @permission_required("any", ["own_sessions", "all_sessions"])
+    def get(self, **kwargs):
+        """Returns list of sessions associated to user"""
+        if "all_sessions" in request.user['roles']:
+            return session.get_session_infos_manager()
+        return session.get_session_infos_login(request.user['sub'])
 
 
-@api.route("/<int:session_id>", endpoint="session_by_id")
-@api.param("session_id", "Session id (integer)")
+@api.route("/date/<string:startDate>/<string:endDate>")
 @api.doc(security="apikey")
-@api.response(code=HTTPStatus.FOUND, description="Session found :)", model=session_schemas.f_schema)
-@api.response(code=HTTPStatus.NOT_FOUND, description="Session not found :(")
-class SessionById(Resource):
-    """Allows to get/set/delete a session"""
-
-    @token_required
-    @role_required
-    @api.doc(description="session_id should be an integer ")
-    @api.marshal_with(session_schemas.f_schema, skip_none=True, code=HTTPStatus.OK)
-    def get(self, session_id):
-        """Returns a session by sessionId"""
-        return session.get_session_by_id(session_id)
+@legacy_api.route("/<token>/proposal/session/date/<startDate>/<endDate>/list")
+class SessionsInfosProposalDates(Resource):
+    @authentication_required
+    @permission_required("any", ["own_sessions", "all_sessions"])
+    def get(self, startDate, endDate, **kwargs):
+        """Returns list of sessions associated to user in between the two dates"""
+        if "all_sessions" in request.user['roles']:
+            return session.get_session_infos_manager_dates(startDate, endDate)
+        return session.get_session_infos_login_dates(request.user['sub'], startDate, endDate)
 
 
-    @token_required
-    @role_required
-    @api.expect(session_schemas.f_schema)
-    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
-    def put(self, session_id):
-        """Fully updates session with session_id"""
-        return session.update_session(session_id, api.payload)
-
-    @token_required
-    @role_required
-    @api.expect(session_schemas.f_schema)
-    @api.marshal_with(session_schemas.f_schema, code=HTTPStatus.CREATED)
-    def patch(self, session_id):
-        """Partially updates session with id sessionId"""
-        return session.patch_session(session_id, api.payload)
-
-    @token_required
-    @role_required
-    def delete(self, session_id):
-        """Deletes a session by sessionId"""
-        return session.delete_session(session_id)
-
-
-@api.route("/<int:session_id>/info", endpoint="session_info_by_id")
-@api.param("session_id", "session id (integer)")
+@api.route("/proposal/<proposal_id>")
 @api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="session not found.")
-class SessionInfoById(Resource):
-    """Returns full information of a session"""
-
-    @token_required
-    @role_required
-    @api.doc(description="session_id should be an integer ")
-    def get(self, session_id):
-        """Returns a full description of a session by sessionId"""
-        return session.get_session_info_by_id(session_id)
-
-
-@api.route("/date", endpoint="sessions_by_date")
-@api.doc(security="apikey")
-class SessionsByDateBeamline(Resource):
-    """Allows to get all sessions by date and beamline"""
-
-    @token_required
-    @role_required
-    def get(self):
-        """Returns list of sessions by start_date, end_date and beamline."""
-
-        query_dict = request.args.to_dict()
-        start_date = query_dict.get("start_date")
-        end_date = query_dict.get("end_date")
-        beamline = query_dict.get("beamline")
-
-        if start_date is None and end_date is None:
-            abort(
-                HTTPStatus.NOT_ACCEPTABLE, "No start_date or end_date argument provided"
-            )
-
-        if start_date:
-            try:
-                start_date = datetime.strptime(start_date, "%Y%m%d")
-            except ValueError as ex:
-                abort(
-                    HTTPStatus.NOT_ACCEPTABLE,
-                    "start_date should be in YYYYMMDD format (%s)" % str(ex),
-                )
-
-        if end_date:
-            try:
-                end_date = datetime.strptime(end_date, "%Y%m%d")
-            except ValueError as ex:
-                abort(
-                    HTTPStatus.NOT_ACCEPTABLE,
-                    "end_date should be in YYYYMMDD format (%s)" % str(ex),
-                )
-
-        return session.get_sessions_by_date(start_date, end_date, beamline)
-
-
-# getSessionsByDateAndBeamline(startDate, endDate, beamline)
-# getSessionsBybeam_calendarAndDate(startDate, endDate, beam_calendar)
-
-
-@api.route("/beam_calendars", endpoint="beam_calendars")
-@api.doc(security="apikey")
-class BeamCalendars(Resource):
-    """Allows to get all beam_calendars"""
-
-    @token_required
-    @role_required
-    def get(self):
-        """Returns beam_calendars based on query parameters"""
-        return session.get_beam_calendars(request)
-
-    @token_required
-    @role_required
-    @api.expect(beam_calendar_schemas.f_schema)
-    @api.marshal_with(beam_calendar_schemas.f_schema, code=201)
-    def post(self):
-        """Adds a new beam_calendar"""
-        return session.add_beam_calendar(api.payload)
-
-
-@api.route("/beam_calendar/<int:beam_calendar_id>", endpoint="beam_calendar_by_id")
-@api.param("beam_calendar_id", "beam_calendar id (integer)")
-@api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="beam_calendar not found.")
-class beam_calendarById(Resource):
-
-    """Allows to get/set/delete a beam_calendar"""
-    @token_required
-    @role_required
-    @api.doc(description="beam_calendar_id should be an integer ")
-    @api.marshal_with(
-        beam_calendar_schemas.f_schema, skip_none=False, code=HTTPStatus.OK
-    )
-    def get(self, beam_calendar_id):
-        """Returns a beam_calendar by beam_calendarId"""
-        return session.get_beam_calendar_by_id(beam_calendar_id)
+@legacy_api.route("/<token>/proposal/<proposal_id>/session/list")
+class SessionsInfosProposal(Resource):
+    @authentication_required
+    @permission_required("any", ["own_sessions", "all_sessions"])
+    def get(self, proposal_id, **kwargs):
+        """Returns list of sessions associated to user and proposal"""
+        proposal_id = findProposalId(proposal_id)
+        if "all_sessions" in request.user['roles']:
+            return session.get_session_infos_manager_proposal(proposal_id)
+        return session.get_session_infos_login_proposal(request.user['sub'], proposal_id)

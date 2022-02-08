@@ -1,42 +1,28 @@
-FROM frolvlad/alpine-python3
-MAINTAINER Ivars Karpics <ivars.karpics@embl-hamburg.de>
+FROM python:3.8.10
 
-ENV API_SERVER_HOME=/opt/www
-WORKDIR "$API_SERVER_HOME"
-COPY "./requirements.txt" "./"
-COPY "./app/requirements.txt" "./app/"
-COPY "./config.py" "./"
-COPY "./tasks" "./tasks"
-COPY "./ispyb_core_config_example.yml" "./ispyb_core_config.yml"
+RUN apt-get update && apt-get install -y libsasl2-dev python-dev libldap2-dev libssl-dev
 
-ARG INCLUDE_POSTGRESQL=false
-ARG INCLUDE_UWSGI=false
-ARG INCLUDE_MYSQL=true
+WORKDIR /app
 
-RUN apk add --no-cache --virtual=.build_dependencies musl-dev gcc python3-dev libffi-dev linux-headers
-RUN apk add --no-cache mariadb-connector-c-dev ;\
-    apk add --no-cache --virtual .build-deps \
-        build-base \
-        mariadb-dev
-RUN cd /opt/www
+COPY ./requirements.txt ./requirements.txt
+COPY ./pyispyb/requirements.txt ./pyispyb/requirements.txt
+COPY ./tests/requirements.txt ./tests/requirements.txt
+
+
 RUN pip install --upgrade pip
-RUN pip install -r tasks/requirements.txt
+RUN pip install -r requirements.txt
+RUN pip install gunicorn
 
-RUN invoke app.dependencies.install && \
-    ( \
-        if [ "$INCLUDE_POSTGRESQL" = 'true' ]; then \
-            apk add --no-cache libpq && \
-            apk add --no-cache --virtual=.build_dependencies postgresql-dev && \
-            pip install psycopg2 ; \
-        fi \
-    ) && \
-    ( if [ "$INCLUDE_UWSGI" = 'true' ]; then pip install uwsgi ; fi ) && \
-    rm -rf ~/.cache/pip && \
-    apk del .build_dependencies
+COPY ./pyispyb /app/pyispyb/
+COPY ./app.py /app/app.py
 
-COPY "./" "./"
+EXPOSE 80
 
-RUN chown -R nobody "."
+RUN mkdir -p /var/log/pyispyb/
 
-USER nobody
-CMD ["invoke", "app.run", "--no-install-dependencies", "--host", "0.0.0.0" ]
+CMD ["gunicorn",\
+    "-b", "0.0.0.0:80",\
+    "--access-logfile", "/var/log/pyispyb/gunicorn-access.log",\
+    "--error-logfile", "/var/log/pyispyb/gunicorn-error.log",\
+    "app:app"\
+    ]

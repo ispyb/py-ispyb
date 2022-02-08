@@ -22,14 +22,49 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
+from pyispyb.app.extensions import db
 
-from flask_restx._http import HTTPStatus
-
-from pyispyb.app.extensions import db, auth_provider
-from pyispyb.app.utils import create_response_item
+from pyispyb.app.utils import getSQLQuery, queryResultToDict
 
 from pyispyb.core import models, schemas
-from pyispyb.core.modules import contacts, session
+
+
+def get_proposals_infos_login(login):
+    """
+    Returns proposal info list.
+
+    Returns:
+        [type]: [description]
+    """
+
+    sql = getSQLQuery("proposal/proposalsInfosLogin")
+    sql = sql.bindparams(login=login)
+    res = db.engine.execute(sql)
+    return queryResultToDict(res)
+
+
+def get_proposals_infos_manager():
+    """
+    Returns proposal info list.
+
+    Returns:
+        [type]: [description]
+    """
+
+    sql = getSQLQuery("proposal/proposalsInfosManager")
+    res = db.engine.execute(sql)
+    return queryResultToDict(res)
+
+
+def get_proposal_infos(proposal_id):
+    return {
+        "proposal": db.get_db_items(
+            models.Proposal,
+            schemas.proposal.dict_schema,
+            schemas.proposal.ma_schema,
+            {'proposalId': proposal_id},
+        )["data"]["rows"]
+    }
 
 
 def get_proposals_by_query(query_dict):
@@ -48,13 +83,6 @@ def get_proposals_by_query(query_dict):
         query_dict,
     )
 
-def get_proposals_has_person_by_query(query_dict):
-    return db.get_db_items(
-        models.ProposalHasPerson,
-        schemas.proposal_has_person.dict_schema,
-        schemas.proposal_has_person.ma_schema,
-        query_dict,
-    )
 
 def get_proposal_by_id(proposal_id):
     """
@@ -70,27 +98,6 @@ def get_proposal_by_id(proposal_id):
     return db.get_db_item(
         models.Proposal, schemas.proposal.ma_schema, id_dict
     )
-
-
-def get_proposal_info_by_id(proposal_id):
-    """
-    Returns proposal by its proposalId.
-
-    Args:
-        proposal_id (int): corresponds to proposalId in db
-
-    Returns:
-        dict: info about proposal as dict
-    """
-    proposal_json = get_proposal_by_id(proposal_id)
-
-    person_json = contacts.get_person_by_id(proposal_json["personId"])
-    proposal_json["person"] = person_json
-
-    sessions_json = session.get_sessions({"proposalId": proposal_id})
-    proposal_json["sessions"] = sessions_json
-
-    return proposal_json
 
 
 def add_proposal(data_dict):
@@ -155,39 +162,22 @@ def delete_proposal(proposal_id):
     return db.delete_db_item(models.Proposal, id_dict)
 
 
-def get_proposal_ids_by_person_id(person_id):
-    proposal_id_list = []
-    proposal_dict = get_proposals_by_query({"personId": person_id})
-    if proposal_dict["data"]["rows"]:
-        for proposal in proposal_dict["data"]["rows"]:
-            proposal_id_list.append(proposal["proposalId"])
-    proposal_has_person_dict = get_proposals_has_person_by_query({"personId": person_id})
-    if proposal_has_person_dict["data"]["rows"]:
-        for proposal in proposal_has_person_dict["data"]["rows"]:
-            proposal_id_list.append(proposal["proposalId"])
-    return proposal_id_list
+def loginAuthorizedForProposal(login, proposalId):
+    sql = getSQLQuery("proposal/loginAuthorizedProposal")
+    sql = sql.bindparams(login=login, proposalId=proposalId)
+    isAuthorized = db.engine.execute(sql)
+    return isAuthorized.first()[0] > 0
 
-def get_proposal_ids(request):
-    """
-    Checks if user can run query.
-    Manager role allows to run query without restrictions.
-    Otherwise proposal with proposalId in the query parameters should belong
-    to the user calling the requests
 
-    Args:
-        request (request): [description]
-
-    Returns:
-        bool, str: true if user can run query, if False then msg describes the reason
-    """
-
-    user_info = auth_provider.get_user_info_from_auth_header(
-        request.headers.get("Authorization")
-    )
-    proposal_id_list = []
-
-    user_proposals = get_proposals_by_query(request.args.to_dict())
-    for user_proposal in user_proposals["data"]["rows"]:
-        proposal_id_list.append(user_proposal.get("proposalId"))
-
-    return user_info.get("is_admin"), proposal_id_list
+def findProposalId(idOrName):
+    sql = getSQLQuery("proposal/findProposalId")
+    sql = sql.bindparams(name=idOrName)
+    res = db.engine.execute(sql)
+    res = queryResultToDict(res)
+    if len(res) == 1:
+        return res[0]["proposalId"]
+    if len(res) > 1:
+        raise Exception(f"More than one proposal found for {idOrName}")
+    if len(res) > 1:
+        raise Exception(f"No proposal found for {idOrName}")
+    return None

@@ -1,0 +1,1 @@
+python -m pytest -v --random-order tests/core/full_db

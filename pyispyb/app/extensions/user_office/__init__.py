@@ -19,17 +19,13 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import logging
-import datetime
 import importlib
 
-import time
 
 # import gevent
 # from gevent import monkey
 # monkey.patch_all()
 
-
-from flask import current_app
 
 __license__ = "LGPLv3+"
 

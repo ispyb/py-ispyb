@@ -47,7 +47,7 @@ class LdapAuthentication(AbstractAuthentication):
         """
         self.ldap_conn = ldap.initialize(app.config["LDAP_URI"])
 
-    def get_roles(self, username, password):
+    def get_auth(self, username, password, token):
         """
         Returns list of roles based on username and password.
 
@@ -58,15 +58,17 @@ class LdapAuthentication(AbstractAuthentication):
         Returns:
             list: [list of roles as strings
         """
-        roles = []
-        search_filter = "(uid=%s)" % username
-        attrs = ["*"]
-
+        
+        user = None
+        groups = None
         try:
             msg = "LDAP login: try to authenticate user %s as internal user" % username
             log.debug(msg)
+            search_filter = "(uid=%s)" % username
+            attrs = ["*"]
             search_str = (
-                "uid=" + username + "," + current_app.config["LDAP_BASE_INTERNAL"]
+                "uid=" + username + "," +
+                current_app.config["LDAP_BASE_INTERNAL"]
             )
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(
@@ -75,45 +77,49 @@ class LdapAuthentication(AbstractAuthentication):
                 search_filter,
                 attrs,
             )
-            if result:
-                roles.append("manager")
-                msg = (
-                    "LDAP login: user %s authenticated as internal user (manager role)"
-                    % username
-                )
-                log.debug(msg)
+            user = username
         except ldap.INVALID_CREDENTIALS as ex:
             msg = "LDAP login: unable to authenticate user %s (%s)" % (
                 username,
                 str(ex),
             )
             log.exception(msg)
+            return None, None
 
         try:
-            msg = "LDAP login: try to authenticate user %s as external user" % username
+            msg = "LDAP login: try to find user %s groups" % username
             log.debug(msg)
+            search_filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember=uid=" + username + ",ou=People,dc=esrf,dc=fr))"
+            attrs = ["cn"]
             search_str = (
-                "uid=" + username + "," + current_app.config["LDAP_BASE_EXTERNAL"]
+                "uid=" + username + "," +
+                current_app.config["LDAP_BASE_INTERNAL"]
             )
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(
-                current_app.config["LDAP_BASE_EXTERNAL"],
-                ldap.SCOPE_ONELEVEL,
+                current_app.config["LDAP_BASE_GROUPS"],
+                ldap.SCOPE_SUBTREE,
                 search_filter,
                 attrs,
             )
             if result:
-                roles.append("user")
-                msg = (
-                    "LDAP login: user %s authenticated as external user (user role)"
-                    % username
-                )
-                log.debug(msg)
+                groups = [groupName.decode("utf-8") for group in result for groupName in group[1]["cn"]]
+                if not groups :
+                    groups = ["User"]
+                if "User" in groups or "Manager" in groups:
+                    groups.append("own_proposals")
+                    groups.append("own_sessions")
+                if "Manager" in groups:
+                    groups.append("all_proposals")
+                    groups.append("all_sessions")
         except ldap.INVALID_CREDENTIALS as ex:
             msg = "LDAP login: unable to authenticate user %s (%s)" % (
                 username,
                 str(ex),
             )
             log.exception(msg)
+            return None, None
 
-        return roles
+        if user is None or groups is None:
+            return None, None
+        return user, groups
