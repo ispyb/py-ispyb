@@ -22,7 +22,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 from pyispyb.flask_restx_patched import Resource
 
-from pyispyb.app.extensions.api import api_v1, Namespace
+from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
 from pyispyb.app.extensions.auth.decorators import session_authorization_required, authentication_required, permission_required
 
 from pyispyb.core.modules import data_collections
@@ -40,12 +40,13 @@ api_v1.add_namespace(api)
 
 
 @api.route("/groups/session/<int:session_id>")
+@legacy_api.route("/<token>/proposal/session/<session_id>/list")
 @api.doc(security="apikey")
 class DataColletionGroups(Resource):
 
     @authentication_required
     @permission_required("any", ["own_sessions", "all_sessions"])
     @session_authorization_required
-    def get(self, session_id):
+    def get(self, session_id, **kwargs):
         """Returns list of data collection groups relative to session"""
         return data_collections.get_data_collections_groups(session_id)
