@@ -23,4 +23,4 @@ select
             and Proposal.proposalId = BLSession.proposalId
             and Person.personId = Proposal.personId
             and Person.login = :login
-    ) as isAuthorized
+    ) as is_authorized

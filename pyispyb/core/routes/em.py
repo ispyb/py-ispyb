@@ -2,7 +2,7 @@
 __license__ = "LGPLv3+"
 
 
-from pyispyb.core.modules.proposal import findProposalId
+from pyispyb.core.modules.proposal import find_proposal_id
 from flask_restx import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
@@ -22,22 +22,28 @@ api_v1.add_namespace(api)
 ############################
 
 
-@api.route("/proposal/<int:proposal_id>/datacollection/<int:dataCollection_id>/movies")
-@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<dataCollection_id>/movie/all")
+@api.route("/proposal/<int:proposal_id>/datacollection/<int:datacollection_id>/movies")
+@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<datacollection_id>/movie/all")
 @api.doc(security="apikey")
 class Movies(Resource):
 
     @authentication_required
     @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
-    def get(self, proposal_id, dataCollection_id, **kwargs):
-        """Returns list of movies associated to datacollection"""
-        proposal_id = findProposalId(proposal_id)
-        return em.get_movies_data_by_dataCollection_id(proposal_id, dataCollection_id)
+    def get(self, proposal_id, datacollection_id, **kwargs):
+        """Get movies date for datacollection.
+
+        Args:
+            proposal_id (str): proposal id or name
+            datacollection_id (str): data collection id
+        """
+        proposal_id = find_proposal_id(proposal_id)
+        return em.get_movies_data_by_datacollection_id(
+            proposal_id, datacollection_id)
 
 
 @api.route("/proposal/<int:proposal_id>/movie/<int:movie_id>/thumbnail")
-@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<dataCollectionId>/movie/<movie_id>/thumbnail")
+@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<datacollection_id>/movie/<movie_id>/thumbnail")
 @api.doc(security="apikey")
 class MovieThumbnail(Resource):
 
@@ -45,8 +51,13 @@ class MovieThumbnail(Resource):
     @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
-        """Returns thumbnail for movie"""
-        proposal_id = findProposalId(proposal_id)
+        """Get thumbnails for movie.
+
+        Args:
+            proposal_id (str): proposal id or name
+            movie_id (str): movie id
+        """
+        proposal_id = find_proposal_id(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
         if path:
             path = path["movie_thumbnail"]
@@ -57,7 +68,7 @@ class MovieThumbnail(Resource):
 
 
 @api.route("/proposal/<int:proposal_id>/movie/<int:movie_id>/thumbnail/motioncorrection")
-@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<dataCollectionId>/movie/<movie_id>/motioncorrection/thumbnail")
+@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<datacollection_id>/movie/<movie_id>/motioncorrection/thumbnail")
 @api.doc(security="apikey")
 class MovieMotionCorrectionThumbnail(Resource):
 
@@ -65,8 +76,13 @@ class MovieMotionCorrectionThumbnail(Resource):
     @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
-        """Returns thumbnail for movie motion correction"""
-        proposal_id = findProposalId(proposal_id)
+        """Get motion correction thumbnail for movie.
+
+        Args:
+            proposal_id (str): proposal id or name
+            movie_id (str): movie id
+        """
+        proposal_id = find_proposal_id(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
         if path:
             path = path["motion_correction_thumbnail"]
@@ -77,7 +93,7 @@ class MovieMotionCorrectionThumbnail(Resource):
 
 
 @api.route("/proposal/<int:proposal_id>/movie/<int:movie_id>/thumbnail/ctf")
-@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<dataCollectionId>/movie/<movie_id>/ctf/thumbnail")
+@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<datacollection_id>/movie/<movie_id>/ctf/thumbnail")
 @api.doc(security="apikey")
 class MovieCTFThumbnail(Resource):
 
@@ -85,8 +101,13 @@ class MovieCTFThumbnail(Resource):
     @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
-        """Returns thumbnail for movie ctf"""
-        proposal_id = findProposalId(proposal_id)
+        """Get CTF thumbnail for movie.
+
+        Args:
+            proposal_id (str): proposal id or name
+            movie_id (str): movie id
+        """
+        proposal_id = find_proposal_id(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
         if path:
             path = path["ctf_thumbnail"]
@@ -97,7 +118,7 @@ class MovieCTFThumbnail(Resource):
 
 
 @api.route("/proposal/<int:proposal_id>/movie/<int:movie_id>/plot/motioncorrectiondrift")
-@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<dataCollectionId>/movie/<movie_id>/motioncorrection/drift")
+@legacy_api.route("/<token>/proposal/<proposal_id>/em/datacollection/<datacollection_id>/movie/<movie_id>/motioncorrection/drift")
 @api.doc(security="apikey")
 class MovieMotionCorrectionDrift(Resource):
 
@@ -105,8 +126,13 @@ class MovieMotionCorrectionDrift(Resource):
     @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, movie_id, **kwargs):
-        """Returns thumbnail for movie motion corretion drift"""
-        proposal_id = findProposalId(proposal_id)
+        """Get motion correction drift thumbnail for movie.
+
+        Args:
+            proposal_id (str): proposal id or name
+            movie_id (str): movie id
+        """
+        proposal_id = find_proposal_id(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
         if path:
             path = path["motion_correction_drift"]
@@ -129,7 +155,11 @@ class StatsSession(Resource):
     @permission_required("any", ["own_sessions", "all_sessions"])
     @session_authorization_required
     def get(self, session_id, **kwargs):
-        """Returns stats for session"""
+        """Get stats for session.
+
+        Args:
+            session_id (str): session id
+        """
         return em.get_stats_by_session_id(session_id)
 
 
@@ -141,9 +171,15 @@ class StatsDataCollectionIds(Resource):
     @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, data_collections_ids):
-        """Returns stats for datacollection"""
-        proposal_id = findProposalId(proposal_id)
-        return em.get_stats_by_data_collections_ids(proposal_id, data_collections_ids)
+        """Get stats for data collection ids.
+
+        Args:
+            proposal_id (str): proposal id or name
+            data_collections_ids (str): comma-separated datacollection ids
+        """
+        proposal_id = find_proposal_id(proposal_id)
+        return em.get_stats_by_data_collections_ids(
+            proposal_id, data_collections_ids)
 
 
 @api.route("/proposal/<int:proposal_id>/data_collections_group/<string:data_collections_group_id>/stats")
@@ -154,9 +190,15 @@ class StatsDataCollectionGroupId(Resource):
     @permission_required("any", ["own_proposal", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, data_collections_group_id, **kwargs):
-        """Returns stats for datacollectiongroup"""
-        proposal_id = findProposalId(proposal_id)
-        return em.get_stats_by_data_collections_group_id(proposal_id, data_collections_group_id)
+        """Get stats for datacollection group.
+
+        Args:
+            proposal_id (str): proposal id or name
+            data_collections_group_id (str): data collection group id
+        """
+        proposal_id = find_proposal_id(proposal_id)
+        return em.get_stats_by_data_collections_group_id(
+            proposal_id, data_collections_group_id)
 
 ############################
 #     DATA COLLECTION      #
@@ -170,8 +212,15 @@ class DataCollectionGroup(Resource):
 
     @authentication_required
     @permission_required("any", ["own_proposal", "all_proposals"])
+    @permission_required("any", ["own_sessions", "all_sessions"])
     @proposal_authorization_required
+    @session_authorization_required
     def get(self, proposal_id, session_id, **kwargs):
-        """Returns list of data collection associated to session"""
-        proposal_id = findProposalId(proposal_id)
+        """Get datacollection groups for session.
+
+        Args:
+            proposal_id (str): proposal id or name
+            session_id (str): session id
+        """
+        proposal_id = find_proposal_id(proposal_id)
         return em.get_data_collections_groups(proposal_id, session_id)

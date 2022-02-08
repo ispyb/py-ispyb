@@ -19,21 +19,20 @@ along
 """
 
 from pyispyb import create_app
-from tests.core.utils import clean_db, get_all_permissions_token
+from tests.core.utils import get_all_permissions_token
 __license__ = "LGPLv3+"
 
 
 import os
 import sys
 import pytest
-from pyispyb.app.extensions import db
 
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, ROOT_DIR)
 
 app = create_app(
-    ROOT_DIR+"/ispyb_core_config_test_full_db.yml", "test")
+    ROOT_DIR + "/ispyb_core_config_test_full_db.yml", "test")
 
 
 @pytest.fixture()
@@ -44,4 +43,4 @@ def ispyb_app():
 
 @pytest.fixture()
 def manager_token(ispyb_app):
-    yield get_all_permissions_token(ispyb_app)
+    return get_all_permissions_token(ispyb_app)

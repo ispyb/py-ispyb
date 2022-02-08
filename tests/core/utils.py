@@ -29,4 +29,4 @@ def clean_db(db_module):
         "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = (SELECT DATABASE()) AND TABLE_TYPE = 'BASE TABLE';")
     for table in tables:
         db_module.engine.execute('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE ' +
-                                 table[0]+';')
+                                 table[0] + ';')

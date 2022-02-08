@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,17 +30,18 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'labContactId': f_fields.Integer(required=True, description=''),
-        'personId': f_fields.Integer(required=True, description=''),
-        'cardName': f_fields.String(required=True, description=''),
-        'proposalId': f_fields.Integer(required=True, description=''),
-        'defaultCourrierCompany': f_fields.String(required=False, description=''),
-        'courierAccount': f_fields.String(required=False, description=''),
-        'billingReference': f_fields.String(required=False, description=''),
-        'dewarAvgCustomsValue': f_fields.Integer(required=True, description=''),
-        'dewarAvgTransportValue': f_fields.Integer(required=True, description=''),
-        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
-        }
+    'labContactId': f_fields.Integer(required=True, description=''),
+    'personId': f_fields.Integer(required=True, description=''),
+    'cardName': f_fields.String(required=True, description=''),
+    'proposalId': f_fields.Integer(required=True, description=''),
+    'defaultCourrierCompany': f_fields.String(required=False, description=''),
+    'courierAccount': f_fields.String(required=False, description=''),
+    'billingReference': f_fields.String(required=False, description=''),
+    'dewarAvgCustomsValue': f_fields.Integer(required=True, description=''),
+    'dewarAvgTransportValue': f_fields.Integer(required=True, description=''),
+    'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
+}
+
 
 class LabContactSchema(Schema):
     """Marshmallows schema class representing LabContact table"""
@@ -56,6 +56,7 @@ class LabContactSchema(Schema):
     dewarAvgCustomsValue = ma_fields.Integer()
     dewarAvgTransportValue = ma_fields.Integer()
     recordTimeStamp = ma_fields.DateTime()
+
 
 f_schema = api.model('LabContact', dict_schema)
 ma_schema = LabContactSchema()

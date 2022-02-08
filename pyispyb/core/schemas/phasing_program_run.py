@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,17 +30,38 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'phasingProgramRunId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'phasingCommandLine': f_fields.String(required=False, description='Command line for phasing'),
-        'phasingPrograms': f_fields.String(required=False, description='Phasing programs (comma separated)'),
-        'phasingStatus': f_fields.Integer(required=False, description='success (1) / fail (0)'),
-        'phasingMessage': f_fields.String(required=False, description='warning, error,...'),
-        'phasingStartTime': f_fields.DateTime(required=False, description='Processing start time'),
-        'phasingEndTime': f_fields.DateTime(required=False, description='Processing end time'),
-        'phasingEnvironment': f_fields.String(required=False, description='Cpus, Nodes,...'),
-        'phasingDirectory': f_fields.String(required=False, description='Directory of execution'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description='Creation or last update date/time'),
-        }
+    'phasingProgramRunId': f_fields.Integer(
+        required=True,
+        description='Primary key (auto-incremented)'),
+    'phasingCommandLine': f_fields.String(
+        required=False,
+        description='Command line for phasing'),
+    'phasingPrograms': f_fields.String(
+        required=False,
+        description='Phasing programs (comma separated)'),
+    'phasingStatus': f_fields.Integer(
+        required=False,
+        description='success (1) / fail (0)'),
+    'phasingMessage': f_fields.String(
+        required=False,
+        description='warning, error,...'),
+    'phasingStartTime': f_fields.DateTime(
+        required=False,
+        description='Processing start time'),
+    'phasingEndTime': f_fields.DateTime(
+        required=False,
+        description='Processing end time'),
+    'phasingEnvironment': f_fields.String(
+        required=False,
+        description='Cpus, Nodes,...'),
+    'phasingDirectory': f_fields.String(
+        required=False,
+        description='Directory of execution'),
+    'recordTimeStamp': f_fields.DateTime(
+        required=False,
+        description='Creation or last update date/time'),
+}
+
 
 class PhasingProgramRunSchema(Schema):
     """Marshmallows schema class representing PhasingProgramRun table"""
@@ -56,6 +76,7 @@ class PhasingProgramRunSchema(Schema):
     phasingEnvironment = ma_fields.String()
     phasingDirectory = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
+
 
 f_schema = api.model('PhasingProgramRun', dict_schema)
 ma_schema = PhasingProgramRunSchema()

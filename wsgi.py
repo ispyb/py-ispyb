@@ -18,13 +18,14 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+"""Allows to run the webserver in dev env."""
+
 import sys
 
 from pyispyb import create_app
 
 
 __license__ = "LGPLv3+"
-
 
 if len(sys.argv) > 3:
     config_filename = sys.argv[1]
@@ -38,4 +39,7 @@ else:
 debug = run_mode == "dev"
 
 app = create_app(config_filename, run_mode)
-app.run(host='0.0.0.0', port=port, debug=debug)
+
+if __name__ == '__main__':
+
+    app.run(host='0.0.0.0', port=port, debug=debug)

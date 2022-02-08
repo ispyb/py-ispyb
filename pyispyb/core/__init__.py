@@ -24,7 +24,7 @@ __license__ = "LGPLv3+"
 
 
 def init_app(app):
-
+    """Init app."""
     from . import modules
 
     modules.init_app(app)
@@ -33,5 +33,4 @@ def init_app(app):
 
     routes.init_app(app)
 
-    print("ispyb-core loaded")
-    # app.logger.debug("ISPyB server started")
+    app.logger.info("ispyb-core loaded")

@@ -1,30 +1,29 @@
-"""
-Project: py-ispyb.
 
-https://github.com/ispyb/py-ispyb
+# Project: py-ispyb.
 
-This file is part of py-ispyb software.
+# https://github.com/ispyb/py-ispyb
 
-py-ispyb is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# This file is part of py-ispyb software.
 
-py-ispyb is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+# py-ispyb is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-You should have received a copy of the GNU Lesser General Public License
-along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-"""
+# py-ispyb is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
 __license__ = "LGPLv3+"
 
 from pyispyb.app.extensions import db
 
-from pyispyb.app.utils import getSQLQuery, queryResultToDict
+from pyispyb.app.utils import get_sql_query, queryresult_to_dict
 from pyispyb.core.modules import data_collections
 
 ############################
@@ -32,24 +31,43 @@ from pyispyb.core.modules import data_collections
 ############################
 
 
-def get_movies_data_by_dataCollection_id(proposal_id, dataCollection_id):
-    sql = getSQLQuery(
-        "em/movie", append=" where Movie_dataCollectionId = :dataCollectionId and Proposal_proposalId=:proposalId")
-    sql = sql.bindparams(dataCollectionId=dataCollection_id,
+def get_movies_data_by_datacollection_id(proposal_id, datacollection_id):
+    """Get movies data for datacollection.
+
+    Args:
+        proposal_id (str): proposal id
+        datacollection_id (str): datacollection id
+
+    Returns:
+        dict: movies data
+    """
+    sql = get_sql_query(
+        "em/movie",
+        append=" where Movie_dataCollectionId = :dataCollectionId and Proposal_proposalId=:proposalId")
+    sql = sql.bindparams(dataCollectionId=datacollection_id,
                          proposalId=proposal_id)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
 def get_movie_thumbnails(proposal_id, movie_id):
-    sql = getSQLQuery(
+    """Get movie thumbnails.
+
+    Args:
+        proposal_id (str): proposal id
+        movie_id (str): movie id
+
+    Returns:
+        dict: thumnails object
+    """
+    sql = get_sql_query(
         "em/movie_thumbnails")
     sql = sql.bindparams(movieId=movie_id,
                          proposalId=proposal_id)
     res = db.engine.execute(sql)
-    res = queryResultToDict(res)
+    res = queryresult_to_dict(res)
     if len(res) > 0:
-        return queryResultToDict(res)[0]
+        return queryresult_to_dict(res)[0]
     return None
 
 
@@ -59,29 +77,58 @@ def get_movie_thumbnails(proposal_id, movie_id):
 
 
 def get_stats_by_session_id(session_id):
-    sql = getSQLQuery(
+    """Get stats for session.
+
+    Args:
+        session_id (str): session id
+
+    Returns:
+        dict: stats
+    """
+    sql = get_sql_query(
         "em/sessionStats", append=" where sessionId = :sessionId")
     sql = sql.bindparams(sessionId=session_id)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
 def get_stats_by_data_collections_ids(proposal_id, data_collection_ids):
-    sql = getSQLQuery("em/dataCollectionsStats",
-                      append=" where dataCollectionId in (:dataCollectionIdList) and BLSession.proposalId=:proposalId")
+    """Get stats for data collections.
+
+    Args:
+        proposal_id (str): proposal id
+        data_collection_ids (str): comma-separated data collection ids
+
+    Returns:
+        dict: stats
+    """
+    sql = get_sql_query(
+        "em/dataCollectionsStats",
+        append=" where dataCollectionId in (:dataCollectionIdList) and BLSession.proposalId=:proposalId")
     sql = sql.bindparams(
         dataCollectionIdList=data_collection_ids, proposalId=proposal_id)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
-def get_stats_by_data_collections_group_id(proposal_id, data_collection_group_id):
-    sql = getSQLQuery("em/dataCollectionsStats",
-                      append=" where DataCollection.dataCollectionGroupId=:dataCollectionGroupId and BLSession.proposalId=:proposalId")
+def get_stats_by_data_collections_group_id(
+        proposal_id, data_collection_group_id):
+    """Get stats for datacollection group.
+
+    Args:
+        proposal_id (str): proposal id
+        data_collection_group_id (str): data collection group id
+
+    Returns:
+        dict: stats
+    """
+    sql = get_sql_query(
+        "em/dataCollectionsStats",
+        append=" where DataCollection.dataCollectionGroupId=:dataCollectionGroupId and BLSession.proposalId=:proposalId")
     sql = sql.bindparams(
         dataCollectionGroupId=data_collection_group_id, proposalId=proposal_id)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 ############################
 #     DATA COLLECTION      #
@@ -89,6 +136,16 @@ def get_stats_by_data_collections_group_id(proposal_id, data_collection_group_id
 
 
 def get_data_collections_groups(proposal_id, session_id):
+    """
+    Get data collection groups for session.
+
+    Args:
+        proposal_id (str): proposal id
+        session_id (str): session id
+
+    Returns:
+        list: datacollection groups
+    """
     res = data_collections.get_data_collections_groups(session_id)
     for row in res:
         row["stats"] = get_stats_by_data_collections_group_id(

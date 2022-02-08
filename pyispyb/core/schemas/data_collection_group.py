@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,22 +30,53 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'dataCollectionGroupId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'blSampleId': f_fields.Integer(required=False, description='references BLSample table'),
-        'sessionId': f_fields.Integer(required=True, description='references Session table'),
-        'workflowId': f_fields.Integer(required=False, description=''),
-        'experimentType': f_fields.String(required=False, description='Experiment type flagenum(EM,SAD,SAD - Inverse Beam,OSC,Collect - Multiwedge,MAD,Helical,Multi-positional,Mesh,Burn,MAD - Inverse Beam,Characterization,Dehydration,Still)'),
-        'startTime': f_fields.DateTime(required=False, description='Start time of the dataCollectionGroup'),
-        'endTime': f_fields.DateTime(required=False, description='end time of the dataCollectionGroup'),
-        'crystalClass': f_fields.String(required=False, description='Crystal Class for industrials users'),
-        'comments': f_fields.String(required=False, description='comments'),
-        'detectorMode': f_fields.String(required=False, description='Detector mode'),
-        'actualSampleBarcode': f_fields.String(required=False, description='Actual sample barcode'),
-        'actualSampleSlotInContainer': f_fields.Integer(required=False, description='Actual sample slot number in container'),
-        'actualContainerBarcode': f_fields.String(required=False, description='Actual container barcode'),
-        'actualContainerSlotInSC': f_fields.Integer(required=False, description='Actual container slot number in sample changer'),
-        'xtalSnapshotFullPath': f_fields.String(required=False, description=''),
-        }
+    'dataCollectionGroupId': f_fields.Integer(
+        required=True,
+        description='Primary key (auto-incremented)'),
+    'blSampleId': f_fields.Integer(
+        required=False,
+        description='references BLSample table'),
+    'sessionId': f_fields.Integer(
+        required=True,
+        description='references Session table'),
+    'workflowId': f_fields.Integer(
+        required=False,
+        description=''),
+    'experimentType': f_fields.String(
+        required=False,
+        description='Experiment type flagenum(EM,SAD,SAD - Inverse Beam,OSC,Collect - Multiwedge,MAD,Helical,Multi-positional,Mesh,Burn,MAD - Inverse Beam,Characterization,Dehydration,Still)'),
+    'startTime': f_fields.DateTime(
+        required=False,
+        description='Start time of the dataCollectionGroup'),
+    'endTime': f_fields.DateTime(
+        required=False,
+        description='end time of the dataCollectionGroup'),
+    'crystalClass': f_fields.String(
+        required=False,
+        description='Crystal Class for industrials users'),
+    'comments': f_fields.String(
+        required=False,
+        description='comments'),
+    'detectorMode': f_fields.String(
+        required=False,
+        description='Detector mode'),
+    'actualSampleBarcode': f_fields.String(
+        required=False,
+        description='Actual sample barcode'),
+    'actualSampleSlotInContainer': f_fields.Integer(
+        required=False,
+        description='Actual sample slot number in container'),
+    'actualContainerBarcode': f_fields.String(
+        required=False,
+        description='Actual container barcode'),
+    'actualContainerSlotInSC': f_fields.Integer(
+        required=False,
+        description='Actual container slot number in sample changer'),
+    'xtalSnapshotFullPath': f_fields.String(
+        required=False,
+        description=''),
+}
+
 
 class DataCollectionGroupSchema(Schema):
     """Marshmallows schema class representing DataCollectionGroup table"""
@@ -66,6 +96,7 @@ class DataCollectionGroupSchema(Schema):
     actualContainerBarcode = ma_fields.String()
     actualContainerSlotInSC = ma_fields.Integer()
     xtalSnapshotFullPath = ma_fields.String()
+
 
 f_schema = api.model('DataCollectionGroup', dict_schema)
 ma_schema = DataCollectionGroupSchema()

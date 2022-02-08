@@ -39,13 +39,9 @@ CONFIG_NAME_MAPPER = {
 
 
 def create_app(config_path=None, run_mode="dev", **kwargs):
-    """
-    Entry point to the Flask RESTful Server application.
-    """
-
+    """Entry point to the Flask RESTful Server application."""
     app = Flask(__name__, **kwargs)
     CORS(app)
-    # TODO configure CORS via config file
 
     env_config_path = os.getenv("ISPYB_CONFIG")
     if config_path is None:
@@ -87,9 +83,9 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
         if not os.path.exists(app.config["TEMP_FOLDER"]):
             try:
                 os.makedirs(app.config["TEMP_FOLDER"])
-                print("Temp dir %s created" % app.config["TEMP_FOLDER"])
+                app.logger.debug("Temp dir %s created" % app.config["TEMP_FOLDER"])
             except PermissionError as ex:
-                print("Unable to create temp dir %s (%s)" % (
+                app.logger.error("Unable to create temp dir %s (%s)" % (
                     app.config["TEMP_FOLDER"],
                     str(ex)
                 )
@@ -98,9 +94,9 @@ def create_app(config_path=None, run_mode="dev", **kwargs):
         if not os.path.exists(app.config["UPLOAD_FOLDER"]):
             try:
                 os.makedirs(app.config["UPLOAD_FOLDER"])
-                print("Upload dir %s created" % app.config["UPLOAD_FOLDER"])
+                app.logger.debug("Upload dir %s created" % app.config["UPLOAD_FOLDER"])
             except PermissionError as ex:
-                print("Unable to create upload dir %s (%s)" % (
+                app.logger.error("Unable to create upload dir %s (%s)" % (
                     app.config["UPLOAD_FOLDER"],
                     str(ex)
                 )

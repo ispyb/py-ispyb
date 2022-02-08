@@ -1,22 +1,21 @@
-"""
-Project: py-ispyb
-https://github.com/ispyb/py-ispyb
 
-This file is part of py-ispyb software.
+# Project: py-ispyb
+# https://github.com/ispyb/py-ispyb
 
-py-ispyb is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# This file is part of py-ispyb software.
 
-py-ispyb is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+# py-ispyb is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-You should have received a copy of the GNU Lesser General Public License
-along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-"""
+# py-ispyb is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
 __license__ = "LGPLv3+"
@@ -38,7 +37,7 @@ from pyispyb.app.utils import create_response_item
 def set_sqlite_pragma(dbapi_connection, connection_record):
     # pylint: disable=unused-argument
     """
-    SQLite supports FOREIGN KEY syntax when emitting CREATE statements for tables.
+    Sqlite supports FOREIGN KEY syntax when emitting CREATE statements for tables.
 
     By default these constraints have no effect on the
     operation of the table.
@@ -72,17 +71,14 @@ class AlembicDatabaseMigrationConfig:
 
 class SQLAlchemy(BaseSQLAlchemy):
     """
-    Customized Flask-SQLAlchemy adapter
+    Customized Flask-SQLAlchemy adapter.
 
     Args:
         BaseSQLAlchemy ([type]): [description]
     """
 
     def __init__(self, *args, **kwargs):
-        """
-        Init method
-        """
-
+        """Init method."""
         if "session_options" not in kwargs:
             kwargs["session_options"] = {}
         kwargs["session_options"]["autocommit"] = False
@@ -104,7 +100,7 @@ class SQLAlchemy(BaseSQLAlchemy):
 
     def init_app(self, app):
         """
-        Called to init extension.
+        Call to init extension.
 
         Args:
             app ([type]): [description]
@@ -124,9 +120,14 @@ class SQLAlchemy(BaseSQLAlchemy):
             self, compare_type=True
         )
 
-    def get_db_items(self, sql_alchemy_model, dict_schema, ma_schema, query_dict):
+    def get_db_items(
+            self,
+            sql_alchemy_model,
+            dict_schema,
+            ma_schema,
+            query_dict):
         """
-        Returns resource based on the passed models and query parameter
+        Return resource based on the passed models and query parameter.
 
         Args:
             sql_alchemy_model ([type]): SQLAlchemy ORM model
@@ -166,7 +167,7 @@ class SQLAlchemy(BaseSQLAlchemy):
             try:
                 query = query.filter_by(**schema_keys)
             except sqlalchemy.exc.InvalidRequestError as ex:
-                print(ex)
+                current_app.logger.error(ex)
                 msg = "Unable to filter items based on query items (%s)" % str(
                     ex)
 
@@ -177,7 +178,7 @@ class SQLAlchemy(BaseSQLAlchemy):
                 try:
                     query = query.filter(attr.in_(value))
                 except sqlalchemy.exc.InvalidRequestError as ex:
-                    print(ex)
+                    current_app.logger.error(ex)
                     msg = "Unable to filter items based on query items (%s)" % str(
                         ex)
 
@@ -193,7 +194,7 @@ class SQLAlchemy(BaseSQLAlchemy):
 
     def get_db_item(self, sql_alchemy_model, ma_schema, query_dict):
         """
-        Returns data base item by its Id.
+        Return data base item by its Id.
 
         Args:
             item_id (int):
@@ -212,6 +213,7 @@ class SQLAlchemy(BaseSQLAlchemy):
     def get_db_items_by_view(
         self, sql_alchemy_model, dict_schema, ma_schema, query_dict
     ):
+        """Get db items by view."""
         msg = None
         schema_keys = {}
         multiple_value_query_dict = {}
@@ -233,7 +235,7 @@ class SQLAlchemy(BaseSQLAlchemy):
 
     def add_db_item(self, sql_alchemy_model, ma_schema, data):
         """
-        Adds item to db.
+        Add item to db.
 
         Args:
             sql_alchemy_model ([type]): [description]
@@ -250,17 +252,17 @@ class SQLAlchemy(BaseSQLAlchemy):
             return json_data, HTTPStatus.OK
         except TypeError as ex:
             self.session.rollback()
-            print(ex)
+            current_app.logger.error(ex)
             abort(HTTPStatus.NOT_ACCEPTABLE,
                   "Unable to add db item (%s)" % str(ex))
         except sqlalchemy.exc.DataError as ex:
             self.session.rollback()
-            print(ex)
+            current_app.logger.error(ex)
             abort(HTTPStatus.NOT_ACCEPTABLE,
                   "Unable to add db item (%s)" % str(ex))
         except Exception as ex:
             self.session.rollback()
-            print(ex)
+            current_app.logger.error(ex)
             abort(HTTPStatus.NOT_ACCEPTABLE,
                   "Unable to add db item (%s)" % str(ex))
 
@@ -268,7 +270,7 @@ class SQLAlchemy(BaseSQLAlchemy):
         self, sql_alchemy_model, ma_schema, item_id_dict, item_update_dict
     ):
         """
-        Updates item in db
+        Update item in db.
 
         Args:
             sql_alchemy_model ([type]): [description]
@@ -279,20 +281,26 @@ class SQLAlchemy(BaseSQLAlchemy):
             [type]: [description]
         """
         result = None
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
-            description="There is no data with item id %s" % str(item_id_dict)
-        )
+        db_item = sql_alchemy_model.query.filter_by(
+            **item_id_dict).first_or_404(
+            description="There is no data with item id %s" %
+            str(item_id_dict))
         if db_item:
             for key, value in item_update_dict.items():
                 if hasattr(db_item, key):
                     setattr(db_item, key, value)
                 else:
-                    print("Attribute %s not defined in the item model" % key)
+                    current_app.logger.error("Attribute %s not defined in the item model" % key)
             self.session.commit()
             result = ma_schema.dump(db_item)[0]
         return result
 
-    def patch_db_item(self, sql_alchemy_model, ma_schema, item_id_dict, item_data_dict):
+    def patch_db_item(
+            self,
+            sql_alchemy_model,
+            ma_schema,
+            item_id_dict,
+            item_data_dict):
         """
         Patch db item.
 
@@ -306,9 +314,10 @@ class SQLAlchemy(BaseSQLAlchemy):
             [type]: [description]
         """
         result = None
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
-            description="There is no data with item id %s" % str(item_id_dict)
-        )
+        db_item = sql_alchemy_model.query.filter_by(
+            **item_id_dict).first_or_404(
+            description="There is no data with item id %s" %
+            str(item_id_dict))
         if db_item:
             for key, value in item_data_dict.items():
                 if hasattr(db_item, key):
@@ -325,7 +334,7 @@ class SQLAlchemy(BaseSQLAlchemy):
 
     def delete_db_item(self, sql_alchemy_model, item_id_dict):
         """
-        Deletes db item
+        Delete db item.
 
         Args:
             sql_alchemy_model ([type]): [description]
@@ -334,16 +343,17 @@ class SQLAlchemy(BaseSQLAlchemy):
         Returns:
             [type]: [description]
         """
-        db_item = sql_alchemy_model.query.filter_by(**item_id_dict).first_or_404(
-            description="There is no data with item id %s" % str(item_id_dict)
-        )
+        db_item = sql_alchemy_model.query.filter_by(
+            **item_id_dict).first_or_404(
+            description="There is no data with item id %s" %
+            str(item_id_dict))
 
         try:
             self.session.delete(db_item)
             self.session.commit()
             return True
         except Exception as ex:
-            print(ex)
+            current_app.logger.error(ex)
             # log.exception(str(ex))
             self.session.rollback()
             abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(ex))

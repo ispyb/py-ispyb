@@ -29,13 +29,14 @@ class DummyAuthentication(AbstractAuthentication):
     """Dummy authentication class."""
 
     def get_auth(self, username, password, token):
-        """Returns roles
+        """Return username, groups and permissions associated to the user.
 
         Args:
-            username (str): str
-            password (str): str
+            username (string): auth username
+            password (string): auth password
+            token (string): auth token
         Returns:
-            list: list of roles
+            username, groups, permissions
         """
         if not username:
             return None, None, None

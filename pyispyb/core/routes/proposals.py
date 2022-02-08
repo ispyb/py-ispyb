@@ -58,7 +58,7 @@ class ProposalsInfosLogin(Resource):
     @authentication_required
     @permission_required("any", ["own_proposals", "all_proposals"])
     def get(self, **kwargs):
-        """Returns list of proposals associated to login"""
+        """Get all proposal that user is allowed to access."""
         if "all_proposals" in request.user['permissions']:
             return proposal.get_proposals_infos_all()
         return proposal.get_proposals_infos_login(request.user['username'])
@@ -73,5 +73,10 @@ class ProposalById(Resource):
     @permission_required("any", ["own_proposals", "all_proposals"])
     @proposal_authorization_required
     def get(self, proposal_id, **kwargs):
-        proposal_id = proposal.findProposalId(proposal_id)
+        """Get proposal information.
+
+        Args:
+            proposal_id (str): proposal id or name
+        """
+        proposal_id = proposal.find_proposal_id(proposal_id)
         return proposal.get_proposal_infos(proposal_id)

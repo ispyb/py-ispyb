@@ -24,39 +24,47 @@ __license__ = "LGPLv3+"
 
 from pyispyb.app.extensions import db
 
-from pyispyb.app.utils import getSQLQuery, queryResultToDict
+from pyispyb.app.utils import get_sql_query, queryresult_to_dict
 
 from pyispyb.core import models, schemas
 
 
 def get_proposals_infos_login(login):
     """
-    Returns proposal info list.
+    Get infos for all proposals that user can access.
+
+    Args:
+        login (str): user login
 
     Returns:
-        [type]: [description]
+        dict: proposal infos
     """
-
-    sql = getSQLQuery("proposal/proposalsInfosLogin")
+    sql = get_sql_query("proposal/proposalsInfosLogin")
     sql = sql.bindparams(login=login)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
 def get_proposals_infos_all():
-    """
-    Returns proposal info list.
+    """Get infos for all proposals.
 
     Returns:
-        [type]: [description]
+        dict: proposal infos
     """
-
-    sql = getSQLQuery("proposal/proposalsInfosAll")
+    sql = get_sql_query("proposal/proposalsInfosAll")
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
 def get_proposal_infos(proposal_id):
+    """Get proposal infos.
+
+    Args:
+        proposal_id (str): proposal id
+
+    Returns:
+        dict: proposal infos
+    """
     return {
         "proposal": db.get_db_items(
             models.Proposal,
@@ -67,117 +75,43 @@ def get_proposal_infos(proposal_id):
     }
 
 
-def get_proposals_by_query(query_dict):
-    """Returns proposal db items
+def login_authorized_for_proposal(login, proposal_id):
+    """Verify that login is authorized for proposal.
 
     Args:
-        query_dict (dict, optional): [description]. Defaults to {}.
+        login (str): user login
+        proposal_id (str): proposal id
 
     Returns:
-        [type]: [description]
+        boolean: authorization
     """
-    return db.get_db_items(
-        models.Proposal,
-        schemas.proposal.dict_schema,
-        schemas.proposal.ma_schema,
-        query_dict,
-    )
+    sql = get_sql_query("proposal/loginAuthorizedProposal")
+    sql = sql.bindparams(login=login, proposalId=proposal_id)
+    is_authorized = db.engine.execute(sql)
+    return is_authorized.first()[0] > 0
 
 
-def get_proposal_by_id(proposal_id):
-    """
-    Returns proposal by its proposalId.
+def find_proposal_id(id_or_name):
+    """Convert proposal name to id. If id, return id.
 
     Args:
-        proposal_id (int): corresponds to proposalId in db
+        id_or_name (str): proposal id or name
+
+    Raises:
+        Exception: More than one proposal found for name
+        Exception: No proposal found for name
 
     Returns:
-        dict: info about proposal as dict
+        str: proposal id
     """
-    id_dict = {"proposalId": proposal_id}
-    return db.get_db_item(
-        models.Proposal, schemas.proposal.ma_schema, id_dict
-    )
-
-
-def add_proposal(data_dict):
-    """
-    Adds a proposal.
-
-    Args:
-        proposal_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    return db.add_db_item(models.Proposal, schemas.proposal.ma_schema, data_dict)
-
-
-def update_proposal(proposal_id, data_dict):
-    """
-    Updates proposal.
-
-    Args:
-        proposal_id ([type]): [description]
-        proposal_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    id_dict = {"proposalId": proposal_id}
-    return db.update_db_item(
-        models.Proposal, schemas.proposal.ma_schema, id_dict, data_dict
-    )
-
-
-def patch_proposal(proposal_id, proposal_dict):
-    """
-    Patch a proposal.
-
-    Args:
-        proposal_id ([type]): [description]
-        proposal_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    id_dict = {"proposalId": proposal_id}
-    return db.patch_db_item(
-        models.Proposal, schemas.proposal.ma_schema, id_dict, proposal_dict
-    )
-
-
-def delete_proposal(proposal_id):
-    """
-    Deletes proposal item from db.
-
-    Args:
-        proposal_id (int): proposalId column in db
-
-    Returns:
-        bool: True if the proposal exists and deleted successfully,
-        otherwise return False
-    """
-    id_dict = {"proposalId": proposal_id}
-    return db.delete_db_item(models.Proposal, id_dict)
-
-
-def loginAuthorizedForProposal(login, proposalId):
-    sql = getSQLQuery("proposal/loginAuthorizedProposal")
-    sql = sql.bindparams(login=login, proposalId=proposalId)
-    isAuthorized = db.engine.execute(sql)
-    return isAuthorized.first()[0] > 0
-
-
-def findProposalId(idOrName):
-    sql = getSQLQuery("proposal/findProposalId")
-    sql = sql.bindparams(name=idOrName)
+    sql = get_sql_query("proposal/findProposalId")
+    sql = sql.bindparams(name=id_or_name)
     res = db.engine.execute(sql)
-    res = queryResultToDict(res)
+    res = queryresult_to_dict(res)
     if len(res) == 1:
         return res[0]["proposalId"]
     if len(res) > 1:
-        raise Exception(f"More than one proposal found for {idOrName}")
+        raise Exception(f"More than one proposal found for {id_or_name}")
     if len(res) > 1:
-        raise Exception(f"No proposal found for {idOrName}")
+        raise Exception(f"No proposal found for {id_or_name}")
     return None

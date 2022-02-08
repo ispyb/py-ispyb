@@ -22,11 +22,12 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 import logging
 
 from flask import request
-from pyispyb.core.modules.proposal import findProposalId
+from pyispyb.core.modules.proposal import find_proposal_id
 from flask_restx import Resource
 
+
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
-from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, authentication_required, permission_required
+from pyispyb.app.extensions.auth.decorators import authentication_required, permission_required
 
 from pyispyb.core.modules import session
 
@@ -46,23 +47,29 @@ class SessionsInfos(Resource):
     @authentication_required
     @permission_required("any", ["own_sessions", "all_sessions"])
     def get(self, **kwargs):
-        """Returns list of sessions associated to user"""
+        """Get all sessions that user is allowed to access."""
         if "all_sessions" in request.user['permissions']:
             return session.get_session_infos_all()
         return session.get_session_infos_login(request.user['username'])
 
 
-@api.route("/date/<string:startDate>/<string:endDate>")
+@api.route("/date/<string:start_date>/<string:end_date>")
 @api.doc(security="apikey")
-@legacy_api.route("/<token>/proposal/session/date/<startDate>/<endDate>/list")
+@legacy_api.route("/<token>/proposal/session/date/<start_date>/<end_date>/list")
 class SessionsInfosProposalDates(Resource):
     @authentication_required
     @permission_required("any", ["own_sessions", "all_sessions"])
-    def get(self, startDate, endDate, **kwargs):
-        """Returns list of sessions associated to user in between the two dates"""
+    def get(self, start_date, end_date, **kwargs):
+        """Get all sessions between two dates that user is allowed to access.
+
+        Args:
+            start_date (str): start date
+            end_date (str): end date
+        """
         if "all_sessions" in request.user['permissions']:
-            return session.get_session_infos_all_dates(startDate, endDate)
-        return session.get_session_infos_login_dates(request.user['username'], startDate, endDate)
+            return session.get_session_infos_all_dates(start_date, end_date)
+        return session.get_session_infos_login_dates(
+            request.user['username'], start_date, end_date)
 
 
 @api.route("/proposal/<proposal_id>")
@@ -72,8 +79,13 @@ class SessionsInfosProposal(Resource):
     @authentication_required
     @permission_required("any", ["own_sessions", "all_sessions"])
     def get(self, proposal_id, **kwargs):
-        """Returns list of sessions associated to user and proposal"""
-        proposal_id = findProposalId(proposal_id)
+        """Get all sessions for proposal that user is allowed to access.
+
+        Args:
+            proposal_id (str): proposal id or name
+        """
+        proposal_id = find_proposal_id(proposal_id)
         if "all_sessions" in request.user['permissions']:
             return session.get_session_infos_all_proposal(proposal_id)
-        return session.get_session_infos_login_proposal(request.user['username'], proposal_id)
+        return session.get_session_infos_login_proposal(
+            request.user['username'], proposal_id)

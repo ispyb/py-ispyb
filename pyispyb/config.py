@@ -29,7 +29,6 @@ from ruamel.yaml.main import YAML
 
 
 class BaseConfig:
-    """Base config class"""
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
@@ -95,42 +94,27 @@ class BaseConfig:
 
 
 class ProductionConfig(BaseConfig):
-    """Production config
-
-    Args:
-        BaseConfig ([type]): [description]
-    """
 
     def __init__(self, config_filename=None):
         super().__init__(config_filename)
 
-        SECRET_KEY = os.getenv("ISPYB_SECRET_KEY")
-        SQLALCHEMY_DATABASE_URI = os.getenv(
+        self.SECRET_KEY = os.getenv("ISPYB_SECRET_KEY")
+        self.SQLALCHEMY_DATABASE_URI = os.getenv(
             "ISPYB_DATABASE_URI"
         )
 
 
 class DevelopmentConfig(BaseConfig):
-    """Dev config
-
-    Args:
-        BaseConfig ([type]): [description]
-    """
 
     def __init__(self, config_filename=None):
         super().__init__(config_filename)
 
-        DEBUG = True
+        self.DEBUG = True
 
 
 class TestingConfig(BaseConfig):
-    """Testing config
-
-    Args:
-        BaseConfig ([type]): [description]
-    """
 
     def __init__(self, config_filename=None):
         super().__init__(config_filename)
 
-        TESTING = True
+        self.TESTING = True

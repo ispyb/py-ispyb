@@ -27,29 +27,44 @@ from keycloak.keycloak_openid import KeycloakOpenID
 
 from pyispyb.app.extensions.auth.AbstractDBGroupsAuthentication import AbstractDBGroupsAuthentication
 from pyispyb.core.models import Person
+from flask import current_app
 
 
 class KeycloakDBGroupsAuthentication(AbstractDBGroupsAuthentication):
     """Keycloak authentication class."""
 
     def configure(self, config):
+        """Configure auth plugin.
+
+        Args:
+            config (dict): plugin configuration from file
+        """
         server_url = config["KEYCLOAK_SERVER_URL"]
         client_id = config["KEYCLOAK_CLIENT_ID"]
         realm_name = config["KEYCLOAK_REALM_NAME"]
         client_secret_key = config["KEYCLOAK_CLIENT_SECRET_KEY"]
 
-        self.keycloak_openid = KeycloakOpenID(server_url=server_url,
-                                              client_id=client_id,
-                                              realm_name=realm_name,
-                                              client_secret_key=client_secret_key,
-                                              verify=True)
+        self.keycloak_openid = KeycloakOpenID(
+            server_url=server_url,
+            client_id=client_id,
+            realm_name=realm_name,
+            client_secret_key=client_secret_key,
+            verify=True)
 
     def get_person(self, username, password, token):
+        """Return db person associated to the user.
+
+        Args:
+            username : username if present in the request
+            password : password if present in the request
+            token : token if present in the request
+
+        Returns: Person
+        """
         if not token:
             return None
         try:
             userinfo = self.keycloak_openid.userinfo(token)
-            print(userinfo)
             return Person(
                 login=userinfo["preferred_username"],
                 familyName=userinfo["family_name"],
@@ -57,5 +72,5 @@ class KeycloakDBGroupsAuthentication(AbstractDBGroupsAuthentication):
                 emailAddress=userinfo["email"],
             )
         except KeycloakAuthenticationError as e:
-            print(e)
+            current_app.logger.error(e)
             return None
