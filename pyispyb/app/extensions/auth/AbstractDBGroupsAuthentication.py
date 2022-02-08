@@ -29,21 +29,20 @@ from pyispyb.app.extensions import db
 from pyispyb.core.models import Person
 
 
-def get_person_permissions(person):
-    permissions = []
+def get_person_groups(person):
+    groups = []
     for group in person.UserGroup:
-        for permission in group.permissions:
-            permissions.append(permission.type)
-    return list(dict.fromkeys(permissions))
+        groups.append(group.name)
+    return groups
 
 
-class AbstractDBRolesAuthentication(AbstractAuthentication):
+class AbstractDBGroupsAuthentication(AbstractAuthentication):
     """Keycloak authentication class."""
 
     def init_app(self, app):
         pass
 
-    def get_auth(self, username, password, token):
+    def get_user_and_groups(self, username, password, token):
         person = self.get_person(username, password, token)
         if not person:
             return None, None
@@ -52,7 +51,7 @@ class AbstractDBRolesAuthentication(AbstractAuthentication):
             db_person = person
             db.session.add(db_person)
             db.session.commit()
-        return db_person.login, get_person_permissions(db_person)
+        return db_person.login, get_person_groups(db_person)
 
     @abc.abstractmethod
     def get_person(self, username, password, token):

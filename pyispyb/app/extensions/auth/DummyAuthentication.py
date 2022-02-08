@@ -38,10 +38,10 @@ class DummyAuthentication(AbstractAuthentication):
             list: list of roles
         """
         if not username:
-            return None, None
+            return None, None, None
 
-        roles = []
+        permissions = []
         if password:
-            roles = password.split(",")
+            permissions = password.split(",")
 
-        return username, roles
+        return username, permissions, permissions

@@ -56,18 +56,18 @@ api_v1.add_namespace(api)
 class ProposalsInfosLogin(Resource):
 
     @authentication_required
-    @permission_required("any", ["own_proposals"])
+    @permission_required("any", ["own_proposals","all_proposals"])
     def get(self, **kwargs):
         """Returns list of proposals associated to login"""
-        if "manager" in request.user['roles']:
-            return proposal.get_proposals_infos_manager()
-        return proposal.get_proposals_infos_login(request.user['sub'])
+        if "all_proposals" in request.user['permissions']:
+            return proposal.get_proposals_infos_all()
+        return proposal.get_proposals_infos_login(request.user['username'])
 
 
 @api.route("/<proposal_id>")
 @api.doc(security="apikey")
 @legacy_api.route("/<token>/proposal/<proposal_id>/info/get")
-class ProposalsInfosLogin(Resource):
+class ProposalById(Resource):
 
     @authentication_required
     @permission_required("any", ["own_proposals", "all_proposals"])

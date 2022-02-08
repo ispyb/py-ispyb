@@ -8,22 +8,22 @@ py-ISPyB is using the following authentication plugins, which you can find in `p
 
 ### `DummyAuthentication`
 
-Provides easy authentication for tests. Roles listed in the password field are given.
+Provides easy authentication for tests. Permissions listed in the password field are given.
 
-### `KeycloakDBRolesAuthentication`
+### `KeycloakDBGroupsAuthentication`
 
-Provides authentication using keycloak with DB-managed roles.
+Provides authentication using keycloak with DB-managed groups.
 
 ### `LdapAuthentication`
 
-Provides authentication using LDAP users and roles.
+Provides authentication using LDAP users and groups.
 
 ### Implementing new plugins
 
 New plugins should implement one of the two following classes :
 
--   **AbstractAuthentication** : plugin should override `get_auth(self, username, password, token)` method and return a tuple `(username, [roles])`
--   **AbstractDBRolesAuthentication** : plugin should override `get_person(self, username, password, token)` methode and return a `pyispyb.core.models.Person` object. Roles managment is delegated to ISPyB database.
+-   **AbstractAuthentication** : plugin should override `get_user_and_groups(self, username, password, token)` method and return a tuple `(username, groups[])`
+-   **AbstractDBGroupsAuthentication** : plugin should override `get_person(self, username, password, token)` method and return a `pyispyb.core.models.Person` object. Groups managment is delegated to ISPyB database.
 
 ---
 
@@ -35,8 +35,8 @@ Authentication plugins to be activated are configured in the `ispyb_core_config.
 server:
     AUTH:
         - keycloak:
-              AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBRolesAuthentication"
-              AUTH_CLASS: "KeycloakDBRolesAuthentication"
+              AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
+              AUTH_CLASS: "KeycloakDBGroupsAuthentication"
         - dummy:
               AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
               AUTH_CLASS: "DummyAuthentication"
@@ -54,14 +54,19 @@ server:
 
 ---
 
-## Database roles
+## Database groups and permissions
 
-Fore some authentication plugins (for instance `KeycloakDBRolesAuthentication`), roles are configured in the **database** using the following tables:
+Fore some authentication plugins (for instance `KeycloakDBGroupsAuthentication`), groups are configured in the **database** using the following tables:
 
+-   **UserGroup**
+-   **Person**
+-   **UserGroup_has_Person**
+
+For all authentication plugins, permissions are configured in the **database** using the following tables:
+
+-   **UserGroup**
 -   **Permission**
 -   **UserGroup_has_Permission**
--   **UserGroup_has_Person**
--   **Person**
 
 ---
 
@@ -88,28 +93,30 @@ The following decorators (from `pyispyb.app.extensions.auth.decorators`) can be 
 
 ### `@authentication_required`
 
-Makes the route only accesible to **authenticated users** (no role checking).
+Makes the route only accesible to **authenticated users** (no permissions checking).
 
-### `@permission_required(operator, [roles])`
+### `@permission_required(operator, [permissions])`
 
-Makes the route only accesible to users with the **specified roles**.
+Makes the route only accesible to users with the **specified permissions**.
 
 -   `operator` is either
-    -   `"any"` User should have **any** of the specified roles
-    -   `"all"` User should have **all** of the specified roles
+    -   `"any"` User should have **any** of the specified permissions
+    -   `"all"` User should have **all** of the specified permissions
 
 ### `@proposal_authorization_required`
 
 Verifies that the user is **associated to the requested proposal**. To do so, this decorator uses the `proposal_id` parameter in the route.
-User must verify one of the following conditions :
+User must verify any of the following conditions :
 
 -   `Person.personId = Proposal.personId`
 -   `Person.personId = ProposalHasPerson.personId and ProposalHasPerson.proposalId = Proposal.proposalId`
+-   _has permission_ `all_proposals`
 
 ### `@session_authorization_required`
 
 Verifies that the user is **associated to the requested session**. To do so, this decorator uses the `session_id` parameter in the route.
-User must verify one of the following conditions :
+User must verify any of the following conditions :
 
 -   `Person.personId = Session_has_Person.personId and Session_has_Person.sessionId = BLSession.sessionId`
 -   `BLSession.proposalId = Proposal.proposalId and Person.personId = Proposal.personId`
+-   _has permission_ `all_sessions`

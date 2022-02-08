@@ -45,7 +45,7 @@ def get_session_infos_login(login):
     return queryResultToDict(res)
 
 
-def get_session_infos_manager():
+def get_session_infos_all():
     """
     Returns sessions info list.
 
@@ -53,7 +53,7 @@ def get_session_infos_manager():
         [type]: [description]
     """
 
-    sql = getSQLQuery("session/sessionsInfosManager")
+    sql = getSQLQuery("session/sessionsInfosAll")
     res = db.engine.execute(sql)
     return queryResultToDict(res)
 
@@ -73,7 +73,7 @@ def get_session_infos_login_proposal(login, proposalId):
     return queryResultToDict(res)
 
 
-def get_session_infos_manager_proposal(proposalId):
+def get_session_infos_all_proposal(proposalId):
     """
     Returns sessions info list.
 
@@ -81,7 +81,7 @@ def get_session_infos_manager_proposal(proposalId):
         [type]: [description]
     """
 
-    sql = getSQLQuery("session/sessionsInfosManager",
+    sql = getSQLQuery("session/sessionsInfosAll",
                       append=" where proposalId = :proposalId")
     sql = sql.bindparams(proposalId=proposalId)
     res = db.engine.execute(sql)
@@ -114,7 +114,7 @@ def get_session_infos_login_dates(login, startDate, endDate):
     return queryResultToDict(res)
 
 
-def get_session_infos_manager_dates(startDate, endDate):
+def get_session_infos_all_dates(startDate, endDate):
     """
     Returns sessions info list.
 
@@ -122,7 +122,7 @@ def get_session_infos_manager_dates(startDate, endDate):
         [type]: [description]
     """
 
-    sql = getSQLQuery("session/sessionsInfosManager",
+    sql = getSQLQuery("session/sessionsInfosAll",
                       append=""" 
     where (
         (BLSession_startDate >= :startDate and BLSession_startDate <= :endDate)

@@ -47,9 +47,9 @@ class SessionsInfos(Resource):
     @permission_required("any", ["own_sessions", "all_sessions"])
     def get(self, **kwargs):
         """Returns list of sessions associated to user"""
-        if "all_sessions" in request.user['roles']:
-            return session.get_session_infos_manager()
-        return session.get_session_infos_login(request.user['sub'])
+        if "all_sessions" in request.user['permissions']:
+            return session.get_session_infos_all()
+        return session.get_session_infos_login(request.user['username'])
 
 
 @api.route("/date/<string:startDate>/<string:endDate>")
@@ -60,9 +60,9 @@ class SessionsInfosProposalDates(Resource):
     @permission_required("any", ["own_sessions", "all_sessions"])
     def get(self, startDate, endDate, **kwargs):
         """Returns list of sessions associated to user in between the two dates"""
-        if "all_sessions" in request.user['roles']:
-            return session.get_session_infos_manager_dates(startDate, endDate)
-        return session.get_session_infos_login_dates(request.user['sub'], startDate, endDate)
+        if "all_sessions" in request.user['permissions']:
+            return session.get_session_infos_all_dates(startDate, endDate)
+        return session.get_session_infos_login_dates(request.user['username'], startDate, endDate)
 
 
 @api.route("/proposal/<proposal_id>")
@@ -74,6 +74,6 @@ class SessionsInfosProposal(Resource):
     def get(self, proposal_id, **kwargs):
         """Returns list of sessions associated to user and proposal"""
         proposal_id = findProposalId(proposal_id)
-        if "all_sessions" in request.user['roles']:
-            return session.get_session_infos_manager_proposal(proposal_id)
-        return session.get_session_infos_login_proposal(request.user['sub'], proposal_id)
+        if "all_sessions" in request.user['permissions']:
+            return session.get_session_infos_all_proposal(proposal_id)
+        return session.get_session_infos_login_proposal(request.user['username'], proposal_id)

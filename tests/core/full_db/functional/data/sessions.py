@@ -128,7 +128,7 @@ test_data_session_proposal_list = [
         },
         "expected":{
             "code": 401,
-            "res": {'message': "User konstanti1108 (roles assigned: ['none']) has no appropriate role (any: ['own_sessions', 'all_sessions'])  to execute method."}
+            "res": {'message': "User konstanti1108 (permissions assigned: ['none']) has no appropriate permission (any: ['own_sessions', 'all_sessions'])  to execute method."}
         }
     },
     {
