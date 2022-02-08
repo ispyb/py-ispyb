@@ -21,11 +21,14 @@ class AbInitioModel(db.Model):
     Model = db.relationship(
         'Model', primaryjoin='AbInitioModel.averagedModelId == Model.modelId')
     ModelList = db.relationship(
-        'ModelList', primaryjoin='AbInitioModel.modelListId == ModelList.modelListId')
+        'ModelList',
+        primaryjoin='AbInitioModel.modelListId == ModelList.modelListId')
     Model1 = db.relationship(
-        'Model', primaryjoin='AbInitioModel.rapidShapeDeterminationModelId == Model.modelId')
+        'Model',
+        primaryjoin='AbInitioModel.rapidShapeDeterminationModelId == Model.modelId')
     Model2 = db.relationship(
-        'Model', primaryjoin='AbInitioModel.shapeDeterminationModelId == Model.modelId')
+        'Model',
+        primaryjoin='AbInitioModel.shapeDeterminationModelId == Model.modelId')
 
 
 class Additive(db.Model):
@@ -77,7 +80,8 @@ class Assembly(db.Model):
     comments = db.Column(db.String(255))
 
     Macromolecule = db.relationship(
-        'Macromolecule', primaryjoin='Assembly.macromoleculeId == Macromolecule.macromoleculeId')
+        'Macromolecule',
+        primaryjoin='Assembly.macromoleculeId == Macromolecule.macromoleculeId')
 
 
 class AssemblyHasMacromolecule(db.Model):
@@ -90,24 +94,29 @@ class AssemblyHasMacromolecule(db.Model):
         'Macromolecule.macromoleculeId'), nullable=False, index=True)
 
     Assembly = db.relationship(
-        'Assembly', primaryjoin='AssemblyHasMacromolecule.assemblyId == Assembly.assemblyId')
+        'Assembly',
+        primaryjoin='AssemblyHasMacromolecule.assemblyId == Assembly.assemblyId')
     Macromolecule = db.relationship(
-        'Macromolecule', primaryjoin='AssemblyHasMacromolecule.macromoleculeId == Macromolecule.macromoleculeId')
+        'Macromolecule',
+        primaryjoin='AssemblyHasMacromolecule.macromoleculeId == Macromolecule.macromoleculeId')
 
 
 class AssemblyRegion(db.Model):
     __tablename__ = 'AssemblyRegion'
 
     assemblyRegionId = db.Column(db.Integer, primary_key=True)
-    assemblyHasMacromoleculeId = db.Column(db.ForeignKey(
-        'AssemblyHasMacromolecule.AssemblyHasMacromoleculeId'), nullable=False, index=True)
+    assemblyHasMacromoleculeId = db.Column(
+        db.ForeignKey('AssemblyHasMacromolecule.AssemblyHasMacromoleculeId'),
+        nullable=False,
+        index=True)
     assemblyRegionType = db.Column(db.String(45))
     name = db.Column(db.String(45))
     fromResiduesBases = db.Column(db.String(45))
     toResiduesBases = db.Column(db.String(45))
 
     AssemblyHasMacromolecule = db.relationship(
-        'AssemblyHasMacromolecule', primaryjoin='AssemblyRegion.assemblyHasMacromoleculeId == AssemblyHasMacromolecule.AssemblyHasMacromoleculeId')
+        'AssemblyHasMacromolecule',
+        primaryjoin='AssemblyRegion.assemblyHasMacromoleculeId == AssemblyHasMacromolecule.AssemblyHasMacromoleculeId')
 
 
 class AutoProc(db.Model):
@@ -133,10 +142,21 @@ class AutoProcIntegration(db.Model):
 
     autoProcIntegrationId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    dataCollectionId = db.Column(db.ForeignKey('DataCollection.dataCollectionId', ondelete='CASCADE',
-                                 onupdate='CASCADE'), nullable=False, index=True, info='DataCollection item')
-    autoProcProgramId = db.Column(db.ForeignKey('AutoProcProgram.autoProcProgramId',
-                                  ondelete='CASCADE', onupdate='CASCADE'), index=True, info='Related program item')
+    dataCollectionId = db.Column(
+        db.ForeignKey(
+            'DataCollection.dataCollectionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='DataCollection item')
+    autoProcProgramId = db.Column(
+        db.ForeignKey(
+            'AutoProcProgram.autoProcProgramId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='Related program item')
     startImageNumber = db.Column(db.Integer, info='start image number')
     endImageNumber = db.Column(db.Integer, info='end image number')
     refinedDetectorDistance = db.Column(
@@ -161,9 +181,11 @@ class AutoProcIntegration(db.Model):
     ), info='boolean type:0 noanoum - 1 anoum')
 
     AutoProcProgram = db.relationship(
-        'AutoProcProgram', primaryjoin='AutoProcIntegration.autoProcProgramId == AutoProcProgram.autoProcProgramId')
+        'AutoProcProgram',
+        primaryjoin='AutoProcIntegration.autoProcProgramId == AutoProcProgram.autoProcProgramId')
     DataCollection = db.relationship(
-        'DataCollection', primaryjoin='AutoProcIntegration.dataCollectionId == DataCollection.dataCollectionId')
+        'DataCollection',
+        primaryjoin='AutoProcIntegration.dataCollectionId == DataCollection.dataCollectionId')
 
 
 class AutoProcProgram(db.Model):
@@ -174,11 +196,18 @@ class AutoProcProgram(db.Model):
     dataCollectionId = db.Column(db.ForeignKey(
         'DataCollection.dataCollectionId'), index=True)
     processingCommandLine = db.Column(
-        db.String(255), info='Command line for running the automatic processing')
+        db.String(255),
+        info='Command line for running the automatic processing')
     processingPrograms = db.Column(
         db.String(255), info='Processing programs (comma separated)')
-    processingStatus = db.Column(db.Enum(
-        'RUNNING', 'FAILED', 'SUCCESS', '0', '1'), info='success (1) / fail (0)')
+    processingStatus = db.Column(
+        db.Enum(
+            'RUNNING',
+            'FAILED',
+            'SUCCESS',
+            '0',
+            '1'),
+        info='success (1) / fail (0)')
     processingMessage = db.Column(db.String(255), info='warning, error,...')
     processingStartTime = db.Column(db.DateTime, info='Processing start time')
     processingEndTime = db.Column(db.DateTime, info='Processing end time')
@@ -187,7 +216,8 @@ class AutoProcProgram(db.Model):
         db.DateTime, info='Creation or last update date/time')
 
     DataCollection = db.relationship(
-        'DataCollection', primaryjoin='AutoProcProgram.dataCollectionId == DataCollection.dataCollectionId')
+        'DataCollection',
+        primaryjoin='AutoProcProgram.dataCollectionId == DataCollection.dataCollectionId')
 
 
 class AutoProcProgramAttachment(db.Model):
@@ -195,8 +225,14 @@ class AutoProcProgramAttachment(db.Model):
 
     autoProcProgramAttachmentId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    autoProcProgramId = db.Column(db.ForeignKey('AutoProcProgram.autoProcProgramId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, info='Related autoProcProgram item')
+    autoProcProgramId = db.Column(
+        db.ForeignKey(
+            'AutoProcProgram.autoProcProgramId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related autoProcProgram item')
     fileType = db.Column(db.Enum('Log', 'Result', 'Graph'),
                          info='Type of file Attachment')
     fileName = db.Column(db.String(255), info='Attachment filename')
@@ -206,7 +242,8 @@ class AutoProcProgramAttachment(db.Model):
         db.DateTime, info='Creation or last update date/time')
 
     AutoProcProgram = db.relationship(
-        'AutoProcProgram', primaryjoin='AutoProcProgramAttachment.autoProcProgramId == AutoProcProgram.autoProcProgramId')
+        'AutoProcProgram',
+        primaryjoin='AutoProcProgramAttachment.autoProcProgramId == AutoProcProgram.autoProcProgramId')
 
 
 class AutoProcScaling(db.Model):
@@ -217,8 +254,13 @@ class AutoProcScaling(db.Model):
 
     autoProcScalingId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    autoProcId = db.Column(db.ForeignKey('AutoProc.autoProcId', ondelete='CASCADE',
-                           onupdate='CASCADE'), index=True, info='Related autoProc item (used by foreign key)')
+    autoProcId = db.Column(
+        db.ForeignKey(
+            'AutoProc.autoProcId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='Related autoProc item (used by foreign key)')
     recordTimeStamp = db.Column(
         db.DateTime, info='Creation or last update date/time')
     resolutionEllipsoidAxis11 = db.Column(
@@ -247,7 +289,8 @@ class AutoProcScaling(db.Model):
         db.Float, info='Third (anisotropic) diffraction limit')
 
     AutoProc = db.relationship(
-        'AutoProc', primaryjoin='AutoProcScaling.autoProcId == AutoProc.autoProcId')
+        'AutoProc',
+        primaryjoin='AutoProcScaling.autoProcId == AutoProc.autoProcId')
 
 
 class AutoProcScalingStatistic(db.Model):
@@ -255,10 +298,22 @@ class AutoProcScalingStatistic(db.Model):
 
     autoProcScalingStatisticsId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    autoProcScalingId = db.Column(db.ForeignKey('AutoProcScaling.autoProcScalingId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), index=True, info='Related autoProcScaling item (used by foreign key)')
-    scalingStatisticsType = db.Column(db.Enum('overall', 'innerShell', 'outerShell'), nullable=False,
-                                      index=True, server_default=db.FetchedValue(), info='Scaling statistics type')
+    autoProcScalingId = db.Column(
+        db.ForeignKey(
+            'AutoProcScaling.autoProcScalingId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='Related autoProcScaling item (used by foreign key)')
+    scalingStatisticsType = db.Column(
+        db.Enum(
+            'overall',
+            'innerShell',
+            'outerShell'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue(),
+        info='Scaling statistics type')
     comments = db.Column(db.String(255), info='Comments...')
     resolutionLimitLow = db.Column(db.Float, info='Low resolution limit')
     resolutionLimitHigh = db.Column(db.Float, info='High resolution limit')
@@ -292,10 +347,12 @@ class AutoProcScalingStatistic(db.Model):
     anomalousCompletenessSpherical = db.Column(
         db.Float, info='Anomalous completeness calculated assuming isotropic diffraction')
     anomalousCompletenessEllipsoidal = db.Column(
-        db.Float, info='Anisotropic completeness calculated allowing for anisotropic diffraction')
+        db.Float,
+        info='Anisotropic completeness calculated allowing for anisotropic diffraction')
 
     AutoProcScaling = db.relationship(
-        'AutoProcScaling', primaryjoin='AutoProcScalingStatistic.autoProcScalingId == AutoProcScaling.autoProcScalingId')
+        'AutoProcScaling',
+        primaryjoin='AutoProcScalingStatistic.autoProcScalingId == AutoProcScaling.autoProcScalingId')
 
 
 class AutoProcScalingHasInt(db.Model):
@@ -307,17 +364,30 @@ class AutoProcScalingHasInt(db.Model):
 
     autoProcScaling_has_IntId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    autoProcScalingId = db.Column(db.ForeignKey('AutoProcScaling.autoProcScalingId',
-                                  ondelete='CASCADE', onupdate='CASCADE'), index=True, info='AutoProcScaling item')
-    autoProcIntegrationId = db.Column(db.ForeignKey('AutoProcIntegration.autoProcIntegrationId',
-                                      ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True, info='AutoProcIntegration item')
+    autoProcScalingId = db.Column(
+        db.ForeignKey(
+            'AutoProcScaling.autoProcScalingId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='AutoProcScaling item')
+    autoProcIntegrationId = db.Column(
+        db.ForeignKey(
+            'AutoProcIntegration.autoProcIntegrationId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='AutoProcIntegration item')
     recordTimeStamp = db.Column(
         db.DateTime, info='Creation or last update date/time')
 
     AutoProcIntegration = db.relationship(
-        'AutoProcIntegration', primaryjoin='AutoProcScalingHasInt.autoProcIntegrationId == AutoProcIntegration.autoProcIntegrationId')
+        'AutoProcIntegration',
+        primaryjoin='AutoProcScalingHasInt.autoProcIntegrationId == AutoProcIntegration.autoProcIntegrationId')
     AutoProcScaling = db.relationship(
-        'AutoProcScaling', primaryjoin='AutoProcScalingHasInt.autoProcScalingId == AutoProcScaling.autoProcScalingId')
+        'AutoProcScaling',
+        primaryjoin='AutoProcScalingHasInt.autoProcScalingId == AutoProcScaling.autoProcScalingId')
 
 
 class AutoProcStatus(db.Model):
@@ -325,10 +395,22 @@ class AutoProcStatus(db.Model):
 
     autoProcStatusId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    autoProcIntegrationId = db.Column(db.ForeignKey(
-        'AutoProcIntegration.autoProcIntegrationId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
-    step = db.Column(db.Enum('Indexing', 'Integration', 'Correction',
-                     'Scaling', 'Importing'), nullable=False, info='autoprocessing step')
+    autoProcIntegrationId = db.Column(
+        db.ForeignKey(
+            'AutoProcIntegration.autoProcIntegrationId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
+    step = db.Column(
+        db.Enum(
+            'Indexing',
+            'Integration',
+            'Correction',
+            'Scaling',
+            'Importing'),
+        nullable=False,
+        info='autoprocessing step')
     status = db.Column(db.Enum('Launched', 'Successful', 'Failed'),
                        nullable=False, info='autoprocessing status')
     comments = db.Column(db.String(1024), info='comments')
@@ -336,7 +418,8 @@ class AutoProcStatus(db.Model):
                             server_default=db.FetchedValue())
 
     AutoProcIntegration = db.relationship(
-        'AutoProcIntegration', primaryjoin='AutoProcStatus.autoProcIntegrationId == AutoProcIntegration.autoProcIntegrationId')
+        'AutoProcIntegration',
+        primaryjoin='AutoProcStatus.autoProcIntegrationId == AutoProcIntegration.autoProcIntegrationId')
 
 
 class BFAutomationError(db.Model):
@@ -361,9 +444,11 @@ class BFAutomationFault(db.Model):
         db.DateTime, nullable=False, server_default=db.FetchedValue())
 
     BF_automationError = db.relationship(
-        'BFAutomationError', primaryjoin='BFAutomationFault.automationErrorId == BFAutomationError.automationErrorId')
+        'BFAutomationError',
+        primaryjoin='BFAutomationFault.automationErrorId == BFAutomationError.automationErrorId')
     Container = db.relationship(
-        'Container', primaryjoin='BFAutomationFault.containerId == Container.containerId')
+        'Container',
+        primaryjoin='BFAutomationFault.containerId == Container.containerId')
 
 
 class BFComponent(db.Model):
@@ -387,7 +472,8 @@ class BFComponentBeamline(db.Model):
     beamlinename = db.Column(db.String(20))
 
     BF_component = db.relationship(
-        'BFComponent', primaryjoin='BFComponentBeamline.componentId == BFComponent.componentId')
+        'BFComponent',
+        primaryjoin='BFComponentBeamline.componentId == BFComponent.componentId')
 
 
 class BFFault(db.Model):
@@ -421,7 +507,8 @@ class BFFault(db.Model):
     BLSession = db.relationship(
         'BLSession', primaryjoin='BFFault.sessionId == BLSession.sessionId')
     BF_subcomponent = db.relationship(
-        'BFSubcomponent', primaryjoin='BFFault.subcomponentId == BFSubcomponent.subcomponentId')
+        'BFSubcomponent',
+        primaryjoin='BFFault.subcomponentId == BFSubcomponent.subcomponentId')
 
 
 class BFSubcomponent(db.Model):
@@ -434,7 +521,8 @@ class BFSubcomponent(db.Model):
     description = db.Column(db.String(200))
 
     BF_component = db.relationship(
-        'BFComponent', primaryjoin='BFSubcomponent.componentId == BFComponent.componentId')
+        'BFComponent',
+        primaryjoin='BFSubcomponent.componentId == BFComponent.componentId')
 
 
 class BFSubcomponentBeamline(db.Model):
@@ -446,7 +534,8 @@ class BFSubcomponentBeamline(db.Model):
     beamlinename = db.Column(db.String(20))
 
     BF_subcomponent = db.relationship(
-        'BFSubcomponent', primaryjoin='BFSubcomponentBeamline.subcomponentId == BFSubcomponent.subcomponentId')
+        'BFSubcomponent',
+        primaryjoin='BFSubcomponentBeamline.subcomponentId == BFSubcomponent.subcomponentId')
 
 
 class BFSystem(db.Model):
@@ -465,7 +554,8 @@ class BFSystemBeamline(db.Model):
     beamlineName = db.Column(db.String(20))
 
     BF_system = db.relationship(
-        'BFSystem', primaryjoin='BFSystemBeamline.systemId == BFSystem.systemId')
+        'BFSystem',
+        primaryjoin='BFSystemBeamline.systemId == BFSystem.systemId')
 
 
 class BLSample(db.Model):
@@ -475,12 +565,24 @@ class BLSample(db.Model):
     )
 
     blSampleId = db.Column(db.Integer, primary_key=True)
-    diffractionPlanId = db.Column(db.ForeignKey(
-        'DiffractionPlan.diffractionPlanId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    crystalId = db.Column(db.ForeignKey(
-        'Crystal.crystalId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    containerId = db.Column(db.ForeignKey(
-        'Container.containerId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    diffractionPlanId = db.Column(
+        db.ForeignKey(
+            'DiffractionPlan.diffractionPlanId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
+    crystalId = db.Column(
+        db.ForeignKey(
+            'Crystal.crystalId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
+    containerId = db.Column(
+        db.ForeignKey(
+            'Container.containerId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     name = db.Column(db.String(100), index=True)
     code = db.Column(db.String(45))
     location = db.Column(db.String(45))
@@ -496,10 +598,14 @@ class BLSample(db.Model):
     blSampleStatus = db.Column(db.String(20), index=True)
     isInSampleChanger = db.Column(db.Integer)
     lastKnownCenteringPosition = db.Column(db.String(255))
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
-    SMILES = db.Column(db.String(
-        400), info='the symbolic description of the structure of a chemical compound')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
+    SMILES = db.Column(
+        db.String(400),
+        info='the symbolic description of the structure of a chemical compound')
     lastImageURL = db.Column(db.String(255))
     positionId = db.Column(db.Integer)
     blSubSampleId = db.Column(db.Integer)
@@ -510,14 +616,17 @@ class BLSample(db.Model):
     dimension3 = db.Column(db.Float(asdecimal=True))
     shape = db.Column(db.String(15))
     subLocation = db.Column(
-        db.SmallInteger, info="Indicates the sample's location on a multi-sample pin, where 1 is closest to the pin base")
+        db.SmallInteger,
+        info="Indicates the sample's location on a multi-sample pin, where 1 is closest to the pin base")
 
     Container = db.relationship(
-        'Container', primaryjoin='BLSample.containerId == Container.containerId')
+        'Container',
+        primaryjoin='BLSample.containerId == Container.containerId')
     Crystal = db.relationship(
         'Crystal', primaryjoin='BLSample.crystalId == Crystal.crystalId')
     DiffractionPlan = db.relationship(
-        'DiffractionPlan', primaryjoin='BLSample.diffractionPlanId == DiffractionPlan.diffractionPlanId')
+        'DiffractionPlan',
+        primaryjoin='BLSample.diffractionPlanId == DiffractionPlan.diffractionPlanId')
     DiffractionPlan1 = db.relationship(
         'DiffractionPlan', secondary='BLSample_has_DiffractionPlan')
     Project = db.relationship('Project', secondary='Project_has_BLSample')
@@ -541,17 +650,23 @@ class BLSampleGroupHasBLSample(db.Model):
     type = db.Column(db.Enum('background', 'container', 'sample', 'calibrant'))
 
     BLSampleGroup = db.relationship(
-        'BLSampleGroup', primaryjoin='BLSampleGroupHasBLSample.blSampleGroupId == BLSampleGroup.blSampleGroupId')
+        'BLSampleGroup',
+        primaryjoin='BLSampleGroupHasBLSample.blSampleGroupId == BLSampleGroup.blSampleGroupId')
     BLSample = db.relationship(
-        'BLSample', primaryjoin='BLSampleGroupHasBLSample.blSampleId == BLSample.blSampleId')
+        'BLSample',
+        primaryjoin='BLSampleGroupHasBLSample.blSampleId == BLSample.blSampleId')
 
 
 class BLSampleImage(db.Model):
     __tablename__ = 'BLSampleImage'
 
     blSampleImageId = db.Column(db.Integer, primary_key=True)
-    blSampleId = db.Column(db.ForeignKey(
-        'BLSample.blSampleId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    blSampleId = db.Column(
+        db.ForeignKey(
+            'BLSample.blSampleId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     micronsPerPixelX = db.Column(db.Float)
     micronsPerPixelY = db.Column(db.Float)
     imageFullPath = db.Column(db.String(255))
@@ -563,9 +678,11 @@ class BLSampleImage(db.Model):
     modifiedTimeStamp = db.Column(db.DateTime)
 
     BLSample = db.relationship(
-        'BLSample', primaryjoin='BLSampleImage.blSampleId == BLSample.blSampleId')
+        'BLSample',
+        primaryjoin='BLSampleImage.blSampleId == BLSample.blSampleId')
     ContainerInspection = db.relationship(
-        'ContainerInspection', primaryjoin='BLSampleImage.containerInspectionId == ContainerInspection.containerInspectionId')
+        'ContainerInspection',
+        primaryjoin='BLSampleImage.containerInspectionId == ContainerInspection.containerInspectionId')
 
 
 class BLSampleImageAnalysi(db.Model):
@@ -586,7 +703,8 @@ class BLSampleImageAnalysi(db.Model):
     matchEndTimeStamp = db.Column(db.DateTime)
 
     BLSampleImage = db.relationship(
-        'BLSampleImage', primaryjoin='BLSampleImageAnalysi.blSampleImageId == BLSampleImage.blSampleImageId')
+        'BLSampleImage',
+        primaryjoin='BLSampleImageAnalysi.blSampleImageId == BLSampleImage.blSampleImageId')
 
 
 class BLSampleImageScore(db.Model):
@@ -601,40 +719,73 @@ class BLSampleImageScore(db.Model):
 class BLSampleTypeHasComponent(db.Model):
     __tablename__ = 'BLSampleType_has_Component'
 
-    blSampleTypeId = db.Column(db.ForeignKey(
-        'Crystal.crystalId', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
-    componentId = db.Column(db.ForeignKey('Protein.proteinId', ondelete='CASCADE',
-                            onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
+    blSampleTypeId = db.Column(
+        db.ForeignKey(
+            'Crystal.crystalId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False)
+    componentId = db.Column(
+        db.ForeignKey(
+            'Protein.proteinId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True)
     abundance = db.Column(db.Float)
 
     Crystal = db.relationship(
-        'Crystal', primaryjoin='BLSampleTypeHasComponent.blSampleTypeId == Crystal.crystalId')
+        'Crystal',
+        primaryjoin='BLSampleTypeHasComponent.blSampleTypeId == Crystal.crystalId')
     Protein = db.relationship(
-        'Protein', primaryjoin='BLSampleTypeHasComponent.componentId == Protein.proteinId')
+        'Protein',
+        primaryjoin='BLSampleTypeHasComponent.componentId == Protein.proteinId')
 
 
 t_BLSample_has_DiffractionPlan = db.Table(
     'BLSample_has_DiffractionPlan',
-    db.Column('blSampleId', db.ForeignKey('BLSample.blSampleId'),
-              primary_key=True, nullable=False),
-    db.Column('diffractionPlanId', db.ForeignKey(
-        'DiffractionPlan.diffractionPlanId'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'blSampleId',
+        db.ForeignKey('BLSample.blSampleId'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'diffractionPlanId',
+        db.ForeignKey('DiffractionPlan.diffractionPlanId'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 class BLSampleHasEnergyScan(db.Model):
     __tablename__ = 'BLSample_has_EnergyScan'
 
-    blSampleId = db.Column(db.ForeignKey('BLSample.blSampleId', ondelete='CASCADE',
-                           onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
-    energyScanId = db.Column(db.ForeignKey('EnergyScan.energyScanId', ondelete='CASCADE',
-                             onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    blSampleId = db.Column(
+        db.ForeignKey(
+            'BLSample.blSampleId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
+    energyScanId = db.Column(
+        db.ForeignKey(
+            'EnergyScan.energyScanId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     blSampleHasEnergyScanId = db.Column(db.Integer, primary_key=True)
 
     BLSample = db.relationship(
-        'BLSample', primaryjoin='BLSampleHasEnergyScan.blSampleId == BLSample.blSampleId')
+        'BLSample',
+        primaryjoin='BLSampleHasEnergyScan.blSampleId == BLSample.blSampleId')
     EnergyScan = db.relationship(
-        'EnergyScan', primaryjoin='BLSampleHasEnergyScan.energyScanId == EnergyScan.energyScanId')
+        'EnergyScan',
+        primaryjoin='BLSampleHasEnergyScan.energyScanId == EnergyScan.energyScanId')
 
 
 class BLSession(db.Model):
@@ -642,10 +793,20 @@ class BLSession(db.Model):
 
     sessionId = db.Column(db.Integer, primary_key=True)
     expSessionPk = db.Column(db.Integer, info='smis session Pk ')
-    beamLineSetupId = db.Column(db.ForeignKey(
-        'BeamLineSetup.beamLineSetupId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    proposalId = db.Column(db.ForeignKey('Proposal.proposalId', ondelete='CASCADE',
-                           onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    beamLineSetupId = db.Column(
+        db.ForeignKey(
+            'BeamLineSetup.beamLineSetupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
+    proposalId = db.Column(
+        db.ForeignKey(
+            'Proposal.proposalId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     projectCode = db.Column(db.String(45))
     startDate = db.Column(db.DateTime, index=True)
     endDate = db.Column(db.DateTime, index=True)
@@ -658,7 +819,8 @@ class BLSession(db.Model):
     bltimeStamp = db.Column(db.DateTime, nullable=False,
                             server_default=db.FetchedValue())
     usedFlag = db.Column(
-        db.Integer, info='indicates if session has Datacollections or XFE or EnergyScans attached')
+        db.Integer,
+        info='indicates if session has Datacollections or XFE or EnergyScans attached')
     sessionTitle = db.Column(db.String(255), info='fx accounts only')
     structureDeterminations = db.Column(db.Float)
     dewarTransport = db.Column(db.Float)
@@ -676,7 +838,8 @@ class BLSession(db.Model):
     nbReimbDewars = db.Column(db.Integer)
 
     BeamLineSetup = db.relationship(
-        'BeamLineSetup', primaryjoin='BLSession.beamLineSetupId == BeamLineSetup.beamLineSetupId')
+        'BeamLineSetup',
+        primaryjoin='BLSession.beamLineSetupId == BeamLineSetup.beamLineSetupId')
     Proposal = db.relationship(
         'Proposal', primaryjoin='BLSession.proposalId == Proposal.proposalId')
     Shipping = db.relationship('Shipping', secondary='ShippingHasSession')
@@ -686,15 +849,21 @@ class BLSessionHasSCPosition(db.Model):
     __tablename__ = 'BLSession_has_SCPosition'
 
     blsessionhasscpositionid = db.Column(db.Integer, primary_key=True)
-    blsessionid = db.Column(db.ForeignKey(
-        'BLSession.sessionId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    blsessionid = db.Column(
+        db.ForeignKey(
+            'BLSession.sessionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     scContainer = db.Column(
         db.SmallInteger, info='Position of container within sample changer')
     containerPosition = db.Column(
         db.SmallInteger, info='Position of sample within container')
 
     BLSession = db.relationship(
-        'BLSession', primaryjoin='BLSessionHasSCPosition.blsessionid == BLSession.sessionId')
+        'BLSession',
+        primaryjoin='BLSessionHasSCPosition.blsessionid == BLSession.sessionId')
 
 
 class BLSubSample(db.Model):
@@ -702,33 +871,65 @@ class BLSubSample(db.Model):
 
     blSubSampleId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    blSampleId = db.Column(db.ForeignKey(
-        'BLSample.blSampleId', ondelete='CASCADE', onupdate='CASCADE'), index=True, info='sample')
-    diffractionPlanId = db.Column(db.ForeignKey('DiffractionPlan.diffractionPlanId',
-                                  ondelete='CASCADE', onupdate='CASCADE'), index=True, info='eventually diffractionPlan')
-    positionId = db.Column(db.ForeignKey('Position.positionId', ondelete='CASCADE',
-                           onupdate='CASCADE'), index=True, info='position of the subsample')
-    position2Id = db.Column(db.ForeignKey(
-        'Position.positionId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    blSampleId = db.Column(
+        db.ForeignKey(
+            'BLSample.blSampleId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='sample')
+    diffractionPlanId = db.Column(
+        db.ForeignKey(
+            'DiffractionPlan.diffractionPlanId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='eventually diffractionPlan')
+    positionId = db.Column(
+        db.ForeignKey(
+            'Position.positionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='position of the subsample')
+    position2Id = db.Column(
+        db.ForeignKey(
+            'Position.positionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     blSubSampleUUID = db.Column(db.String(45), info='uuid of the blsubsample')
     imgFileName = db.Column(db.String(255), info='image filename')
     imgFilePath = db.Column(db.String(1024), info='url image')
     comments = db.Column(db.String(1024), info='comments')
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
-    motorPositionId = db.Column(db.ForeignKey('MotorPosition.motorPositionId',
-                                ondelete='CASCADE', onupdate='CASCADE'), index=True, info='motor position')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
+    motorPositionId = db.Column(
+        db.ForeignKey(
+            'MotorPosition.motorPositionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='motor position')
 
     BLSample = db.relationship(
-        'BLSample', primaryjoin='BLSubSample.blSampleId == BLSample.blSampleId')
+        'BLSample',
+        primaryjoin='BLSubSample.blSampleId == BLSample.blSampleId')
     DiffractionPlan = db.relationship(
-        'DiffractionPlan', primaryjoin='BLSubSample.diffractionPlanId == DiffractionPlan.diffractionPlanId')
+        'DiffractionPlan',
+        primaryjoin='BLSubSample.diffractionPlanId == DiffractionPlan.diffractionPlanId')
     MotorPosition = db.relationship(
-        'MotorPosition', primaryjoin='BLSubSample.motorPositionId == MotorPosition.motorPositionId')
+        'MotorPosition',
+        primaryjoin='BLSubSample.motorPositionId == MotorPosition.motorPositionId')
     Position = db.relationship(
-        'Position', primaryjoin='BLSubSample.position2Id == Position.positionId')
+        'Position',
+        primaryjoin='BLSubSample.position2Id == Position.positionId')
     Position1 = db.relationship(
-        'Position', primaryjoin='BLSubSample.positionId == Position.positionId')
+        'Position',
+        primaryjoin='BLSubSample.positionId == Position.positionId')
 
 
 class BeamAperture(db.Model):
@@ -743,7 +944,8 @@ class BeamAperture(db.Model):
     apertureSize = db.Column(db.SmallInteger)
 
     BeamlineStat = db.relationship(
-        'BeamlineStat', primaryjoin='BeamAperture.beamlineStatsId == BeamlineStat.beamlineStatsId')
+        'BeamlineStat',
+        primaryjoin='BeamAperture.beamlineStatsId == BeamlineStat.beamlineStatsId')
 
 
 class BeamCentre(db.Model):
@@ -757,7 +959,8 @@ class BeamCentre(db.Model):
     zoom = db.Column(db.Integer)
 
     BeamlineStat = db.relationship(
-        'BeamlineStat', primaryjoin='BeamCentre.beamlineStatsId == BeamlineStat.beamlineStatsId')
+        'BeamlineStat',
+        primaryjoin='BeamCentre.beamlineStatsId == BeamlineStat.beamlineStatsId')
 
 
 class BeamLineSetup(db.Model):
@@ -782,8 +985,11 @@ class BeamLineSetup(db.Model):
     goniostatMinOscillationWidth = db.Column(db.Float(asdecimal=True))
     minTransmission = db.Column(db.Float(asdecimal=True))
     CS = db.Column(db.Float)
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
 
 
 class BeamlineAction(db.Model):
@@ -803,7 +1009,8 @@ class BeamlineAction(db.Model):
                        'TERMINATED', 'COMPLETE', 'ERROR', 'EPICSFAIL'))
 
     BLSession = db.relationship(
-        'BLSession', primaryjoin='BeamlineAction.sessionId == BLSession.sessionId')
+        'BLSession',
+        primaryjoin='BeamlineAction.sessionId == BLSession.sessionId')
 
 
 class BeamlineStat(db.Model):
@@ -839,7 +1046,8 @@ class Buffer(db.Model):
     electronDensity = db.Column(db.Float(7))
 
     SafetyLevel = db.relationship(
-        'SafetyLevel', primaryjoin='Buffer.safetyLevelId == SafetyLevel.safetyLevelId')
+        'SafetyLevel',
+        primaryjoin='Buffer.safetyLevelId == SafetyLevel.safetyLevelId')
 
 
 class BufferHasAdditive(db.Model):
@@ -855,11 +1063,13 @@ class BufferHasAdditive(db.Model):
     quantity = db.Column(db.String(45))
 
     Additive = db.relationship(
-        'Additive', primaryjoin='BufferHasAdditive.additiveId == Additive.additiveId')
+        'Additive',
+        primaryjoin='BufferHasAdditive.additiveId == Additive.additiveId')
     Buffer = db.relationship(
         'Buffer', primaryjoin='BufferHasAdditive.bufferId == Buffer.bufferId')
     MeasurementUnit = db.relationship(
-        'MeasurementUnit', primaryjoin='BufferHasAdditive.measurementUnitId == MeasurementUnit.measurementUnitId')
+        'MeasurementUnit',
+        primaryjoin='BufferHasAdditive.measurementUnitId == MeasurementUnit.measurementUnitId')
 
 
 class CTF(db.Model):
@@ -906,11 +1116,22 @@ class ComponentType(db.Model):
 
 t_Component_has_SubType = db.Table(
     'Component_has_SubType',
-    db.Column('componentId', db.ForeignKey('Protein.proteinId',
-              ondelete='CASCADE'), primary_key=True, nullable=False),
-    db.Column('componentSubTypeId', db.ForeignKey('ComponentSubType.componentSubTypeId',
-              ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'componentId',
+        db.ForeignKey(
+            'Protein.proteinId',
+            ondelete='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'componentSubTypeId',
+        db.ForeignKey(
+            'ComponentSubType.componentSubTypeId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 class ConcentrationType(db.Model):
@@ -960,23 +1181,33 @@ class ContainerHistory(db.Model):
     __tablename__ = 'ContainerHistory'
 
     containerHistoryId = db.Column(db.Integer, primary_key=True)
-    containerId = db.Column(db.ForeignKey(
-        'Container.containerId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    containerId = db.Column(
+        db.ForeignKey(
+            'Container.containerId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     location = db.Column(db.String(45))
     blTimeStamp = db.Column(db.DateTime, nullable=False,
                             server_default=db.FetchedValue())
     status = db.Column(db.String(45))
 
     Container = db.relationship(
-        'Container', primaryjoin='ContainerHistory.containerId == Container.containerId')
+        'Container',
+        primaryjoin='ContainerHistory.containerId == Container.containerId')
 
 
 class ContainerInspection(db.Model):
     __tablename__ = 'ContainerInspection'
 
     containerInspectionId = db.Column(db.Integer, primary_key=True)
-    containerId = db.Column(db.ForeignKey(
-        'Container.containerId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    containerId = db.Column(
+        db.ForeignKey(
+            'Container.containerId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     inspectionTypeId = db.Column(db.ForeignKey(
         'InspectionType.inspectionTypeId'), nullable=False, index=True)
     imagerId = db.Column(db.ForeignKey('Imager.imagerId'), index=True)
@@ -991,21 +1222,29 @@ class ContainerInspection(db.Model):
     completedTimeStamp = db.Column(db.DateTime)
 
     Container = db.relationship(
-        'Container', primaryjoin='ContainerInspection.containerId == Container.containerId')
+        'Container',
+        primaryjoin='ContainerInspection.containerId == Container.containerId')
     Imager = db.relationship(
-        'Imager', primaryjoin='ContainerInspection.imagerId == Imager.imagerId')
+        'Imager',
+        primaryjoin='ContainerInspection.imagerId == Imager.imagerId')
     InspectionType = db.relationship(
-        'InspectionType', primaryjoin='ContainerInspection.inspectionTypeId == InspectionType.inspectionTypeId')
+        'InspectionType',
+        primaryjoin='ContainerInspection.inspectionTypeId == InspectionType.inspectionTypeId')
     ScheduleComponent = db.relationship(
-        'ScheduleComponent', primaryjoin='ContainerInspection.scheduleComponentid == ScheduleComponent.scheduleComponentId')
+        'ScheduleComponent',
+        primaryjoin='ContainerInspection.scheduleComponentid == ScheduleComponent.scheduleComponentId')
 
 
 class ContainerQueue(db.Model):
     __tablename__ = 'ContainerQueue'
 
     containerQueueId = db.Column(db.Integer, primary_key=True)
-    containerId = db.Column(db.ForeignKey(
-        'Container.containerId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    containerId = db.Column(
+        db.ForeignKey(
+            'Container.containerId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     personId = db.Column(db.ForeignKey(
         'Person.personId', onupdate='CASCADE'), index=True)
     createdTimeStamp = db.Column(
@@ -1013,7 +1252,8 @@ class ContainerQueue(db.Model):
     completedTimeStamp = db.Column(db.DateTime)
 
     Container = db.relationship(
-        'Container', primaryjoin='ContainerQueue.containerId == Container.containerId')
+        'Container',
+        primaryjoin='ContainerQueue.containerId == Container.containerId')
     Person = db.relationship(
         'Person', primaryjoin='ContainerQueue.personId == Person.personId')
 
@@ -1022,15 +1262,25 @@ class ContainerQueueSample(db.Model):
     __tablename__ = 'ContainerQueueSample'
 
     containerQueueSampleId = db.Column(db.Integer, primary_key=True)
-    containerQueueId = db.Column(db.ForeignKey(
-        'ContainerQueue.containerQueueId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    blSubSampleId = db.Column(db.ForeignKey(
-        'BLSubSample.blSubSampleId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    containerQueueId = db.Column(
+        db.ForeignKey(
+            'ContainerQueue.containerQueueId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
+    blSubSampleId = db.Column(
+        db.ForeignKey(
+            'BLSubSample.blSubSampleId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
 
     BLSubSample = db.relationship(
-        'BLSubSample', primaryjoin='ContainerQueueSample.blSubSampleId == BLSubSample.blSubSampleId')
+        'BLSubSample',
+        primaryjoin='ContainerQueueSample.blSubSampleId == BLSubSample.blSubSampleId')
     ContainerQueue = db.relationship(
-        'ContainerQueue', primaryjoin='ContainerQueueSample.containerQueueId == ContainerQueue.containerQueueId')
+        'ContainerQueue',
+        primaryjoin='ContainerQueueSample.containerQueueId == ContainerQueue.containerQueueId')
 
 
 class CryoemInitialModel(db.Model):
@@ -1041,17 +1291,28 @@ class CryoemInitialModel(db.Model):
     numberOfParticles = db.Column(db.Integer)
 
     ParticleClassification = db.relationship(
-        'ParticleClassification', secondary='ParticleClassification_has_CryoemInitialModel')
+        'ParticleClassification',
+        secondary='ParticleClassification_has_CryoemInitialModel')
 
 
 class Crystal(db.Model):
     __tablename__ = 'Crystal'
 
     crystalId = db.Column(db.Integer, primary_key=True)
-    diffractionPlanId = db.Column(db.ForeignKey(
-        'DiffractionPlan.diffractionPlanId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    proteinId = db.Column(db.ForeignKey('Protein.proteinId', ondelete='CASCADE',
-                          onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    diffractionPlanId = db.Column(
+        db.ForeignKey(
+            'DiffractionPlan.diffractionPlanId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
+    proteinId = db.Column(
+        db.ForeignKey(
+            'Protein.proteinId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     crystalUUID = db.Column(db.String(45))
     name = db.Column(db.String(255))
     spaceGroup = db.Column(db.String(20))
@@ -1069,13 +1330,17 @@ class Crystal(db.Model):
     comments = db.Column(db.String(255))
     pdbFileName = db.Column(db.String(255), info='pdb file name')
     pdbFilePath = db.Column(db.String(1024), info='pdb file path')
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
     abundance = db.Column(db.Float)
     packingFraction = db.Column(db.Float)
 
     DiffractionPlan = db.relationship(
-        'DiffractionPlan', primaryjoin='Crystal.diffractionPlanId == DiffractionPlan.diffractionPlanId')
+        'DiffractionPlan',
+        primaryjoin='Crystal.diffractionPlanId == DiffractionPlan.diffractionPlanId')
     Protein = db.relationship(
         'Protein', primaryjoin='Crystal.proteinId == Protein.proteinId')
 
@@ -1084,8 +1349,13 @@ class CrystalHasUUID(db.Model):
     __tablename__ = 'Crystal_has_UUID'
 
     crystal_has_UUID_Id = db.Column(db.Integer, primary_key=True)
-    crystalId = db.Column(db.ForeignKey(
-        'Crystal.crystalId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    crystalId = db.Column(
+        db.ForeignKey(
+            'Crystal.crystalId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     UUID = db.Column(db.String(45), index=True)
     imageURL = db.Column(db.String(255))
 
@@ -1109,12 +1379,28 @@ class DataCollection(db.Model):
 
     dataCollectionId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    dataCollectionGroupId = db.Column(db.ForeignKey('DataCollectionGroup.dataCollectionGroupId', ondelete='CASCADE',
-                                      onupdate='CASCADE'), nullable=False, index=True, info='references DataCollectionGroup table')
-    strategySubWedgeOrigId = db.Column(db.ForeignKey('ScreeningStrategySubWedge.screeningStrategySubWedgeId',
-                                       ondelete='CASCADE', onupdate='CASCADE'), index=True, info='references ScreeningStrategySubWedge table')
-    detectorId = db.Column(db.ForeignKey('Detector.detectorId', ondelete='CASCADE',
-                           onupdate='CASCADE'), index=True, info='references Detector table')
+    dataCollectionGroupId = db.Column(
+        db.ForeignKey(
+            'DataCollectionGroup.dataCollectionGroupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='references DataCollectionGroup table')
+    strategySubWedgeOrigId = db.Column(
+        db.ForeignKey(
+            'ScreeningStrategySubWedge.screeningStrategySubWedgeId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='references ScreeningStrategySubWedge table')
+    detectorId = db.Column(
+        db.ForeignKey(
+            'Detector.detectorId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='references Detector table')
     blSubSampleId = db.Column(db.ForeignKey(
         'BLSubSample.blSubSampleId'), index=True)
     startPositionId = db.Column(db.Integer, index=True)
@@ -1135,8 +1421,9 @@ class DataCollection(db.Model):
     imageDirectory = db.Column(db.String(255), index=True)
     imagePrefix = db.Column(db.String(100), index=True)
     imageSuffix = db.Column(db.String(45))
-    imageContainerSubPath = db.Column(db.String(
-        255), info='Internal path of a HDF5 file pointing to the data for this data collection')
+    imageContainerSubPath = db.Column(
+        db.String(255),
+        info='Internal path of a HDF5 file pointing to the data for this data collection')
     fileTemplate = db.Column(db.String(255))
     wavelength = db.Column(db.Float)
     resolution = db.Column(db.Float)
@@ -1175,7 +1462,9 @@ class DataCollection(db.Model):
     flux_end = db.Column(db.Float(asdecimal=True),
                          info='flux measured after the collect')
     totalAbsorbedDose = db.Column(
-        db.Float(asdecimal=True), info='expected dose delivered to the crystal, EDNA')
+        db.Float(
+            asdecimal=True),
+        info='expected dose delivered to the crystal, EDNA')
     bestWilsonPlotPath = db.Column(db.String(255))
     imageQualityIndicatorsPlotPath = db.Column(db.String(512))
     imageQualityIndicatorsCSVPath = db.Column(db.String(512))
@@ -1219,29 +1508,44 @@ class DataCollection(db.Model):
     c3lens = db.Column(db.Float, info='Unit: %')
 
     BLSubSample = db.relationship(
-        'BLSubSample', primaryjoin='DataCollection.blSubSampleId == BLSubSample.blSubSampleId')
+        'BLSubSample',
+        primaryjoin='DataCollection.blSubSampleId == BLSubSample.blSubSampleId')
     DataCollectionGroup = db.relationship(
-        'DataCollectionGroup', primaryjoin='DataCollection.dataCollectionGroupId == DataCollectionGroup.dataCollectionGroupId')
+        'DataCollectionGroup',
+        primaryjoin='DataCollection.dataCollectionGroupId == DataCollectionGroup.dataCollectionGroupId')
     Detector = db.relationship(
-        'Detector', primaryjoin='DataCollection.detectorId == Detector.detectorId')
+        'Detector',
+        primaryjoin='DataCollection.detectorId == Detector.detectorId')
     ScreeningStrategySubWedge = db.relationship(
-        'ScreeningStrategySubWedge', primaryjoin='DataCollection.strategySubWedgeOrigId == ScreeningStrategySubWedge.screeningStrategySubWedgeId')
+        'ScreeningStrategySubWedge',
+        primaryjoin='DataCollection.strategySubWedgeOrigId == ScreeningStrategySubWedge.screeningStrategySubWedgeId')
 
 
 class DataCollectionFileAttachment(db.Model):
     __tablename__ = 'DataCollectionFileAttachment'
 
     dataCollectionFileAttachmentId = db.Column(db.Integer, primary_key=True)
-    dataCollectionId = db.Column(db.ForeignKey(
-        'DataCollection.dataCollectionId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    dataCollectionId = db.Column(
+        db.ForeignKey(
+            'DataCollection.dataCollectionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     fileFullPath = db.Column(db.String(255), nullable=False)
-    fileType = db.Column(db.Enum('snapshot', 'log', 'xy', 'recip'),
-                         info='snapshot: image file, usually of the sample. \\r\\nlog: a text file with logging info. \\r\\nxy: x and y data in text format. \\r\\nrecip: a compressed csv file with reciprocal space coordinates.')
+    fileType = db.Column(
+        db.Enum(
+            'snapshot',
+            'log',
+            'xy',
+            'recip'),
+        info='snapshot: image file, usually of the sample. \\r\\nlog: a text file with logging info. \\r\\nxy: x and y data in text format. \\r\\nrecip: a compressed csv file with reciprocal space coordinates.')
     createTime = db.Column(db.DateTime, nullable=False,
                            server_default=db.FetchedValue())
 
     DataCollection = db.relationship(
-        'DataCollection', primaryjoin='DataCollectionFileAttachment.dataCollectionId == DataCollection.dataCollectionId')
+        'DataCollection',
+        primaryjoin='DataCollectionFileAttachment.dataCollectionId == DataCollection.dataCollectionId')
 
 
 class DataCollectionGroup(db.Model):
@@ -1249,14 +1553,43 @@ class DataCollectionGroup(db.Model):
 
     dataCollectionGroupId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    blSampleId = db.Column(db.ForeignKey(
-        'BLSample.blSampleId', onupdate='CASCADE'), index=True, info='references BLSample table')
-    sessionId = db.Column(db.ForeignKey('BLSession.sessionId', ondelete='CASCADE',
-                          onupdate='CASCADE'), nullable=False, index=True, info='references Session table')
-    workflowId = db.Column(db.ForeignKey(
-        'Workflow.workflowId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    experimentType = db.Column(db.Enum('EM', 'SAD', 'SAD - Inverse Beam', 'OSC', 'Collect - Multiwedge', 'MAD', 'Helical', 'Multi-positional',
-                               'Mesh', 'Burn', 'MAD - Inverse Beam', 'Characterization', 'Dehydration', 'Still'), info='Experiment type flag')
+    blSampleId = db.Column(
+        db.ForeignKey(
+            'BLSample.blSampleId',
+            onupdate='CASCADE'),
+        index=True,
+        info='references BLSample table')
+    sessionId = db.Column(
+        db.ForeignKey(
+            'BLSession.sessionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='references Session table')
+    workflowId = db.Column(
+        db.ForeignKey(
+            'Workflow.workflowId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
+    experimentType = db.Column(
+        db.Enum(
+            'EM',
+            'SAD',
+            'SAD - Inverse Beam',
+            'OSC',
+            'Collect - Multiwedge',
+            'MAD',
+            'Helical',
+            'Multi-positional',
+            'Mesh',
+            'Burn',
+            'MAD - Inverse Beam',
+            'Characterization',
+            'Dehydration',
+            'Still'),
+        info='Experiment type flag')
     startTime = db.Column(
         db.DateTime, info='Start time of the dataCollectionGroup')
     endTime = db.Column(
@@ -1276,11 +1609,14 @@ class DataCollectionGroup(db.Model):
     xtalSnapshotFullPath = db.Column(db.String(255))
 
     BLSample = db.relationship(
-        'BLSample', primaryjoin='DataCollectionGroup.blSampleId == BLSample.blSampleId')
+        'BLSample',
+        primaryjoin='DataCollectionGroup.blSampleId == BLSample.blSampleId')
     BLSession = db.relationship(
-        'BLSession', primaryjoin='DataCollectionGroup.sessionId == BLSession.sessionId')
+        'BLSession',
+        primaryjoin='DataCollectionGroup.sessionId == BLSession.sessionId')
     Workflow = db.relationship(
-        'Workflow', primaryjoin='DataCollectionGroup.workflowId == Workflow.workflowId')
+        'Workflow',
+        primaryjoin='DataCollectionGroup.workflowId == Workflow.workflowId')
     Project = db.relationship('Project', secondary='Project_has_DCGroup')
 
 
@@ -1294,9 +1630,11 @@ class DataCollectionPlanGroup(db.Model):
         'BLSample.blSampleId', onupdate='CASCADE'), index=True)
 
     BLSample = db.relationship(
-        'BLSample', primaryjoin='DataCollectionPlanGroup.blSampleId == BLSample.blSampleId')
+        'BLSample',
+        primaryjoin='DataCollectionPlanGroup.blSampleId == BLSample.blSampleId')
     BLSession = db.relationship(
-        'BLSession', primaryjoin='DataCollectionPlanGroup.sessionId == BLSession.sessionId')
+        'BLSession',
+        primaryjoin='DataCollectionPlanGroup.sessionId == BLSession.sessionId')
 
 
 class DataReductionStatu(db.Model):
@@ -1326,8 +1664,13 @@ class DatamatrixInSampleChanger(db.Model):
 class Detector(db.Model):
     __tablename__ = 'Detector'
     __table_args__ = (
-        db.Index('Detector_FKIndex1', 'detectorType', 'detectorManufacturer',
-                 'detectorModel', 'detectorPixelSizeHorizontal', 'detectorPixelSizeVertical'),
+        db.Index(
+            'Detector_FKIndex1',
+            'detectorType',
+            'detectorManufacturer',
+            'detectorModel',
+            'detectorPixelSizeHorizontal',
+            'detectorPixelSizeVertical'),
     )
 
     detectorId = db.Column(db.Integer, primary_key=True,
@@ -1360,8 +1703,12 @@ class Dewar(db.Model):
     __tablename__ = 'Dewar'
 
     dewarId = db.Column(db.Integer, primary_key=True)
-    shippingId = db.Column(db.ForeignKey(
-        'Shipping.shippingId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    shippingId = db.Column(
+        db.ForeignKey(
+            'Shipping.shippingId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     code = db.Column(db.String(45), index=True)
     comments = db.Column(db.String)
     storageLocation = db.Column(db.String(45))
@@ -1369,8 +1716,12 @@ class Dewar(db.Model):
     bltimeStamp = db.Column(db.DateTime, server_default=db.FetchedValue())
     isStorageDewar = db.Column(db.Integer, server_default=db.FetchedValue())
     barCode = db.Column(db.String(45), unique=True)
-    firstExperimentId = db.Column(db.ForeignKey(
-        'BLSession.sessionId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    firstExperimentId = db.Column(
+        db.ForeignKey(
+            'BLSession.sessionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     customsValue = db.Column(db.Integer)
     transportValue = db.Column(db.Integer)
     trackingNumberToSynchrotron = db.Column(db.String(30))
@@ -1383,7 +1734,8 @@ class Dewar(db.Model):
     ), info='set this dewar as reimbursed by the user office')
 
     BLSession = db.relationship(
-        'BLSession', primaryjoin='Dewar.firstExperimentId == BLSession.sessionId')
+        'BLSession',
+        primaryjoin='Dewar.firstExperimentId == BLSession.sessionId')
     Shipping = db.relationship(
         'Shipping', primaryjoin='Dewar.shippingId == Shipping.shippingId')
 
@@ -1407,8 +1759,11 @@ class DewarLocationList(db.Model):
     __tablename__ = 'DewarLocationList'
 
     locationId = db.Column(db.Integer, primary_key=True)
-    locationName = db.Column(db.String(
-        128), nullable=False, server_default=db.FetchedValue(), info='Location')
+    locationName = db.Column(
+        db.String(128),
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Location')
 
 
 class DewarRegistry(db.Model):
@@ -1418,16 +1773,22 @@ class DewarRegistry(db.Model):
     facilityCode = db.Column(db.String(20), nullable=False, unique=True)
     proposalId = db.Column(db.ForeignKey(
         'Proposal.proposalId', onupdate='CASCADE'), index=True)
-    labContactId = db.Column(db.ForeignKey(
-        'LabContact.labContactId', ondelete='SET NULL', onupdate='CASCADE'), index=True)
+    labContactId = db.Column(
+        db.ForeignKey(
+            'LabContact.labContactId',
+            ondelete='SET NULL',
+            onupdate='CASCADE'),
+        index=True)
     purchaseDate = db.Column(db.DateTime)
     bltimestamp = db.Column(db.DateTime, nullable=False,
                             server_default=db.FetchedValue())
 
     LabContact = db.relationship(
-        'LabContact', primaryjoin='DewarRegistry.labContactId == LabContact.labContactId')
+        'LabContact',
+        primaryjoin='DewarRegistry.labContactId == LabContact.labContactId')
     Proposal = db.relationship(
-        'Proposal', primaryjoin='DewarRegistry.proposalId == Proposal.proposalId')
+        'Proposal',
+        primaryjoin='DewarRegistry.proposalId == Proposal.proposalId')
 
 
 class DewarRegistryHasProposal(db.Model):
@@ -1442,17 +1803,25 @@ class DewarRegistryHasProposal(db.Model):
     personId = db.Column(db.ForeignKey('Person.personId'),
                          index=True, info='Person registering the dewar')
     recordTimestamp = db.Column(db.DateTime, server_default=db.FetchedValue())
-    labContactId = db.Column(db.ForeignKey(
-        'LabContact.labContactId', onupdate='CASCADE'), index=True, info='Owner of the dewar')
+    labContactId = db.Column(
+        db.ForeignKey(
+            'LabContact.labContactId',
+            onupdate='CASCADE'),
+        index=True,
+        info='Owner of the dewar')
 
     DewarRegistry = db.relationship(
-        'DewarRegistry', primaryjoin='DewarRegistryHasProposal.dewarRegistryId == DewarRegistry.dewarRegistryId')
+        'DewarRegistry',
+        primaryjoin='DewarRegistryHasProposal.dewarRegistryId == DewarRegistry.dewarRegistryId')
     LabContact = db.relationship(
-        'LabContact', primaryjoin='DewarRegistryHasProposal.labContactId == LabContact.labContactId')
+        'LabContact',
+        primaryjoin='DewarRegistryHasProposal.labContactId == LabContact.labContactId')
     Person = db.relationship(
-        'Person', primaryjoin='DewarRegistryHasProposal.personId == Person.personId')
+        'Person',
+        primaryjoin='DewarRegistryHasProposal.personId == Person.personId')
     Proposal = db.relationship(
-        'Proposal', primaryjoin='DewarRegistryHasProposal.proposalId == Proposal.proposalId')
+        'Proposal',
+        primaryjoin='DewarRegistryHasProposal.proposalId == Proposal.proposalId')
 
 
 class DewarTransportHistory(db.Model):
@@ -1474,8 +1843,26 @@ class DiffractionPlan(db.Model):
 
     diffractionPlanId = db.Column(db.Integer, primary_key=True)
     xmlDocumentId = db.Column(db.Integer)
-    experimentKind = db.Column(db.Enum('Default', 'MXPressE', 'MXPressF', 'MXPressO', 'MXPressP', 'MXPressP_SAD', 'MXPressI', 'MXPressE_SAD',
-                               'MXScore', 'MXPressM', 'MAD', 'SAD', 'Fixed', 'Ligand binding', 'Refinement', 'OSC', 'MAD - Inverse Beam', 'SAD - Inverse Beam'))
+    experimentKind = db.Column(
+        db.Enum(
+            'Default',
+            'MXPressE',
+            'MXPressF',
+            'MXPressO',
+            'MXPressP',
+            'MXPressP_SAD',
+            'MXPressI',
+            'MXPressE_SAD',
+            'MXScore',
+            'MXPressM',
+            'MAD',
+            'SAD',
+            'Fixed',
+            'Ligand binding',
+            'Refinement',
+            'OSC',
+            'MAD - Inverse Beam',
+            'SAD - Inverse Beam'))
     observedResolution = db.Column(db.Float)
     minimalResolution = db.Column(db.Float)
     exposureTime = db.Column(db.Float)
@@ -1504,14 +1891,21 @@ class DiffractionPlan(db.Model):
     kappaStrategyOption = db.Column(db.String(45))
     numberOfPositions = db.Column(db.Integer)
     minDimAccrossSpindleAxis = db.Column(
-        db.Float(asdecimal=True), info='minimum dimension accross the spindle axis')
+        db.Float(
+            asdecimal=True),
+        info='minimum dimension accross the spindle axis')
     maxDimAccrossSpindleAxis = db.Column(
-        db.Float(asdecimal=True), info='maximum dimension accross the spindle axis')
+        db.Float(
+            asdecimal=True),
+        info='maximum dimension accross the spindle axis')
     radiationSensitivityBeta = db.Column(db.Float(asdecimal=True))
     radiationSensitivityGamma = db.Column(db.Float(asdecimal=True))
     minOscWidth = db.Column(db.Float)
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
     diffractionPlanUUID = db.Column(db.String(1000))
     dataCollectionPlanGroupId = db.Column(db.Integer)
     detectorId = db.Column(db.Integer)
@@ -1529,11 +1923,14 @@ class DiffractionPlan(db.Model):
     numberOfImages = db.Column(
         db.Integer, info='The number of images requested')
     presetForProposalId = db.Column(
-        db.Integer, info='Indicates this plan is available to all sessions on given proposal')
-    beamLineName = db.Column(db.String(
-        45), info='Indicates this plan is available to all sessions on given beamline')
-    userPath = db.Column(db.String(
-        100), info='User-specified relative "root" path inside the session directory to be used for holding collected data')
+        db.Integer,
+        info='Indicates this plan is available to all sessions on given proposal')
+    beamLineName = db.Column(
+        db.String(45),
+        info='Indicates this plan is available to all sessions on given beamline')
+    userPath = db.Column(
+        db.String(100),
+        info='User-specified relative "root" path inside the session directory to be used for holding collected data')
 
 
 class DiffractionPlanHasDetector(db.Model):
@@ -1548,9 +1945,11 @@ class DiffractionPlanHasDetector(db.Model):
     orientation = db.Column(db.Float(asdecimal=True))
 
     Detector = db.relationship(
-        'Detector', primaryjoin='DiffractionPlanHasDetector.detectorId == Detector.detectorId')
+        'Detector',
+        primaryjoin='DiffractionPlanHasDetector.detectorId == Detector.detectorId')
     DiffractionPlan = db.relationship(
-        'DiffractionPlan', primaryjoin='DiffractionPlanHasDetector.diffractionPlanId == DiffractionPlan.diffractionPlanId')
+        'DiffractionPlan',
+        primaryjoin='DiffractionPlanHasDetector.diffractionPlanId == DiffractionPlan.diffractionPlanId')
 
 
 class EMMicroscope(db.Model):
@@ -1570,8 +1969,13 @@ class EnergyScan(db.Model):
     __tablename__ = 'EnergyScan'
 
     energyScanId = db.Column(db.Integer, primary_key=True)
-    sessionId = db.Column(db.ForeignKey(
-        'BLSession.sessionId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    sessionId = db.Column(
+        db.ForeignKey(
+            'BLSession.sessionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     blSampleId = db.Column(db.ForeignKey('BLSample.blSampleId'), index=True)
     fluorescenceDetector = db.Column(db.String(255))
     scanFileFullPath = db.Column(db.String(255))
@@ -1614,7 +2018,8 @@ class EnergyScan(db.Model):
     BLSample = db.relationship(
         'BLSample', primaryjoin='EnergyScan.blSampleId == BLSample.blSampleId')
     BLSubSample = db.relationship(
-        'BLSubSample', primaryjoin='EnergyScan.blSubSampleId == BLSubSample.blSubSampleId')
+        'BLSubSample',
+        primaryjoin='EnergyScan.blSubSampleId == BLSubSample.blSubSampleId')
     BLSession = db.relationship(
         'BLSession', primaryjoin='EnergyScan.sessionId == BLSession.sessionId')
     Project = db.relationship('Project', secondary='Project_has_EnergyScan')
@@ -1630,8 +2035,9 @@ class Experiment(db.Model):
     creationDate = db.Column(db.DateTime)
     experimentType = db.Column(db.String(128))
     sourceFilePath = db.Column(db.String(256))
-    dataAcquisitionFilePath = db.Column(db.String(
-        256), info='The file path pointing to the data acquisition. Eventually it may be a compressed file with all the files or just the folder')
+    dataAcquisitionFilePath = db.Column(
+        db.String(256),
+        info='The file path pointing to the data acquisition. Eventually it may be a compressed file with all the files or just the folder')
     status = db.Column(db.String(45))
     comments = db.Column(db.String(512))
 
@@ -1643,15 +2049,21 @@ class ExperimentKindDetail(db.Model):
     __tablename__ = 'ExperimentKindDetails'
 
     experimentKindId = db.Column(db.Integer, primary_key=True)
-    diffractionPlanId = db.Column(db.ForeignKey(
-        'DiffractionPlan.diffractionPlanId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    diffractionPlanId = db.Column(
+        db.ForeignKey(
+            'DiffractionPlan.diffractionPlanId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     exposureIndex = db.Column(db.Integer)
     dataCollectionType = db.Column(db.String(45))
     dataCollectionKind = db.Column(db.String(45))
     wedgeValue = db.Column(db.Float)
 
     DiffractionPlan = db.relationship(
-        'DiffractionPlan', primaryjoin='ExperimentKindDetail.diffractionPlanId == DiffractionPlan.diffractionPlanId')
+        'DiffractionPlan',
+        primaryjoin='ExperimentKindDetail.diffractionPlanId == DiffractionPlan.diffractionPlanId')
 
 
 class FitStructureToExperimentalDatum(db.Model):
@@ -1669,11 +2081,14 @@ class FitStructureToExperimentalDatum(db.Model):
     comments = db.Column(db.String(2048))
 
     Structure = db.relationship(
-        'Structure', primaryjoin='FitStructureToExperimentalDatum.structureId == Structure.structureId')
+        'Structure',
+        primaryjoin='FitStructureToExperimentalDatum.structureId == Structure.structureId')
     Subtraction = db.relationship(
-        'Subtraction', primaryjoin='FitStructureToExperimentalDatum.subtractionId == Subtraction.subtractionId')
+        'Subtraction',
+        primaryjoin='FitStructureToExperimentalDatum.subtractionId == Subtraction.subtractionId')
     Workflow = db.relationship(
-        'Workflow', primaryjoin='FitStructureToExperimentalDatum.workflowId == Workflow.workflowId')
+        'Workflow',
+        primaryjoin='FitStructureToExperimentalDatum.workflowId == Workflow.workflowId')
 
 
 class Frame(db.Model):
@@ -1706,7 +2121,8 @@ class FrameSet(db.Model):
     internalPath = db.Column(db.String(255))
 
     FrameList = db.relationship(
-        'FrameList', primaryjoin='FrameSet.frameListId == FrameList.frameListId')
+        'FrameList',
+        primaryjoin='FrameSet.frameListId == FrameList.frameListId')
     Run = db.relationship('Run', primaryjoin='FrameSet.runId == Run.runId')
 
 
@@ -1722,7 +2138,8 @@ class FrameToList(db.Model):
     Frame = db.relationship(
         'Frame', primaryjoin='FrameToList.frameId == Frame.frameId')
     FrameList = db.relationship(
-        'FrameList', primaryjoin='FrameToList.frameListId == FrameList.frameListId')
+        'FrameList',
+        primaryjoin='FrameToList.frameListId == FrameList.frameListId')
 
 
 class GeometryClassname(db.Model):
@@ -1738,8 +2155,12 @@ class GridInfo(db.Model):
 
     gridInfoId = db.Column(db.Integer, primary_key=True,
                            info='Primary key (auto-incremented)')
-    workflowMeshId = db.Column(db.ForeignKey(
-        'WorkflowMesh.workflowMeshId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    workflowMeshId = db.Column(
+        db.ForeignKey(
+            'WorkflowMesh.workflowMeshId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     xOffset = db.Column(db.Float(asdecimal=True))
     yOffset = db.Column(db.Float(asdecimal=True))
     dx_mm = db.Column(db.Float(asdecimal=True))
@@ -1747,8 +2168,11 @@ class GridInfo(db.Model):
     steps_x = db.Column(db.Float(asdecimal=True))
     steps_y = db.Column(db.Float(asdecimal=True))
     meshAngle = db.Column(db.Float(asdecimal=True))
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
     orientation = db.Column(
         db.Enum('vertical', 'horizontal'), server_default=db.FetchedValue())
     dataCollectionGroupId = db.Column(db.ForeignKey(
@@ -1759,9 +2183,11 @@ class GridInfo(db.Model):
     snapshot_offsetypixel = db.Column(db.Float)
 
     DataCollectionGroup = db.relationship(
-        'DataCollectionGroup', primaryjoin='GridInfo.dataCollectionGroupId == DataCollectionGroup.dataCollectionGroupId')
+        'DataCollectionGroup',
+        primaryjoin='GridInfo.dataCollectionGroupId == DataCollectionGroup.dataCollectionGroupId')
     WorkflowMesh = db.relationship(
-        'WorkflowMesh', primaryjoin='GridInfo.workflowMeshId == WorkflowMesh.workflowMeshId')
+        'WorkflowMesh',
+        primaryjoin='GridInfo.workflowMeshId == WorkflowMesh.workflowMeshId')
 
 
 class Image(db.Model):
@@ -1771,8 +2197,17 @@ class Image(db.Model):
     )
 
     imageId = db.Column(db.Integer, primary_key=True)
-    dataCollectionId = db.Column(db.ForeignKey('DataCollection.dataCollectionId', ondelete='CASCADE'), db.ForeignKey(
-        'DataCollection.dataCollectionId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    dataCollectionId = db.Column(
+        db.ForeignKey(
+            'DataCollection.dataCollectionId',
+            ondelete='CASCADE'),
+        db.ForeignKey(
+            'DataCollection.dataCollectionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     motorPositionId = db.Column(db.Integer, index=True)
     imageNumber = db.Column(db.Integer, index=True)
     fileName = db.Column(db.String(255))
@@ -1785,13 +2220,18 @@ class Image(db.Model):
     synchrotronCurrent = db.Column(db.Float)
     comments = db.Column(db.String(1024))
     machineMessage = db.Column(db.String(1024))
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
 
     DataCollection = db.relationship(
-        'DataCollection', primaryjoin='Image.dataCollectionId == DataCollection.dataCollectionId')
+        'DataCollection',
+        primaryjoin='Image.dataCollectionId == DataCollection.dataCollectionId')
     DataCollection1 = db.relationship(
-        'DataCollection', primaryjoin='Image.dataCollectionId == DataCollection.dataCollectionId')
+        'DataCollection',
+        primaryjoin='Image.dataCollectionId == DataCollection.dataCollectionId')
 
 
 class ImageQualityIndicator(db.Model):
@@ -1800,8 +2240,14 @@ class ImageQualityIndicator(db.Model):
     imageQualityIndicatorsId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
     imageId = db.Column(db.Integer, index=True)
-    autoProcProgramId = db.Column(db.ForeignKey('AutoProcProgram.autoProcProgramId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, info='Foreign key to the AutoProcProgram table')
+    autoProcProgramId = db.Column(
+        db.ForeignKey(
+            'AutoProcProgram.autoProcProgramId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Foreign key to the AutoProcProgram table')
     spotTotal = db.Column(db.Integer, info='Total number of spots')
     inResTotal = db.Column(
         db.Integer, info='Total number of spots in resolution range')
@@ -1828,7 +2274,8 @@ class ImageQualityIndicator(db.Model):
     imageNumber = db.Column(db.Integer)
 
     AutoProcProgram = db.relationship(
-        'AutoProcProgram', primaryjoin='ImageQualityIndicator.autoProcProgramId == AutoProcProgram.autoProcProgramId')
+        'AutoProcProgram',
+        primaryjoin='ImageQualityIndicator.autoProcProgramId == AutoProcProgram.autoProcProgramId')
 
 
 class Imager(db.Model):
@@ -1877,7 +2324,8 @@ class Instruction(db.Model):
     comments = db.Column(db.String(255))
 
     InstructionSet = db.relationship(
-        'InstructionSet', primaryjoin='Instruction.instructionSetId == InstructionSet.instructionSetId')
+        'InstructionSet',
+        primaryjoin='Instruction.instructionSetId == InstructionSet.instructionSetId')
 
 
 class InstructionSet(db.Model):
@@ -1893,10 +2341,23 @@ class IspybAutoProcAttachment(db.Model):
     autoProcAttachmentId = db.Column(db.Integer, primary_key=True)
     fileName = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255), nullable=False)
-    step = db.Column(db.Enum('XDS', 'XSCALE', 'SCALA', 'SCALEPACK', 'TRUNCATE', 'DIMPLE'),
-                     server_default=db.FetchedValue(), info='step where the file is generated')
-    fileCategory = db.Column(db.Enum(
-        'input', 'output', 'log', 'correction'), server_default=db.FetchedValue())
+    step = db.Column(
+        db.Enum(
+            'XDS',
+            'XSCALE',
+            'SCALA',
+            'SCALEPACK',
+            'TRUNCATE',
+            'DIMPLE'),
+        server_default=db.FetchedValue(),
+        info='step where the file is generated')
+    fileCategory = db.Column(
+        db.Enum(
+            'input',
+            'output',
+            'log',
+            'correction'),
+        server_default=db.FetchedValue())
     hasGraph = db.Column(db.Integer, nullable=False,
                          server_default=db.FetchedValue())
 
@@ -1918,8 +2379,19 @@ class IspybReference(db.Model):
     referenceUrl = db.Column(db.String(1024), info='url of the reference')
     referenceBibtext = db.Column(
         db.LargeBinary, info='bibtext value of the reference')
-    beamline = db.Column(db.Enum('All', 'ID14-4', 'ID23-1', 'ID23-2', 'ID29',
-                         'ID30A-1', 'ID30A-2', 'XRF', 'AllXRF', 'Mesh'), info='beamline involved')
+    beamline = db.Column(
+        db.Enum(
+            'All',
+            'ID14-4',
+            'ID23-1',
+            'ID23-2',
+            'ID29',
+            'ID30A-1',
+            'ID30A-2',
+            'XRF',
+            'AllXRF',
+            'Mesh'),
+        info='beamline involved')
 
 
 class LabContact(db.Model):
@@ -1941,8 +2413,11 @@ class LabContact(db.Model):
         db.Integer, nullable=False, server_default=db.FetchedValue())
     dewarAvgTransportValue = db.Column(
         db.Integer, nullable=False, server_default=db.FetchedValue())
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
 
     Person = db.relationship(
         'Person', primaryjoin='LabContact.personId == Person.personId')
@@ -1961,8 +2436,11 @@ class Laboratory(db.Model):
     country = db.Column(db.String(45))
     url = db.Column(db.String(255))
     organization = db.Column(db.String(45))
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
     laboratoryExtPk = db.Column(db.Integer)
 
 
@@ -1995,10 +2473,13 @@ class MXMRRun(db.Model):
     mxMRRunId = db.Column(db.Integer, primary_key=True)
     autoProcScalingId = db.Column(db.ForeignKey(
         'AutoProcScaling.autoProcScalingId'), nullable=False, index=True)
-    success = db.Column(db.Integer, server_default=db.FetchedValue(
-    ), info='Indicates whether the program completed. 1 for success, 0 for failure.')
+    success = db.Column(
+        db.Integer,
+        server_default=db.FetchedValue(),
+        info='Indicates whether the program completed. 1 for success, 0 for failure.')
     message = db.Column(
-        db.String(255), info='A short summary of the findings, success or failure.')
+        db.String(255),
+        info='A short summary of the findings, success or failure.')
     pipeline = db.Column(db.String(50))
     inputCoordFile = db.Column(db.String(255))
     outputCoordFile = db.Column(db.String(255))
@@ -2015,7 +2496,8 @@ class MXMRRun(db.Model):
     endtime = db.Column(db.DateTime)
 
     AutoProcScaling = db.relationship(
-        'AutoProcScaling', primaryjoin='MXMRRun.autoProcScalingId == AutoProcScaling.autoProcScalingId')
+        'AutoProcScaling',
+        primaryjoin='MXMRRun.autoProcScalingId == AutoProcScaling.autoProcScalingId')
 
 
 class MXMRRunBlob(db.Model):
@@ -2053,7 +2535,8 @@ class Macromolecule(db.Model):
     electronDensity = db.Column(db.Float(7))
 
     SafetyLevel = db.relationship(
-        'SafetyLevel', primaryjoin='Macromolecule.safetyLevelId == SafetyLevel.safetyLevelId')
+        'SafetyLevel',
+        primaryjoin='Macromolecule.safetyLevelId == SafetyLevel.safetyLevelId')
 
 
 class MacromoleculeRegion(db.Model):
@@ -2068,7 +2551,8 @@ class MacromoleculeRegion(db.Model):
     sequence = db.Column(db.String(45))
 
     Macromolecule = db.relationship(
-        'Macromolecule', primaryjoin='MacromoleculeRegion.macromoleculeId == Macromolecule.macromoleculeId')
+        'Macromolecule',
+        primaryjoin='MacromoleculeRegion.macromoleculeId == Macromolecule.macromoleculeId')
 
 
 class Measurement(db.Model):
@@ -2093,7 +2577,8 @@ class Measurement(db.Model):
 
     Run = db.relationship('Run', primaryjoin='Measurement.runId == Run.runId')
     Speciman = db.relationship(
-        'Speciman', primaryjoin='Measurement.specimenId == Speciman.specimenId')
+        'Speciman',
+        primaryjoin='Measurement.specimenId == Speciman.specimenId')
 
 
 class MeasurementToDataCollection(db.Model):
@@ -2107,9 +2592,11 @@ class MeasurementToDataCollection(db.Model):
     dataCollectionOrder = db.Column(db.Integer)
 
     SaxsDataCollection = db.relationship(
-        'SaxsDataCollection', primaryjoin='MeasurementToDataCollection.dataCollectionId == SaxsDataCollection.dataCollectionId')
+        'SaxsDataCollection',
+        primaryjoin='MeasurementToDataCollection.dataCollectionId == SaxsDataCollection.dataCollectionId')
     Measurement = db.relationship(
-        'Measurement', primaryjoin='MeasurementToDataCollection.measurementId == Measurement.measurementId')
+        'Measurement',
+        primaryjoin='MeasurementToDataCollection.measurementId == Measurement.measurementId')
 
 
 class MeasurementUnit(db.Model):
@@ -2136,7 +2623,8 @@ class Merge(db.Model):
     FrameList = db.relationship(
         'FrameList', primaryjoin='Merge.frameListId == FrameList.frameListId')
     Measurement = db.relationship(
-        'Measurement', primaryjoin='Merge.measurementId == Measurement.measurementId')
+        'Measurement',
+        primaryjoin='Merge.measurementId == Measurement.measurementId')
 
 
 class MixtureToStructure(db.Model):
@@ -2145,15 +2633,19 @@ class MixtureToStructure(db.Model):
     fitToStructureId = db.Column(db.Integer, primary_key=True)
     structureId = db.Column(db.ForeignKey(
         'Structure.structureId'), nullable=False, index=True)
-    mixtureId = db.Column(db.ForeignKey(
-        'FitStructureToExperimentalData.fitStructureToExperimentalDataId'), nullable=False, index=True)
+    mixtureId = db.Column(
+        db.ForeignKey('FitStructureToExperimentalData.fitStructureToExperimentalDataId'),
+        nullable=False,
+        index=True)
     volumeFraction = db.Column(db.String(45))
     creationDate = db.Column(db.DateTime)
 
     FitStructureToExperimentalDatum = db.relationship(
-        'FitStructureToExperimentalDatum', primaryjoin='MixtureToStructure.mixtureId == FitStructureToExperimentalDatum.fitStructureToExperimentalDataId')
+        'FitStructureToExperimentalDatum',
+        primaryjoin='MixtureToStructure.mixtureId == FitStructureToExperimentalDatum.fitStructureToExperimentalDataId')
     Structure = db.relationship(
-        'Structure', primaryjoin='MixtureToStructure.structureId == Structure.structureId')
+        'Structure',
+        primaryjoin='MixtureToStructure.structureId == Structure.structureId')
 
 
 class Model(db.Model):
@@ -2177,23 +2669,43 @@ class ModelBuilding(db.Model):
 
     modelBuildingId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    phasingAnalysisId = db.Column(db.ForeignKey('PhasingAnalysis.phasingAnalysisId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, info='Related phasing analysis item')
-    phasingProgramRunId = db.Column(db.ForeignKey('PhasingProgramRun.phasingProgramRunId', ondelete='CASCADE',
-                                    onupdate='CASCADE'), nullable=False, index=True, info='Related program item')
-    spaceGroupId = db.Column(db.ForeignKey('SpaceGroup.spaceGroupId', ondelete='CASCADE',
-                             onupdate='CASCADE'), index=True, info='Related spaceGroup')
+    phasingAnalysisId = db.Column(
+        db.ForeignKey(
+            'PhasingAnalysis.phasingAnalysisId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related phasing analysis item')
+    phasingProgramRunId = db.Column(
+        db.ForeignKey(
+            'PhasingProgramRun.phasingProgramRunId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related program item')
+    spaceGroupId = db.Column(
+        db.ForeignKey(
+            'SpaceGroup.spaceGroupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='Related spaceGroup')
     lowRes = db.Column(db.Float(asdecimal=True))
     highRes = db.Column(db.Float(asdecimal=True))
     recordTimeStamp = db.Column(
         db.DateTime, info='Creation or last update date/time')
 
     PhasingAnalysi = db.relationship(
-        'PhasingAnalysi', primaryjoin='ModelBuilding.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
+        'PhasingAnalysi',
+        primaryjoin='ModelBuilding.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
     PhasingProgramRun = db.relationship(
-        'PhasingProgramRun', primaryjoin='ModelBuilding.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
+        'PhasingProgramRun',
+        primaryjoin='ModelBuilding.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
     SpaceGroup = db.relationship(
-        'SpaceGroup', primaryjoin='ModelBuilding.spaceGroupId == SpaceGroup.spaceGroupId')
+        'SpaceGroup',
+        primaryjoin='ModelBuilding.spaceGroupId == SpaceGroup.spaceGroupId')
 
 
 class ModelList(db.Model):
@@ -2216,7 +2728,8 @@ class ModelToList(db.Model):
     Model = db.relationship(
         'Model', primaryjoin='ModelToList.modelId == Model.modelId')
     ModelList = db.relationship(
-        'ModelList', primaryjoin='ModelToList.modelListId == ModelList.modelListId')
+        'ModelList',
+        primaryjoin='ModelToList.modelListId == ModelList.modelListId')
 
 
 class MotionCorrection(db.Model):
@@ -2259,8 +2772,11 @@ class MotorPosition(db.Model):
     chi = db.Column(db.Float(asdecimal=True))
     gridIndexY = db.Column(db.Integer)
     gridIndexZ = db.Column(db.Integer)
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
 
 
 class Movie(db.Model):
@@ -2281,7 +2797,8 @@ class Movie(db.Model):
         db.DateTime, nullable=False, server_default=db.FetchedValue())
 
     DataCollection = db.relationship(
-        'DataCollection', primaryjoin='Movie.dataCollectionId == DataCollection.dataCollectionId')
+        'DataCollection',
+        primaryjoin='Movie.dataCollectionId == DataCollection.dataCollectionId')
 
 
 class PDB(db.Model):
@@ -2319,7 +2836,8 @@ class PDBEntry(db.Model):
     authorMatch = db.Column(db.Integer)
 
     AutoProcProgram = db.relationship(
-        'AutoProcProgram', primaryjoin='PDBEntry.autoProcProgramId == AutoProcProgram.autoProcProgramId')
+        'AutoProcProgram',
+        primaryjoin='PDBEntry.autoProcProgramId == AutoProcProgram.autoProcProgramId')
 
 
 class PDBEntryHasAutoProcProgram(db.Model):
@@ -2328,14 +2846,20 @@ class PDBEntryHasAutoProcProgram(db.Model):
     pdbEntryHasAutoProcId = db.Column(db.Integer, primary_key=True)
     pdbEntryId = db.Column(db.ForeignKey(
         'PDBEntry.pdbEntryId', ondelete='CASCADE'), nullable=False, index=True)
-    autoProcProgramId = db.Column(db.ForeignKey(
-        'AutoProcProgram.autoProcProgramId', ondelete='CASCADE'), nullable=False, index=True)
+    autoProcProgramId = db.Column(
+        db.ForeignKey(
+            'AutoProcProgram.autoProcProgramId',
+            ondelete='CASCADE'),
+        nullable=False,
+        index=True)
     distance = db.Column(db.Float)
 
     AutoProcProgram = db.relationship(
-        'AutoProcProgram', primaryjoin='PDBEntryHasAutoProcProgram.autoProcProgramId == AutoProcProgram.autoProcProgramId')
+        'AutoProcProgram',
+        primaryjoin='PDBEntryHasAutoProcProgram.autoProcProgramId == AutoProcProgram.autoProcProgramId')
     PDBEntry = db.relationship(
-        'PDBEntry', primaryjoin='PDBEntryHasAutoProcProgram.pdbEntryId == PDBEntry.pdbEntryId')
+        'PDBEntry',
+        primaryjoin='PDBEntryHasAutoProcProgram.pdbEntryId == PDBEntry.pdbEntryId')
 
 
 class PHPSession(db.Model):
@@ -2350,26 +2874,38 @@ class Particle(db.Model):
     __tablename__ = 'Particle'
 
     particleId = db.Column(db.Integer, primary_key=True)
-    dataCollectionId = db.Column(db.ForeignKey(
-        'DataCollection.dataCollectionId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    dataCollectionId = db.Column(
+        db.ForeignKey(
+            'DataCollection.dataCollectionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     x = db.Column(db.Float)
     y = db.Column(db.Float)
 
     DataCollection = db.relationship(
-        'DataCollection', primaryjoin='Particle.dataCollectionId == DataCollection.dataCollectionId')
+        'DataCollection',
+        primaryjoin='Particle.dataCollectionId == DataCollection.dataCollectionId')
 
 
 class ParticleClassification(db.Model):
     __tablename__ = 'ParticleClassification'
 
     particleClassificationId = db.Column(db.Integer, primary_key=True)
-    particleClassificationGroupId = db.Column(db.ForeignKey(
-        'ParticleClassificationGroup.particleClassificationGroupId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    particleClassificationGroupId = db.Column(
+        db.ForeignKey(
+            'ParticleClassificationGroup.particleClassificationGroupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     classNumber = db.Column(
-        db.Integer, info='Identified of the class. A unique ID given by Relion')
+        db.Integer,
+        info='Identified of the class. A unique ID given by Relion')
     classImageFullPath = db.Column(db.String(255), info='The PNG of the class')
     particlesPerClass = db.Column(
-        db.Integer, info='Number of particles within the selected class, can then be used together with the total number above to calculate the percentage')
+        db.Integer,
+        info='Number of particles within the selected class, can then be used together with the total number above to calculate the percentage')
     classDistribution = db.Column(db.Float)
     rotationAccuracy = db.Column(db.Float)
     translationAccuracy = db.Column(db.Float, info='Unit: Angstroms')
@@ -2377,15 +2913,20 @@ class ParticleClassification(db.Model):
     overallFourierCompleteness = db.Column(db.Float)
 
     ParticleClassificationGroup = db.relationship(
-        'ParticleClassificationGroup', primaryjoin='ParticleClassification.particleClassificationGroupId == ParticleClassificationGroup.particleClassificationGroupId')
+        'ParticleClassificationGroup',
+        primaryjoin='ParticleClassification.particleClassificationGroupId == ParticleClassificationGroup.particleClassificationGroupId')
 
 
 class ParticleClassificationGroup(db.Model):
     __tablename__ = 'ParticleClassificationGroup'
 
     particleClassificationGroupId = db.Column(db.Integer, primary_key=True)
-    particlePickerId = db.Column(db.ForeignKey(
-        'ParticlePicker.particlePickerId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    particlePickerId = db.Column(
+        db.ForeignKey(
+            'ParticlePicker.particlePickerId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     programId = db.Column(db.ForeignKey(
         'AutoProcProgram.autoProcProgramId', onupdate='CASCADE'), index=True)
     type = db.Column(db.Enum('2D', '3D'),
@@ -2397,18 +2938,32 @@ class ParticleClassificationGroup(db.Model):
     symmetry = db.Column(db.String(20))
 
     ParticlePicker = db.relationship(
-        'ParticlePicker', primaryjoin='ParticleClassificationGroup.particlePickerId == ParticlePicker.particlePickerId')
+        'ParticlePicker',
+        primaryjoin='ParticleClassificationGroup.particlePickerId == ParticlePicker.particlePickerId')
     AutoProcProgram = db.relationship(
-        'AutoProcProgram', primaryjoin='ParticleClassificationGroup.programId == AutoProcProgram.autoProcProgramId')
+        'AutoProcProgram',
+        primaryjoin='ParticleClassificationGroup.programId == AutoProcProgram.autoProcProgramId')
 
 
 t_ParticleClassification_has_CryoemInitialModel = db.Table(
     'ParticleClassification_has_CryoemInitialModel',
-    db.Column('particleClassificationId', db.ForeignKey('ParticleClassification.particleClassificationId',
-              ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False),
-    db.Column('cryoemInitialModelId', db.ForeignKey('CryoemInitialModel.cryoemInitialModelId',
-              ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'particleClassificationId',
+        db.ForeignKey(
+            'ParticleClassification.particleClassificationId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'cryoemInitialModelId',
+        db.ForeignKey(
+            'CryoemInitialModel.cryoemInitialModelId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 class ParticlePicker(db.Model):
@@ -2422,13 +2977,16 @@ class ParticlePicker(db.Model):
     particlePickingTemplate = db.Column(db.String(255), info='Cryolo model')
     particleDiameter = db.Column(db.Float, info='Unit: nm')
     numberOfParticles = db.Column(db.Integer)
-    summaryImageFullPath = db.Column(db.String(
-        255), info='Generated summary micrograph image with highlighted particles')
+    summaryImageFullPath = db.Column(
+        db.String(255),
+        info='Generated summary micrograph image with highlighted particles')
 
     MotionCorrection = db.relationship(
-        'MotionCorrection', primaryjoin='ParticlePicker.firstMotionCorrectionId == MotionCorrection.motionCorrectionId')
+        'MotionCorrection',
+        primaryjoin='ParticlePicker.firstMotionCorrectionId == MotionCorrection.motionCorrectionId')
     AutoProcProgram = db.relationship(
-        'AutoProcProgram', primaryjoin='ParticlePicker.programId == AutoProcProgram.autoProcProgramId')
+        'AutoProcProgram',
+        primaryjoin='ParticlePicker.programId == AutoProcProgram.autoProcProgramId')
 
 
 class Permission(db.Model):
@@ -2439,7 +2997,9 @@ class Permission(db.Model):
     description = db.Column(db.String(100))
 
     UserGroup = db.relationship(
-        'UserGroup', secondary='UserGroup_has_Permission', backref="permissions")
+        'UserGroup',
+        secondary='UserGroup_has_Permission',
+        backref="permissions")
 
 
 class Person(db.Model):
@@ -2458,13 +3018,17 @@ class Person(db.Model):
     login = db.Column(db.String(45), index=True)
     passwd = db.Column(db.String(45))
     faxNumber = db.Column(db.String(45))
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
     externalId = db.Column(db.BINARY(16))
     cache = db.Column(db.Text)
 
     Laboratory = db.relationship(
-        'Laboratory', primaryjoin='Person.laboratoryId == Laboratory.laboratoryId')
+        'Laboratory',
+        primaryjoin='Person.laboratoryId == Laboratory.laboratoryId')
     Project = db.relationship('Project', secondary='Project_has_Person')
     UserGroup = db.relationship('UserGroup', secondary='UserGroup_has_Person')
 
@@ -2474,12 +3038,29 @@ class Phasing(db.Model):
 
     phasingId = db.Column(db.Integer, primary_key=True,
                           info='Primary key (auto-incremented)')
-    phasingAnalysisId = db.Column(db.ForeignKey('PhasingAnalysis.phasingAnalysisId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, info='Related phasing analysis item')
-    phasingProgramRunId = db.Column(db.ForeignKey('PhasingProgramRun.phasingProgramRunId', ondelete='CASCADE',
-                                    onupdate='CASCADE'), nullable=False, index=True, info='Related program item')
-    spaceGroupId = db.Column(db.ForeignKey('SpaceGroup.spaceGroupId', ondelete='CASCADE',
-                             onupdate='CASCADE'), index=True, info='Related spaceGroup')
+    phasingAnalysisId = db.Column(
+        db.ForeignKey(
+            'PhasingAnalysis.phasingAnalysisId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related phasing analysis item')
+    phasingProgramRunId = db.Column(
+        db.ForeignKey(
+            'PhasingProgramRun.phasingProgramRunId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related program item')
+    spaceGroupId = db.Column(
+        db.ForeignKey(
+            'SpaceGroup.spaceGroupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='Related spaceGroup')
     method = db.Column(db.Enum('solvent flattening',
                        'solvent flipping'), info='phasing method')
     solventContent = db.Column(db.Float(asdecimal=True))
@@ -2490,11 +3071,14 @@ class Phasing(db.Model):
         db.DateTime, nullable=False, server_default=db.FetchedValue())
 
     PhasingAnalysi = db.relationship(
-        'PhasingAnalysi', primaryjoin='Phasing.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
+        'PhasingAnalysi',
+        primaryjoin='Phasing.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
     PhasingProgramRun = db.relationship(
-        'PhasingProgramRun', primaryjoin='Phasing.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
+        'PhasingProgramRun',
+        primaryjoin='Phasing.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
     SpaceGroup = db.relationship(
-        'SpaceGroup', primaryjoin='Phasing.spaceGroupId == SpaceGroup.spaceGroupId')
+        'SpaceGroup',
+        primaryjoin='Phasing.spaceGroupId == SpaceGroup.spaceGroupId')
 
 
 class PhasingAnalysi(db.Model):
@@ -2511,10 +3095,29 @@ class PhasingProgramAttachment(db.Model):
 
     phasingProgramAttachmentId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    phasingProgramRunId = db.Column(db.ForeignKey('PhasingProgramRun.phasingProgramRunId', ondelete='CASCADE',
-                                    onupdate='CASCADE'), nullable=False, index=True, info='Related program item')
-    fileType = db.Column(db.Enum('DSIGMA_RESOLUTION', 'OCCUPANCY_SITENUMBER', 'CONTRAST_CYCLE',
-                         'CCALL_CCWEAK', 'IMAGE', 'Map', 'Logfile', 'PDB', 'CSV', 'INS', 'RES', 'TXT'), info='file type')
+    phasingProgramRunId = db.Column(
+        db.ForeignKey(
+            'PhasingProgramRun.phasingProgramRunId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related program item')
+    fileType = db.Column(
+        db.Enum(
+            'DSIGMA_RESOLUTION',
+            'OCCUPANCY_SITENUMBER',
+            'CONTRAST_CYCLE',
+            'CCALL_CCWEAK',
+            'IMAGE',
+            'Map',
+            'Logfile',
+            'PDB',
+            'CSV',
+            'INS',
+            'RES',
+            'TXT'),
+        info='file type')
     fileName = db.Column(db.String(45), info='file name')
     filePath = db.Column(db.String(255), info='file path')
     input = db.Column(db.Integer)
@@ -2522,7 +3125,8 @@ class PhasingProgramAttachment(db.Model):
     ), info='Creation or last update date/time')
 
     PhasingProgramRun = db.relationship(
-        'PhasingProgramRun', primaryjoin='PhasingProgramAttachment.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
+        'PhasingProgramRun',
+        primaryjoin='PhasingProgramAttachment.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
 
 
 class PhasingProgramRun(db.Model):
@@ -2549,10 +3153,20 @@ class PhasingStatistic(db.Model):
 
     phasingStatisticsId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    phasingHasScalingId1 = db.Column(db.ForeignKey('Phasing_has_Scaling.phasingHasScalingId',
-                                     ondelete='CASCADE', onupdate='CASCADE'), index=True, info='the dataset in question')
-    phasingHasScalingId2 = db.Column(db.ForeignKey('Phasing_has_Scaling.phasingHasScalingId', ondelete='CASCADE',
-                                     onupdate='CASCADE'), index=True, info='if this is MIT or MAD, which scaling are being compared, null otherwise')
+    phasingHasScalingId1 = db.Column(
+        db.ForeignKey(
+            'Phasing_has_Scaling.phasingHasScalingId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='the dataset in question')
+    phasingHasScalingId2 = db.Column(
+        db.ForeignKey(
+            'Phasing_has_Scaling.phasingHasScalingId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='if this is MIT or MAD, which scaling are being compared, null otherwise')
     phasingStepId = db.Column(db.ForeignKey(
         'PhasingStep.phasingStepId'), index=True)
     numberOfBins = db.Column(db.Integer, info='the total number of bins')
@@ -2561,8 +3175,27 @@ class PhasingStatistic(db.Model):
                        info='low resolution cutoff of this binfloat')
     highRes = db.Column(db.Float(asdecimal=True),
                         info='high resolution cutoff of this binfloat')
-    metric = db.Column(db.Enum('Rcullis', 'Average Fragment Length', 'Chain Count', 'Residues Count', 'CC', 'PhasingPower', 'FOM', '<d"/sig>', 'Best CC',
-                       'CC(1/2)', 'Weak CC', 'CFOM', 'Pseudo_free_CC', 'CC of partial model', 'Start R-work', 'Start R-free', 'Final R-work', 'Final R-free'), info='metric')
+    metric = db.Column(
+        db.Enum(
+            'Rcullis',
+            'Average Fragment Length',
+            'Chain Count',
+            'Residues Count',
+            'CC',
+            'PhasingPower',
+            'FOM',
+            '<d"/sig>',
+            'Best CC',
+            'CC(1/2)',
+            'Weak CC',
+            'CFOM',
+            'Pseudo_free_CC',
+            'CC of partial model',
+            'Start R-work',
+            'Start R-free',
+            'Final R-work',
+            'Final R-free'),
+        info='metric')
     statisticsValue = db.Column(
         db.Float(asdecimal=True), info='the statistics value')
     nReflections = db.Column(db.Integer)
@@ -2570,11 +3203,14 @@ class PhasingStatistic(db.Model):
     ), info='Creation or last update date/time')
 
     Phasing_has_Scaling = db.relationship(
-        'PhasingHasScaling', primaryjoin='PhasingStatistic.phasingHasScalingId1 == PhasingHasScaling.phasingHasScalingId')
+        'PhasingHasScaling',
+        primaryjoin='PhasingStatistic.phasingHasScalingId1 == PhasingHasScaling.phasingHasScalingId')
     Phasing_has_Scaling1 = db.relationship(
-        'PhasingHasScaling', primaryjoin='PhasingStatistic.phasingHasScalingId2 == PhasingHasScaling.phasingHasScalingId')
+        'PhasingHasScaling',
+        primaryjoin='PhasingStatistic.phasingHasScalingId2 == PhasingHasScaling.phasingHasScalingId')
     PhasingStep = db.relationship(
-        'PhasingStep', primaryjoin='PhasingStatistic.phasingStepId == PhasingStep.phasingStepId')
+        'PhasingStep',
+        primaryjoin='PhasingStatistic.phasingStepId == PhasingStep.phasingStepId')
 
 
 class PhasingStep(db.Model):
@@ -2589,8 +3225,14 @@ class PhasingStep(db.Model):
     autoProcScalingId = db.Column(db.ForeignKey(
         'AutoProcScaling.autoProcScalingId'), index=True)
     phasingAnalysisId = db.Column(db.Integer, index=True)
-    phasingStepType = db.Column(db.Enum(
-        'PREPARE', 'SUBSTRUCTUREDETERMINATION', 'PHASING', 'MODELBUILDING', 'REFINEMENT', 'LIGAND_FIT'))
+    phasingStepType = db.Column(
+        db.Enum(
+            'PREPARE',
+            'SUBSTRUCTUREDETERMINATION',
+            'PHASING',
+            'MODELBUILDING',
+            'REFINEMENT',
+            'LIGAND_FIT'))
     method = db.Column(db.String(45))
     solventContent = db.Column(db.String(45))
     enantiomorph = db.Column(db.String(45))
@@ -2601,11 +3243,14 @@ class PhasingStep(db.Model):
         db.DateTime, nullable=False, server_default=db.FetchedValue())
 
     AutoProcScaling = db.relationship(
-        'AutoProcScaling', primaryjoin='PhasingStep.autoProcScalingId == AutoProcScaling.autoProcScalingId')
+        'AutoProcScaling',
+        primaryjoin='PhasingStep.autoProcScalingId == AutoProcScaling.autoProcScalingId')
     PhasingProgramRun = db.relationship(
-        'PhasingProgramRun', primaryjoin='PhasingStep.programRunId == PhasingProgramRun.phasingProgramRunId')
+        'PhasingProgramRun',
+        primaryjoin='PhasingStep.programRunId == PhasingProgramRun.phasingProgramRunId')
     SpaceGroup = db.relationship(
-        'SpaceGroup', primaryjoin='PhasingStep.spaceGroupId == SpaceGroup.spaceGroupId')
+        'SpaceGroup',
+        primaryjoin='PhasingStep.spaceGroupId == SpaceGroup.spaceGroupId')
 
 
 class PhasingHasScaling(db.Model):
@@ -2613,19 +3258,34 @@ class PhasingHasScaling(db.Model):
 
     phasingHasScalingId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    phasingAnalysisId = db.Column(db.ForeignKey('PhasingAnalysis.phasingAnalysisId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, info='Related phasing analysis item')
-    autoProcScalingId = db.Column(db.ForeignKey('AutoProcScaling.autoProcScalingId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, info='Related autoProcScaling item')
+    phasingAnalysisId = db.Column(
+        db.ForeignKey(
+            'PhasingAnalysis.phasingAnalysisId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related phasing analysis item')
+    autoProcScalingId = db.Column(
+        db.ForeignKey(
+            'AutoProcScaling.autoProcScalingId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related autoProcScaling item')
     datasetNumber = db.Column(
-        db.Integer, info='serial number of the dataset and always reserve 0 for the reference')
+        db.Integer,
+        info='serial number of the dataset and always reserve 0 for the reference')
     recordTimeStamp = db.Column(
         db.DateTime, nullable=False, server_default=db.FetchedValue())
 
     AutoProcScaling = db.relationship(
-        'AutoProcScaling', primaryjoin='PhasingHasScaling.autoProcScalingId == AutoProcScaling.autoProcScalingId')
+        'AutoProcScaling',
+        primaryjoin='PhasingHasScaling.autoProcScalingId == AutoProcScaling.autoProcScalingId')
     PhasingAnalysi = db.relationship(
-        'PhasingAnalysi', primaryjoin='PhasingHasScaling.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
+        'PhasingAnalysi',
+        primaryjoin='PhasingHasScaling.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
 
 
 class PlateGroup(db.Model):
@@ -2653,8 +3313,13 @@ class Position(db.Model):
 
     positionId = db.Column(db.Integer, primary_key=True,
                            info='Primary key (auto-incremented)')
-    relativePositionId = db.Column(db.ForeignKey('Position.positionId', ondelete='CASCADE',
-                                   onupdate='CASCADE'), index=True, info='relative position, null otherwise')
+    relativePositionId = db.Column(
+        db.ForeignKey(
+            'Position.positionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='relative position, null otherwise')
     posX = db.Column(db.Float(asdecimal=True))
     posY = db.Column(db.Float(asdecimal=True))
     posZ = db.Column(db.Float(asdecimal=True))
@@ -2662,8 +3327,10 @@ class Position(db.Model):
     recordTimeStamp = db.Column(
         db.DateTime, info='Creation or last update date/time')
 
-    parent = db.relationship('Position', remote_side=[
-                             positionId], primaryjoin='Position.relativePositionId == Position.positionId')
+    parent = db.relationship(
+        'Position',
+        remote_side=[positionId],
+        primaryjoin='Position.relativePositionId == Position.positionId')
 
 
 class PreparePhasingDatum(db.Model):
@@ -2671,23 +3338,43 @@ class PreparePhasingDatum(db.Model):
 
     preparePhasingDataId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    phasingAnalysisId = db.Column(db.ForeignKey('PhasingAnalysis.phasingAnalysisId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, info='Related phasing analysis item')
-    phasingProgramRunId = db.Column(db.ForeignKey('PhasingProgramRun.phasingProgramRunId', ondelete='CASCADE',
-                                    onupdate='CASCADE'), nullable=False, index=True, info='Related program item')
-    spaceGroupId = db.Column(db.ForeignKey('SpaceGroup.spaceGroupId', ondelete='CASCADE',
-                             onupdate='CASCADE'), index=True, info='Related spaceGroup')
+    phasingAnalysisId = db.Column(
+        db.ForeignKey(
+            'PhasingAnalysis.phasingAnalysisId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related phasing analysis item')
+    phasingProgramRunId = db.Column(
+        db.ForeignKey(
+            'PhasingProgramRun.phasingProgramRunId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related program item')
+    spaceGroupId = db.Column(
+        db.ForeignKey(
+            'SpaceGroup.spaceGroupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='Related spaceGroup')
     lowRes = db.Column(db.Float(asdecimal=True))
     highRes = db.Column(db.Float(asdecimal=True))
     recordTimeStamp = db.Column(
         db.DateTime, info='Creation or last update date/time')
 
     PhasingAnalysi = db.relationship(
-        'PhasingAnalysi', primaryjoin='PreparePhasingDatum.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
+        'PhasingAnalysi',
+        primaryjoin='PreparePhasingDatum.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
     PhasingProgramRun = db.relationship(
-        'PhasingProgramRun', primaryjoin='PreparePhasingDatum.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
+        'PhasingProgramRun',
+        primaryjoin='PreparePhasingDatum.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
     SpaceGroup = db.relationship(
-        'SpaceGroup', primaryjoin='PreparePhasingDatum.spaceGroupId == SpaceGroup.spaceGroupId')
+        'SpaceGroup',
+        primaryjoin='PreparePhasingDatum.spaceGroupId == SpaceGroup.spaceGroupId')
 
 
 class Project(db.Model):
@@ -2710,65 +3397,143 @@ class Project(db.Model):
 
 t_Project_has_BLSample = db.Table(
     'Project_has_BLSample',
-    db.Column('projectId', db.ForeignKey('Project.projectId', ondelete='CASCADE',
-              onupdate='CASCADE'), primary_key=True, nullable=False),
-    db.Column('blSampleId', db.ForeignKey('BLSample.blSampleId', ondelete='CASCADE',
-              onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'projectId',
+        db.ForeignKey(
+            'Project.projectId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'blSampleId',
+        db.ForeignKey(
+            'BLSample.blSampleId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 t_Project_has_DCGroup = db.Table(
     'Project_has_DCGroup',
-    db.Column('projectId', db.ForeignKey('Project.projectId', ondelete='CASCADE',
-              onupdate='CASCADE'), primary_key=True, nullable=False),
-    db.Column('dataCollectionGroupId', db.ForeignKey('DataCollectionGroup.dataCollectionGroupId',
-              ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'projectId',
+        db.ForeignKey(
+            'Project.projectId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'dataCollectionGroupId',
+        db.ForeignKey(
+            'DataCollectionGroup.dataCollectionGroupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 t_Project_has_EnergyScan = db.Table(
     'Project_has_EnergyScan',
-    db.Column('projectId', db.ForeignKey('Project.projectId', ondelete='CASCADE',
-              onupdate='CASCADE'), primary_key=True, nullable=False),
-    db.Column('energyScanId', db.ForeignKey('EnergyScan.energyScanId', ondelete='CASCADE',
-              onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'projectId',
+        db.ForeignKey(
+            'Project.projectId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'energyScanId',
+        db.ForeignKey(
+            'EnergyScan.energyScanId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 t_Project_has_Person = db.Table(
     'Project_has_Person',
-    db.Column('projectId', db.ForeignKey('Project.projectId',
-              ondelete='CASCADE'), primary_key=True, nullable=False),
-    db.Column('personId', db.ForeignKey('Person.personId',
-              ondelete='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'projectId',
+        db.ForeignKey(
+            'Project.projectId',
+            ondelete='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'personId',
+        db.ForeignKey(
+            'Person.personId',
+            ondelete='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 t_Project_has_Protein = db.Table(
     'Project_has_Protein',
-    db.Column('projectId', db.ForeignKey('Project.projectId',
-              ondelete='CASCADE'), primary_key=True, nullable=False),
-    db.Column('proteinId', db.ForeignKey('Protein.proteinId',
-              ondelete='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'projectId',
+        db.ForeignKey(
+            'Project.projectId',
+            ondelete='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'proteinId',
+        db.ForeignKey(
+            'Protein.proteinId',
+            ondelete='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 t_Project_has_Session = db.Table(
     'Project_has_Session',
-    db.Column('projectId', db.ForeignKey('Project.projectId', ondelete='CASCADE',
-              onupdate='CASCADE'), primary_key=True, nullable=False),
-    db.Column('sessionId', db.ForeignKey('BLSession.sessionId', ondelete='CASCADE',
-              onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'projectId',
+        db.ForeignKey(
+            'Project.projectId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'sessionId',
+        db.ForeignKey(
+            'BLSession.sessionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 t_Project_has_Shipping = db.Table(
     'Project_has_Shipping',
-    db.Column('projectId', db.ForeignKey('Project.projectId',
-              ondelete='CASCADE'), primary_key=True, nullable=False),
-    db.Column('shippingId', db.ForeignKey('Shipping.shippingId',
-              ondelete='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'projectId',
+        db.ForeignKey(
+            'Project.projectId',
+            ondelete='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'shippingId',
+        db.ForeignKey(
+            'Shipping.shippingId',
+            ondelete='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 class ProjectHasUser(db.Model):
@@ -2785,11 +3550,21 @@ class ProjectHasUser(db.Model):
 
 t_Project_has_XFEFSpectrum = db.Table(
     'Project_has_XFEFSpectrum',
-    db.Column('projectId', db.ForeignKey('Project.projectId',
-              ondelete='CASCADE'), primary_key=True, nullable=False),
-    db.Column('xfeFluorescenceSpectrumId', db.ForeignKey('XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId',
-              ondelete='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'projectId',
+        db.ForeignKey(
+            'Project.projectId',
+            ondelete='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'xfeFluorescenceSpectrumId',
+        db.ForeignKey(
+            'XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId',
+            ondelete='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 class Proposal(db.Model):
@@ -2800,8 +3575,14 @@ class Proposal(db.Model):
     )
 
     proposalId = db.Column(db.Integer, primary_key=True)
-    personId = db.Column(db.ForeignKey('Person.personId', ondelete='CASCADE',
-                         onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    personId = db.Column(
+        db.ForeignKey(
+            'Person.personId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     title = db.Column(db.String(200, 'utf8mb4_unicode_ci'))
     proposalCode = db.Column(db.String(45))
     proposalNumber = db.Column(db.String(45))
@@ -2828,7 +3609,8 @@ class ProposalHasPerson(db.Model):
     Person = db.relationship(
         'Person', primaryjoin='ProposalHasPerson.personId == Person.personId')
     Proposal = db.relationship(
-        'Proposal', primaryjoin='ProposalHasPerson.proposalId == Proposal.proposalId')
+        'Proposal',
+        primaryjoin='ProposalHasPerson.proposalId == Proposal.proposalId')
 
 
 class Protein(db.Model):
@@ -2838,16 +3620,28 @@ class Protein(db.Model):
     )
 
     proteinId = db.Column(db.Integer, primary_key=True)
-    proposalId = db.Column(db.ForeignKey('Proposal.proposalId', ondelete='CASCADE',
-                           onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    proposalId = db.Column(
+        db.ForeignKey(
+            'Proposal.proposalId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     name = db.Column(db.String(255, 'utf8mb4_unicode_ci'))
     acronym = db.Column(db.String(45), index=True)
     description = db.Column(
         db.Text, info='A description/summary using words and sentences')
-    hazardGroup = db.Column(db.Integer, nullable=False,
-                            server_default=db.FetchedValue(), info='A.k.a. risk group')
-    containmentLevel = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue(
-    ), info='A.k.a. biosafety level, which indicates the level of containment required')
+    hazardGroup = db.Column(
+        db.Integer,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='A.k.a. risk group')
+    containmentLevel = db.Column(
+        db.Integer,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='A.k.a. biosafety level, which indicates the level of containment required')
     safetyLevel = db.Column(db.Enum('GREEN', 'YELLOW', 'RED'))
     molecularMass = db.Column(db.Float(asdecimal=True))
     proteinType = db.Column(db.String(45))
@@ -2858,14 +3652,19 @@ class Protein(db.Model):
     isCreatedBySampleSheet = db.Column(
         db.Integer, server_default=db.FetchedValue())
     externalId = db.Column(db.BINARY(16))
-    componentTypeId = db.Column(db.ForeignKey(
-        'ComponentType.componentTypeId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    componentTypeId = db.Column(
+        db.ForeignKey(
+            'ComponentType.componentTypeId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     modId = db.Column(db.String(20))
     concentrationTypeId = db.Column(db.Integer)
     _global = db.Column('global', db.Integer, server_default=db.FetchedValue())
 
     ComponentType = db.relationship(
-        'ComponentType', primaryjoin='Protein.componentTypeId == ComponentType.componentTypeId')
+        'ComponentType',
+        primaryjoin='Protein.componentTypeId == ComponentType.componentTypeId')
     Proposal = db.relationship(
         'Proposal', primaryjoin='Protein.proposalId == Proposal.proposalId')
     ComponentSubType = db.relationship(
@@ -2937,9 +3736,11 @@ class RobotAction(db.Model):
     xtalSnapshotAfter = db.Column(db.String(255))
 
     BLSample = db.relationship(
-        'BLSample', primaryjoin='RobotAction.blsampleId == BLSample.blSampleId')
+        'BLSample',
+        primaryjoin='RobotAction.blsampleId == BLSample.blSampleId')
     BLSession = db.relationship(
-        'BLSession', primaryjoin='RobotAction.blsessionId == BLSession.sessionId')
+        'BLSession',
+        primaryjoin='RobotAction.blsessionId == BLSession.sessionId')
 
 
 class Run(db.Model):
@@ -2980,7 +3781,8 @@ class SWOnceToken(db.Model):
     Person = db.relationship(
         'Person', primaryjoin='SWOnceToken.personId == Person.personId')
     Proposal = db.relationship(
-        'Proposal', primaryjoin='SWOnceToken.proposalId == Proposal.proposalId')
+        'Proposal',
+        primaryjoin='SWOnceToken.proposalId == Proposal.proposalId')
 
 
 class SafetyLevel(db.Model):
@@ -3009,13 +3811,17 @@ class SamplePlate(db.Model):
     storageTemperature = db.Column(db.String(45))
 
     Experiment = db.relationship(
-        'Experiment', primaryjoin='SamplePlate.experimentId == Experiment.experimentId')
+        'Experiment',
+        primaryjoin='SamplePlate.experimentId == Experiment.experimentId')
     InstructionSet = db.relationship(
-        'InstructionSet', primaryjoin='SamplePlate.instructionSetId == InstructionSet.instructionSetId')
+        'InstructionSet',
+        primaryjoin='SamplePlate.instructionSetId == InstructionSet.instructionSetId')
     PlateGroup = db.relationship(
-        'PlateGroup', primaryjoin='SamplePlate.plateGroupId == PlateGroup.plateGroupId')
+        'PlateGroup',
+        primaryjoin='SamplePlate.plateGroupId == PlateGroup.plateGroupId')
     PlateType = db.relationship(
-        'PlateType', primaryjoin='SamplePlate.plateTypeId == PlateType.PlateTypeId')
+        'PlateType',
+        primaryjoin='SamplePlate.plateTypeId == PlateType.PlateTypeId')
 
 
 class SamplePlatePosition(db.Model):
@@ -3029,7 +3835,8 @@ class SamplePlatePosition(db.Model):
     volume = db.Column(db.String(45))
 
     SamplePlate = db.relationship(
-        'SamplePlate', primaryjoin='SamplePlatePosition.samplePlateId == SamplePlate.samplePlateId')
+        'SamplePlate',
+        primaryjoin='SamplePlatePosition.samplePlateId == SamplePlate.samplePlateId')
 
 
 class SaxsDataCollection(db.Model):
@@ -3041,15 +3848,19 @@ class SaxsDataCollection(db.Model):
     comments = db.Column(db.String(5120))
 
     Experiment = db.relationship(
-        'Experiment', primaryjoin='SaxsDataCollection.experimentId == Experiment.experimentId')
+        'Experiment',
+        primaryjoin='SaxsDataCollection.experimentId == Experiment.experimentId')
 
 
 class ScanParametersModel(db.Model):
     __tablename__ = 'ScanParametersModel'
 
     scanParametersModelId = db.Column(db.Integer, primary_key=True)
-    scanParametersServiceId = db.Column(db.ForeignKey(
-        'ScanParametersService.scanParametersServiceId', onupdate='CASCADE'), index=True)
+    scanParametersServiceId = db.Column(
+        db.ForeignKey(
+            'ScanParametersService.scanParametersServiceId',
+            onupdate='CASCADE'),
+        index=True)
     dataCollectionPlanId = db.Column(db.ForeignKey(
         'DiffractionPlan.diffractionPlanId', onupdate='CASCADE'), index=True)
     modelNumber = db.Column(db.Integer)
@@ -3059,9 +3870,11 @@ class ScanParametersModel(db.Model):
     array = db.Column(db.Text)
 
     DiffractionPlan = db.relationship(
-        'DiffractionPlan', primaryjoin='ScanParametersModel.dataCollectionPlanId == DiffractionPlan.diffractionPlanId')
+        'DiffractionPlan',
+        primaryjoin='ScanParametersModel.dataCollectionPlanId == DiffractionPlan.diffractionPlanId')
     ScanParametersService = db.relationship(
-        'ScanParametersService', primaryjoin='ScanParametersModel.scanParametersServiceId == ScanParametersService.scanParametersServiceId')
+        'ScanParametersService',
+        primaryjoin='ScanParametersModel.scanParametersServiceId == ScanParametersService.scanParametersServiceId')
 
 
 class ScanParametersService(db.Model):
@@ -3083,16 +3896,23 @@ class ScheduleComponent(db.Model):
     __tablename__ = 'ScheduleComponent'
 
     scheduleComponentId = db.Column(db.Integer, primary_key=True)
-    scheduleId = db.Column(db.ForeignKey(
-        'Schedule.scheduleId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    scheduleId = db.Column(
+        db.ForeignKey(
+            'Schedule.scheduleId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     inspectionTypeId = db.Column(db.ForeignKey(
         'InspectionType.inspectionTypeId', ondelete='CASCADE'), index=True)
     offset_hours = db.Column(db.Integer)
 
     InspectionType = db.relationship(
-        'InspectionType', primaryjoin='ScheduleComponent.inspectionTypeId == InspectionType.inspectionTypeId')
+        'InspectionType',
+        primaryjoin='ScheduleComponent.inspectionTypeId == InspectionType.inspectionTypeId')
     Schedule = db.relationship(
-        'Schedule', primaryjoin='ScheduleComponent.scheduleId == Schedule.scheduleId')
+        'Schedule',
+        primaryjoin='ScheduleComponent.scheduleId == Schedule.scheduleId')
 
 
 class SchemaStatu(db.Model):
@@ -3121,16 +3941,20 @@ class ScreenComponent(db.Model):
     __tablename__ = 'ScreenComponent'
 
     screenComponentId = db.Column(db.Integer, primary_key=True)
-    screenComponentGroupId = db.Column(db.ForeignKey(
-        'ScreenComponentGroup.screenComponentGroupId'), nullable=False, index=True)
+    screenComponentGroupId = db.Column(
+        db.ForeignKey('ScreenComponentGroup.screenComponentGroupId'),
+        nullable=False,
+        index=True)
     componentId = db.Column(db.ForeignKey('Protein.proteinId'), index=True)
     concentration = db.Column(db.Float)
     pH = db.Column(db.Float)
 
     Protein = db.relationship(
-        'Protein', primaryjoin='ScreenComponent.componentId == Protein.proteinId')
+        'Protein',
+        primaryjoin='ScreenComponent.componentId == Protein.proteinId')
     ScreenComponentGroup = db.relationship(
-        'ScreenComponentGroup', primaryjoin='ScreenComponent.screenComponentGroupId == ScreenComponentGroup.screenComponentGroupId')
+        'ScreenComponentGroup',
+        primaryjoin='ScreenComponent.screenComponentGroupId == ScreenComponentGroup.screenComponentGroupId')
 
 
 class ScreenComponentGroup(db.Model):
@@ -3142,7 +3966,8 @@ class ScreenComponentGroup(db.Model):
     position = db.Column(db.SmallInteger)
 
     Screen = db.relationship(
-        'Screen', primaryjoin='ScreenComponentGroup.screenId == Screen.screenId')
+        'Screen',
+        primaryjoin='ScreenComponentGroup.screenId == Screen.screenId')
 
 
 class Screening(db.Model):
@@ -3162,15 +3987,22 @@ class Screening(db.Model):
     xmlSampleInformation = db.Column(db.LONGBLOB)
 
     DataCollectionGroup = db.relationship(
-        'DataCollectionGroup', primaryjoin='Screening.dataCollectionGroupId == DataCollectionGroup.dataCollectionGroupId')
+        'DataCollectionGroup',
+        primaryjoin='Screening.dataCollectionGroupId == DataCollectionGroup.dataCollectionGroupId')
 
 
 class ScreeningInput(db.Model):
     __tablename__ = 'ScreeningInput'
 
     screeningInputId = db.Column(db.Integer, primary_key=True)
-    screeningId = db.Column(db.ForeignKey('Screening.screeningId', ondelete='CASCADE',
-                            onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    screeningId = db.Column(
+        db.ForeignKey(
+            'Screening.screeningId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     diffractionPlanId = db.Column(
         db.Integer, info='references DiffractionPlan table')
     beamX = db.Column(db.Float)
@@ -3182,15 +4014,22 @@ class ScreeningInput(db.Model):
     xmlSampleInformation = db.Column(db.LONGBLOB)
 
     Screening = db.relationship(
-        'Screening', primaryjoin='ScreeningInput.screeningId == Screening.screeningId')
+        'Screening',
+        primaryjoin='ScreeningInput.screeningId == Screening.screeningId')
 
 
 class ScreeningOutput(db.Model):
     __tablename__ = 'ScreeningOutput'
 
     screeningOutputId = db.Column(db.Integer, primary_key=True)
-    screeningId = db.Column(db.ForeignKey('Screening.screeningId', ondelete='CASCADE',
-                            onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    screeningId = db.Column(
+        db.ForeignKey(
+            'Screening.screeningId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     statusDescription = db.Column(db.String(1024))
     rejectedReflections = db.Column(db.Integer)
     resolutionObtained = db.Column(db.Float)
@@ -3220,15 +4059,22 @@ class ScreeningOutput(db.Model):
     screeningSuccess = db.Column(db.Integer, server_default=db.FetchedValue())
 
     Screening = db.relationship(
-        'Screening', primaryjoin='ScreeningOutput.screeningId == Screening.screeningId')
+        'Screening',
+        primaryjoin='ScreeningOutput.screeningId == Screening.screeningId')
 
 
 class ScreeningOutputLattice(db.Model):
     __tablename__ = 'ScreeningOutputLattice'
 
     screeningOutputLatticeId = db.Column(db.Integer, primary_key=True)
-    screeningOutputId = db.Column(db.ForeignKey('ScreeningOutput.screeningOutputId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    screeningOutputId = db.Column(
+        db.ForeignKey(
+            'ScreeningOutput.screeningOutputId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     spaceGroup = db.Column(db.String(45))
     pointGroup = db.Column(db.String(45))
     bravaisLattice = db.Column(db.String(45))
@@ -3251,24 +4097,39 @@ class ScreeningOutputLattice(db.Model):
     labelitIndexing = db.Column(db.Integer, server_default=db.FetchedValue())
 
     ScreeningOutput = db.relationship(
-        'ScreeningOutput', primaryjoin='ScreeningOutputLattice.screeningOutputId == ScreeningOutput.screeningOutputId')
+        'ScreeningOutput',
+        primaryjoin='ScreeningOutputLattice.screeningOutputId == ScreeningOutput.screeningOutputId')
 
 
 class ScreeningRank(db.Model):
     __tablename__ = 'ScreeningRank'
 
     screeningRankId = db.Column(db.Integer, primary_key=True)
-    screeningRankSetId = db.Column(db.ForeignKey('ScreeningRankSet.screeningRankSetId', ondelete='CASCADE',
-                                   onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
-    screeningId = db.Column(db.ForeignKey('Screening.screeningId', ondelete='CASCADE',
-                            onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    screeningRankSetId = db.Column(
+        db.ForeignKey(
+            'ScreeningRankSet.screeningRankSetId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
+    screeningId = db.Column(
+        db.ForeignKey(
+            'Screening.screeningId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     rankValue = db.Column(db.Float)
     rankInformation = db.Column(db.String(1024))
 
     Screening = db.relationship(
-        'Screening', primaryjoin='ScreeningRank.screeningId == Screening.screeningId')
+        'Screening',
+        primaryjoin='ScreeningRank.screeningId == Screening.screeningId')
     ScreeningRankSet = db.relationship(
-        'ScreeningRankSet', primaryjoin='ScreeningRank.screeningRankSetId == ScreeningRankSet.screeningRankSetId')
+        'ScreeningRankSet',
+        primaryjoin='ScreeningRank.screeningRankSetId == ScreeningRankSet.screeningRankSetId')
 
 
 class ScreeningRankSet(db.Model):
@@ -3284,8 +4145,14 @@ class ScreeningStrategy(db.Model):
     __tablename__ = 'ScreeningStrategy'
 
     screeningStrategyId = db.Column(db.Integer, primary_key=True)
-    screeningOutputId = db.Column(db.ForeignKey('ScreeningOutput.screeningOutputId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    screeningOutputId = db.Column(
+        db.ForeignKey(
+            'ScreeningOutput.screeningOutputId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     phiStart = db.Column(db.Float)
     phiEnd = db.Column(db.Float)
     rotation = db.Column(db.Float)
@@ -3298,10 +4165,12 @@ class ScreeningStrategy(db.Model):
     program = db.Column(db.String(45))
     rankingResolution = db.Column(db.Float)
     transmission = db.Column(
-        db.Float, info='Transmission for the strategy as given by the strategy program.')
+        db.Float,
+        info='Transmission for the strategy as given by the strategy program.')
 
     ScreeningOutput = db.relationship(
-        'ScreeningOutput', primaryjoin='ScreeningStrategy.screeningOutputId == ScreeningOutput.screeningOutputId')
+        'ScreeningOutput',
+        primaryjoin='ScreeningStrategy.screeningOutputId == ScreeningOutput.screeningOutputId')
 
 
 class ScreeningStrategySubWedge(db.Model):
@@ -3309,8 +4178,13 @@ class ScreeningStrategySubWedge(db.Model):
 
     screeningStrategySubWedgeId = db.Column(
         db.Integer, primary_key=True, info='Primary key')
-    screeningStrategyWedgeId = db.Column(db.ForeignKey('ScreeningStrategyWedge.screeningStrategyWedgeId',
-                                         ondelete='CASCADE', onupdate='CASCADE'), index=True, info='Foreign key to parent table')
+    screeningStrategyWedgeId = db.Column(
+        db.ForeignKey(
+            'ScreeningStrategyWedge.screeningStrategyWedgeId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='Foreign key to parent table')
     subWedgeNumber = db.Column(
         db.Integer, info='The number of this subwedge within the wedge')
     rotationAxis = db.Column(db.String(45), info='Angle where subwedge starts')
@@ -3328,7 +4202,8 @@ class ScreeningStrategySubWedge(db.Model):
     resolution = db.Column(db.Float)
 
     ScreeningStrategyWedge = db.relationship(
-        'ScreeningStrategyWedge', primaryjoin='ScreeningStrategySubWedge.screeningStrategyWedgeId == ScreeningStrategyWedge.screeningStrategyWedgeId')
+        'ScreeningStrategyWedge',
+        primaryjoin='ScreeningStrategySubWedge.screeningStrategyWedgeId == ScreeningStrategyWedge.screeningStrategyWedgeId')
 
 
 class ScreeningStrategyWedge(db.Model):
@@ -3336,8 +4211,13 @@ class ScreeningStrategyWedge(db.Model):
 
     screeningStrategyWedgeId = db.Column(
         db.Integer, primary_key=True, info='Primary key')
-    screeningStrategyId = db.Column(db.ForeignKey('ScreeningStrategy.screeningStrategyId',
-                                    ondelete='CASCADE', onupdate='CASCADE'), index=True, info='Foreign key to parent table')
+    screeningStrategyId = db.Column(
+        db.ForeignKey(
+            'ScreeningStrategy.screeningStrategyId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='Foreign key to parent table')
     wedgeNumber = db.Column(
         db.Integer, info='The number of this wedge within the strategy')
     resolution = db.Column(db.Float)
@@ -3353,44 +4233,79 @@ class ScreeningStrategyWedge(db.Model):
     wavelength = db.Column(db.Float(asdecimal=True))
 
     ScreeningStrategy = db.relationship(
-        'ScreeningStrategy', primaryjoin='ScreeningStrategyWedge.screeningStrategyId == ScreeningStrategy.screeningStrategyId')
+        'ScreeningStrategy',
+        primaryjoin='ScreeningStrategyWedge.screeningStrategyId == ScreeningStrategy.screeningStrategyId')
 
 
 class SessionType(db.Model):
     __tablename__ = 'SessionType'
 
     sessionTypeId = db.Column(db.Integer, primary_key=True)
-    sessionId = db.Column(db.ForeignKey(
-        'BLSession.sessionId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    sessionId = db.Column(
+        db.ForeignKey(
+            'BLSession.sessionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     typeName = db.Column(db.String(31), nullable=False)
 
     BLSession = db.relationship(
-        'BLSession', primaryjoin='SessionType.sessionId == BLSession.sessionId')
+        'BLSession',
+        primaryjoin='SessionType.sessionId == BLSession.sessionId')
 
 
 class SessionHasPerson(db.Model):
     __tablename__ = 'Session_has_Person'
 
-    sessionId = db.Column(db.ForeignKey('BLSession.sessionId', ondelete='CASCADE', onupdate='CASCADE'),
-                          primary_key=True, nullable=False, index=True, server_default=db.FetchedValue())
-    personId = db.Column(db.ForeignKey('Person.personId', ondelete='CASCADE', onupdate='CASCADE'),
-                         primary_key=True, nullable=False, index=True, server_default=db.FetchedValue())
-    role = db.Column(db.Enum('Local Contact', 'Local Contact 2', 'Staff', 'Team Leader',
-                     'Co-Investigator', 'Principal Investigator', 'Alternate Contact'))
+    sessionId = db.Column(
+        db.ForeignKey(
+            'BLSession.sessionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
+    personId = db.Column(
+        db.ForeignKey(
+            'Person.personId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
+    role = db.Column(
+        db.Enum(
+            'Local Contact',
+            'Local Contact 2',
+            'Staff',
+            'Team Leader',
+            'Co-Investigator',
+            'Principal Investigator',
+            'Alternate Contact'))
     remote = db.Column(db.Integer, server_default=db.FetchedValue())
 
     Person = db.relationship(
         'Person', primaryjoin='SessionHasPerson.personId == Person.personId')
     BLSession = db.relationship(
-        'BLSession', primaryjoin='SessionHasPerson.sessionId == BLSession.sessionId')
+        'BLSession',
+        primaryjoin='SessionHasPerson.sessionId == BLSession.sessionId')
 
 
 class Shipping(db.Model):
     __tablename__ = 'Shipping'
 
     shippingId = db.Column(db.Integer, primary_key=True)
-    proposalId = db.Column(db.ForeignKey('Proposal.proposalId', ondelete='CASCADE',
-                           onupdate='CASCADE'), nullable=False, index=True, server_default=db.FetchedValue())
+    proposalId = db.Column(
+        db.ForeignKey(
+            'Proposal.proposalId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        server_default=db.FetchedValue())
     shippingName = db.Column(db.String(45), index=True)
     deliveryAgent_agentName = db.Column(db.String(45))
     deliveryAgent_shippingDate = db.Column(db.Date)
@@ -3415,9 +4330,11 @@ class Shipping(db.Model):
     Proposal = db.relationship(
         'Proposal', primaryjoin='Shipping.proposalId == Proposal.proposalId')
     LabContact = db.relationship(
-        'LabContact', primaryjoin='Shipping.returnLabContactId == LabContact.labContactId')
+        'LabContact',
+        primaryjoin='Shipping.returnLabContactId == LabContact.labContactId')
     LabContact1 = db.relationship(
-        'LabContact', primaryjoin='Shipping.sendingLabContactId == LabContact.labContactId')
+        'LabContact',
+        primaryjoin='Shipping.sendingLabContactId == LabContact.labContactId')
 
 
 t_ShippingHasSession = db.Table(
@@ -3433,8 +4350,12 @@ class SpaceGroup(db.Model):
     __tablename__ = 'SpaceGroup'
 
     spaceGroupId = db.Column(db.Integer, primary_key=True, info='Primary key')
-    geometryClassnameId = db.Column(db.ForeignKey(
-        'GeometryClassname.geometryClassnameId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    geometryClassnameId = db.Column(
+        db.ForeignKey(
+            'GeometryClassname.geometryClassnameId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     spaceGroupNumber = db.Column(db.Integer, info='ccp4 number pr IUCR')
     spaceGroupShortName = db.Column(
         db.String(45), index=True, info='short name without blank')
@@ -3442,11 +4363,15 @@ class SpaceGroup(db.Model):
     bravaisLattice = db.Column(db.String(45), info='short name')
     bravaisLatticeName = db.Column(db.String(45), info='verbose name')
     pointGroup = db.Column(db.String(45), info='point group')
-    MX_used = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue(
-    ), info='1 if used in the crystal form')
+    MX_used = db.Column(
+        db.Integer,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='1 if used in the crystal form')
 
     GeometryClassname = db.relationship(
-        'GeometryClassname', primaryjoin='SpaceGroup.geometryClassnameId == GeometryClassname.geometryClassnameId')
+        'GeometryClassname',
+        primaryjoin='SpaceGroup.geometryClassnameId == GeometryClassname.geometryClassnameId')
 
 
 class Speciman(db.Model):
@@ -3472,15 +4397,20 @@ class Speciman(db.Model):
     Buffer = db.relationship(
         'Buffer', primaryjoin='Speciman.bufferId == Buffer.bufferId')
     Experiment = db.relationship(
-        'Experiment', primaryjoin='Speciman.experimentId == Experiment.experimentId')
+        'Experiment',
+        primaryjoin='Speciman.experimentId == Experiment.experimentId')
     Macromolecule = db.relationship(
-        'Macromolecule', primaryjoin='Speciman.macromoleculeId == Macromolecule.macromoleculeId')
+        'Macromolecule',
+        primaryjoin='Speciman.macromoleculeId == Macromolecule.macromoleculeId')
     SafetyLevel = db.relationship(
-        'SafetyLevel', primaryjoin='Speciman.safetyLevelId == SafetyLevel.safetyLevelId')
+        'SafetyLevel',
+        primaryjoin='Speciman.safetyLevelId == SafetyLevel.safetyLevelId')
     SamplePlatePosition = db.relationship(
-        'SamplePlatePosition', primaryjoin='Speciman.samplePlatePositionId == SamplePlatePosition.samplePlatePositionId')
+        'SamplePlatePosition',
+        primaryjoin='Speciman.samplePlatePositionId == SamplePlatePosition.samplePlatePositionId')
     StockSolution = db.relationship(
-        'StockSolution', primaryjoin='Speciman.stockSolutionId == StockSolution.stockSolutionId')
+        'StockSolution',
+        primaryjoin='Speciman.stockSolutionId == StockSolution.stockSolutionId')
 
 
 class StockSolution(db.Model):
@@ -3505,9 +4435,11 @@ class StockSolution(db.Model):
     Buffer = db.relationship(
         'Buffer', primaryjoin='StockSolution.bufferId == Buffer.bufferId')
     InstructionSet = db.relationship(
-        'InstructionSet', primaryjoin='StockSolution.instructionSetId == InstructionSet.instructionSetId')
+        'InstructionSet',
+        primaryjoin='StockSolution.instructionSetId == InstructionSet.instructionSetId')
     Macromolecule = db.relationship(
-        'Macromolecule', primaryjoin='StockSolution.macromoleculeId == Macromolecule.macromoleculeId')
+        'Macromolecule',
+        primaryjoin='StockSolution.macromoleculeId == Macromolecule.macromoleculeId')
 
 
 class Stoichiometry(db.Model):
@@ -3521,9 +4453,11 @@ class Stoichiometry(db.Model):
     ratio = db.Column(db.String(45))
 
     Macromolecule = db.relationship(
-        'Macromolecule', primaryjoin='Stoichiometry.hostMacromoleculeId == Macromolecule.macromoleculeId')
+        'Macromolecule',
+        primaryjoin='Stoichiometry.hostMacromoleculeId == Macromolecule.macromoleculeId')
     Macromolecule1 = db.relationship(
-        'Macromolecule', primaryjoin='Stoichiometry.macromoleculeId == Macromolecule.macromoleculeId')
+        'Macromolecule',
+        primaryjoin='Stoichiometry.macromoleculeId == Macromolecule.macromoleculeId')
 
 
 class Structure(db.Model):
@@ -3552,7 +4486,8 @@ class Structure(db.Model):
     Crystal = db.relationship(
         'Crystal', primaryjoin='Structure.crystalId == Crystal.crystalId')
     Macromolecule = db.relationship(
-        'Macromolecule', primaryjoin='Structure.macromoleculeId == Macromolecule.macromoleculeId')
+        'Macromolecule',
+        primaryjoin='Structure.macromoleculeId == Macromolecule.macromoleculeId')
     Proposal = db.relationship(
         'Proposal', primaryjoin='Structure.proposalId == Proposal.proposalId')
 
@@ -3562,12 +4497,29 @@ class SubstructureDetermination(db.Model):
 
     substructureDeterminationId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    phasingAnalysisId = db.Column(db.ForeignKey('PhasingAnalysis.phasingAnalysisId', ondelete='CASCADE',
-                                  onupdate='CASCADE'), nullable=False, index=True, info='Related phasing analysis item')
-    phasingProgramRunId = db.Column(db.ForeignKey('PhasingProgramRun.phasingProgramRunId', ondelete='CASCADE',
-                                    onupdate='CASCADE'), nullable=False, index=True, info='Related program item')
-    spaceGroupId = db.Column(db.ForeignKey('SpaceGroup.spaceGroupId', ondelete='CASCADE',
-                             onupdate='CASCADE'), index=True, info='Related spaceGroup')
+    phasingAnalysisId = db.Column(
+        db.ForeignKey(
+            'PhasingAnalysis.phasingAnalysisId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related phasing analysis item')
+    phasingProgramRunId = db.Column(
+        db.ForeignKey(
+            'PhasingProgramRun.phasingProgramRunId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related program item')
+    spaceGroupId = db.Column(
+        db.ForeignKey(
+            'SpaceGroup.spaceGroupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True,
+        info='Related spaceGroup')
     method = db.Column(db.Enum('SAD', 'MAD', 'SIR', 'SIRAS', 'MR',
                        'MIR', 'MIRAS', 'RIP', 'RIPAS'), info='phasing method')
     lowRes = db.Column(db.Float(asdecimal=True))
@@ -3576,11 +4528,14 @@ class SubstructureDetermination(db.Model):
         db.DateTime, info='Creation or last update date/time')
 
     PhasingAnalysi = db.relationship(
-        'PhasingAnalysi', primaryjoin='SubstructureDetermination.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
+        'PhasingAnalysi',
+        primaryjoin='SubstructureDetermination.phasingAnalysisId == PhasingAnalysi.phasingAnalysisId')
     PhasingProgramRun = db.relationship(
-        'PhasingProgramRun', primaryjoin='SubstructureDetermination.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
+        'PhasingProgramRun',
+        primaryjoin='SubstructureDetermination.phasingProgramRunId == PhasingProgramRun.phasingProgramRunId')
     SpaceGroup = db.relationship(
-        'SpaceGroup', primaryjoin='SubstructureDetermination.spaceGroupId == SpaceGroup.spaceGroupId')
+        'SpaceGroup',
+        primaryjoin='SubstructureDetermination.spaceGroupId == SpaceGroup.spaceGroupId')
 
 
 class Subtraction(db.Model):
@@ -3618,11 +4573,14 @@ class Subtraction(db.Model):
     bufferAverageFilePath = db.Column(db.String(255))
 
     FrameList = db.relationship(
-        'FrameList', primaryjoin='Subtraction.bufferOnedimensionalFiles == FrameList.frameListId')
+        'FrameList',
+        primaryjoin='Subtraction.bufferOnedimensionalFiles == FrameList.frameListId')
     SaxsDataCollection = db.relationship(
-        'SaxsDataCollection', primaryjoin='Subtraction.dataCollectionId == SaxsDataCollection.dataCollectionId')
+        'SaxsDataCollection',
+        primaryjoin='Subtraction.dataCollectionId == SaxsDataCollection.dataCollectionId')
     FrameList1 = db.relationship(
-        'FrameList', primaryjoin='Subtraction.sampleOneDimensionalFiles == FrameList.frameListId')
+        'FrameList',
+        primaryjoin='Subtraction.sampleOneDimensionalFiles == FrameList.frameListId')
 
 
 class SubtractionToAbInitioModel(db.Model):
@@ -3635,9 +4593,11 @@ class SubtractionToAbInitioModel(db.Model):
         'Subtraction.subtractionId'), index=True)
 
     AbInitioModel = db.relationship(
-        'AbInitioModel', primaryjoin='SubtractionToAbInitioModel.abInitioId == AbInitioModel.abInitioModelId')
+        'AbInitioModel',
+        primaryjoin='SubtractionToAbInitioModel.abInitioId == AbInitioModel.abInitioModelId')
     Subtraction = db.relationship(
-        'Subtraction', primaryjoin='SubtractionToAbInitioModel.subtractionId == Subtraction.subtractionId')
+        'Subtraction',
+        primaryjoin='SubtractionToAbInitioModel.subtractionId == Subtraction.subtractionId')
 
 
 class Superposition(db.Model):
@@ -3656,15 +4616,21 @@ class UntrustedRegion(db.Model):
 
     untrustedRegionId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    detectorId = db.Column(db.ForeignKey(
-        'Detector.detectorId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    detectorId = db.Column(
+        db.ForeignKey(
+            'Detector.detectorId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     x1 = db.Column(db.Integer, nullable=False)
     x2 = db.Column(db.Integer, nullable=False)
     y1 = db.Column(db.Integer, nullable=False)
     y2 = db.Column(db.Integer, nullable=False)
 
     Detector = db.relationship(
-        'Detector', primaryjoin='UntrustedRegion.detectorId == Detector.detectorId')
+        'Detector',
+        primaryjoin='UntrustedRegion.detectorId == Detector.detectorId')
 
 
 class UserGroup(db.Model):
@@ -3676,20 +4642,44 @@ class UserGroup(db.Model):
 
 t_UserGroup_has_Permission = db.Table(
     'UserGroup_has_Permission',
-    db.Column('userGroupId', db.ForeignKey('UserGroup.userGroupId',
-              ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False),
-    db.Column('permissionId', db.ForeignKey('Permission.permissionId', ondelete='CASCADE',
-              onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'userGroupId',
+        db.ForeignKey(
+            'UserGroup.userGroupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'permissionId',
+        db.ForeignKey(
+            'Permission.permissionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 t_UserGroup_has_Person = db.Table(
     'UserGroup_has_Person',
-    db.Column('userGroupId', db.ForeignKey('UserGroup.userGroupId',
-              ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False),
-    db.Column('personId', db.ForeignKey('Person.personId', ondelete='CASCADE',
-              onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
-)
+    db.Column(
+        'userGroupId',
+        db.ForeignKey(
+            'UserGroup.userGroupId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False),
+    db.Column(
+        'personId',
+        db.ForeignKey(
+            'Person.personId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        primary_key=True,
+        nullable=False,
+        index=True))
 
 
 class Workflow(db.Model):
@@ -3698,8 +4688,42 @@ class Workflow(db.Model):
     workflowId = db.Column(db.Integer, primary_key=True,
                            info='Primary key (auto-incremented)')
     workflowTitle = db.Column(db.String(255))
-    workflowType = db.Column(db.Enum('Characterisation', 'Undefined', 'BioSAXS Post Processing', 'EnhancedCharacterisation', 'LineScan', 'MeshScan', 'Dehydration', 'KappaReorientation', 'BurnStrategy', 'XrayCentering', 'DiffractionTomography', 'TroubleShooting', 'VisualReorientation', 'HelicalCharacterisation',
-                             'GroupedProcessing', 'MXPressE', 'MXPressO', 'MXPressL', 'MXScore', 'MXPressI', 'MXPressM', 'MXPressA', 'CollectAndSpectra', 'LowDoseDC', 'EnergyInterleavedMAD', 'MXPressF', 'MXPressH', 'MXPressP', 'MXPressP_SAD', 'MXPressR', 'MXPressR_180', 'MXPressR_dehydration', 'MeshAndCollect', 'MeshAndCollectFromFile'))
+    workflowType = db.Column(
+        db.Enum(
+            'Characterisation',
+            'Undefined',
+            'BioSAXS Post Processing',
+            'EnhancedCharacterisation',
+            'LineScan',
+            'MeshScan',
+            'Dehydration',
+            'KappaReorientation',
+            'BurnStrategy',
+            'XrayCentering',
+            'DiffractionTomography',
+            'TroubleShooting',
+            'VisualReorientation',
+            'HelicalCharacterisation',
+            'GroupedProcessing',
+            'MXPressE',
+            'MXPressO',
+            'MXPressL',
+            'MXScore',
+            'MXPressI',
+            'MXPressM',
+            'MXPressA',
+            'CollectAndSpectra',
+            'LowDoseDC',
+            'EnergyInterleavedMAD',
+            'MXPressF',
+            'MXPressH',
+            'MXPressP',
+            'MXPressP_SAD',
+            'MXPressR',
+            'MXPressR_180',
+            'MXPressR_dehydration',
+            'MeshAndCollect',
+            'MeshAndCollectFromFile'))
     workflowTypeId = db.Column(db.Integer)
     comments = db.Column(db.String(1024))
     status = db.Column(db.String(255))
@@ -3714,14 +4738,24 @@ class WorkflowDehydration(db.Model):
 
     workflowDehydrationId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    workflowId = db.Column(db.ForeignKey('Workflow.workflowId', ondelete='CASCADE',
-                           onupdate='CASCADE'), nullable=False, index=True, info='Related workflow')
+    workflowId = db.Column(
+        db.ForeignKey(
+            'Workflow.workflowId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related workflow')
     dataFilePath = db.Column(db.String(255))
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
 
     Workflow = db.relationship(
-        'Workflow', primaryjoin='WorkflowDehydration.workflowId == Workflow.workflowId')
+        'Workflow',
+        primaryjoin='WorkflowDehydration.workflowId == Workflow.workflowId')
 
 
 class WorkflowMesh(db.Model):
@@ -3729,8 +4763,14 @@ class WorkflowMesh(db.Model):
 
     workflowMeshId = db.Column(
         db.Integer, primary_key=True, info='Primary key (auto-incremented)')
-    workflowId = db.Column(db.ForeignKey('Workflow.workflowId', ondelete='CASCADE',
-                           onupdate='CASCADE'), nullable=False, index=True, info='Related workflow')
+    workflowId = db.Column(
+        db.ForeignKey(
+            'Workflow.workflowId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True,
+        info='Related workflow')
     bestPositionId = db.Column(db.Integer, index=True)
     bestImageId = db.Column(db.ForeignKey(
         'Image.imageId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
@@ -3739,13 +4779,17 @@ class WorkflowMesh(db.Model):
     value3 = db.Column(db.Float(asdecimal=True), info='N value')
     value4 = db.Column(db.Float(asdecimal=True))
     cartographyPath = db.Column(db.String(255))
-    recordTimeStamp = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue(
-    ), info='Creation or last update date/time')
+    recordTimeStamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.FetchedValue(),
+        info='Creation or last update date/time')
 
     Image = db.relationship(
         'Image', primaryjoin='WorkflowMesh.bestImageId == Image.imageId')
     Workflow = db.relationship(
-        'Workflow', primaryjoin='WorkflowMesh.workflowId == Workflow.workflowId')
+        'Workflow',
+        primaryjoin='WorkflowMesh.workflowId == Workflow.workflowId')
 
 
 class WorkflowStep(db.Model):
@@ -3768,7 +4812,8 @@ class WorkflowStep(db.Model):
     recordTimeStamp = db.Column(db.DateTime)
 
     Workflow = db.relationship(
-        'Workflow', primaryjoin='WorkflowStep.workflowId == Workflow.workflowId')
+        'Workflow',
+        primaryjoin='WorkflowStep.workflowId == Workflow.workflowId')
 
 
 class WorkflowType(db.Model):
@@ -3784,10 +4829,19 @@ class XFEFluorescenceSpectrum(db.Model):
     __tablename__ = 'XFEFluorescenceSpectrum'
 
     xfeFluorescenceSpectrumId = db.Column(db.Integer, primary_key=True)
-    sessionId = db.Column(db.ForeignKey(
-        'BLSession.sessionId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
-    blSampleId = db.Column(db.ForeignKey(
-        'BLSample.blSampleId', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    sessionId = db.Column(
+        db.ForeignKey(
+            'BLSession.sessionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
+    blSampleId = db.Column(
+        db.ForeignKey(
+            'BLSample.blSampleId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        index=True)
     fittedDataFileFullPath = db.Column(db.String(255))
     scanFileFullPath = db.Column(db.String(255))
     jpegScanFileFullPath = db.Column(db.String(255))
@@ -3812,28 +4866,43 @@ class XFEFluorescenceSpectrum(db.Model):
         'BLSubSample.blSubSampleId'), index=True)
 
     BLSample = db.relationship(
-        'BLSample', primaryjoin='XFEFluorescenceSpectrum.blSampleId == BLSample.blSampleId')
+        'BLSample',
+        primaryjoin='XFEFluorescenceSpectrum.blSampleId == BLSample.blSampleId')
     BLSubSample = db.relationship(
-        'BLSubSample', primaryjoin='XFEFluorescenceSpectrum.blSubSampleId == BLSubSample.blSubSampleId')
+        'BLSubSample',
+        primaryjoin='XFEFluorescenceSpectrum.blSubSampleId == BLSubSample.blSubSampleId')
     BLSession = db.relationship(
-        'BLSession', primaryjoin='XFEFluorescenceSpectrum.sessionId == BLSession.sessionId')
+        'BLSession',
+        primaryjoin='XFEFluorescenceSpectrum.sessionId == BLSession.sessionId')
 
 
 class XRFFluorescenceMapping(db.Model):
     __tablename__ = 'XRFFluorescenceMapping'
 
     xrfFluorescenceMappingId = db.Column(db.Integer, primary_key=True)
-    xrfFluorescenceMappingROIId = db.Column(db.ForeignKey(
-        'XRFFluorescenceMappingROI.xrfFluorescenceMappingROIId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
-    dataCollectionId = db.Column(db.ForeignKey(
-        'DataCollection.dataCollectionId', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    xrfFluorescenceMappingROIId = db.Column(
+        db.ForeignKey(
+            'XRFFluorescenceMappingROI.xrfFluorescenceMappingROIId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
+    dataCollectionId = db.Column(
+        db.ForeignKey(
+            'DataCollection.dataCollectionId',
+            ondelete='CASCADE',
+            onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     imageNumber = db.Column(db.Integer, nullable=False)
     counts = db.Column(db.Integer, nullable=False)
 
     DataCollection = db.relationship(
-        'DataCollection', primaryjoin='XRFFluorescenceMapping.dataCollectionId == DataCollection.dataCollectionId')
+        'DataCollection',
+        primaryjoin='XRFFluorescenceMapping.dataCollectionId == DataCollection.dataCollectionId')
     XRFFluorescenceMappingROI = db.relationship(
-        'XRFFluorescenceMappingROI', primaryjoin='XRFFluorescenceMapping.xrfFluorescenceMappingROIId == XRFFluorescenceMappingROI.xrfFluorescenceMappingROIId')
+        'XRFFluorescenceMappingROI',
+        primaryjoin='XRFFluorescenceMapping.xrfFluorescenceMappingROIId == XRFFluorescenceMappingROI.xrfFluorescenceMappingROIId')
 
 
 class XRFFluorescenceMappingROI(db.Model):

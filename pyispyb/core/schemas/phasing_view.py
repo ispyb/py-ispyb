@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,36 +30,37 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'phasingStepId': f_fields.Integer(required=False, description=''),
-        'previousPhasingStepId': f_fields.Integer(required=False, description=''),
-        'phasingAnalysisId': f_fields.Integer(required=False, description=''),
-        'autoProcIntegrationId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'dataCollectionId': f_fields.Integer(required=True, description='DataCollection item'),
-        'anomalous': f_fields.Integer(required=False, description='boolean type:0 noanoum - 1 anoum'),
-        'spaceGroup': f_fields.String(required=False, description='Space group'),
-        'autoProcId': f_fields.Integer(required=False, description='Primary key (auto-incremented)'),
-        'phasingStepType': f_fields.String(required=False, description='enum(PREPARE,SUBSTRUCTUREDETERMINATION,PHASING,MODELBUILDING)'),
-        'method': f_fields.String(required=False, description=''),
-        'solventContent': f_fields.String(required=False, description=''),
-        'enantiomorph': f_fields.String(required=False, description=''),
-        'lowRes': f_fields.String(required=False, description=''),
-        'highRes': f_fields.String(required=False, description=''),
-        'autoProcScalingId': f_fields.Integer(required=False, description='Primary key (auto-incremented)'),
-        'spaceGroupShortName': f_fields.String(required=False, description='short name without blank'),
-        'processingPrograms': f_fields.String(required=False, description='Processing programs (comma separated)'),
-        'processingStatus': f_fields.Integer(required=False, description='success (1) / fail (0)'),
-        'phasingPrograms': f_fields.String(required=False, description='Phasing programs (comma separated)'),
-        'phasingStatus': f_fields.Integer(required=False, description='success (1) / fail (0)'),
-        'phasingStartTime': f_fields.DateTime(required=False, description='Processing start time'),
-        'phasingEndTime': f_fields.DateTime(required=False, description='Processing end time'),
-        'sessionId': f_fields.Integer(required=False, description='references Session table'),
-        'proposalId': f_fields.Integer(required=False, description=''),
-        'blSampleId': f_fields.Integer(required=False, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'code': f_fields.String(required=False, description=''),
-        'acronym': f_fields.String(required=False, description=''),
-        'proteinId': f_fields.Integer(required=False, description=''),
-        }
+    'phasingStepId': f_fields.Integer(required=False, description=''),
+    'previousPhasingStepId': f_fields.Integer(required=False, description=''),
+    'phasingAnalysisId': f_fields.Integer(required=False, description=''),
+    'autoProcIntegrationId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
+    'dataCollectionId': f_fields.Integer(required=True, description='DataCollection item'),
+    'anomalous': f_fields.Integer(required=False, description='boolean type:0 noanoum - 1 anoum'),
+    'spaceGroup': f_fields.String(required=False, description='Space group'),
+    'autoProcId': f_fields.Integer(required=False, description='Primary key (auto-incremented)'),
+    'phasingStepType': f_fields.String(required=False, description='enum(PREPARE,SUBSTRUCTUREDETERMINATION,PHASING,MODELBUILDING)'),
+    'method': f_fields.String(required=False, description=''),
+    'solventContent': f_fields.String(required=False, description=''),
+    'enantiomorph': f_fields.String(required=False, description=''),
+    'lowRes': f_fields.String(required=False, description=''),
+    'highRes': f_fields.String(required=False, description=''),
+    'autoProcScalingId': f_fields.Integer(required=False, description='Primary key (auto-incremented)'),
+    'spaceGroupShortName': f_fields.String(required=False, description='short name without blank'),
+    'processingPrograms': f_fields.String(required=False, description='Processing programs (comma separated)'),
+    'processingStatus': f_fields.Integer(required=False, description='success (1) / fail (0)'),
+    'phasingPrograms': f_fields.String(required=False, description='Phasing programs (comma separated)'),
+    'phasingStatus': f_fields.Integer(required=False, description='success (1) / fail (0)'),
+    'phasingStartTime': f_fields.DateTime(required=False, description='Processing start time'),
+    'phasingEndTime': f_fields.DateTime(required=False, description='Processing end time'),
+    'sessionId': f_fields.Integer(required=False, description='references Session table'),
+    'proposalId': f_fields.Integer(required=False, description=''),
+    'blSampleId': f_fields.Integer(required=False, description=''),
+    'name': f_fields.String(required=False, description=''),
+    'code': f_fields.String(required=False, description=''),
+    'acronym': f_fields.String(required=False, description=''),
+    'proteinId': f_fields.Integer(required=False, description=''),
+}
+
 
 class DatacollectionSummaryPhasingViewSchema(Schema):
     """Marshmallows schema class representing v_datacollection_summary_phasing table"""
@@ -94,6 +94,7 @@ class DatacollectionSummaryPhasingViewSchema(Schema):
     code = ma_fields.String()
     acronym = ma_fields.String()
     proteinId = ma_fields.Integer()
+
 
 f_schema = api.model('v_datacollection_summary_phasing', dict_schema)
 ma_schema = DatacollectionSummaryPhasingViewSchema()

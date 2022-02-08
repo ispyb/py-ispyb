@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+"""Allows to run the app in production environment."""
 
 from pyispyb import create_app
 

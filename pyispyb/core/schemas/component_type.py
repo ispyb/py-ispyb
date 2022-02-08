@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,15 +30,17 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'componentTypeId': f_fields.Integer(required=True, description=''),
-        'name': f_fields.String(required=True, description=''),
-        }
+    'componentTypeId': f_fields.Integer(required=True, description=''),
+    'name': f_fields.String(required=True, description=''),
+}
+
 
 class ComponentTypeSchema(Schema):
     """Marshmallows schema class representing ComponentType table"""
 
     componentTypeId = ma_fields.Integer()
     name = ma_fields.String()
+
 
 f_schema = api.model('ComponentType', dict_schema)
 ma_schema = ComponentTypeSchema()

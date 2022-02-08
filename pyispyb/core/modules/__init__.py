@@ -28,13 +28,7 @@ from importlib import import_module
 
 
 def init_app(app, **kwargs):
-    """
-    Inits extensions.
-
-    Args:
-        app (Flask app): [description]
-    """
-
+    """Init modules."""
     for module_name in os.listdir(os.path.dirname(__file__)):
         if not module_name.startswith("__") and module_name.endswith(".py"):
             module = import_module(".%s" % module_name[:-3], package=__name__)

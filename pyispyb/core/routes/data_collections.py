@@ -48,5 +48,9 @@ class DataColletionGroups(Resource):
     @permission_required("any", ["own_sessions", "all_sessions"])
     @session_authorization_required
     def get(self, session_id, **kwargs):
-        """Returns list of data collection groups relative to session"""
+        """Get data collection groups for session.
+
+        Args:
+            session_id (str): session id
+        """
         return data_collections.get_data_collections_groups(session_id)

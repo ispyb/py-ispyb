@@ -1,22 +1,22 @@
-"""
-Project: py-ispyb
-https://github.com/ispyb/py-ispyb
 
-This file is part of py-ispyb software.
+# Project: py-ispyb
+# https://github.com/ispyb/py-ispyb
 
-py-ispyb is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# This file is part of py-ispyb software.
 
-py-ispyb is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+# py-ispyb is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-You should have received a copy of the GNU Lesser General Public License
-along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-"""
+# py-ispyb is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
+
 
 import logging
 import datetime
@@ -39,6 +39,7 @@ class AuthProvider:
         self.site_authentications = {}
 
     def init_app(self, app):
+        """Init extension."""
         auth_list = app.config["AUTH"]
         for auth_plugin in auth_list:
             for auth_name in auth_plugin:
@@ -49,7 +50,8 @@ class AuthProvider:
                     config = {}
                     if "CONFIG" in auth_plugin[auth_name]:
                         config = auth_plugin[auth_name]["CONFIG"]
-                    cls = getattr(importlib.import_module(module_name), class_name)
+                    cls = getattr(importlib.import_module(
+                        module_name), class_name)
                     instance = cls()
                     instance.configure(config)
                     self.site_authentications[auth_name] = instance
@@ -58,27 +60,37 @@ class AuthProvider:
 
     def get_auth(self, plugin, username, password, token):
         """
-        Returns roles associated to user. Basically this is the main
-        authentification method where site_auth is site specific authentication
-        class.
+        Return username, groups, permissions associated to user.
+
+        Basically this is the main authentification method where site_auth is site specific authentication class.
 
         Args:
-            username (str): username
-            password (str): password
+            plugin (str): plugin to be used
+            username (str): auth username
+            password (str): auth password
+            token (str): auth token
 
         Returns:
-            tuple or list: tuple or list with roles associated to the username
+            username, groups, permissions
         """
         if plugin not in self.site_authentications:
             return None, None, None
         username, groups, permissions = self.site_authentications[plugin].get_auth(
-            username, password, token
-        )
+            username, password, token)
         if username is not None and groups is not None and permissions is not None:
             return username, groups, permissions
         return None, None, None
 
     def get_user_info(self, request):
+        """Get user infos from request.
+
+        Args:
+            request (HTTP request): request
+
+        Returns:
+            user_info: object describing user
+            msg: error if present
+        """
         token = None
 
         auth = request.headers.get("Authorization", None)
@@ -104,7 +116,7 @@ class AuthProvider:
 
     def generate_token(self, username, groups, permissions):
         """
-        Generates token.
+        Generate token.
 
         Args:
             username (string): username
@@ -120,7 +132,8 @@ class AuthProvider:
         )
 
         token = jwt.encode(
-            {"username": username, "groups": groups, "permissions":permissions, "iat": iat, "exp": exp},
+            {"username": username, "groups": groups,
+                "permissions": permissions, "iat": iat, "exp": exp},
             current_app.config["SECRET_KEY"],
             algorithm=current_app.config["JWT_CODING_ALGORITHM"],
         )
@@ -135,7 +148,7 @@ class AuthProvider:
             "iat": iat.strftime("%Y-%m-%d %H:%M:%S"),
             "exp": exp.strftime("%Y-%m-%d %H:%M:%S"),
             "groups": groups,
-            "permissions":permissions
+            "permissions": permissions
         }
 
 
@@ -143,6 +156,15 @@ auth_provider = AuthProvider()
 
 
 def decode_token(token):
+    """Decode authentication token.
+
+    Args:
+        token (str): authentication token
+
+    Returns:
+        user_info: object describing user
+        msg: error if present
+    """
     user_info = {}
     msg = None
 

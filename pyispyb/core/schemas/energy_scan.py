@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,44 +30,45 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'energyScanId': f_fields.Integer(required=True, description=''),
-        'sessionId': f_fields.Integer(required=True, description=''),
-        'blSampleId': f_fields.Integer(required=False, description=''),
-        'fluorescenceDetector': f_fields.String(required=False, description=''),
-        'scanFileFullPath': f_fields.String(required=False, description=''),
-        'choochFileFullPath': f_fields.String(required=False, description=''),
-        'jpegChoochFileFullPath': f_fields.String(required=False, description=''),
-        'element': f_fields.String(required=False, description=''),
-        'startEnergy': f_fields.Float(required=False, description=''),
-        'endEnergy': f_fields.Float(required=False, description=''),
-        'transmissionFactor': f_fields.Float(required=False, description=''),
-        'exposureTime': f_fields.Float(required=False, description=''),
-        'axisPosition': f_fields.Float(required=False, description=''),
-        'synchrotronCurrent': f_fields.Float(required=False, description=''),
-        'temperature': f_fields.Float(required=False, description=''),
-        'peakEnergy': f_fields.Float(required=False, description=''),
-        'peakFPrime': f_fields.Float(required=False, description=''),
-        'peakFDoublePrime': f_fields.Float(required=False, description=''),
-        'inflectionEnergy': f_fields.Float(required=False, description=''),
-        'inflectionFPrime': f_fields.Float(required=False, description=''),
-        'inflectionFDoublePrime': f_fields.Float(required=False, description=''),
-        'xrayDose': f_fields.Float(required=False, description=''),
-        'startTime': f_fields.DateTime(required=False, description=''),
-        'endTime': f_fields.DateTime(required=False, description=''),
-        'edgeEnergy': f_fields.String(required=False, description=''),
-        'filename': f_fields.String(required=False, description=''),
-        'beamSizeVertical': f_fields.Float(required=False, description=''),
-        'beamSizeHorizontal': f_fields.Float(required=False, description=''),
-        'crystalClass': f_fields.String(required=False, description=''),
-        'comments': f_fields.String(required=False, description=''),
-        'flux': f_fields.String(required=False, description='flux measured before the energyScan'),
-        'flux_end': f_fields.String(required=False, description='flux measured after the energyScan'),
-        'workingDirectory': f_fields.String(required=False, description=''),
-        'blSubSampleId': f_fields.Integer(required=False, description=''),
-        'remoteEnergy': f_fields.Float(required=False, description=''),
-        'remoteFPrime': f_fields.Float(required=False, description=''),
-        'remoteFDoublePrime': f_fields.Float(required=False, description=''),
-        }
+    'energyScanId': f_fields.Integer(required=True, description=''),
+    'sessionId': f_fields.Integer(required=True, description=''),
+    'blSampleId': f_fields.Integer(required=False, description=''),
+    'fluorescenceDetector': f_fields.String(required=False, description=''),
+    'scanFileFullPath': f_fields.String(required=False, description=''),
+    'choochFileFullPath': f_fields.String(required=False, description=''),
+    'jpegChoochFileFullPath': f_fields.String(required=False, description=''),
+    'element': f_fields.String(required=False, description=''),
+    'startEnergy': f_fields.Float(required=False, description=''),
+    'endEnergy': f_fields.Float(required=False, description=''),
+    'transmissionFactor': f_fields.Float(required=False, description=''),
+    'exposureTime': f_fields.Float(required=False, description=''),
+    'axisPosition': f_fields.Float(required=False, description=''),
+    'synchrotronCurrent': f_fields.Float(required=False, description=''),
+    'temperature': f_fields.Float(required=False, description=''),
+    'peakEnergy': f_fields.Float(required=False, description=''),
+    'peakFPrime': f_fields.Float(required=False, description=''),
+    'peakFDoublePrime': f_fields.Float(required=False, description=''),
+    'inflectionEnergy': f_fields.Float(required=False, description=''),
+    'inflectionFPrime': f_fields.Float(required=False, description=''),
+    'inflectionFDoublePrime': f_fields.Float(required=False, description=''),
+    'xrayDose': f_fields.Float(required=False, description=''),
+    'startTime': f_fields.DateTime(required=False, description=''),
+    'endTime': f_fields.DateTime(required=False, description=''),
+    'edgeEnergy': f_fields.String(required=False, description=''),
+    'filename': f_fields.String(required=False, description=''),
+    'beamSizeVertical': f_fields.Float(required=False, description=''),
+    'beamSizeHorizontal': f_fields.Float(required=False, description=''),
+    'crystalClass': f_fields.String(required=False, description=''),
+    'comments': f_fields.String(required=False, description=''),
+    'flux': f_fields.String(required=False, description='flux measured before the energyScan'),
+    'flux_end': f_fields.String(required=False, description='flux measured after the energyScan'),
+    'workingDirectory': f_fields.String(required=False, description=''),
+    'blSubSampleId': f_fields.Integer(required=False, description=''),
+    'remoteEnergy': f_fields.Float(required=False, description=''),
+    'remoteFPrime': f_fields.Float(required=False, description=''),
+    'remoteFDoublePrime': f_fields.Float(required=False, description=''),
+}
+
 
 class EnergyScanSchema(Schema):
     """Marshmallows schema class representing EnergyScan table"""
@@ -110,6 +110,7 @@ class EnergyScanSchema(Schema):
     remoteEnergy = ma_fields.Float()
     remoteFPrime = ma_fields.Float()
     remoteFDoublePrime = ma_fields.Float()
+
 
 f_schema = api.model('EnergyScan', dict_schema)
 ma_schema = EnergyScanSchema()

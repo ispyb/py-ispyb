@@ -24,80 +24,81 @@ __license__ = "LGPLv3+"
 
 
 from pyispyb.app.extensions import db
-from pyispyb.app.utils import create_response_item, getSQLQuery, queryResultToDict
-
-from pyispyb.core import models, schemas
-
-from pyispyb.core.modules import proposal
+from pyispyb.app.utils import get_sql_query, queryresult_to_dict
 
 
 def get_session_infos_login(login):
-    """
-    Returns sessions info list.
+    """Get info for sessions that user can access.
+
+    Args:
+        login (str): user login
 
     Returns:
-        [type]: [description]
+        list: sessions infos
     """
-
-    sql = getSQLQuery("session/sessionsInfosLogin")
+    sql = get_sql_query("session/sessionsInfosLogin")
     sql = sql.bindparams(login=login)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
 def get_session_infos_all():
-    """
-    Returns sessions info list.
+    """Get info for all sessions.
 
     Returns:
-        [type]: [description]
+        list: sessions infos
     """
-
-    sql = getSQLQuery("session/sessionsInfosAll")
+    sql = get_sql_query("session/sessionsInfosAll")
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
-def get_session_infos_login_proposal(login, proposalId):
-    """
-    Returns sessions info list.
+def get_session_infos_login_proposal(login, proposal_id):
+    """Get info for sessions in proposal that user can access.
+
+    Args:
+        login (str): user login
+        proposal_id (str): proposal id
 
     Returns:
-        [type]: [description]
+        list: sessions infos
     """
-
-    sql = getSQLQuery("session/sessionsInfosLogin",
-                      append=" and proposalId = :proposalId")
-    sql = sql.bindparams(login=login, proposalId=proposalId)
+    sql = get_sql_query("session/sessionsInfosLogin",
+                        append=" and proposalId = :proposalId")
+    sql = sql.bindparams(login=login, proposalId=proposal_id)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
-def get_session_infos_all_proposal(proposalId):
-    """
-    Returns sessions info list.
+def get_session_infos_all_proposal(proposal_id):
+    """Get info for all sessions in proposal.
+
+    Args:
+        proposal_id (str): proposal id
 
     Returns:
-        [type]: [description]
+        list: sessions infos
     """
-
-    sql = getSQLQuery("session/sessionsInfosAll",
-                      append=" where proposalId = :proposalId")
-    sql = sql.bindparams(proposalId=proposalId)
+    sql = get_sql_query("session/sessionsInfosAll",
+                        append=" where proposalId = :proposalId")
+    sql = sql.bindparams(proposalId=proposal_id)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
-def get_session_infos_login_dates(login, startDate, endDate):
-    """
-    Returns sessions info list.
+def get_session_infos_login_dates(login, start_date, end_date):
+    """Get info for sessions between dates that user can access.
+
+    Args:
+        login (str): user login
+        start_date (str): start_date
+        end_date (str): end_date
 
     Returns:
-        [type]: [description]
+        list: sessions infos
     """
-
-    sql = getSQLQuery("session/sessionsInfosLogin",
-                      append=""" 
+    sql = get_sql_query("session/sessionsInfosLogin",
+                        append="""
     and (
         (BLSession_startDate >= :startDate and BLSession_startDate <= :endDate)
         or
@@ -109,21 +110,23 @@ def get_session_infos_login_dates(login, startDate, endDate):
         )
     order by v_session.sessionId DESC
     """)
-    sql = sql.bindparams(login=login, startDate=startDate, endDate=endDate)
+    sql = sql.bindparams(login=login, startDate=start_date, endDate=end_date)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
-def get_session_infos_all_dates(startDate, endDate):
-    """
-    Returns sessions info list.
+def get_session_infos_all_dates(start_date, end_date):
+    """Get info for all sessions between dates.
+
+    Args:
+        start_date (str): start_date
+        end_date (str): end_date
 
     Returns:
-        [type]: [description]
+        list: sessions infos
     """
-
-    sql = getSQLQuery("session/sessionsInfosAll",
-                      append=""" 
+    sql = get_sql_query("session/sessionsInfosAll",
+                        append="""
     where (
         (BLSession_startDate >= :startDate and BLSession_startDate <= :endDate)
         or
@@ -135,156 +138,22 @@ def get_session_infos_all_dates(startDate, endDate):
         )
     order by v_session.sessionId DESC
     """)
-    sql = sql.bindparams(startDate=startDate, endDate=endDate)
+    sql = sql.bindparams(startDate=start_date, endDate=end_date)
     res = db.engine.execute(sql)
-    return queryResultToDict(res)
+    return queryresult_to_dict(res)
 
 
-def get_sessions(request):
-    """
-    Returns session based on query parameters.
-
-    Args:
-        query_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    query_dict = request.args.to_dict()
-
-    is_admin, proposal_id_list = proposal.get_proposal_ids(request)
-
-    run_query = False
-    if is_admin:
-        run_query = True
-    else:
-        if not proposal_id_list:
-            msg = "No sessions returned. User has no proposals."
-        else:
-            if "proposalId" in query_dict.keys():
-                if query_dict["proposalId"] in proposal_id_list:
-                    run_query = True
-                else:
-                    msg = (
-                        "Proposal with id %s is not associated with user"
-                        % query_dict["proposalId"]
-                    )
-            else:
-                query_dict["proposalId"] = proposal_id_list
-
-    if run_query:
-        return db.get_db_items(
-            models.BLSession,
-            schemas.session.dict_schema,
-            schemas.session.ma_schema,
-            query_dict,
-        )
-    else:
-        return create_response_item(msg=msg)
-
-
-def add_session(data_dict):
-    """
-    Adds new session.
+def login_authorized_for_session(login, session_id):
+    """Verify that login is authorized to access session.
 
     Args:
-        session_dict ([type]): [description]
+        login (str): login
+        session_id (str): session id
 
     Returns:
-        [type]: [description]
+        boolean: authorization
     """
-    return db.add_db_item(models.BLSession, schemas.session.ma_schema, data_dict)
-
-
-def get_session_by_id(session_id):
-    """
-    Returns session info by its sessionId.
-
-    Args:
-        session_id (int): corresponds to sessionId in db
-
-    Returns:
-        dict: info about session as dict
-    """
-    data_dict = {"sessionId": session_id}
-    return db.get_db_item(
-        models.BLSession, schemas.session.ma_schema, data_dict
-    )
-
-
-def get_sessions_by_date(start_date=None, end_date=None, beamline=None):
-    """
-    Returns list of sessions by start_date, end_date and beamline.
-
-    Args:
-        start_date (datetime, optional): start date. Defaults to None.
-        end_date (datetime, optional): end date. Defaults to None.
-        beamline (str, optional): beamline name. Defaults to None.
-
-    Returns:
-        list: list of session dicts
-    """
-    query = models.BLSession.query
-    if start_date:
-        query = query.filter(models.BLSession.startDate >= start_date)
-    if end_date:
-        query = query.filter(models.BLSession.endDate <= end_date)
-    if beamline:
-        query = query.filter(models.BLSession.beamLineName == beamline)
-    return schemas.session.ma_schema.dump(query, many=True)
-
-
-def update_session(session_id, data_dict):
-    """
-    Updates session.
-
-    Args:
-        session_id ([type]): [description]
-        session_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    id_dict = {"sessionId": session_id}
-    return db.update_db_item(
-        models.BLSession, schemas.session.ma_schema, id_dict, data_dict
-    )
-
-
-def patch_session(session_id, data_dict):
-    """
-    Patch a session.
-
-    Args:
-        session_id ([type]): [description]
-        data_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    id_dict = {"sessionId": session_id}
-    return db.patch_db_item(
-        models.BLSession, schemas.session.ma_schema, id_dict, data_dict
-    )
-
-
-def delete_session(session_id):
-    """
-    Deletes session item from db.
-
-    Args:
-        session_id (int): sessionId column in db
-
-    Returns:
-        bool: True if the session exists and deleted successfully,
-        otherwise return False
-    """
-    id_dict = {"sessionId": session_id}
-    return db.delete_db_item(models.BLSession, id_dict)
-
-
-def loginAuthorizedForSession(login, sessionId):
-    sql = getSQLQuery("session/loginAuthorizedSession")
-    sql = sql.bindparams(login=login, sessionId=sessionId)
-    isAuthorized = db.engine.execute(sql)
-    return isAuthorized.first()[0] > 0
+    sql = get_sql_query("session/loginAuthorizedSession")
+    sql = sql.bindparams(login=login, sessionId=session_id)
+    is_authorized = db.engine.execute(sql)
+    return is_authorized.first()[0] > 0

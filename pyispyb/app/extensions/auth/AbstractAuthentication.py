@@ -26,7 +26,16 @@ import abc
 
 from pyispyb.core.models import UserGroup
 
+
 def get_groups_permissions(groups):
+    """Get permission list from group list.
+
+    Args:
+        groups (string[]): list of groups
+
+    Returns:
+        string[]: list of permissions
+    """
     permissions = []
     for group_name in groups:
         db_group = UserGroup.query.filter_by(name=group_name).first()
@@ -34,8 +43,8 @@ def get_groups_permissions(groups):
             permissions.append(permission.type)
     return permissions
 
-class AbstractAuthentication(object):
 
+class AbstractAuthentication(object):
     """
     Abstract authentication class.
 
@@ -45,13 +54,20 @@ class AbstractAuthentication(object):
     __metaclass__ = abc.ABCMeta
 
     def configure(self, config):
+        """Configure auth plugin.
+
+        Args:
+            config (dict): plugin configuration from file
+        """
         return
 
     def get_auth(self, username, password, token):
-        """Returns username, groups and permissions associated to the user.
+        """Return username, groups and permissions associated to the user.
 
         Args:
-            username, password, token
+            username (string): auth username
+            password (string): auth password
+            token (string): auth token
         Returns:
             username, groups, permissions
         """
@@ -60,13 +76,14 @@ class AbstractAuthentication(object):
             return None, None, None
         return username, groups, get_groups_permissions(groups)
 
-    
     @abc.abstractmethod
     def get_user_and_groups(self, username, password, token):
-        """Returns username, groups associated to the user.
+        """Return username and groups associated to the user.
 
         Args:
-            username, password, token
+            username (string): auth username
+            password (string): auth password
+            token (string): auth token
         Returns:
             username, groups
         """

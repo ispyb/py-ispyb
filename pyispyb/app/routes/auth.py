@@ -41,6 +41,15 @@ api_v1.add_namespace(api)
 
 
 def get_param(request, name):
+    """Get param from request - look in headers, json, args, and form.
+
+    Args:
+        request (HTTP request): request
+        name (string): name of the parameter to be found
+
+    Returns:
+        str: parameter value
+    """
     res = request.headers.get(name)
     if not res:
         if request.json and name in request.json:
@@ -57,10 +66,13 @@ def get_param(request, name):
 @api.route("/login")
 @legacy_api.route("/authenticate")
 class Login(Resource):
-    """Login resource"""
 
     def post(self):
+        """Get authentication token for user.
 
+        Returns:
+            dict: token_info
+        """
         plugin = get_param(request, "plugin")
         username = get_param(request, "username")
         if username is None:
