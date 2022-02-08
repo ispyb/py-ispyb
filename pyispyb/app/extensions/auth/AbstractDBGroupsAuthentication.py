@@ -39,7 +39,7 @@ def get_person_groups(person):
 class AbstractDBGroupsAuthentication(AbstractAuthentication):
     """Keycloak authentication class."""
 
-    def init_app(self, app):
+    def configure(self, config):
         pass
 
     def get_user_and_groups(self, username, password, token):

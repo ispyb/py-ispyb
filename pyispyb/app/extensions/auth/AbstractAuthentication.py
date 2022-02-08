@@ -44,12 +44,7 @@ class AbstractAuthentication(object):
 
     __metaclass__ = abc.ABCMeta
 
-    def init_app(self, app):
-        """Initializes auth class.
-
-        Args:
-            app (flask app): Flask app
-        """
+    def configure(self, config):
         return
 
     def get_auth(self, username, password, token):

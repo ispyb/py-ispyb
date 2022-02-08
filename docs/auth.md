@@ -37,19 +37,21 @@ server:
         - keycloak:
               AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
               AUTH_CLASS: "KeycloakDBGroupsAuthentication"
-        - dummy:
+              CONFIG:
+                  KEYCLOAK_SERVER_URL: "your_server"
+                  KEYCLOAK_CLIENT_ID: "your_client"
+                  KEYCLOAK_REALM_NAME: "your_realm"
+                  KEYCLOAK_CLIENT_SECRET_KEY: "your_secret"
+        - ldap:
+              AUTH_MODULE: "pyispyb.app.extensions.auth.LdapAuthentication"
+              AUTH_CLASS: "LdapAuthentication"
+              CONFIG:
+                  LDAP_URI: "ldap://your_ldap"
+                  LDAP_BASE_INTERNAL: "ou=People,dc=esrf,dc=fr"
+                  LDAP_BASE_EXTERNAL: "ou=Pxwebgroups,dc=esrf,dc=fr"
+        - dummy: # /!\/!\/!\ ONLY USE FOR TESTS /!\/!\/!\
               AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
               AUTH_CLASS: "DummyAuthentication"
-```
-
-Some plugins require additional config, for instance Keycloak configuration:
-
-```yml
-server:
-    KEYCLOAK_SERVER_URL: "your_server"
-    KEYCLOAK_CLIENT_ID: "your_client"
-    KEYCLOAK_REALM_NAME: "your_realm"
-    KEYCLOAK_CLIENT_SECRET_KEY: "your_secret"
 ```
 
 ---
