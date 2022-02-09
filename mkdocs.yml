@@ -4,6 +4,7 @@ nav:
     - Running: run.md
     - Authentication and authorization: auth.md
     - Routes: routes.md
+    - Tests: tests.md
 theme: readthedocs
 site_dir: public
 site_url: https://ispyb.gitlab-pages.esrf.fr/py-ispyb/
