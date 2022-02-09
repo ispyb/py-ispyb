@@ -43,9 +43,11 @@ API_DEFAULT_HTTP_CODE_MESSAGES = {
 
 
 def abort(code, message=None, **kwargs):
-    """
-    Custom abort function used to provide extra information in the error
-    response, namely, ``status`` and ``message`` info.
+    """Abort and provide extra information in the error response, namely, ``code`` and ``message`` info.
+
+    Args:
+        code (HTTP code): return code
+        message (string, optional): error message. Defaults to None.
     """
     if message is None:
         if code in API_DEFAULT_HTTP_CODE_MESSAGES:  # pylint: disable=consider-using-get

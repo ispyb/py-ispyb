@@ -11,10 +11,10 @@ def get_elem_name(test_elem):
 def _run_authorization_t(ispyb_app, test_elem):
     name = test_elem["name"]
 
-    input = test_elem["input"]
-    permissions = input["permissions"]
-    username = input["username"]
-    route = ispyb_app.config["API_ROOT"] + input["route"]
+    inputs = test_elem["input"]
+    permissions = inputs["permissions"]
+    username = inputs["username"]
+    route = ispyb_app.config["API_ROOT"] + inputs["route"]
 
     expected = test_elem["expected"]
     code = expected["code"]

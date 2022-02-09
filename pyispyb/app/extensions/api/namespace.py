@@ -22,7 +22,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from contextlib import contextmanager
 from functools import wraps
 import logging
 
@@ -37,15 +36,14 @@ log = logging.getLogger(__name__)
 
 
 class Namespace(BaseNamespace):
-    """
-    Having app-specific handlers here.
-    """
+    """Having app-specific handlers here."""
 
     WEBARGS_PARSER = CustomWebargsParser()
 
     def resolve_object(self, object_arg_name, resolver):
         """
-        A helper decorator to resolve object instance from arguments (e.g. identity).
+        Resolve object instance from arguments e.g. identity.
+
         Example:
         >>> @namespace.route('/<int:user_id>')
         ... class MyResource(Resource):
@@ -74,14 +72,7 @@ class Namespace(BaseNamespace):
         return decorator
 
     def model(self, name=None, model=None, **kwargs):
-        # pylint: disable=arguments-differ
-        """
-        A decorator which registers a model (aka schema / definition).
-
-        This extended implementation auto-generates a name for
-        ``Flask-Marshmallow.Schema``-based instances by using a class name
-        with stripped off `Schema` prefix.
-        """
+        """Register a model aka schema / definition."""
         if isinstance(model, flask_marshmallow.Schema) and not name:
             name = model.__class__.__name__
             if name.endswith("Schema"):

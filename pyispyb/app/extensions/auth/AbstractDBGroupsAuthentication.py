@@ -30,6 +30,14 @@ from pyispyb.core.models import Person
 
 
 def get_person_groups(person):
+    """Get group list for person.
+
+    Args:
+        person (Person): person
+
+    Returns:
+        str[]: group list
+    """
     groups = []
     for group in person.UserGroup:
         groups.append(group.name)
@@ -40,9 +48,23 @@ class AbstractDBGroupsAuthentication(AbstractAuthentication):
     """Keycloak authentication class."""
 
     def configure(self, config):
+        """Configure auth plugin.
+
+        Args:
+            config (dict): plugin configuration from file
+        """
         pass
 
     def get_user_and_groups(self, username, password, token):
+        """Return username and groups associated to the user.
+
+        Args:
+            username (string): auth username
+            password (string): auth password
+            token (string): auth token
+        Returns:
+            username, groups
+        """
         person = self.get_person(username, password, token)
         if not person:
             return None, None
@@ -55,7 +77,7 @@ class AbstractDBGroupsAuthentication(AbstractAuthentication):
 
     @abc.abstractmethod
     def get_person(self, username, password, token):
-        """Returns username associated to the user.
+        """Return db person associated to the user.
 
         Args:
             username : username if present in the request

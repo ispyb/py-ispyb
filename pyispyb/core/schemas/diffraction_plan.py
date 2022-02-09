@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,60 +30,61 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'diffractionPlanId': f_fields.Integer(required=True, description=''),
-        'xmlDocumentId': f_fields.Integer(required=False, description=''),
-        'experimentKind': f_fields.String(required=False, description='enum(Default,MXPressE,MXPressF,MXPressO,MXPressP,MXPressP_SAD,MXPressI,MXPressE_SAD,MXScore,MXPressM,MAD,SAD,Fixed,Ligand binding,Refinement,OSC,MAD - Inverse Beam,SAD - Inverse Beam)'),
-        'observedResolution': f_fields.Float(required=False, description=''),
-        'minimalResolution': f_fields.Float(required=False, description=''),
-        'exposureTime': f_fields.Float(required=False, description=''),
-        'oscillationRange': f_fields.Float(required=False, description=''),
-        'maximalResolution': f_fields.Float(required=False, description=''),
-        'screeningResolution': f_fields.Float(required=False, description=''),
-        'radiationSensitivity': f_fields.Float(required=False, description=''),
-        'anomalousScatterer': f_fields.String(required=False, description=''),
-        'preferredBeamSizeX': f_fields.Float(required=False, description=''),
-        'preferredBeamSizeY': f_fields.Float(required=False, description=''),
-        'preferredBeamDiameter': f_fields.Float(required=False, description=''),
-        'comments': f_fields.String(required=False, description=''),
-        'aimedCompleteness': f_fields.String(required=False, description=''),
-        'aimedIOverSigmaAtHighestRes': f_fields.String(required=False, description=''),
-        'aimedMultiplicity': f_fields.String(required=False, description=''),
-        'aimedResolution': f_fields.String(required=False, description=''),
-        'anomalousData': f_fields.Integer(required=False, description=''),
-        'complexity': f_fields.String(required=False, description=''),
-        'estimateRadiationDamage': f_fields.Integer(required=False, description=''),
-        'forcedSpaceGroup': f_fields.String(required=False, description=''),
-        'requiredCompleteness': f_fields.String(required=False, description=''),
-        'requiredMultiplicity': f_fields.String(required=False, description=''),
-        'requiredResolution': f_fields.String(required=False, description=''),
-        'strategyOption': f_fields.String(required=False, description=''),
-        'kappaStrategyOption': f_fields.String(required=False, description=''),
-        'numberOfPositions': f_fields.Integer(required=False, description=''),
-        'minDimAccrossSpindleAxis': f_fields.String(required=False, description='minimum dimension accross the spindle axis'),
-        'maxDimAccrossSpindleAxis': f_fields.String(required=False, description='maximum dimension accross the spindle axis'),
-        'radiationSensitivityBeta': f_fields.String(required=False, description=''),
-        'radiationSensitivityGamma': f_fields.String(required=False, description=''),
-        'minOscWidth': f_fields.Float(required=False, description=''),
-        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
-        'diffractionPlanUUID': f_fields.String(required=False, description=''),
-        'dataCollectionPlanGroupId': f_fields.Integer(required=False, description=''),
-        'detectorId': f_fields.Integer(required=False, description=''),
-        'distance': f_fields.String(required=False, description=''),
-        'orientation': f_fields.String(required=False, description=''),
-        'monoBandwidth': f_fields.String(required=False, description=''),
-        'monochromator': f_fields.String(required=False, description='DMM or DCM'),
-        'energy': f_fields.Float(required=False, description='eV'),
-        'transmission': f_fields.Float(required=False, description='Decimal fraction in range [0,1]'),
-        'boxSizeX': f_fields.Float(required=False, description='microns'),
-        'boxSizeY': f_fields.Float(required=False, description='microns'),
-        'kappaStart': f_fields.Float(required=False, description='degrees'),
-        'axisStart': f_fields.Float(required=False, description='degrees'),
-        'axisRange': f_fields.Float(required=False, description='degrees'),
-        'numberOfImages': f_fields.Integer(required=False, description='The number of images requested'),
-        'presetForProposalId': f_fields.Integer(required=False, description='Indicates this plan is available to all sessions on given proposal'),
-        'beamLineName': f_fields.String(required=False, description='Indicates this plan is available to all sessions on given beamline'),
-        'userPath': f_fields.String(required=False, description='User-specified relative "root" path inside the session directory to be used for holding collected data'),
-        }
+    'diffractionPlanId': f_fields.Integer(required=True, description=''),
+    'xmlDocumentId': f_fields.Integer(required=False, description=''),
+    'experimentKind': f_fields.String(required=False, description='enum(Default,MXPressE,MXPressF,MXPressO,MXPressP,MXPressP_SAD,MXPressI,MXPressE_SAD,MXScore,MXPressM,MAD,SAD,Fixed,Ligand binding,Refinement,OSC,MAD - Inverse Beam,SAD - Inverse Beam)'),
+    'observedResolution': f_fields.Float(required=False, description=''),
+    'minimalResolution': f_fields.Float(required=False, description=''),
+    'exposureTime': f_fields.Float(required=False, description=''),
+    'oscillationRange': f_fields.Float(required=False, description=''),
+    'maximalResolution': f_fields.Float(required=False, description=''),
+    'screeningResolution': f_fields.Float(required=False, description=''),
+    'radiationSensitivity': f_fields.Float(required=False, description=''),
+    'anomalousScatterer': f_fields.String(required=False, description=''),
+    'preferredBeamSizeX': f_fields.Float(required=False, description=''),
+    'preferredBeamSizeY': f_fields.Float(required=False, description=''),
+    'preferredBeamDiameter': f_fields.Float(required=False, description=''),
+    'comments': f_fields.String(required=False, description=''),
+    'aimedCompleteness': f_fields.String(required=False, description=''),
+    'aimedIOverSigmaAtHighestRes': f_fields.String(required=False, description=''),
+    'aimedMultiplicity': f_fields.String(required=False, description=''),
+    'aimedResolution': f_fields.String(required=False, description=''),
+    'anomalousData': f_fields.Integer(required=False, description=''),
+    'complexity': f_fields.String(required=False, description=''),
+    'estimateRadiationDamage': f_fields.Integer(required=False, description=''),
+    'forcedSpaceGroup': f_fields.String(required=False, description=''),
+    'requiredCompleteness': f_fields.String(required=False, description=''),
+    'requiredMultiplicity': f_fields.String(required=False, description=''),
+    'requiredResolution': f_fields.String(required=False, description=''),
+    'strategyOption': f_fields.String(required=False, description=''),
+    'kappaStrategyOption': f_fields.String(required=False, description=''),
+    'numberOfPositions': f_fields.Integer(required=False, description=''),
+    'minDimAccrossSpindleAxis': f_fields.String(required=False, description='minimum dimension accross the spindle axis'),
+    'maxDimAccrossSpindleAxis': f_fields.String(required=False, description='maximum dimension accross the spindle axis'),
+    'radiationSensitivityBeta': f_fields.String(required=False, description=''),
+    'radiationSensitivityGamma': f_fields.String(required=False, description=''),
+    'minOscWidth': f_fields.Float(required=False, description=''),
+    'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
+    'diffractionPlanUUID': f_fields.String(required=False, description=''),
+    'dataCollectionPlanGroupId': f_fields.Integer(required=False, description=''),
+    'detectorId': f_fields.Integer(required=False, description=''),
+    'distance': f_fields.String(required=False, description=''),
+    'orientation': f_fields.String(required=False, description=''),
+    'monoBandwidth': f_fields.String(required=False, description=''),
+    'monochromator': f_fields.String(required=False, description='DMM or DCM'),
+    'energy': f_fields.Float(required=False, description='eV'),
+    'transmission': f_fields.Float(required=False, description='Decimal fraction in range [0,1]'),
+    'boxSizeX': f_fields.Float(required=False, description='microns'),
+    'boxSizeY': f_fields.Float(required=False, description='microns'),
+    'kappaStart': f_fields.Float(required=False, description='degrees'),
+    'axisStart': f_fields.Float(required=False, description='degrees'),
+    'axisRange': f_fields.Float(required=False, description='degrees'),
+    'numberOfImages': f_fields.Integer(required=False, description='The number of images requested'),
+    'presetForProposalId': f_fields.Integer(required=False, description='Indicates this plan is available to all sessions on given proposal'),
+    'beamLineName': f_fields.String(required=False, description='Indicates this plan is available to all sessions on given beamline'),
+    'userPath': f_fields.String(required=False, description='User-specified relative "root" path inside the session directory to be used for holding collected data'),
+}
+
 
 class DiffractionPlanSchema(Schema):
     """Marshmallows schema class representing DiffractionPlan table"""
@@ -142,6 +142,7 @@ class DiffractionPlanSchema(Schema):
     presetForProposalId = ma_fields.Integer()
     beamLineName = ma_fields.String()
     userPath = ma_fields.String()
+
 
 f_schema = api.model('DiffractionPlan', dict_schema)
 ma_schema = DiffractionPlanSchema()

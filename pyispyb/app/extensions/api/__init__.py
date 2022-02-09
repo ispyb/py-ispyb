@@ -32,17 +32,14 @@ legacy_api = None
 
 
 def init_app(app, **kwargs):
-    # pylint: disable=unused-argument
-    """
-    API extension initialization point.
-    """
+    """Initialize API extention."""
     # Prevent config variable modification with runtime changes
 
     global api_v1
     api_v1 = Api(
         version="1.0",
         title="ISPyB",
-        description="ISPyB Flask rest server",
+        description="ISPyB Flask web server",
         doc=app.config["SWAGGER_UI_URI"],
         default="Main",
         default_label="Main",
@@ -51,6 +48,7 @@ def init_app(app, **kwargs):
 
     global legacy_api
     legacy_api = Namespace(
-        "Legacy", description="Legacy routes for Java ISPyB compatibility", path="/legacy"
-    )
+        "Legacy",
+        description="Legacy routes for Java ISPyB compatibility",
+        path="/legacy")
     api_v1.add_namespace(legacy_api)
