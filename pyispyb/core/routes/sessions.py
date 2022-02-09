@@ -23,7 +23,7 @@ import logging
 
 from flask import request
 from pyispyb.core.modules.proposal import findProposalId
-from pyispyb.flask_restx_patched import Resource
+from flask_restx import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
 from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, authentication_required, permission_required

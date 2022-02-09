@@ -37,7 +37,7 @@ __license__ = "LGPLv3+"
 
 from flask import request
 
-from pyispyb.flask_restx_patched import Resource
+from flask_restx import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
 from pyispyb.app.extensions.auth.decorators import authentication_required, permission_required, proposal_authorization_required
@@ -56,7 +56,7 @@ api_v1.add_namespace(api)
 class ProposalsInfosLogin(Resource):
 
     @authentication_required
-    @permission_required("any", ["own_proposals","all_proposals"])
+    @permission_required("any", ["own_proposals", "all_proposals"])
     def get(self, **kwargs):
         """Returns list of proposals associated to login"""
         if "all_proposals" in request.user['permissions']:

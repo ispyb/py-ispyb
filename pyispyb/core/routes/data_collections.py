@@ -20,7 +20,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-from pyispyb.flask_restx_patched import Resource
+from flask_restx import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
 from pyispyb.app.extensions.auth.decorators import session_authorization_required, authentication_required, permission_required

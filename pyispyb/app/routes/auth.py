@@ -24,7 +24,7 @@ import logging
 from flask import request, make_response
 import hashlib
 
-from pyispyb.flask_restx_patched import Resource
+from flask_restx import Resource
 from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
 from pyispyb.app.extensions import auth_provider
 from pyispyb.app.extensions import db
@@ -78,7 +78,8 @@ class Login(Resource):
                 401,
             )
         else:
-            token_info = auth_provider.generate_token(username, groups, permissions)
+            token_info = auth_provider.generate_token(
+                username, groups, permissions)
             token_ispyb = hashlib.sha1(
                 token_info["token"].encode('utf-8')).hexdigest()
             bd_login = models.Login(
