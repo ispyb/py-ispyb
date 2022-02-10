@@ -23,7 +23,6 @@ import os
 import logging
 from importlib import import_module
 
-
 __license__ = "LGPLv3+"
 
 

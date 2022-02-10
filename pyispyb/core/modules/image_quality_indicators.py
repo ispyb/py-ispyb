@@ -19,25 +19,21 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from pyispyb.app.extensions import db
-from pyispyb.core import models, schemas
-
 
 __license__ = "LGPLv3+"
 
 
-def get_image_quality_indicators(request):
+from pyispyb.core import models, schemas
+
+
+def get_image_quality_indicators():
     """
     Returns image quality indicators.
 
     Returns:
         [type]: [description]
     """
-    query_dict = request.args.to_dict()
-
-    return db.get_db_items(
-        models.ImageQualityIndicator,
-        schemas.image_quality_indicators.dict_schema,
-        schemas.image_quality_indicators.ma_schema,
-        query_dict,
+    image_quality_indicators_list = models.ImageQualityIndicator.query.all()
+    return schemas.image_quality_indicators.ma_schema.dump(
+        image_quality_indicators_list
     )

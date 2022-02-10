@@ -34,7 +34,7 @@ __license__ = "LGPLv3+"
 log = logging.getLogger(__name__)
 
 
-class AuthenticationProvider:
+class AuthProvider:
     """Allows to authentificate users and create tokens."""
 
     def __init__(self):
@@ -131,7 +131,7 @@ class AuthenticationProvider:
         }
 
 
-authentication_provider = AuthenticationProvider()
+auth_provider = AuthProvider()
 
 
 def decode_token(token):
@@ -155,7 +155,7 @@ def decode_token(token):
     return user_info, msg
 
 
-def authentication_required(func):
+def token_required(func):
     """
     Token required decorator.
 
@@ -212,5 +212,67 @@ def authentication_required(func):
             return {"message": msg}, HTTPStatus.UNAUTHORIZED
         else:
             return func(*args, **kwargs)
+
+    return decorated
+
+
+def role_required(func):
+    """
+    Checks if user has role required to access the given resource.
+
+    Authorization is done via AUTHORIZATION_RULES dictionary that contains
+    mapping of endpoints with user groups. For example:
+
+    AUTHORIZATION_RULES = {
+        "proposals": {
+            "get": ["all"],
+            "post": ["admin"]
+        }
+
+    define that method GET of endpoint proposals is available for all user groups
+    and method POST is accessible just for admin group.
+    If an endpoint is not defined in the AUTHORIZATION_RULES then it is available
+    for all user groups.
+
+    Args:
+        func (function): function
+
+    Returns:
+        function: [description]
+    """
+
+    @wraps(func)
+    def decorated(self, *args, **kwargs):
+        """
+        Actual decorator function
+
+        Returns:
+            [type]: [description]
+        """
+
+        user_info = auth_provider.get_user_info_from_auth_header(
+            request.headers.get("Authorization")
+        )
+
+        methods = current_app.config.get("AUTHORIZATION_RULES").get(self.endpoint, {})
+        # If no role is defined then just manager is allowed to access the resource
+        roles = methods.get(func.__name__, ["manager"])
+
+        if (
+            not roles
+            or "all" in roles
+            or any(role in list(roles) for role in list(user_info.get("roles", [])))
+        ):
+            return func(self, *args, **kwargs)
+        else:
+            msg = "User %s (roles assigned: %s) has no appropriate role (%s) " % (
+                user_info.get("sub"),
+                str(user_info.get("roles")),
+                str(roles),
+            )
+            msg += " to execute method."
+            return {"message": msg}, HTTPStatus.UNAUTHORIZED
+
+        return func(self, *args, **kwargs)
 
     return decorated

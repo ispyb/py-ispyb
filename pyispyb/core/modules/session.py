@@ -20,13 +20,16 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-from pyispyb.app.extensions import db
-from pyispyb.app.utils import create_response_item
-from pyispyb.core import models, schemas
-from pyispyb.core.modules import beamline_setup, proposal
-
-
 __license__ = "LGPLv3+"
+
+
+from pyispyb.app.extensions import db
+from pyispyb.app.extensions.auth import auth_provider
+from pyispyb.app.utils import create_response_item
+
+from pyispyb.core import models, schemas
+
+from pyispyb.core.modules import beamline_setup, session, proposal
 
 
 def get_sessions(request):
@@ -41,19 +44,36 @@ def get_sessions(request):
     """
     query_dict = request.args.to_dict()
 
-    proposal_ids = proposal.get_proposal_ids(request)
-    if not proposal_ids:
-        create_response_item(
-            msg="No sessions returned. User has no proposals."
-        )
+    is_admin, proposal_id_list = proposal.get_proposal_ids(request)
+
+    run_query = False
+    if is_admin:
+        run_query = True
     else:
-        query_dict["proposalId"] = proposal_ids
+        if not proposal_id_list:
+            msg = "No sessions returned. User has no proposals."
+        else:
+            if "proposalId" in query_dict.keys():
+                if query_dict["proposalId"] in proposal_id_list:
+                    run_query = True
+                else:
+                    msg = (
+                        "Proposal with id %s is not associated with user"
+                        % query_dict["proposalId"]
+                    )
+            else:
+                query_dict["proposalId"] = proposal_id_list
+
+    if run_query:
         return db.get_db_items(
             models.BLSession,
             schemas.session.dict_schema,
             schemas.session.ma_schema,
             query_dict,
         )
+    else:
+        return create_response_item(msg=msg)
+
 
 def add_session(data_dict):
     """
@@ -96,7 +116,7 @@ def get_session_info_by_id(session_id):
     """
     session_json = get_session_by_id(session_id)
     if session_json:
-        session_json["local_contact"] = get_session_by_id(
+        session_json["local_contact"] = session.get_session_by_id(
             session_json["sessionId"]
         )
         session_json["beamline_setup"] = beamline_setup.get_beamline_setup_by_id(

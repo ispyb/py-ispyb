@@ -25,8 +25,7 @@ from flask_restx._http import HTTPStatus
 from pyispyb.flask_restx_patched import Resource
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.authentication import authentication_required
-from pyispyb.app.extensions.authorization import authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 from pyispyb.app.extensions.user_office import user_office
 
 
@@ -45,8 +44,8 @@ class SyncAll(Resource):
 
     """Sync with user office"""
 
-    @authentication_required
-    @authorization_required
+    @token_required
+    @role_required
     def post(self):
         """Sync with user office"""
 
@@ -65,8 +64,8 @@ class SyncAll(Resource):
 class UpdateProposal(Resource):
     """Sync with user office"""
 
-    @authentication_required
-    @authorization_required
+    @token_required
+    @role_required
     @api.doc(
         description="proposal_code should be a string, proposal_number should be an integer"
     )

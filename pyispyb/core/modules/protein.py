@@ -20,15 +20,17 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
+__license__ = "LGPLv3+"
+
+
 from pyispyb.app.extensions import db
+from pyispyb.app.utils import create_response_item
+
 from pyispyb.core import models, schemas
 from pyispyb.core.modules import proposal
 
 
-__license__ = "LGPLv3+"
-
-
-def get_proteins(request):
+def get_proteins_by_request(request):
     """
     Returns protein entries.
 
@@ -36,9 +38,6 @@ def get_proteins(request):
         [type]: [description]
     """
     query_dict = request.args.to_dict()
-    return get_proteins_by_query(query_dict)
-
-    """
 
     is_admin, proposal_id_list = proposal.get_proposal_ids(request)
 
@@ -64,7 +63,6 @@ def get_proteins(request):
         return get_proteins_by_query(query_dict)
     else:
         return create_response_item(msg=msg)
-    """
 
 
 def get_proteins_by_query(query_dict):

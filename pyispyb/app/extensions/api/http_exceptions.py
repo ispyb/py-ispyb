@@ -19,11 +19,11 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
+__license__ = "LGPLv3+"
+
+
 from flask_restx.errors import abort as restplus_abort
 from flask_restx._http import HTTPStatus
-
-
-__license__ = "LGPLv3+"
 
 
 API_DEFAULT_HTTP_CODE_MESSAGES = {
@@ -51,5 +51,7 @@ def abort(code, message=None, **kwargs):
         if code in API_DEFAULT_HTTP_CODE_MESSAGES:  # pylint: disable=consider-using-get
             message = API_DEFAULT_HTTP_CODE_MESSAGES[code]
         else:
-            message = HTTPStatus(code).description  # pylint: disable=no-value-for-parameter
+            message = HTTPStatus(
+                code
+            ).description  # pylint: disable=no-value-for-parameter
     restplus_abort(code=code, status=code, message=message, **kwargs)

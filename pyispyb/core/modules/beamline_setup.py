@@ -19,12 +19,12 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
+__license__ = "LGPLv3+"
+
 
 from pyispyb.app.extensions import db
+
 from pyispyb.core import models, schemas
-
-
-__license__ = "LGPLv3+"
 
 
 def get_beamline_setups(request):

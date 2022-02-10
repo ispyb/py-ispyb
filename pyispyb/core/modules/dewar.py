@@ -20,27 +20,21 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-from pyispyb.app.extensions import db, report
-from pyispyb.core import models, schemas
-from pyispyb.core.modules import shipping
-
-
 __license__ = "LGPLv3+"
 
 
-def get_dewars(request):
+from pyispyb.app.extensions import db, report
+from pyispyb.core import models, schemas
+from pyispyb.core.modules import contacts, proposal, shipping
+
+
+def get_dewars_by_query(query_dict):
     """
     Returns all dewars.
 
     Returns:
         dict: list with dewars]
     """
-
-    query_dict = request.args.to_dict()
-
-    return get_dewars_by_query(query_dict)
-
-def get_dewars_by_query(query_dict):
     return db.get_db_items(
         models.Dewar, schemas.dewar.dict_schema, schemas.dewar.ma_schema, query_dict
     )

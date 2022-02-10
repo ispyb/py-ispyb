@@ -25,8 +25,7 @@ from flask import request, send_file, abort
 from pyispyb.flask_restx_patched import Resource, HTTPStatus
 
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.authentication import authentication_required
-from pyispyb.app.extensions.authorization import authorization_required
+from pyispyb.app.extensions.auth import token_required, role_required
 
 from pyispyb.core.schemas import data_collection as data_collection_schemas
 from pyispyb.core.schemas import data_collection_group as data_collection_group_schemas
@@ -49,19 +48,16 @@ api_v1.add_namespace(api)
 class DataColletions(Resource):
     """Allows to get all data_collections"""
 
-    @authentication_required
-    @authorization_required
-    @api.marshal_list_with(
-        data_collection_schemas.f_schema,
-        skip_none=False,
-        code=HTTPStatus.OK
-    )
+    @token_required
+    @role_required
+    @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collections"""
-        return data_collection.get_data_collections(request)
+        query_dict = request.args.to_dict()
+        return data_collection.get_data_collections(query_dict)
 
-    @authentication_required
-    @authorization_required
+    @token_required
+    @role_required
     @api.expect(data_collection_schemas.f_schema)
     @api.marshal_with(data_collection_schemas.f_schema, code=201)
     def post(self):
@@ -76,8 +72,8 @@ class DataColletions(Resource):
 class DataCollectionById(Resource):
     """Allows to get/set/delete a data_collection"""
 
-    @authentication_required
-    @authorization_required
+    @token_required
+    @role_required
     @api.doc(description="data_collection_id should be an integer ")
     @api.marshal_with(
         data_collection_schemas.f_schema,
@@ -96,8 +92,8 @@ class DataCollectionById(Resource):
 class DataCollectionSnapshot(Resource):
     """Allows to download snapshots associated to the data collection"""
 
-    @authentication_required
-    @authorization_required
+    @token_required
+    @role_required
     @api.doc(description="data_collection_id and snapshot_id should be an integer")
     def get(self, data_collection_id, snapshot_index):
         """Downloads data collection attribute by id and attribute_name"""
@@ -132,8 +128,8 @@ class DataCollectionSnapshot(Resource):
 class DataCollectionFile(Resource):
     """Allows to download files associated to the data collection"""
 
-    @authentication_required
-    @authorization_required
+    @token_required
+    @role_required
     @api.doc(description="data_collection_id should be an integer ")
     def get(self, data_collection_id):
         """Downloads data collection attribute by id and attribute_name"""
@@ -177,19 +173,15 @@ class DataCollectionFile(Resource):
 class DataCollectionGroups(Resource):
     """Allows to get all data collection groups and add a new one"""
 
-    @authentication_required
-    @authorization_required
-    @api.marshal_list_with(
-        data_collection_schemas.f_schema,
-        skip_none=False,
-        code=HTTPStatus.OK
-    )
+    @token_required
+    @role_required
+    @api.marshal_list_with(data_collection_schemas.f_schema, skip_none=False, code=HTTPStatus.OK)
     def get(self):
         """Returns list of data_collection_groups"""
         return data_collection.get_data_collection_groups(request)
 
-    @authentication_required
-    @authorization_required
+    @token_required
+    @role_required
     @api.expect(data_collection_group_schemas.f_schema)
     @api.marshal_with(data_collection_group_schemas.f_schema, code=201)
     def post(self):
@@ -203,8 +195,8 @@ class DataCollectionGroups(Resource):
 class DataCollectionGroupById(Resource):
     """Allows to get/set/delete a data collection group"""
 
-    @authentication_required
-    @authorization_required
+    @token_required
+    @role_required
     @api.doc(description="data_collection_group_id should be an integer ")
     @api.marshal_with(
         data_collection_group_schemas.f_schema,

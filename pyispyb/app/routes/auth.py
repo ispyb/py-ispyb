@@ -24,7 +24,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from pyispyb.flask_restx_patched import HTTPStatus, Resource
 from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.authentication import authentication_provider
+from pyispyb.app.extensions import auth_provider
 
 
 __license__ = "LGPLv3+"
@@ -84,7 +84,7 @@ class Login(Resource):
             username = authorization.username
             password = authorization.password
 
-        roles = authentication_provider.get_roles(username, password)
+        roles = auth_provider.get_roles(username, password)
         if not roles:
             return make_response(
                 "Could not verify",
@@ -92,5 +92,5 @@ class Login(Resource):
                 {"WWW-Authenticate": 'Basic realm="Login required!"'},
             )
         else:
-            token_info = authentication_provider.generate_token(username, roles)
+            token_info = auth_provider.generate_token(username, roles)
             return token_info

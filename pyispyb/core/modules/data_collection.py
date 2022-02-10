@@ -20,14 +20,15 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-from pyispyb.app.extensions import db
-from pyispyb.core import models, schemas
-
-
 __license__ = "LGPLv3+"
 
 
-def get_data_collections(request):
+from pyispyb.app.extensions import db
+
+from pyispyb.core import models, schemas
+
+
+def get_data_collections(query_dict):
     """
     Returns data collection items based on query parameters.
 
@@ -37,8 +38,6 @@ def get_data_collections(request):
     Returns:
         [type]: [description]
     """
-    query_dict = request.args.to_dict()
-
     return db.get_db_items(
         models.DataCollection,
         schemas.data_collection.dict_schema,
