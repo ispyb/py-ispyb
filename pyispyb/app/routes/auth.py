@@ -103,4 +103,5 @@ class Login(Resource):
             )
             db.session.add(bd_login)
             db.session.commit()
+            token_info["roles"] = token_info["groups"]
             return token_info
