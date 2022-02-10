@@ -67,7 +67,7 @@ def get_movie_thumbnails(proposal_id, movie_id):
     res = db.engine.execute(sql)
     res = queryresult_to_dict(res)
     if len(res) > 0:
-        return queryresult_to_dict(res)[0]
+        return res[0]
     return None
 
 
@@ -153,3 +153,23 @@ def get_data_collections_groups(proposal_id, session_id):
             row["DataCollectionGroup_dataCollectionGroupId"]
         )
     return res
+
+############################
+#     CLASSIFICATION       #
+############################
+
+
+def get_classification_by_session_id(session_id):
+    """Get classification for session.
+
+    Args:
+        session_id (str): session id
+
+    Returns:
+        dict: classification
+    """
+    sql = get_sql_query(
+        "em/classification", append=" where sessionId = :sessionId")
+    sql = sql.bindparams(sessionId=session_id)
+    res = db.engine.execute(sql)
+    return queryresult_to_dict(res)

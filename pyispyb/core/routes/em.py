@@ -2,13 +2,14 @@
 __license__ = "LGPLv3+"
 
 
+import os
 from pyispyb.core.modules.proposal import find_proposal_id
 from flask_restx import Resource
 
-from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
+from pyispyb.app.extensions.api import api_v1, Namespace, http_exceptions, legacy_api
 from pyispyb.app.extensions.auth.decorators import proposal_authorization_required, authentication_required, permission_required, session_authorization_required
 from pyispyb.core.modules import em
-from flask import send_file, abort
+from flask import send_file
 
 
 api = Namespace(
@@ -59,12 +60,12 @@ class MovieThumbnail(Resource):
         """
         proposal_id = find_proposal_id(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
-        if path:
+        if path and "movie_thumbnail" in path:
             path = path["movie_thumbnail"]
-        if path:
+        if path and os.path.isfile(path):
             return send_file(path, mimetype='image/png')
         else:
-            abort(404)
+            http_exceptions.abort(404, "no image found.")
 
 
 @api.route("/proposal/<int:proposal_id>/movie/<int:movie_id>/thumbnail/motioncorrection")
@@ -84,12 +85,12 @@ class MovieMotionCorrectionThumbnail(Resource):
         """
         proposal_id = find_proposal_id(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
-        if path:
+        if path and "motion_correction_thumbnail" in path:
             path = path["motion_correction_thumbnail"]
-        if path:
+        if path and os.path.isfile(path):
             return send_file(path, mimetype='image/png')
         else:
-            abort(404)
+            http_exceptions.abort(404, "no image found.")
 
 
 @api.route("/proposal/<int:proposal_id>/movie/<int:movie_id>/thumbnail/ctf")
@@ -109,12 +110,12 @@ class MovieCTFThumbnail(Resource):
         """
         proposal_id = find_proposal_id(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
-        if path:
+        if path and "ctf_thumbnail" in path:
             path = path["ctf_thumbnail"]
-        if path:
+        if path and os.path.isfile(path):
             return send_file(path, mimetype='image/png')
         else:
-            abort(404)
+            http_exceptions.abort(404, "no image found.")
 
 
 @api.route("/proposal/<int:proposal_id>/movie/<int:movie_id>/plot/motioncorrectiondrift")
@@ -134,12 +135,12 @@ class MovieMotionCorrectionDrift(Resource):
         """
         proposal_id = find_proposal_id(proposal_id)
         path = em.get_movie_thumbnails(proposal_id, movie_id)
-        if path:
+        if path and "motion_correction_drift" in path:
             path = path["motion_correction_drift"]
-        if path:
+        if path and os.path.isfile(path):
             return send_file(path, mimetype='image/png')
         else:
-            abort(404)
+            http_exceptions.abort(404, "no image found.")
 
 ############################
 #          STATS           #
@@ -224,3 +225,24 @@ class DataCollectionGroup(Resource):
         """
         proposal_id = find_proposal_id(proposal_id)
         return em.get_data_collections_groups(proposal_id, session_id)
+
+############################
+#     CLASSIFICATION       #
+############################
+
+
+@api.route("/session/<int:session_id>/classification")
+@legacy_api.route("/<token>/proposal/<proposal_id>/em/session/<int:session_id>/classification")
+@api.doc(security="apikey")
+class ClassificationSession(Resource):
+
+    @authentication_required
+    @permission_required("any", ["own_sessions", "all_sessions"])
+    @session_authorization_required
+    def get(self, session_id, **kwargs):
+        """Get classification for session.
+
+        Args:
+            session_id (str): session id
+        """
+        return em.get_classification_by_session_id(session_id)
