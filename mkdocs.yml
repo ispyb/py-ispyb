@@ -1,0 +1,15 @@
+site_name: py-ISPyB
+nav:
+    - Home: index.md
+    - Running: run.md
+    - Authentication and authorization: auth.md
+    - Routes: routes.md
+    - Tests: tests.md
+theme: readthedocs
+site_dir: public
+site_url: https://ispyb.gitlab-pages.esrf.fr/py-ispyb/
+repo_url: https://gitlab.esrf.fr/ispyb/py-ispyb
+repo_name: "GitLab"
+markdown_extensions:
+    - toc:
+          permalink: "#"

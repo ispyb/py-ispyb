@@ -19,6 +19,7 @@
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 
+from pyispyb.config import BaseConfig
 import os
 import sys
 import csv
@@ -29,7 +30,6 @@ ispyb_root = "/" + os.path.join(*ispyb_root[1:-1])
 sys.path.insert(0, ispyb_root)
 
 
-from pyispyb.config import BaseConfig
 config = BaseConfig(os.path.join(ispyb_root, "ispyb_em_config.yml"))
 
 uri = config.SQLALCHEMY_DATABASE_URI
@@ -127,11 +127,13 @@ for table in tables:
             ma_text += "    %s = ma_fields.%s()\n" % (name, data_type)
         dict_text += "        }\n\n"
 
-        class_text = "f_schema = api.model('%s', dict_schema)\n" % (table_name,)
+        class_text = "f_schema = api.model('%s', dict_schema)\n" % (
+            table_name,)
         class_text += "ma_schema = %sSchema()\n" % (table_name)
         json_text = "json_schema = JSONSchema().dump(ma_schema)\n"
 
-        schema_file_path = "%s/pyispyb/em/schemas/%s.py" % (ispyb_root, schema_name)
+        schema_file_path = "%s/pyispyb/em/schemas/%s.py" % (
+            ispyb_root, schema_name)
         if not os.path.exists(os.path.dirname(schema_file_path)):
             os.makedirs(os.path.dirname(schema_file_path))
         schema_file = open(schema_file_path, "w")

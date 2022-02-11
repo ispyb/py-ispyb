@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,20 +30,22 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'phasingStepId': f_fields.Integer(required=True, description=''),
-        'previousPhasingStepId': f_fields.Integer(required=False, description=''),
-        'programRunId': f_fields.Integer(required=False, description=''),
-        'spaceGroupId': f_fields.Integer(required=False, description=''),
-        'autoProcScalingId': f_fields.Integer(required=False, description=''),
-        'phasingAnalysisId': f_fields.Integer(required=False, description=''),
-        'phasingStepType': f_fields.String(required=False, description='enum(PREPARE,SUBSTRUCTUREDETERMINATION,PHASING,MODELBUILDING)'),
-        'method': f_fields.String(required=False, description=''),
-        'solventContent': f_fields.String(required=False, description=''),
-        'enantiomorph': f_fields.String(required=False, description=''),
-        'lowRes': f_fields.String(required=False, description=''),
-        'highRes': f_fields.String(required=False, description=''),
-        'recordTimeStamp': f_fields.DateTime(required=True, description=''),
-        }
+    'phasingStepId': f_fields.Integer(required=True, description=''),
+    'previousPhasingStepId': f_fields.Integer(required=False, description=''),
+    'programRunId': f_fields.Integer(required=False, description=''),
+    'spaceGroupId': f_fields.Integer(required=False, description=''),
+    'autoProcScalingId': f_fields.Integer(required=False, description=''),
+    'phasingAnalysisId': f_fields.Integer(required=False, description=''),
+    'phasingStepType': f_fields.String(required=False, description='enum(PREPARE,SUBSTRUCTUREDETERMINATION,PHASING,MODELBUILDING,REFINEMENT,LIGAND_FIT)'),
+    'method': f_fields.String(required=False, description=''),
+    'solventContent': f_fields.String(required=False, description=''),
+    'enantiomorph': f_fields.String(required=False, description=''),
+    'lowRes': f_fields.String(required=False, description=''),
+    'highRes': f_fields.String(required=False, description=''),
+    'groupName': f_fields.String(required=False, description=''),
+    'recordTimeStamp': f_fields.DateTime(required=True, description=''),
+}
+
 
 class PhasingStepSchema(Schema):
     """Marshmallows schema class representing PhasingStep table"""
@@ -61,7 +62,9 @@ class PhasingStepSchema(Schema):
     enantiomorph = ma_fields.String()
     lowRes = ma_fields.String()
     highRes = ma_fields.String()
+    groupName = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
+
 
 f_schema = api.model('PhasingStep', dict_schema)
 ma_schema = PhasingStepSchema()

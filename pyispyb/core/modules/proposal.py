@@ -22,184 +22,96 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
-
-from flask_restx._http import HTTPStatus
-
 from pyispyb.app.extensions import db
-from pyispyb.app.extensions.authentication import authentication_provider 
+
+from pyispyb.app.utils import get_sql_query, queryresult_to_dict
 
 from pyispyb.core import models, schemas
-from pyispyb.core.modules import contacts, session
 
 
-def get_proposals(request):
-    """Returns proposal db items
+def get_proposals_infos_login(login):
+    """
+    Get infos for all proposals that user can access.
 
     Args:
-        query_dict (dict, optional): [description]. Defaults to {}.
+        login (str): user login
 
     Returns:
-        [type]: [description]
+        dict: proposal infos
     """
-    query_dict = request.args.to_dict()
+    sql = get_sql_query("proposal/proposalsInfosLogin")
+    sql = sql.bindparams(login=login)
+    res = db.engine.execute(sql)
+    return queryresult_to_dict(res)
 
-    user_info = contacts.get_person_info(request)
-    if not user_info["is_admin"]:
-        query_dict["proposalId"] = get_proposal_ids(request)
-    return get_proposals_by_query(query_dict)
 
-def get_proposals_by_query(query_dict):
-    return db.get_db_items(
-        models.Proposal,
-        schemas.proposal.dict_schema,
-        schemas.proposal.ma_schema,
-        query_dict,
-    )
+def get_proposals_infos_all():
+    """Get infos for all proposals.
 
-def get_proposals_has_person_by_query(query_dict):
-    return db.get_db_items(
-        models.ProposalHasPerson,
-        schemas.proposal_has_person.dict_schema,
-        schemas.proposal_has_person.ma_schema,
-        query_dict,
-    )
-
-def get_proposal_by_id(proposal_id):
+    Returns:
+        dict: proposal infos
     """
-    Returns proposal by its proposalId.
+    sql = get_sql_query("proposal/proposalsInfosAll")
+    res = db.engine.execute(sql)
+    return queryresult_to_dict(res)
+
+
+def get_proposal_infos(proposal_id):
+    """Get proposal infos.
 
     Args:
-        proposal_id (int): corresponds to proposalId in db
+        proposal_id (str): proposal id
 
     Returns:
-        dict: info about proposal as dict
+        dict: proposal infos
     """
-    id_dict = {"proposalId": proposal_id}
-    return db.get_db_item(
-        models.Proposal, schemas.proposal.ma_schema, id_dict
-    )
+    return {
+        "proposal": db.get_db_items(
+            models.Proposal,
+            schemas.proposal.dict_schema,
+            schemas.proposal.ma_schema,
+            {'proposalId': proposal_id},
+        )["data"]["rows"]
+    }
 
 
-def get_proposal_info_by_id(proposal_id):
-    """
-    Returns proposal by its proposalId.
+def login_authorized_for_proposal(login, proposal_id):
+    """Verify that login is authorized for proposal.
 
     Args:
-        proposal_id (int): corresponds to proposalId in db
+        login (str): user login
+        proposal_id (str): proposal id
 
     Returns:
-        dict: info about proposal as dict
+        boolean: authorization
     """
-    proposal_json = get_proposal_by_id(proposal_id)
-
-    person_json = contacts.get_person_by_id(proposal_json["personId"])
-    proposal_json["person"] = person_json
-
-    sessions_json = session.get_sessions({"proposalId": proposal_id})
-    proposal_json["sessions"] = sessions_json
-
-    return proposal_json
+    sql = get_sql_query("proposal/loginAuthorizedProposal")
+    sql = sql.bindparams(login=login, proposalId=proposal_id)
+    is_authorized = db.engine.execute(sql)
+    return is_authorized.first()[0] > 0
 
 
-def add_proposal(data_dict):
-    """
-    Adds a proposal.
+def find_proposal_id(id_or_name):
+    """Convert proposal name to id. If id, return id.
 
     Args:
-        proposal_dict ([type]): [description]
+        id_or_name (str): proposal id or name
+
+    Raises:
+        Exception: More than one proposal found for name
+        Exception: No proposal found for name
 
     Returns:
-        [type]: [description]
+        str: proposal id
     """
-    return db.add_db_item(models.Proposal, schemas.proposal.ma_schema, data_dict)
-
-
-def update_proposal(proposal_id, data_dict):
-    """
-    Updates proposal.
-
-    Args:
-        proposal_id ([type]): [description]
-        proposal_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    id_dict = {"proposalId": proposal_id}
-    return db.update_db_item(
-        models.Proposal, schemas.proposal.ma_schema, id_dict, data_dict
-    )
-
-
-def patch_proposal(proposal_id, proposal_dict):
-    """
-    Patch a proposal.
-
-    Args:
-        proposal_id ([type]): [description]
-        proposal_dict ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    id_dict = {"proposalId": proposal_id}
-    return db.patch_db_item(
-        models.Proposal, schemas.proposal.ma_schema, id_dict, proposal_dict
-    )
-
-
-def delete_proposal(proposal_id):
-    """
-    Deletes proposal item from db.
-
-    Args:
-        proposal_id (int): proposalId column in db
-
-    Returns:
-        bool: True if the proposal exists and deleted successfully,
-        otherwise return False
-    """
-    id_dict = {"proposalId": proposal_id}
-    return db.delete_db_item(models.Proposal, id_dict)
-
-
-def get_proposal_ids_by_person_id(person_id):
-    proposal_ids = []
-    proposal_dict = get_proposals_by_query({"personId": person_id})
-    if proposal_dict["data"]["rows"]:
-        for proposal in proposal_dict["data"]["rows"]:
-            proposal_ids.append(proposal["proposalId"])
-    proposal_has_person_dict = get_proposals_has_person_by_query(
-        {"personId": person_id}
-    )
-    if proposal_has_person_dict["data"]["rows"]:
-        for proposal in proposal_has_person_dict["data"]["rows"]:
-            proposal_ids.append(proposal["proposalId"])
-    return proposal_ids
-
-def get_proposal_ids(request):
-    """
-    Returns proposal ids
-
-    Args:
-        request (request): [description]
-
-    Returns:
-        list: list of proposal ids
-    """
-
-    user_info = authentication_provider.get_user_info_from_auth_header(
-        request.headers.get("Authorization")
-    )
-
-    proposal_ids = []
-    if user_info["is_admin"]:
-        proposal_dict = get_proposals_by_query({})
-        
-        for proposal in proposal_dict["data"]["rows"]:
-            proposal_ids.append(proposal["proposalId"])
-    else:
-        person_id = contacts.get_person_id_by_login(user_info["sub"])
-        proposal_ids = get_proposal_ids_by_person_id(person_id)
-    
-    return proposal_ids
+    sql = get_sql_query("proposal/findProposalId")
+    sql = sql.bindparams(name=id_or_name)
+    res = db.engine.execute(sql)
+    res = queryresult_to_dict(res)
+    if len(res) == 1:
+        return res[0]["proposalId"]
+    if len(res) > 1:
+        raise Exception(f"More than one proposal found for {id_or_name}")
+    if len(res) > 1:
+        raise Exception(f"No proposal found for {id_or_name}")
+    return None

@@ -19,18 +19,13 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os
-from flask import request, send_file, abort
 
-from pyispyb.flask_restx_patched import Resource, HTTPStatus
+from flask_restx import Resource
 
-from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.authentication import authentication_required
-from pyispyb.app.extensions.authorization import authorization_required
+from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
+from pyispyb.app.extensions.auth.decorators import session_authorization_required, authentication_required, permission_required
 
-from pyispyb.core.schemas import data_collection as data_collection_schemas
-from pyispyb.core.schemas import data_collection_group as data_collection_group_schemas
-from pyispyb.core.modules import data_collection
+from pyispyb.core.modules import data_collections
 
 
 __license__ = "LGPLv3+"
@@ -44,173 +39,18 @@ api = Namespace(
 api_v1.add_namespace(api)
 
 
-@api.route("")
+@api.route("/groups/session/<int:session_id>")
+@legacy_api.route("/<token>/proposal/session/<session_id>/list")
 @api.doc(security="apikey")
-class DataColletions(Resource):
-    """Allows to get all data_collections"""
+class DataColletionGroups(Resource):
 
     @authentication_required
-    @authorization_required
-    @api.marshal_list_with(
-        data_collection_schemas.f_schema,
-        skip_none=False,
-        code=HTTPStatus.OK
-    )
-    def get(self):
-        """Returns list of data_collections"""
-        return data_collection.get_data_collections(request)
+    @permission_required("any", ["own_sessions", "all_sessions"])
+    @session_authorization_required
+    def get(self, session_id, **kwargs):
+        """Get data collection groups for session.
 
-    @authentication_required
-    @authorization_required
-    @api.expect(data_collection_schemas.f_schema)
-    @api.marshal_with(data_collection_schemas.f_schema, code=201)
-    def post(self):
-        """Adds a new session"""
-        return data_collection.add_data_collection(api.payload)
-
-
-@api.route("/<int:data_collection_id>")
-@api.param("data_collection_id", "Data collection id (integer)")
-@api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="data collection not found.")
-class DataCollectionById(Resource):
-    """Allows to get/set/delete a data_collection"""
-
-    @authentication_required
-    @authorization_required
-    @api.doc(description="data_collection_id should be an integer ")
-    @api.marshal_with(
-        data_collection_schemas.f_schema,
-        skip_none=False,
-        code=HTTPStatus.OK,
-    )
-    def get(self, data_collection_id):
-        """Returns a data_collection by data_collectionId"""
-        return data_collection.get_data_collection_by_id(data_collection_id)
-
-@api.route("/<int:data_collection_id>/snapshot/<int:snapshot_index>")
-@api.param("data_collection_id", "data_collection_id (integer)")
-@api.param("snapshot_index", "snapshot_index (integer)")
-@api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="data collection not found.")
-class DataCollectionSnapshot(Resource):
-    """Allows to download snapshots associated to the data collection"""
-
-    @authentication_required
-    @authorization_required
-    @api.doc(description="data_collection_id and snapshot_id should be an integer")
-    def get(self, data_collection_id, snapshot_index):
-        """Downloads data collection attribute by id and attribute_name"""
-        data_collection_dict = data_collection.get_data_collection_by_id(
-            data_collection_id
-        )
-        if data_collection_dict:
-            snapshot_path = data_collection_dict.get("xtalSnapshotFullPath%d" % snapshot_index)
-            if snapshot_path:
-                if os.path.exists(snapshot_path):
-                    return send_file(
-                            snapshot_path,
-                            attachment_filename=os.path.basename(snapshot_path),
-                            as_attachment=True
-                        )
-                else:
-                    abort(
-                        HTTPStatus.NOT_FOUND,
-                        "File %s do not exist" % snapshot_path
-                    )
-            else:
-                abort(
-                    HTTPStatus.NOT_FOUND,
-                    "No file name associated with xtalSnapshotFullPath%d" % snapshot_index
-                    )
-
-
-@api.route("/<int:data_collection_id>/file")
-@api.param("data_collection_id", "data_collection_id (integer)")
-@api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="data collection not found.")
-class DataCollectionFile(Resource):
-    """Allows to download files associated to the data collection"""
-
-    @authentication_required
-    @authorization_required
-    @api.doc(description="data_collection_id should be an integer ")
-    def get(self, data_collection_id):
-        """Downloads data collection attribute by id and attribute_name"""
-        data_collection_dict = data_collection.get_data_collection_by_id(
-            data_collection_id
-        )
-        if data_collection_dict:
-            query_dict = request.args.to_dict()
-            if "attribute_name" in query_dict:
-                attribute_file_path = data_collection_dict.get(
-                    query_dict["attribute_name"]
-                )
-                if attribute_file_path:
-                    if os.path.exists(attribute_file_path):
-                        return send_file(
-                            attribute_file_path,
-                            attachment_filename=os.path.basename(attribute_file_path),
-                            as_attachment=True
-                        )
-                    else:
-                        abort(
-                            HTTPStatus.NOT_FOUND,
-                            "File %s do not exist" % attribute_file_path
-                        )
-                else:
-                    abort(
-                        HTTPStatus.NOT_FOUND,
-                        "No file associated with attribute %s" % 
-                        query_dict["attribute_name"]
-                    )
-
-            else:
-                abort(
-                    HTTPStatus.NOT_FOUND,
-                    "No attribute_name in query parameters"
-                    )
-
-
-@api.route("/groups")
-@api.doc(security="apikey")
-class DataCollectionGroups(Resource):
-    """Allows to get all data collection groups and add a new one"""
-
-    @authentication_required
-    @authorization_required
-    @api.marshal_list_with(
-        data_collection_schemas.f_schema,
-        skip_none=False,
-        code=HTTPStatus.OK
-    )
-    def get(self):
-        """Returns list of data_collection_groups"""
-        return data_collection.get_data_collection_groups(request)
-
-    @authentication_required
-    @authorization_required
-    @api.expect(data_collection_group_schemas.f_schema)
-    @api.marshal_with(data_collection_group_schemas.f_schema, code=201)
-    def post(self):
-        """Adds a new session"""
-        return data_collection.add_data_collection_group(api.payload)
-
-@api.route("/groups/<int:data_collection_group_id>")
-@api.param("data_collection_group_id", "data_collection group_id (integer)")
-@api.doc(security="apikey")
-@api.response(code=HTTPStatus.NOT_FOUND, description="data collection group not found.")
-class DataCollectionGroupById(Resource):
-    """Allows to get/set/delete a data collection group"""
-
-    @authentication_required
-    @authorization_required
-    @api.doc(description="data_collection_group_id should be an integer ")
-    @api.marshal_with(
-        data_collection_group_schemas.f_schema,
-        skip_none=False,
-        code=HTTPStatus.OK,
-    )
-    def get(self, data_collection_group_id):
-        """Returns a data_collection group by dataCollection_group_id"""
-        return data_collection.get_data_collection_group_by_id(data_collection_group_id)
+        Args:
+            session_id (str): session id
+        """
+        return data_collections.get_data_collections_groups(session_id)

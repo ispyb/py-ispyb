@@ -18,79 +18,90 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+import json
 import logging
 from flask import request, make_response
-from sqlalchemy.exc import SQLAlchemyError
+import hashlib
 
-from pyispyb.flask_restx_patched import HTTPStatus, Resource
-from pyispyb.app.extensions.api import api_v1, Namespace
-from pyispyb.app.extensions.authentication import authentication_provider
+from flask_restx import Resource
+from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
+from pyispyb.app.extensions import auth_provider
+from pyispyb.app.extensions import db
+
+from pyispyb.core import models
 
 
 __license__ = "LGPLv3+"
 
 log = logging.getLogger(__name__)
-api = Namespace("Authentication", description="authentication namespace", path="/auth")
+api = Namespace("Authentication",
+                description="authentication namespace", path="/auth")
 api_v1.add_namespace(api)
 
 
-@api.errorhandler(SQLAlchemyError)
-@api.header('ErrorType', 'SQLAlchemy Error')
-def handle_sqlalchemy_exception(error):
-    '''This is a sqlalchemy error handler'''
-    log.error(str(error))
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'SQLAlchemyError'}
+def get_param(request, name):
+    """Get param from request - look in headers, json, args, and form.
 
-@api.errorhandler(ZeroDivisionError)
-@api.header('ErrorType', 'Zero division')
-def handle_zero_division_exception(error):
-    '''This is a zero division error'''
-    log.error(str(error))
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST, {'ErrorType': 'ZeroDivisionError'}
+    Args:
+        request (HTTP request): request
+        name (string): name of the parameter to be found
 
-@api.errorhandler(Exception)
-@api.header('ErrorType', 'Exception')
-def handle_exception(error):
-    '''This is a base error handler'''
-    log.error(str(error))
-    print("Got the exception")
-    return {'message': "Server error: %s" % str(error)}, HTTPStatus.BAD_REQUEST , {'ErrorType': 'Exception'}
+    Returns:
+        str: parameter value
+    """
+    res = request.headers.get(name)
+    if not res:
+        if request.json and name in request.json:
+            res = request.json[name]
+    if not res:
+        if request.args and request.args.get(name, default=False):
+            res = request.args.get(name, default=None)
+    if not res:
+        if request.form and request.form.get(name, default=False):
+            res = request.form.get(name, default=None)
+    return res
 
 
 @api.route("/login")
+@legacy_api.route("/authenticate")
 class Login(Resource):
-    """Login resource"""
 
-    def get(self):
-        authorization = request.authorization
+    def post(self):
+        """Get authentication token for user.
 
-        if (
-            not authorization
-            or not authorization.username
-            or not authorization.password
-        ):
-            if not request.headers.get("username") or not request.headers.get(
-                "password"
-            ):
-                return make_response(
-                    "Could not verify",
-                    401,
-                    {"WWW-Authenticate": 'Basic realm="Login required!"'},
-                )
-            else:
-                username = request.headers.get("username")
-                password = request.headers.get("password")
-        else:
-            username = authorization.username
-            password = authorization.password
+        Returns:
+            dict: token_info
+        """
+        plugin = get_param(request, "plugin")
+        username = get_param(request, "username")
+        if username is None:
+            username = get_param(request, "login")
+        password = get_param(request, "password")
+        token = get_param(request, "token")
 
-        roles = authentication_provider.get_roles(username, password)
-        if not roles:
+        username, groups, permissions = auth_provider.get_auth(
+            plugin, username, password, token
+        )
+
+        if not username:
             return make_response(
                 "Could not verify",
                 401,
-                {"WWW-Authenticate": 'Basic realm="Login required!"'},
             )
         else:
-            token_info = authentication_provider.generate_token(username, roles)
+            token_info = auth_provider.generate_token(
+                username, groups, permissions)
+            token_ispyb = hashlib.sha1(
+                token_info["token"].encode('utf-8')).hexdigest()
+            bd_login = models.Login(
+                token=token_ispyb,
+                username=token_info["username"],
+                roles=json.dumps(token_info["groups"]),
+                expirationTime=datetime.datetime.strptime(
+                    token_info["exp"], "%Y-%m-%d %H:%M:%S"),
+            )
+            db.session.add(bd_login)
+            db.session.commit()
+            token_info["roles"] = token_info["groups"]
             return token_info

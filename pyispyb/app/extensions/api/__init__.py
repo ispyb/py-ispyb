@@ -26,24 +26,29 @@ from copy import deepcopy
 
 from .api import Api
 from .namespace import Namespace
-from .http_exceptions import abort
 
 api_v1 = None
+legacy_api = None
+
 
 def init_app(app, **kwargs):
-    # pylint: disable=unused-argument
-    """
-    API extension initialization point.
-    """
+    """Initialize API extention."""
     # Prevent config variable modification with runtime changes
 
     global api_v1
     api_v1 = Api(
         version="1.0",
         title="ISPyB",
-        description="ISPyB Flask rest server",
+        description="ISPyB Flask web server",
         doc=app.config["SWAGGER_UI_URI"],
         default="Main",
         default_label="Main",
     )
     api_v1.authorizations = deepcopy(app.config["AUTHORIZATIONS"])
+
+    global legacy_api
+    legacy_api = Namespace(
+        "Legacy",
+        description="Legacy routes for Java ISPyB compatibility",
+        path="/legacy")
+    api_v1.add_namespace(legacy_api)

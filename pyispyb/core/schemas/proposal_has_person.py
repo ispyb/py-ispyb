@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,11 +30,11 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'proposalHasPersonId': f_fields.Integer(required=True, description=''),
-        'proposalId': f_fields.Integer(required=True, description=''),
-        'personId': f_fields.Integer(required=True, description=''),
-        'role': f_fields.String(required=False, description='enum(Co-Investigator,Principal Investigator,Alternate Contact)'),
-        }
+    'proposalHasPersonId': f_fields.Integer(required=True, description=''),
+    'proposalId': f_fields.Integer(required=True, description=''),
+    'personId': f_fields.Integer(required=True, description=''),
+}
+
 
 class ProposalHasPersonSchema(Schema):
     """Marshmallows schema class representing ProposalHasPerson table"""
@@ -43,7 +42,7 @@ class ProposalHasPersonSchema(Schema):
     proposalHasPersonId = ma_fields.Integer()
     proposalId = ma_fields.Integer()
     personId = ma_fields.Integer()
-    role = ma_fields.String()
+
 
 f_schema = api.model('ProposalHasPerson', dict_schema)
 ma_schema = ProposalHasPersonSchema()

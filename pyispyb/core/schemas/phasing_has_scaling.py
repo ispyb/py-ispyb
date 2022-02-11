@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,12 +30,23 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'phasingHasScalingId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'phasingAnalysisId': f_fields.Integer(required=True, description='Related phasing analysis item'),
-        'autoProcScalingId': f_fields.Integer(required=True, description='Related autoProcScaling item'),
-        'datasetNumber': f_fields.Integer(required=False, description='serial number of the dataset and always reserve 0 for the reference'),
-        'recordTimeStamp': f_fields.DateTime(required=False, description=''),
-        }
+    'phasingHasScalingId': f_fields.Integer(
+        required=True,
+        description='Primary key (auto-incremented)'),
+    'phasingAnalysisId': f_fields.Integer(
+        required=True,
+        description='Related phasing analysis item'),
+    'autoProcScalingId': f_fields.Integer(
+        required=True,
+        description='Related autoProcScaling item'),
+    'datasetNumber': f_fields.Integer(
+        required=False,
+        description='serial number of the dataset and always reserve 0 for the reference'),
+    'recordTimeStamp': f_fields.DateTime(
+        required=True,
+        description=''),
+}
+
 
 class Phasing_has_ScalingSchema(Schema):
     """Marshmallows schema class representing Phasing_has_Scaling table"""
@@ -46,6 +56,7 @@ class Phasing_has_ScalingSchema(Schema):
     autoProcScalingId = ma_fields.Integer()
     datasetNumber = ma_fields.Integer()
     recordTimeStamp = ma_fields.DateTime()
+
 
 f_schema = api.model('Phasing_has_Scaling', dict_schema)
 ma_schema = Phasing_has_ScalingSchema()

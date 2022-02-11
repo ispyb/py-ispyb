@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,69 +30,81 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'phasingStepId': f_fields.Integer(required=False, description=''),
-        'previousPhasingStepId': f_fields.Integer(required=False, description=''),
-        'phasingAnalysisId': f_fields.Integer(required=False, description=''),
-        'autoProcIntegrationId': f_fields.Integer(required=True, description='Primary key (auto-incremented)'),
-        'dataCollectionId': f_fields.Integer(required=True, description='DataCollection item'),
-        'anomalous': f_fields.Integer(required=False, description='boolean type:0 noanoum - 1 anoum'),
-        'spaceGroup': f_fields.String(required=False, description='Space group'),
-        'autoProcId': f_fields.Integer(required=False, description='Primary key (auto-incremented)'),
-        'phasingStepType': f_fields.String(required=False, description='enum(PREPARE,SUBSTRUCTUREDETERMINATION,PHASING,MODELBUILDING)'),
-        'method': f_fields.String(required=False, description=''),
-        'solventContent': f_fields.String(required=False, description=''),
-        'enantiomorph': f_fields.String(required=False, description=''),
-        'lowRes': f_fields.String(required=False, description=''),
-        'highRes': f_fields.String(required=False, description=''),
-        'autoProcScalingId': f_fields.Integer(required=False, description='Primary key (auto-incremented)'),
-        'spaceGroupShortName': f_fields.String(required=False, description='short name without blank'),
-        'processingPrograms': f_fields.String(required=False, description='Processing programs (comma separated)'),
-        'processingStatus': f_fields.Integer(required=False, description='success (1) / fail (0)'),
-        'phasingPrograms': f_fields.String(required=False, description='Phasing programs (comma separated)'),
-        'phasingStatus': f_fields.Integer(required=False, description='success (1) / fail (0)'),
-        'phasingStartTime': f_fields.DateTime(required=False, description='Processing start time'),
-        'phasingEndTime': f_fields.DateTime(required=False, description='Processing end time'),
-        'sessionId': f_fields.Integer(required=False, description='references Session table'),
-        'proposalId': f_fields.Integer(required=False, description=''),
-        'blSampleId': f_fields.Integer(required=False, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'code': f_fields.String(required=False, description=''),
-        'acronym': f_fields.String(required=False, description=''),
-        'proteinId': f_fields.Integer(required=False, description=''),
-        }
+    'v_datacollection_summary_phasing_autoProcIntegrationId': f_fields.Integer(
+        required=True,
+        description='Primary key (auto-incremented)'),
+    'v_datacollection_summary_phasing_dataCollectionId': f_fields.Integer(
+        required=True,
+        description='DataCollection item'),
+    'v_datacollection_summary_phasing_cell_a': f_fields.Float(
+        required=False,
+        description='Unit cell'),
+    'v_datacollection_summary_phasing_cell_b': f_fields.Float(
+        required=False,
+        description='Unit cell'),
+    'v_datacollection_summary_phasing_cell_c': f_fields.Float(
+        required=False,
+        description='Unit cell'),
+    'v_datacollection_summary_phasing_cell_alpha': f_fields.Float(
+        required=False,
+        description='Unit cell'),
+    'v_datacollection_summary_phasing_cell_beta': f_fields.Float(
+        required=False,
+        description='Unit cell'),
+    'v_datacollection_summary_phasing_cell_gamma': f_fields.Float(
+        required=False,
+        description='Unit cell'),
+    'v_datacollection_summary_phasing_anomalous': f_fields.Integer(
+        required=False,
+        description='boolean type:0 noanoum - 1 anoum'),
+    'v_datacollection_summary_phasing_autoproc_space_group': f_fields.String(
+        required=False,
+        description='Space group'),
+    'v_datacollection_summary_phasing_autoproc_autoprocId': f_fields.Integer(
+        required=False,
+        description='Primary key (auto-incremented)'),
+    'v_datacollection_summary_phasing_autoProcScalingId': f_fields.Integer(
+        required=False,
+        description='Primary key (auto-incremented)'),
+    'v_datacollection_summary_phasing_processingPrograms': f_fields.String(
+        required=False,
+        description='Processing programs (comma separated)'),
+    'v_datacollection_summary_phasing_autoProcProgramId': f_fields.Integer(
+        required=False,
+        description='Primary key (auto-incremented)'),
+    'v_datacollection_summary_phasing_processingStatus': f_fields.String(
+        required=False,
+        description='success (1) / fail (0)enum(RUNNING,FAILED,SUCCESS,0,1)'),
+    'v_datacollection_summary_session_sessionId': f_fields.Integer(
+        required=False,
+        description=''),
+    'v_datacollection_summary_session_proposalId': f_fields.Integer(
+        required=False,
+        description=''),
+}
+
 
 class v_datacollection_summary_phasingSchema(Schema):
     """Marshmallows schema class representing v_datacollection_summary_phasing table"""
 
-    phasingStepId = ma_fields.Integer()
-    previousPhasingStepId = ma_fields.Integer()
-    phasingAnalysisId = ma_fields.Integer()
-    autoProcIntegrationId = ma_fields.Integer()
-    dataCollectionId = ma_fields.Integer()
-    anomalous = ma_fields.Integer()
-    spaceGroup = ma_fields.String()
-    autoProcId = ma_fields.Integer()
-    phasingStepType = ma_fields.String()
-    method = ma_fields.String()
-    solventContent = ma_fields.String()
-    enantiomorph = ma_fields.String()
-    lowRes = ma_fields.String()
-    highRes = ma_fields.String()
-    autoProcScalingId = ma_fields.Integer()
-    spaceGroupShortName = ma_fields.String()
-    processingPrograms = ma_fields.String()
-    processingStatus = ma_fields.Integer()
-    phasingPrograms = ma_fields.String()
-    phasingStatus = ma_fields.Integer()
-    phasingStartTime = ma_fields.DateTime()
-    phasingEndTime = ma_fields.DateTime()
-    sessionId = ma_fields.Integer()
-    proposalId = ma_fields.Integer()
-    blSampleId = ma_fields.Integer()
-    name = ma_fields.String()
-    code = ma_fields.String()
-    acronym = ma_fields.String()
-    proteinId = ma_fields.Integer()
+    v_datacollection_summary_phasing_autoProcIntegrationId = ma_fields.Integer()
+    v_datacollection_summary_phasing_dataCollectionId = ma_fields.Integer()
+    v_datacollection_summary_phasing_cell_a = ma_fields.Float()
+    v_datacollection_summary_phasing_cell_b = ma_fields.Float()
+    v_datacollection_summary_phasing_cell_c = ma_fields.Float()
+    v_datacollection_summary_phasing_cell_alpha = ma_fields.Float()
+    v_datacollection_summary_phasing_cell_beta = ma_fields.Float()
+    v_datacollection_summary_phasing_cell_gamma = ma_fields.Float()
+    v_datacollection_summary_phasing_anomalous = ma_fields.Integer()
+    v_datacollection_summary_phasing_autoproc_space_group = ma_fields.String()
+    v_datacollection_summary_phasing_autoproc_autoprocId = ma_fields.Integer()
+    v_datacollection_summary_phasing_autoProcScalingId = ma_fields.Integer()
+    v_datacollection_summary_phasing_processingPrograms = ma_fields.String()
+    v_datacollection_summary_phasing_autoProcProgramId = ma_fields.Integer()
+    v_datacollection_summary_phasing_processingStatus = ma_fields.String()
+    v_datacollection_summary_session_sessionId = ma_fields.Integer()
+    v_datacollection_summary_session_proposalId = ma_fields.Integer()
+
 
 f_schema = api.model('v_datacollection_summary_phasing', dict_schema)
 ma_schema = v_datacollection_summary_phasingSchema()

@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,25 +30,25 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'dewarId': f_fields.Integer(required=True, description=''),
-        'shippingId': f_fields.Integer(required=False, description=''),
-        'code': f_fields.String(required=False, description=''),
-        'comments': f_fields.String(required=False, description=''),
-        'storageLocation': f_fields.String(required=False, description=''),
-        'dewarStatus': f_fields.String(required=False, description=''),
-        'bltimeStamp': f_fields.DateTime(required=False, description=''),
-        'isStorageDewar': f_fields.Integer(required=False, description=''),
-        'barCode': f_fields.String(required=False, description=''),
-        'firstExperimentId': f_fields.Integer(required=False, description=''),
-        'customsValue': f_fields.Integer(required=False, description=''),
-        'transportValue': f_fields.Integer(required=False, description=''),
-        'trackingNumberToSynchrotron': f_fields.String(required=False, description=''),
-        'trackingNumberFromSynchrotron': f_fields.String(required=False, description=''),
-        'type': f_fields.String(required=True, description='enum(Dewar,Toolbox)'),
-        'FACILITYCODE': f_fields.String(required=False, description=''),
-        'weight': f_fields.Float(required=False, description='dewar weight in kg'),
-        'deliveryAgent_barcode': f_fields.String(required=False, description='Courier piece barcode (not the airway bill)'),
-        }
+    'dewarId': f_fields.Integer(required=True, description=''),
+    'shippingId': f_fields.Integer(required=False, description=''),
+    'code': f_fields.String(required=False, description=''),
+    'comments': f_fields.String(required=False, description=''),
+    'storageLocation': f_fields.String(required=False, description=''),
+    'dewarStatus': f_fields.String(required=False, description=''),
+    'bltimeStamp': f_fields.DateTime(required=False, description=''),
+    'isStorageDewar': f_fields.Integer(required=False, description=''),
+    'barCode': f_fields.String(required=False, description=''),
+    'firstExperimentId': f_fields.Integer(required=False, description=''),
+    'customsValue': f_fields.Integer(required=False, description=''),
+    'transportValue': f_fields.Integer(required=False, description=''),
+    'trackingNumberToSynchrotron': f_fields.String(required=False, description=''),
+    'trackingNumberFromSynchrotron': f_fields.String(required=False, description=''),
+    'facilityCode': f_fields.String(required=False, description='Unique barcode assigned to each dewar'),
+    'type': f_fields.String(required=True, description='enum(Dewar,Toolbox)'),
+    'isReimbursed': f_fields.Integer(required=False, description='set this dewar as reimbursed by the user office'),
+}
+
 
 class DewarSchema(Schema):
     """Marshmallows schema class representing Dewar table"""
@@ -68,10 +67,10 @@ class DewarSchema(Schema):
     transportValue = ma_fields.Integer()
     trackingNumberToSynchrotron = ma_fields.String()
     trackingNumberFromSynchrotron = ma_fields.String()
+    facilityCode = ma_fields.String()
     type = ma_fields.String()
-    FACILITYCODE = ma_fields.String()
-    weight = ma_fields.Float()
-    deliveryAgent_barcode = ma_fields.String()
+    isReimbursed = ma_fields.Integer()
+
 
 f_schema = api.model('Dewar', dict_schema)
 ma_schema = DewarSchema()

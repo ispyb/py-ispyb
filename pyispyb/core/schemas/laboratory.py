@@ -23,7 +23,6 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-
 from marshmallow import Schema, fields as ma_fields
 from flask_restx import fields as f_fields
 from marshmallow_jsonschema import JSONSchema
@@ -31,18 +30,38 @@ from marshmallow_jsonschema import JSONSchema
 from pyispyb.app.extensions.api import api_v1 as api
 
 dict_schema = {
-        'laboratoryId': f_fields.Integer(required=True, description=''),
-        'laboratoryUUID': f_fields.String(required=False, description=''),
-        'name': f_fields.String(required=False, description=''),
-        'address': f_fields.String(required=False, description=''),
-        'city': f_fields.String(required=False, description=''),
-        'country': f_fields.String(required=False, description=''),
-        'url': f_fields.String(required=False, description=''),
-        'organization': f_fields.String(required=False, description=''),
-        'recordTimeStamp': f_fields.DateTime(required=True, description='Creation or last update date/time'),
-        'laboratoryPk': f_fields.Integer(required=False, description=''),
-        'postcode': f_fields.String(required=False, description=''),
-        }
+    'laboratoryId': f_fields.Integer(
+        required=True,
+        description=''),
+    'laboratoryUUID': f_fields.String(
+        required=False,
+        description=''),
+    'name': f_fields.String(
+        required=False,
+        description=''),
+    'address': f_fields.String(
+        required=False,
+        description=''),
+    'city': f_fields.String(
+        required=False,
+        description=''),
+    'country': f_fields.String(
+        required=False,
+        description=''),
+    'url': f_fields.String(
+        required=False,
+        description=''),
+    'organization': f_fields.String(
+        required=False,
+        description=''),
+    'recordTimeStamp': f_fields.DateTime(
+        required=True,
+        description='Creation or last update date/time'),
+    'laboratoryExtPk': f_fields.Integer(
+        required=False,
+        description=''),
+}
+
 
 class LaboratorySchema(Schema):
     """Marshmallows schema class representing Laboratory table"""
@@ -56,8 +75,8 @@ class LaboratorySchema(Schema):
     url = ma_fields.String()
     organization = ma_fields.String()
     recordTimeStamp = ma_fields.DateTime()
-    laboratoryPk = ma_fields.Integer()
-    postcode = ma_fields.String()
+    laboratoryExtPk = ma_fields.Integer()
+
 
 f_schema = api.model('Laboratory', dict_schema)
 ma_schema = LaboratorySchema()

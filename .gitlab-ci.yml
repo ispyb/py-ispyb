@@ -1,0 +1,58 @@
+image: python:3.8.10
+
+variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+cache:
+    paths:
+        - .cache/pip
+        - venv/
+
+.python:
+    before_script:
+        - python --version # For debugging
+        - pip install virtualenv
+        - virtualenv venv
+        - source venv/bin/activate
+
+stages:
+    - lint
+    - test
+    - package
+    - deploy
+
+lint:
+    extends: .python
+    stage: lint
+    script:
+        - apt-get update && apt-get install -y libsasl2-dev python-dev libldap2-dev libssl-dev
+        - pip install tox
+        - tox -e flake8
+
+test:
+    extends: .python
+    stage: test
+    script:
+        - apt-get update && apt-get install -y libsasl2-dev python-dev libldap2-dev libssl-dev
+        - pip install tox
+        - tox -e py38
+
+pages:
+    extends: .python
+    stage: deploy
+    script:
+        - pip install mkdocs
+        - mkdocs build --strict --verbose
+    artifacts:
+        paths:
+            - public
+    only:
+        - master
+
+package:
+    stage: package
+    image: docker:latest
+    script:
+        #        - docker build -t "pyispyb" .
+        - echo "TODO publish"
+    only:
+        - master

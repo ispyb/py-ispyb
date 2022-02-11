@@ -3,6 +3,10 @@ server:
     API_ROOT : "/ispyb/api/v1/em"
     SQLALCHEMY_DATABASE_URI : "mysql://mxuser:mxpass@localhost/pydb_test"
 
-    AUTH_MODULE : "pyispyb.app.extensions.auth.DummyAuth"
-    AUTH_CLASS : "DummyAuth"
-    MASTER_TOKEN : "MasterToken"
+    AUTH:
+    [
+      {
+        AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakAuthentication",
+        AUTH_CLASS: "KeycloakAuthentication",
+      }
+    ]
