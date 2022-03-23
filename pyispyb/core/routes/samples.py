@@ -18,7 +18,6 @@ router = AuthenticatedAPIRouter(prefix="/samples", tags=["Samples"])
 
 @router.get("/", response_model=paginated(schema.Sample))
 def get_samples(
-    jwt=Depends(JWTBearer),
     db: Session = Depends(get_session),
     page: dict[str, int] = Depends(pagination),
     proteinId: int = Depends(filters.proteinId),
