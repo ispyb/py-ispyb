@@ -24,97 +24,72 @@ __license__ = "LGPLv3+"
 
 
 import os
-import tempfile
-from ruamel.yaml.main import YAML
 
 
-class BaseConfig:
+from functools import lru_cache
+from pydantic import BaseSettings, BaseModel
 
-    PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-    STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
-    RESOURCES_ROOT = os.path.join(PROJECT_ROOT, "resources")
-    QUERIES_DIR = os.path.join(RESOURCES_ROOT, "queries")
 
-    SITE_NAME = "Generic"
-    API_ROOT = "/ispyb/api/v1"
-    SECRET_KEY = os.urandom(16)
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
-    # SQLALCHEMY_POOL_RECYCLE = 2999
-    # SQLALCHEMY_POOL_TIMEOUT = 20
-    PAGINATION_ITEMS_LIMIT = 1000
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+RESOURCES_ROOT = os.path.join(PROJECT_ROOT, "resources")
 
-    DEBUG = True
-    RESTX_ERROR_404_HELP = False
-    REVERSE_PROXY_SETUP = bool(
-        os.getenv("EXAMPLE_API_REVERSE_PROXY_SETUP", ""))
 
-    AUTHORIZATIONS = {
-        "apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}
+class Settings(BaseSettings):
+    static_root: str = os.path.join(PROJECT_ROOT, "static")
+    queries_dir: str = os.path.join(RESOURCES_ROOT, "queries")
+
+    api_root: str = "/ispyb/api/v1"
+    site_name: str = "Generic"
+    service_name: str
+
+    sqlalchemy_database_uri: str
+    query_debug: bool = False
+
+    auth_module: str
+    auth_class: str
+
+    jwt_coding_algorithm: str = "HS256"
+    token_exp_time: int = 300  # in minutes
+    secret_key: str
+
+    cors: bool = False
+
+    class Config:
+        env_file = ".env"
+
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
+
+
+settings = get_settings()
+
+
+class LogConfig(BaseModel):
+    """Logging configuration to be set for the server"""
+
+    LOGGER_NAME: str = "mycoolapp"
+    LOG_FORMAT: str = "%(levelprefix)s | %(asctime)s | %(message)s"
+    LOG_LEVEL: str = "INFO"
+
+    version = 1
+    disable_existing_loggers = False
+    formatters = {
+        "default": {
+            "()": "uvicorn.logging.DefaultFormatter",
+            "fmt": LOG_FORMAT,
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
     }
-
-    AUTHORIZATION_RULES = {}
-
-    JWT_CODING_ALGORITHM = "HS256"
-    TOKEN_EXP_TIME = 300  # in minutes
-    ADMIN_ROLES = ["administrate"]  # allows to access all resources
-
-    BARCODE_TYPE = "code39"
-    TEMP_FOLDER = os.path.join(tempfile.gettempdir(), "pyispyb", "tmp")
-    UPLOAD_FOLDER = os.path.join(tempfile.gettempdir(), "pyispyb", "upload")
-    SITE_LOGO_PATH = os.path.join(STATIC_ROOT, "favicon.png")
-    DEWAR_LABEL_TEMPLATE_FILEPATH = os.path.join(
-        STATIC_ROOT,
-        "dewar_label_template.html"
-    )
-
-    SWAGGER_UI_URI = "/docs"  # False disable docs
-    SWAGGER_UI_JSONEDITOR = True
-    SWAGGER_UI_OAUTH_CLIENT_ID = "documentation"
-    SWAGGER_UI_OAUTH_REALM = "Authentication for ISPyB server"
-    SWAGGER_UI_OAUTH_APP_NAME = "ISPyB server documentation"
-
-    CSRF_ENABLED = True
-
-    USER_OFFICE_MODULE = (
-        "pyispyb.app.extensions.user_office.DummyUserOffice"
-    )
-    USER_OFFICE_CLASS = "DummyUserOffice"
-    # user_office_SYNC_INTERVAL = 60 * 60 * 5 #in seconds
-    USER_OFFICE_SYNC_INTERVAL = 30
-
-    def __init__(self, config_filename=None):
-        with open(config_filename) as f:
-            yaml = YAML(typ='unsafe', pure=True)
-            config = yaml.load(f.read())
-
-            for key, value in config["server"].items():
-                setattr(self, key, value)
-
-    PDB_URI = "https://files.rcsb.org/download"
-
-
-class ProductionConfig(BaseConfig):
-
-    def __init__(self, config_filename=None):
-        super().__init__(config_filename)
-
-        self.SECRET_KEY = os.getenv("ISPYB_SECRET_KEY")
-        self.SQLALCHEMY_DATABASE_URI = os.getenv(
-            "ISPYB_DATABASE_URI"
-        )
-
-
-class DevelopmentConfig(BaseConfig):
-
-    def __init__(self, config_filename=None):
-        super().__init__(config_filename)
-
-        self.DEBUG = True
-
-
-class TestingConfig(BaseConfig):
-
-    def __init__(self, config_filename=None):
-        super().__init__(config_filename)
-
-        self.TESTING = True
+    handlers = {
+        "default": {
+            "formatter": "default",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stderr",
+        },
+    }
+    loggers = {
+        "ispyb": {"handlers": ["default"], "level": LOG_LEVEL},
+        "db": {"handlers": ["default"], "level": "DEBUG"},
+    }

@@ -20,87 +20,69 @@
 
 import datetime
 import json
-import logging
-from flask import request, make_response
 import hashlib
+from typing import Optional
+from pydantic import BaseModel
+from fastapi import Depends, status, HTTPException
+from sqlalchemy.orm import Session
 
-from flask_restx import Resource
-from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
-from pyispyb.app.extensions import auth_provider
-from pyispyb.app.extensions import db
+from pyispyb.app.extensions.auth import auth_provider
+from pyispyb.app.extensions.database.session import get_session
 
 from pyispyb.core import models
+from ..base import BaseRouter
 
 
 __license__ = "LGPLv3+"
 
-log = logging.getLogger(__name__)
-api = Namespace("Authentication",
-                description="authentication namespace", path="/auth")
-api_v1.add_namespace(api)
+
+class Login(BaseModel):
+    plugin: Optional[str]
+    username: str
+    password: str
+    # keycloak token, not jwt (!)
+    token: Optional[str]
 
 
-def get_param(request, name):
-    """Get param from request - look in headers, json, args, and form.
-
-    Args:
-        request (HTTP request): request
-        name (string): name of the parameter to be found
-
-    Returns:
-        str: parameter value
-    """
-    res = request.headers.get(name)
-    if not res:
-        if request.json and name in request.json:
-            res = request.json[name]
-    if not res:
-        if request.args and request.args.get(name, default=False):
-            res = request.args.get(name, default=None)
-    if not res:
-        if request.form and request.form.get(name, default=False):
-            res = request.form.get(name, default=None)
-    return res
+class TokenResponse(BaseModel):
+    token: str
+    permissions: list[str]
+    groups: list[str]
 
 
-@api.route("/login")
-@legacy_api.route("/authenticate")
-class Login(Resource):
+router = BaseRouter(prefix="/auth", tags=["Authentication"])
 
-    def post(self):
-        """Get authentication token for user.
 
-        Returns:
-            dict: token_info
-        """
-        plugin = get_param(request, "plugin")
-        username = get_param(request, "username")
-        if username is None:
-            username = get_param(request, "login")
-        password = get_param(request, "password")
-        token = get_param(request, "token")
+@router.post(
+    "/login",
+    response_model=TokenResponse,
+    status_code=status.HTTP_201_CREATED,
+    responses={401: {"description": "Could not login user"}},
+)
+def login(login: Login, db: Session = Depends(get_session)) -> TokenResponse:
+    """Login a user"""
+    username, groups, permissions = auth_provider.get_auth(
+        login.username, login.password, login.token
+    )
 
-        username, groups, permissions = auth_provider.get_auth(
-            plugin, username, password, token
-        )
+    if not username:
+        raise HTTPException(status_code=401, detail="Could not verify")
 
-        if not username:
-            return make_response(
-                "Could not verify",
-                401,
-            )
-        else:
-            token_info = auth_provider.generate_token(
-                username, groups, permissions)
-            token_ispyb = hashlib.sha1(
-                token_info["token"].encode('utf-8')).hexdigest()
+    else:
+        token_info = auth_provider.generate_token(username, groups, permissions)
+
+        if hasattr(models, "Login"):
+            token_ispyb = hashlib.sha1(token_info["token"].encode("utf-8")).hexdigest()
+
             bd_login = models.Login(
                 token=token_ispyb,
                 username=token_info["username"],
                 roles=json.dumps(token_info["groups"]),
                 expirationTime=datetime.datetime.strptime(
-                    token_info["exp"], "%Y-%m-%d %H:%M:%S"),
+                    token_info["exp"], "%Y-%m-%d %H:%M:%S"
+                ),
             )
-            db.session.add(bd_login)
-            db.session.commit()
-            return token_info
+            db.add(bd_login)
+            db.commit()
+            
+        return token_info

@@ -19,17 +19,22 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
+import logging
 import os
 from importlib import import_module
-
+from fastapi import FastAPI
 
 __license__ = "LGPLv3+"
+logger = logging.getLogger(__name__)
 
 
-def init_app(app, **kwargs):
+def init_app(app: FastAPI, prefix: str = None, **kwargs):
     """Init app routes."""
     for module_name in os.listdir(os.path.dirname(__file__)):
         if not module_name.startswith("__") and module_name.endswith(".py"):
-            module = import_module(".%s" % module_name[:-3], package=__name__)
-            if hasattr(module, "init_app"):
-                module.init_app(app, **kwargs)
+            try:
+                module = import_module(".%s" % module_name[:-3], package=__name__)
+                if hasattr(module, "router"):
+                    app.include_router(module.router, prefix=prefix)
+            except Exception:
+                logger.exception(f"Could not import module `{module_name}`")

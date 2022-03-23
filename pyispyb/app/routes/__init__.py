@@ -1,4 +1,3 @@
-
 # Project: py-ispyb
 # https://github.com/ispyb/py-ispyb
 
@@ -16,14 +15,15 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-
+from fastapi import FastAPI
 
 __license__ = "LGPLv3+"
 
 
-def init_app(app, **kwargs):
+def init_app(app: FastAPI, prefix: str = None, **kwargs):
     """Init extension routes."""
     from importlib import import_module
 
     for module_name in ["auth"]:
-        import_module(".%s" % module_name, package=__name__)
+        module = import_module(".%s" % module_name, package=__name__)
+        app.include_router(module.router, prefix=prefix)

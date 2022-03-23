@@ -21,16 +21,3 @@
 
 
 __license__ = "LGPLv3+"
-
-
-def init_app(app):
-    """Init app."""
-    from . import modules
-
-    modules.init_app(app)
-
-    from . import routes
-
-    routes.init_app(app)
-
-    app.logger.info("ispyb-core loaded")

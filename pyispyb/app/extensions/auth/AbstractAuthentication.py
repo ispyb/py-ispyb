@@ -21,7 +21,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
-
+from typing import Optional
 import abc
 
 from pyispyb.core.models import UserGroup
@@ -61,7 +61,7 @@ class AbstractAuthentication(object):
         """
         return
 
-    def get_auth(self, username, password, token):
+    def get_auth(self, username: str, password: str, token: str) -> list[str, list[str], list[str]]:
         """Return username, groups and permissions associated to the user.
 
         Args:

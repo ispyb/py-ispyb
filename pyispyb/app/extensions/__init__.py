@@ -16,33 +16,3 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-
-
-from .flask_sqlalchemy import SQLAlchemy
-from .auth import auth_provider
-from . import api
-
-__license__ = "LGPLv3+"
-
-
-from sqlalchemy.dialects.mysql.enumerated import ENUM
-from sqlalchemy.dialects.mysql.types import LONGBLOB
-
-from pyispyb.app.extensions.logging import Logging
-
-logging = Logging()
-
-
-db = SQLAlchemy()
-db.ENUM = ENUM
-db.LONGBLOB = LONGBLOB
-
-
-def init_app(app):
-    """Initialize app extensions.
-
-    Args:
-        app (flask app): Flask application
-    """
-    for extension in (api, auth_provider, logging, db):
-        extension.init_app(app)
