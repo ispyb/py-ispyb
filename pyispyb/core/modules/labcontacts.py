@@ -1,18 +1,19 @@
 from typing import Optional
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import joinedload
 
-from ..database import models
-from ..database.utils import Paged, page
+from pyispyb.core import models
+from pyispyb.app.extensions.database.utils import Paged, page
+from pyispyb.app.extensions.database.middleware import db
 from ..schemas import labcontacts as schema
 
 
 def get_labcontacts(
-    db: Session, skip: int, limit: int, labContactId: Optional[int] = None
+    skip: int, limit: int, labContactId: Optional[int] = None
 ) -> Paged[models.LabContact]:
     query = (
-        db.query(models.LabContact)
+        db.session.query(models.LabContact)
         .options(joinedload(models.LabContact.Person))
-        .options(joinedload(models.LabContact.Person, models.Person.Laboratory))  # type: ignore   
+        .options(joinedload(models.LabContact.Person, models.Person.Laboratory))  # type: ignore
     )
 
     if labContactId:
@@ -25,7 +26,7 @@ def get_labcontacts(
 
 
 def create_labcontact(
-    db: Session, labcontact: schema.LabContactCreate
+    labcontact: schema.LabContactCreate
 ) -> models.LabContact:
 
     labcontact_dict = labcontact.dict()
@@ -33,18 +34,18 @@ def create_labcontact(
     laboratory_dict = person_dict.pop("Laboratory")
 
     laboratory = models.Laboratory(**laboratory_dict)
-    db.add(laboratory)
-    db.commit()
+    db.session.add(laboratory)
+    db.session.commit()
 
     person = models.Person(laboratoryId=laboratory.laboratoryId, **person_dict)
-    db.add(person)
-    db.commit()
+    db.session.add(person)
+    db.session.commit()
 
     contact = models.LabContact(personId=person.personId, **labcontact_dict)
-    db.add(contact)
-    db.commit()
+    db.session.add(contact)
+    db.session.commit()
 
     new_labcontact = get_labcontacts(
-        db, labContactId=int(contact.labContactId), skip=0, limit=1
+        labContactId=int(contact.labContactId), skip=0, limit=1
     )
     return new_labcontact.first

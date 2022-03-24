@@ -19,38 +19,23 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from fastapi import Depends
+from pyispyb.core.modules.legacy import data_collections
+from pyispyb.core.routes.legacy.dependencies import session_authorisation
 
-from flask_restx import Resource
-
-from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
-from pyispyb.app.extensions.auth.decorators import session_authorization_required, authentication_required, permission_required
-
-from pyispyb.core.modules import data_collections
+from .base import router
 
 
 __license__ = "LGPLv3+"
 
 
-api = Namespace(
-    "Data collections",
-    description="Data collection related namespace",
-    path="/data_collections",
+@router.get(
+    "/{token}/proposal/session/{session_id}/list",
 )
-api_v1.add_namespace(api)
+def get(session_id: int = Depends(session_authorisation)):
+    """Get data collection groups for session.
 
-
-@api.route("/groups/session/<int:session_id>")
-@legacy_api.route("/<token>/proposal/session/<session_id>/list")
-@api.doc(security="apikey")
-class DataColletionGroups(Resource):
-
-    @authentication_required
-    @permission_required("any", ["own_sessions", "all_sessions"])
-    @session_authorization_required
-    def get(self, session_id, **kwargs):
-        """Get data collection groups for session.
-
-        Args:
-            session_id (str): session id
-        """
-        return data_collections.get_data_collections_groups(session_id)
+    Args:
+        session_id (str): session id
+    """
+    return data_collections.get_data_collections_groups(session_id)

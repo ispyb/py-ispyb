@@ -1,9 +1,8 @@
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pyispyb.app.extensions.database.session import get_session
+from pyispyb.app.extensions.database.middleware import db
 from pyispyb.core import models
 from pyispyb.app.globals import g
-from sqlalchemy.orm import Session
 import jwt
 
 from .token import decode_token
@@ -24,7 +23,6 @@ def verify_jwt(token: str):
 
 async def JWTBearer(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_session),
 ):
     if credentials:
         if not credentials.scheme == "Bearer":
@@ -38,7 +36,7 @@ async def JWTBearer(
             )
 
         g.login = decoded["username"]
-        person = db.query(models.Person).filter(models.Person.login == g.login).first()
+        person = db.session.query(models.Person).filter(models.Person.login == g.login).first()
         if not person:
             raise HTTPException(
                 status_code=403, detail="User does not exist in database."

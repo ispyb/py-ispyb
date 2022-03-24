@@ -22,11 +22,9 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
-from pyispyb.app.extensions import db
-
 from pyispyb.app.utils import get_sql_query, queryresult_to_dict
-
-from pyispyb.core import models, schemas
+from pyispyb.app.extensions.database.middleware import db
+from pyispyb.core import models
 
 
 def get_proposals_infos_login(login):
@@ -41,7 +39,7 @@ def get_proposals_infos_login(login):
     """
     sql = get_sql_query("proposal/proposalsInfosLogin")
     sql = sql.bindparams(login=login)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -52,7 +50,7 @@ def get_proposals_infos_all():
         dict: proposal infos
     """
     sql = get_sql_query("proposal/proposalsInfosAll")
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -66,12 +64,11 @@ def get_proposal_infos(proposal_id):
         dict: proposal infos
     """
     return {
-        "proposal": db.get_db_items(
-            models.Proposal,
-            schemas.proposal.dict_schema,
-            schemas.proposal.ma_schema,
-            {'proposalId': proposal_id},
-        )["data"]["rows"]
+        "proposal": (
+            db.session.query(models.Proposal)
+            .filter(models.Proposal.proposalId == proposal_id)
+            .first()
+        )
     }
 
 
@@ -87,7 +84,7 @@ def login_authorized_for_proposal(login, proposal_id):
     """
     sql = get_sql_query("proposal/loginAuthorizedProposal")
     sql = sql.bindparams(login=login, proposalId=proposal_id)
-    is_authorized = db.engine.execute(sql)
+    is_authorized = db.session.execute(sql)
     return is_authorized.first()[0] > 0
 
 
@@ -106,7 +103,7 @@ def find_proposal_id(id_or_name):
     """
     sql = get_sql_query("proposal/findProposalId")
     sql = sql.bindparams(name=id_or_name)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     res = queryresult_to_dict(res)
     if len(res) == 1:
         return res[0]["proposalId"]

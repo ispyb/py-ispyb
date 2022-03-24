@@ -21,10 +21,9 @@
 
 __license__ = "LGPLv3+"
 
-from pyispyb.app.extensions import db
-
 from pyispyb.app.utils import get_sql_query, queryresult_to_dict
-from pyispyb.core.modules import data_collections
+from pyispyb.app.extensions.database.middleware import db
+from pyispyb.core.modules.legacy import data_collections
 
 ############################
 #          MOVIES          #
@@ -46,7 +45,7 @@ def get_movies_data_by_datacollection_id(proposal_id, datacollection_id):
         append=" where Movie_dataCollectionId = :dataCollectionId and Proposal_proposalId=:proposalId")
     sql = sql.bindparams(dataCollectionId=datacollection_id,
                          proposalId=proposal_id)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -64,7 +63,7 @@ def get_movie_thumbnails(proposal_id, movie_id):
         "em/movie_thumbnails")
     sql = sql.bindparams(movieId=movie_id,
                          proposalId=proposal_id)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     res = queryresult_to_dict(res)
     if len(res) > 0:
         return queryresult_to_dict(res)[0]
@@ -88,7 +87,7 @@ def get_stats_by_session_id(session_id):
     sql = get_sql_query(
         "em/sessionStats", append=" where sessionId = :sessionId")
     sql = sql.bindparams(sessionId=session_id)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -107,7 +106,7 @@ def get_stats_by_data_collections_ids(proposal_id, data_collection_ids):
         append=" where dataCollectionId in (:dataCollectionIdList) and BLSession.proposalId=:proposalId")
     sql = sql.bindparams(
         dataCollectionIdList=data_collection_ids, proposalId=proposal_id)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -127,7 +126,7 @@ def get_stats_by_data_collections_group_id(
         append=" where DataCollection.dataCollectionGroupId=:dataCollectionGroupId and BLSession.proposalId=:proposalId")
     sql = sql.bindparams(
         dataCollectionGroupId=data_collection_group_id, proposalId=proposal_id)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 ############################

@@ -1,4 +1,3 @@
-from operator import setitem
 from typing import Any
 import logging
 from logging.config import dictConfig
@@ -7,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 
 from pyispyb.app.extensions.database.utils import enable_debug_logging
+from pyispyb.app.extensions.database.middleware import get_session
 from pyispyb.app.globals import GlobalsMiddleware
 
 from ..config import settings, LogConfig
@@ -21,6 +21,12 @@ logger.info("moo")
 
 app = FastAPI(openapi_url=f"{settings.api_root}/openapi.json")
 app.add_middleware(GlobalsMiddleware)
+
+
+@app.middleware("http")
+async def get_session_as_middleware(request, call_next):
+    with get_session():
+        return await call_next(request)
 
 
 def enable_cors() -> None:

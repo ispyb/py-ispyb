@@ -33,8 +33,12 @@ def init_app(app: FastAPI, prefix: str = None, **kwargs):
     for module_name in os.listdir(os.path.dirname(__file__)):
         if not module_name.startswith("__") and module_name.endswith(".py"):
             try:
+                logger.info(f"Importing {module_name}")
                 module = import_module(".%s" % module_name[:-3], package=__name__)
                 if hasattr(module, "router"):
                     app.include_router(module.router, prefix=prefix)
             except Exception:
                 logger.exception(f"Could not import module `{module_name}`")
+
+    from pyispyb.core.routes.legacy import init_app
+    init_app(app, prefix=prefix)

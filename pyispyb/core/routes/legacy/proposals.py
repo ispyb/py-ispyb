@@ -17,66 +17,37 @@ GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-
-Proposal namespace with enpoint allowing to access proposals.
-
-Example routes:
-
-[GET]   /ispyb/api/v1/proposals     - Retrieves a list of proposals
-[GET]   /ispyb/api/v1/proposals?proposalType=MX - Retrieves a list of MX proposals
-[POST]  /ispyb/api/v1/proposals    - Creates a new proposal
-
-[GET]   /ispyb/api/v1/proposals/1  - Retrieves proposal #1
-[PUT]   /ispyb/api/v1/proposals/1  - Updates proposal #1
-[PATCH] /ispyb/api/v1/proposals/1  - Partially updates proposal #1
-[DELETE]/ispyb/api/v1/proposals/1  - Deletes proposal #1
 """
 
 
 __license__ = "LGPLv3+"
 
-from flask import request
+from fastapi import Depends
+from pyispyb.app.globals import g
+from pyispyb.core.modules.legacy import proposal
+from pyispyb.core.routes.legacy.dependencies import proposal_authorisation
 
-from flask_restx import Resource
-
-from pyispyb.app.extensions.api import api_v1, Namespace, legacy_api
-from pyispyb.app.extensions.auth.decorators import authentication_required, permission_required, proposal_authorization_required
-from pyispyb.core.modules import proposal
+from .base import router
 
 
-api = Namespace(
-    "Proposals", description="Proposal related namespace", path="/proposals"
+@router.get(
+    "/{token}/proposal/list",
 )
-api_v1.add_namespace(api)
+def get_proposals():
+    """Get all proposal that user is allowed to access."""
+    if "all_proposals" in g.permissions:
+        return proposal.get_proposals_infos_all()
+    return proposal.get_proposals_infos_login(g.login)
 
 
-@api.route("")
-@api.doc(security="apikey")
-@legacy_api.route("/<token>/proposal/list")
-class ProposalsInfosLogin(Resource):
+@router.get(
+    "/{token}/proposal/{proposal_id}/info/get",
+)
+def get_proposal(proposal_id: str = Depends(proposal_authorisation)):
+    """Get proposal information.
 
-    @authentication_required
-    @permission_required("any", ["own_proposals", "all_proposals"])
-    def get(self, **kwargs):
-        """Get all proposal that user is allowed to access."""
-        if "all_proposals" in request.user['permissions']:
-            return proposal.get_proposals_infos_all()
-        return proposal.get_proposals_infos_login(request.user['username'])
-
-
-@api.route("/<proposal_id>")
-@api.doc(security="apikey")
-@legacy_api.route("/<token>/proposal/<proposal_id>/info/get")
-class ProposalById(Resource):
-
-    @authentication_required
-    @permission_required("any", ["own_proposals", "all_proposals"])
-    @proposal_authorization_required
-    def get(self, proposal_id, **kwargs):
-        """Get proposal information.
-
-        Args:
-            proposal_id (str): proposal id or name
-        """
-        proposal_id = proposal.find_proposal_id(proposal_id)
-        return proposal.get_proposal_infos(proposal_id)
+    Args:
+        proposal_id (str): proposal id or name
+    """
+    proposal_id = proposal.find_proposal_id(proposal_id)
+    return proposal.get_proposal_infos(proposal_id)

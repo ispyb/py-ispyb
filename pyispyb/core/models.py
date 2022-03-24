@@ -865,6 +865,8 @@ class UserGroup(Base):
     userGroupId = Column(INTEGER(11), primary_key=True)
     name = Column(String(31), nullable=False, unique=True)
 
+    Permission = relationship("Permission", secondary="UserGroup_has_Permission")
+
 
 class Workflow(Base):
     __tablename__ = "Workflow"

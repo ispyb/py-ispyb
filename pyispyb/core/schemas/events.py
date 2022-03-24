@@ -4,7 +4,7 @@ from typing import Union, Optional
 from datetime import datetime
 from pydantic import BaseModel, Field
 
-from ..database import models
+from pyispyb.core import models
 
 d = models.DataCollection
 g = models.DataCollectionGroup

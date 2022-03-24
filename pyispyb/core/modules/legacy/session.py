@@ -23,8 +23,8 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
-from pyispyb.app.extensions import db
 from pyispyb.app.utils import get_sql_query, queryresult_to_dict
+from pyispyb.app.extensions.database.middleware import db
 
 
 def get_session_infos_login(login):
@@ -38,18 +38,18 @@ def get_session_infos_login(login):
     """
     sql = get_sql_query("session/sessionsInfosLogin")
     sql = sql.bindparams(login=login)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
-def get_session_infos_all():
+def get_session_infos_all(db):
     """Get info for all sessions.
 
     Returns:
         list: sessions infos
     """
     sql = get_sql_query("session/sessionsInfosAll")
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -66,7 +66,7 @@ def get_session_infos_login_proposal(login, proposal_id):
     sql = get_sql_query("session/sessionsInfosLogin",
                         append=" and proposalId = :proposalId")
     sql = sql.bindparams(login=login, proposalId=proposal_id)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -82,7 +82,7 @@ def get_session_infos_all_proposal(proposal_id):
     sql = get_sql_query("session/sessionsInfosAll",
                         append=" where proposalId = :proposalId")
     sql = sql.bindparams(proposalId=proposal_id)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -111,7 +111,7 @@ def get_session_infos_login_dates(login, start_date, end_date):
     order by v_session.sessionId DESC
     """)
     sql = sql.bindparams(login=login, startDate=start_date, endDate=end_date)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -139,7 +139,7 @@ def get_session_infos_all_dates(start_date, end_date):
     order by v_session.sessionId DESC
     """)
     sql = sql.bindparams(startDate=start_date, endDate=end_date)
-    res = db.engine.execute(sql)
+    res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
@@ -155,5 +155,5 @@ def login_authorized_for_session(login, session_id):
     """
     sql = get_sql_query("session/loginAuthorizedSession")
     sql = sql.bindparams(login=login, sessionId=session_id)
-    is_authorized = db.engine.execute(sql)
+    is_authorized = db.session.execute(sql)
     return is_authorized.first()[0] > 0

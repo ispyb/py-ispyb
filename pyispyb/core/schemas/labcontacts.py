@@ -3,7 +3,7 @@ import datetime
 
 from pydantic import BaseModel, Field
 
-from ispyb.app.schemas.validators import WordDashSpace
+from pyispyb.core.schemas.validators import WordDashSpace
 
 
 class LaboratoryBase(BaseModel):

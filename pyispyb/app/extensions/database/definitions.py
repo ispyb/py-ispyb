@@ -1,9 +1,9 @@
 from typing import Optional, Any
 import sqlalchemy
-from sqlalchemy.orm import Session
 
 from pyispyb.core import models
 from pyispyb.app.globals import g
+from pyispyb.app.extensions.database.middleware import db
 
 _session = sqlalchemy.func.concat(
     models.Proposal.proposalCode,
@@ -13,9 +13,9 @@ _session = sqlalchemy.func.concat(
 ).label("session")
 
 
-def get_blsession(db: Session, session: str) -> Optional[models.BLSession]:
+def get_blsession(session: str) -> Optional[models.BLSession]:
     return (
-        db.query(models.BLSession)
+        db.session.query(models.BLSession)
         .join(models.Proposal)
         .filter(_session == session)
         .first()

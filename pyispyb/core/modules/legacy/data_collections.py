@@ -21,8 +21,8 @@
 
 __license__ = "LGPLv3+"
 
-from pyispyb.app.extensions import db
 from pyispyb.app.utils import get_sql_query, queryresult_to_dict
+from pyispyb.app.extensions.database.middleware import db
 
 
 def get_data_collections_groups(session_id):
@@ -38,5 +38,5 @@ def get_data_collections_groups(session_id):
         "dataCollection/groups",
         append=" where DataCollectionGroup_sessionId = :sessionId group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId order by DataCollection_startTime desc")
     sql = sql.bindparams(sessionId=session_id)
-    group_list = db.engine.execute(sql)
+    group_list = db.sesion.execute(sql)
     return queryresult_to_dict(group_list)

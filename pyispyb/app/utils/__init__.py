@@ -20,38 +20,9 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime
 from decimal import Decimal
 import os
-from requests import get
-from flask import current_app
 from sqlalchemy import text
 
-
-def create_response_item(msg=None, num_items=None, data=None):
-    """
-    Create response dictionary.
-
-    Args:
-        info_msg ([type]): [description]
-        error_msg ([type]): [description]
-        num_items ([type]): [description]
-        data ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    if data is None:
-        data = []
-
-    return {
-        "data": {"total": num_items, "rows": data},
-        "message": msg,
-    }
-
-
-def download_pdb_file(pdb_filename):
-    """Download pdb file."""
-    response = get(current_app.config["PDB_URI"] + "/" + pdb_filename)
-    if response.status_code == 200:
-        return response.content
+from pyispyb.config import settings
 
 
 def get_sql_query(name, append=""):
@@ -64,7 +35,7 @@ def get_sql_query(name, append=""):
     Returns:
         str: query string
     """
-    path = os.path.join(current_app.config["QUERIES_DIR"], name + ".sql")
+    path = os.path.join(settings.queries_dir, name + ".sql")
     file = open(path)
     query_string = file.read() + append
     query = text(query_string)

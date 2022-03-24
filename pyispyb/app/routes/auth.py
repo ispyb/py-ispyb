@@ -23,11 +23,10 @@ import json
 import hashlib
 from typing import Optional
 from pydantic import BaseModel
-from fastapi import Depends, status, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import status, HTTPException
 
 from pyispyb.app.extensions.auth import auth_provider
-from pyispyb.app.extensions.database.session import get_session
+from pyispyb.app.extensions.database.middleware import db
 
 from pyispyb.core import models
 from ..base import BaseRouter
@@ -59,7 +58,7 @@ router = BaseRouter(prefix="/auth", tags=["Authentication"])
     status_code=status.HTTP_201_CREATED,
     responses={401: {"description": "Could not login user"}},
 )
-def login(login: Login, db: Session = Depends(get_session)) -> TokenResponse:
+def login(login: Login) -> TokenResponse:
     """Login a user"""
     username, groups, permissions = auth_provider.get_auth(
         login.username, login.password, login.token
@@ -82,7 +81,7 @@ def login(login: Login, db: Session = Depends(get_session)) -> TokenResponse:
                     token_info["exp"], "%Y-%m-%d %H:%M:%S"
                 ),
             )
-            db.add(bd_login)
-            db.commit()
-            
+            db.session.add(bd_login)
+            db.session.commit()
+
         return token_info

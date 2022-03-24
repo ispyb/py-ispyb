@@ -2,11 +2,12 @@ from typing import Optional, Any
 import os
 
 import sqlalchemy
-from sqlalchemy.orm import Session, contains_eager
+from sqlalchemy.orm import contains_eager
 from sqlalchemy.sql.expression import literal_column
 
-from ..database import models
-from ..database.utils import Paged, page
+from pyispyb.core import models
+from pyispyb.app.extensions.database.utils import Paged, page
+from pyispyb.app.extensions.database.middleware import db
 from ..schemas import events as schema
 
 
@@ -36,7 +37,6 @@ def with_sample(
 
 
 def get_events(
-    db: Session,
     skip: int,
     limit: int,
     sessionId: Optional[int] = None,
@@ -67,7 +67,7 @@ def get_events(
             sqlalchemy.func.distinct(models.DataCollection.dataCollectionId)
         )  # type: ignore
 
-    queries["dc"] = db.query(
+    queries["dc"] = db.session.query(
         dataCollectionId.label("id"),
         startTime.label("startTime"),
         endTime.label("endTime"),
@@ -78,21 +78,21 @@ def get_events(
         models.DataCollectionGroup.dataCollectionGroupId
         == models.DataCollection.dataCollectionGroupId,
     )
-    queries["robot"] = db.query(
+    queries["robot"] = db.session.query(
         models.RobotAction.robotActionId.label("id"),
         models.RobotAction.startTimestamp.label("startTime"),
         models.RobotAction.endTimestamp.label("endTime"),
         literal_column("'robot'").label("type"),
         literal_column("1").label("count"),
     )
-    queries["xrf"] = db.query(
+    queries["xrf"] = db.session.query(
         models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId.label("id"),
         models.XFEFluorescenceSpectrum.startTime.label("startTime"),
         models.XFEFluorescenceSpectrum.endTime.label("endTime"),
         literal_column("'xrf'").label("type"),
         literal_column("1").label("count"),
     )
-    queries["es"] = db.query(
+    queries["es"] = db.session.query(
         models.EnergyScan.energyScanId.label("id"),
         models.EnergyScan.startTime.label("startTime"),
         models.EnergyScan.endTime.label("endTime"),
@@ -175,7 +175,7 @@ def get_events(
             column = getattr(ty[0], ty[1])
             if len(ty) > 2:
                 items = (
-                    db.query(ty[0])
+                    db.session.query(ty[0])
                     .join(ty[2])
                     .options(contains_eager(ty[2]))
                     .filter(column.in_(ids[name]))
@@ -183,7 +183,7 @@ def get_events(
                 )
             else:
                 items = (
-                    db.query(ty[0]).filter(column.in_(ids[name])).all()
+                    db.session.query(ty[0]).filter(column.in_(ids[name])).all()
                 )
             type_map[name] = {getattr(item, ty[1]): item for item in items}
 
@@ -200,10 +200,10 @@ def get_events(
 
 
 def get_datacollection(
-    db: Session, dataCollectionId: int
+    dataCollectionId: int
 ) -> Optional[models.DataCollection]:
     dc = (
-        db.query(models.DataCollection)
+        db.session.query(models.DataCollection)
         .filter(models.DataCollection.dataCollectionId == dataCollectionId)
         .first()
     )
@@ -235,9 +235,9 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
 
 
 def get_datacollection_snapshot_path(
-    db: Session, dataCollectionId: int, imageId: int = 0, fullSize: bool = False
+    dataCollectionId: int, imageId: int = 0, fullSize: bool = False
 ) -> Optional[str]:
-    dc = get_datacollection(db, dataCollectionId)
+    dc = get_datacollection(dataCollectionId)
     if not dc:
         return None
 

@@ -1,24 +1,24 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from fastapi import Depends, HTTPException, status
 
-from ..database.session import get_session
-from ..dependencies import pagination
+from pyispyb.dependencies import pagination
+from pyispyb.core import models
+from pyispyb.app.extensions.database.utils import Paged
+from pyispyb.app.base import AuthenticatedAPIRouter
+
 from ..modules import labcontacts as crud
 from ..schemas import labcontacts as schema
 from ..schemas.utils import paginated
-from ..database import models
-from ..database.utils import Paged
 
 
-_router = APIRouter(prefix="/labcontacts", tags=["Lab Contacts"])
+router = AuthenticatedAPIRouter(prefix="/labcontacts", tags=["Lab Contacts"])
 
 
 @router.get("/", response_model=paginated(schema.LabContact))
 def get_lab_contacts(
-    db: Session = Depends(get_session), page: dict[str, int] = Depends(pagination)
+    page: dict[str, int] = Depends(pagination)
 ) -> Paged[models.LabContact]:
     """Get a list of lab contacts"""
-    return crud.get_labcontacts(db, **page)
+    return crud.get_labcontacts(**page)
 
 
 @router.get(
@@ -27,10 +27,10 @@ def get_lab_contacts(
     responses={404: {"description": "No such contact"}},
 )
 def get_lab_contact(
-    labContactId: int, db: Session = Depends(get_session)
+    labContactId: int
 ) -> models.LabContact:
     """Get a list of lab contacts"""
-    users = crud.get_labcontacts(db, labContactId=labContactId, skip=0, limit=1)
+    users = crud.get_labcontacts(labContactId=labContactId, skip=0, limit=1)
     try:
         return users.first
     except IndexError:
@@ -43,7 +43,7 @@ def get_lab_contact(
     status_code=status.HTTP_201_CREATED,
 )
 def create_lab_contact(
-    labcontact: schema.LabContactCreate, db: Session = Depends(get_session)
+    labcontact: schema.LabContactCreate
 ) -> models.LabContact:
     """Create a new lab contact"""
-    return crud.create_labcontact(db=db, labcontact=labcontact)
+    return crud.create_labcontact(labcontact=labcontact)

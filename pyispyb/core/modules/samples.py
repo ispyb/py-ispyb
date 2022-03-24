@@ -1,14 +1,14 @@
 from typing import Optional
-from sqlalchemy.orm import Session, contains_eager
+from sqlalchemy.orm import contains_eager
 from sqlalchemy.sql.expression import func, distinct
 from pyispyb.app.extensions.database.definitions import with_auth_to_session
+from pyispyb.app.extensions.database.middleware import db
 
 from pyispyb.core import models
 from pyispyb.app.extensions.database.utils import Paged, page, with_metadata
 
 
 def get_samples(
-    db: Session,
     skip: int,
     limit: int,
     blSampleId: Optional[int] = None,
@@ -21,7 +21,7 @@ def get_samples(
     }
 
     query = (
-        db.query(models.BLSample, *metadata.values())
+        db.session.query(models.BLSample, *metadata.values())
         .join(models.BLSample.Crystal)
         .options(
             contains_eager(models.BLSample.Crystal).load_only(
