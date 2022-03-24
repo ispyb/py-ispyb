@@ -16,7 +16,6 @@ from pyispyb.app.extensions.auth import auth_provider
 
 dictConfig(LogConfig().dict())
 logger = logging.getLogger("ispyb")
-logger.info("moo")
 
 
 app = FastAPI(openapi_url=f"{settings.api_root}/openapi.json")
@@ -39,7 +38,6 @@ def enable_cors() -> None:
     )
 
 
-print("settings cors", settings.cors)
 if settings.cors:
     enable_cors()
 

@@ -20,7 +20,7 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 from pyispyb.core.modules.legacy.proposal import find_proposal_id
-from pyispyb.core.modules import session
+from pyispyb.core.modules.legacy import session
 from pyispyb.app.globals import g
 
 __license__ = "LGPLv3+"
