@@ -54,7 +54,10 @@ def get_current_person() -> Optional[models.Person]:
     if not person:
         return
 
+    print(person.personId)
+
     permissions = []
+    print(person.UserGroup)
     for group in person.UserGroup:
         for permission in group.Permission:
             permissions.append(permission.type)
