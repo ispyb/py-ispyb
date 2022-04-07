@@ -8,5 +8,4 @@ class BaseRouter(APIRouter):
 
 class AuthenticatedAPIRouter(BaseRouter):
     def __init__(self, *args, **kwargs):
-        print("AuthenticatedAPIRouter")
         super().__init__(*args, dependencies=[Depends(JWTBearer)], **kwargs)

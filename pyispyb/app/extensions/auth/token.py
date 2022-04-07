@@ -49,7 +49,7 @@ def decode_token(token):
         msg: error if present
     """
     return jwt.decode(
-            token,
-            settings.secret_key,
-            algorithms=settings.jwt_coding_algorithm,
-        )
+        token,
+        settings.secret_key,
+        algorithms=settings.jwt_coding_algorithm,
+    )

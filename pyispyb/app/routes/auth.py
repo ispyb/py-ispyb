@@ -26,6 +26,7 @@ from pydantic import BaseModel
 from fastapi import status, HTTPException
 
 from pyispyb.app.extensions.auth import auth_provider
+from pyispyb.app.extensions.auth.token import generate_token
 from pyispyb.app.extensions.database.middleware import db
 
 from pyispyb.core import models
@@ -37,13 +38,14 @@ __license__ = "LGPLv3+"
 
 class Login(BaseModel):
     plugin: Optional[str]
-    username: str
-    password: str
+    username: Optional[str]
+    password: Optional[str]
     # keycloak token, not jwt (!)
     token: Optional[str]
 
 
 class TokenResponse(BaseModel):
+    username: str
     token: str
     permissions: list[str]
     groups: list[str]
@@ -60,15 +62,15 @@ router = BaseRouter(prefix="/auth", tags=["Authentication"])
 )
 def login(login: Login) -> TokenResponse:
     """Login a user"""
-    username, groups, permissions = auth_provider.get_auth(
-        login.username, login.password, login.token
-    )
+    username, groups, permissions = auth_provider.get_auth(login.plugin,
+                                                           login.username, login.password, login.token
+                                                           )
 
     if not username:
         raise HTTPException(status_code=401, detail="Could not verify")
 
     else:
-        token_info = auth_provider.generate_token(username, groups, permissions)
+        token_info = generate_token(username, groups, permissions)
 
         if hasattr(models, "Login"):
             token_ispyb = hashlib.sha1(token_info["token"].encode("utf-8")).hexdigest()

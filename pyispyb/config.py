@@ -28,10 +28,15 @@ import os
 
 from functools import lru_cache
 from pydantic import BaseSettings, BaseModel
+import yaml
 
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 RESOURCES_ROOT = os.path.join(PROJECT_ROOT, "resources")
+
+yaml_settings = dict()
+with open(os.path.join(PROJECT_ROOT, "../auth.yml")) as f:
+    yaml_settings.update(yaml.load(f, Loader=yaml.FullLoader))
 
 
 class Settings(BaseSettings):
@@ -45,8 +50,7 @@ class Settings(BaseSettings):
     sqlalchemy_database_uri: str
     query_debug: bool = False
 
-    auth_module: str
-    auth_class: str
+    auth = yaml_settings['AUTH']
 
     jwt_coding_algorithm: str = "HS256"
     token_exp_time: int = 300  # in minutes

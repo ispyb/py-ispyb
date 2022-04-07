@@ -38,7 +38,11 @@ def with_auth_to_session(
             models.SessionHasPerson,
             models.BLSession.sessionId == models.SessionHasPerson.sessionId,
         )
-        .filter(models.SessionHasPerson.personId == g.person.personId)
+        .join(
+            models.Person,
+            models.SessionHasPerson.personId == models.Person.personId,
+        )
+        .filter(models.Person.login == g.username)
     )
 
 
@@ -47,7 +51,7 @@ def get_current_person() -> Optional[models.Person]:
         db.session.query(models.Person)
         .options(joinedload(models.Person.UserGroup))
         .options(joinedload(models.Person.UserGroup, models.UserGroup.Permission))
-        .filter(models.Person.login == g.login)
+        .filter(models.Person.login == g.username)
         .first()
     )
 

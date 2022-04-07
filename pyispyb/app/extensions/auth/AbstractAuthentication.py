@@ -21,13 +21,15 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
-from typing import Optional
 import abc
+from typing import Any
 
-from pyispyb.core.models import UserGroup
+from pyispyb.core import models
+from pyispyb.app.extensions.database.middleware import db
+from sqlalchemy.orm import joinedload
 
 
-def get_groups_permissions(groups):
+def get_groups_permissions(groups: list[str]) -> list[str]:
     """Get permission list from group list.
 
     Args:
@@ -36,11 +38,16 @@ def get_groups_permissions(groups):
     Returns:
         string[]: list of permissions
     """
-    permissions = []
+    permissions: list[str] = []
     for group_name in groups:
-        db_group = UserGroup.query.filter_by(name=group_name).first()
-        for permission in db_group.permissions:
-            permissions.append(permission.type)
+        db_group: models.UserGroup | None = (
+            db.session.query(models.UserGroup)
+            .options(joinedload(models.UserGroup.Permission))
+            .filter_by(name=group_name).first()
+        )
+        if db_group is not None:
+            for permission in db_group.Permission:
+                permissions.append(permission.type)
     return permissions
 
 
@@ -53,7 +60,7 @@ class AbstractAuthentication(object):
 
     __metaclass__ = abc.ABCMeta
 
-    def configure(self, config):
+    def configure(self, config: dict[str, Any]):
         """Configure auth plugin.
 
         Args:
@@ -61,7 +68,7 @@ class AbstractAuthentication(object):
         """
         return
 
-    def get_auth(self, username: str, password: str, token: str) -> list[str, list[str], list[str]]:
+    def get_auth(self, username: str | None, password: str | None, token: str | None) -> tuple[str | None, list[str] | None, list[str] | None]:
         """Return username, groups and permissions associated to the user.
 
         Args:
@@ -77,7 +84,7 @@ class AbstractAuthentication(object):
         return username, groups, get_groups_permissions(groups)
 
     @abc.abstractmethod
-    def get_user_and_groups(self, username, password, token):
+    def get_user_and_groups(self, username: str | None, password: str | None, token: str | None) -> tuple[str | None, list[str] | None]:
         """Return username and groups associated to the user.
 
         Args:

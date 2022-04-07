@@ -19,7 +19,6 @@
 
 import logging
 import importlib
-from .token import generate_token
 
 from pyispyb.config import settings
 
@@ -32,17 +31,29 @@ log = logging.getLogger(__name__)
 class AuthProvider:
     """Allows to authentificate users."""
 
+    def __init__(self):
+        self.site_authentications = {}
+
     def init_app(self, app):
         """Init extension."""
 
-        module_name = settings.auth_module
-        class_name = settings.auth_class
-        config = {}
-        cls = getattr(importlib.import_module(module_name), class_name)
-        self._instance = cls()
-        self._instance.configure(config)
+        auth_list = settings.auth
+        for auth_plugin in auth_list:
+            for auth_name in auth_plugin:
+                enabled = auth_plugin[auth_name]["ENABLED"]
+                if enabled:
+                    module_name: str = auth_plugin[auth_name]["AUTH_MODULE"]
+                    class_name: str = auth_plugin[auth_name]["AUTH_CLASS"]
+                    config = {}
+                    if "CONFIG" in auth_plugin[auth_name]:
+                        config = auth_plugin[auth_name]["CONFIG"]
+                    cls = getattr(importlib.import_module(
+                        module_name), class_name)
+                    instance = cls()
+                    instance.configure(config)
+                    self.site_authentications[auth_name] = instance
 
-    def get_auth(self, username, password, token):
+    def get_auth(self, plugin, username, password, token):
         """
         Return username, groups, permissions associated to user.
 
@@ -57,15 +68,13 @@ class AuthProvider:
         Returns:
             username, groups, permissions
         """
-        username, groups, permissions = self._instance.get_auth(
-            username, password, token
-        )
+        if plugin not in self.site_authentications:
+            return None, None, None
+        username, groups, permissions = self.site_authentications[plugin].get_auth(
+            username, password, token)
         if username is not None and groups is not None and permissions is not None:
             return username, groups, permissions
         return None, None, None
-
-    def generate_token(self, username, groups, permissions):
-        return generate_token(username, groups, permissions)
 
 
 auth_provider = AuthProvider()

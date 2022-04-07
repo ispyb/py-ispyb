@@ -36,7 +36,7 @@ def get_sessions():
     """Get all sessions that user is allowed to access."""
     if "all_sessions" in g.permissions:
         return session.get_session_infos_all()
-    return session.get_session_infos_login(g.login)
+    return session.get_session_infos_login(g.username)
 
 
 @router.get(
@@ -52,7 +52,7 @@ def get_sessions_by_dates(start_date: str, end_date: str):
     if "all_sessions" in g.permissions:
         return session.get_session_infos_all_dates(start_date, end_date)
     return session.get_session_infos_login_dates(
-        g.login, start_date, end_date
+        g.username, start_date, end_date
     )
 
 
@@ -69,5 +69,5 @@ def get_sessions_for_proposal(self, proposal_id: int, **kwargs):
     if "all_sessions" in g.permissions:
         return session.get_session_infos_all_proposal(proposal_id)
     return session.get_session_infos_login_proposal(
-        g.login, proposal_id
+        g.username, proposal_id
     )

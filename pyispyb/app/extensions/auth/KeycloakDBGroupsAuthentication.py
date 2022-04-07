@@ -22,18 +22,22 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 
+from typing import Any
 from keycloak.exceptions import KeycloakAuthenticationError
 from keycloak.keycloak_openid import KeycloakOpenID
 
 from pyispyb.app.extensions.auth.AbstractDBGroupsAuthentication import AbstractDBGroupsAuthentication
-from pyispyb.core.models import Person
-from flask import current_app
+from pyispyb.core import models
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class KeycloakDBGroupsAuthentication(AbstractDBGroupsAuthentication):
     """Keycloak authentication class."""
 
-    def configure(self, config):
+    def configure(self, config: dict[str, Any]):
         """Configure auth plugin.
 
         Args:
@@ -51,7 +55,7 @@ class KeycloakDBGroupsAuthentication(AbstractDBGroupsAuthentication):
             client_secret_key=client_secret_key,
             verify=True)
 
-    def get_person(self, username, password, token):
+    def get_person(self, username: str | None, password: str | None, token: str | None) -> models.Person | None:
         """Return db person associated to the user.
 
         Args:
@@ -65,12 +69,12 @@ class KeycloakDBGroupsAuthentication(AbstractDBGroupsAuthentication):
             return None
         try:
             userinfo = self.keycloak_openid.userinfo(token)
-            return Person(
+            return models.Person(
                 login=userinfo["preferred_username"],
                 familyName=userinfo["family_name"],
                 givenName=userinfo["given_name"],
                 emailAddress=userinfo["email"],
             )
         except KeycloakAuthenticationError as e:
-            current_app.logger.error(e)
+            log.error(e)
             return None

@@ -1,6 +1,5 @@
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pyispyb.app.extensions.database.definitions import get_current_person
 from pyispyb.app.globals import g
 import jwt
 
@@ -34,14 +33,9 @@ async def JWTBearer(
                 status_code=401, detail="Invalid token or expired token."
             )
 
-        g.login = decoded["username"]
-        person = get_current_person()
-        if not person:
-            raise HTTPException(
-                status_code=401, detail="User does not exist in database."
-            )
-        g.person = person
-        g.permissions = person._metadata["permissions"]
+        g.username = decoded["username"]
+        g.permissions = decoded["permissions"]
+        g.groups = decoded["groups"]
 
         return credentials.credentials
     else:

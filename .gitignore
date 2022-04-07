@@ -3,9 +3,7 @@ __pycache__/
 *.py[cod]
 *swp
 
-ispyb_core_config.yml
-ispyb_ssx_config.yml
-ispyb_em_config.yml
+auth.yml
 
 build/
 dist/

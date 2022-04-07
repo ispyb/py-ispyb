@@ -19,6 +19,7 @@
 
 
 import logging
+from typing import Any
 import ldap
 
 
@@ -39,7 +40,7 @@ class LdapAuthentication(AbstractAuthentication):
         self.ldap_base_internal = None
         self.ldap_base_groups = None
 
-    def configure(self, config):
+    def configure(self, config: dict[str, Any]):
         """Configure auth plugin.
 
         Args:
@@ -49,7 +50,7 @@ class LdapAuthentication(AbstractAuthentication):
         self.ldap_base_internal = config["LDAP_BASE_INTERNAL"]
         self.ldap_base_groups = config["LDAP_BASE_GROUPS"]
 
-    def get_user_and_groups(self, username, password, token):
+    def get_user_and_groups(self, username: str | None, password: str | None, token: str | None) -> tuple[str | None, list[str] | None]:
         """Return username and groups associated to the user.
 
         Args:

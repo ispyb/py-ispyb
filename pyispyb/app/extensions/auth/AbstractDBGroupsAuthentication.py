@@ -23,13 +23,14 @@ __license__ = "LGPLv3+"
 
 
 import abc
+from typing import Any
 from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentication
-from pyispyb.app.extensions import db
+from pyispyb.app.extensions.database.middleware import db
+from pyispyb.core import models
+from sqlalchemy.orm import joinedload
 
-from pyispyb.core.models import Person
 
-
-def get_person_groups(person):
+def get_person_groups(person: models.Person):
     """Get group list for person.
 
     Args:
@@ -38,7 +39,7 @@ def get_person_groups(person):
     Returns:
         str[]: group list
     """
-    groups = []
+    groups: list[str] = []
     for group in person.UserGroup:
         groups.append(group.name)
     return groups
@@ -47,7 +48,7 @@ def get_person_groups(person):
 class AbstractDBGroupsAuthentication(AbstractAuthentication):
     """Keycloak authentication class."""
 
-    def configure(self, config):
+    def configure(self, config: dict[str, Any]):
         """Configure auth plugin.
 
         Args:
@@ -55,7 +56,7 @@ class AbstractDBGroupsAuthentication(AbstractAuthentication):
         """
         pass
 
-    def get_user_and_groups(self, username, password, token):
+    def get_user_and_groups(self, username: str | None, password: str | None, token: str | None) -> tuple[str | None, list[str] | None]:
         """Return username and groups associated to the user.
 
         Args:
@@ -68,7 +69,12 @@ class AbstractDBGroupsAuthentication(AbstractAuthentication):
         person = self.get_person(username, password, token)
         if not person:
             return None, None
-        db_person = Person.query.filter_by(login=person.login).first()
+        db_person = (
+            db.session.query(models.Person)
+            .options(joinedload(models.Person.UserGroup))
+            .filter(models.Person.login == person.login)
+            .first()
+        )
         if not db_person:
             db_person = person
             db.session.add(db_person)
@@ -76,7 +82,7 @@ class AbstractDBGroupsAuthentication(AbstractAuthentication):
         return db_person.login, get_person_groups(db_person)
 
     @abc.abstractmethod
-    def get_person(self, username, password, token):
+    def get_person(self, username: str | None, password: str | None, token: str | None) -> models.Person | None:
         """Return db person associated to the user.
 
         Args:
