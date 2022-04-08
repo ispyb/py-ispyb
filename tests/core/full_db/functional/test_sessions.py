@@ -1,4 +1,5 @@
 
+from pyispyb.config import settings
 import pytest
 from tests.core.full_db.functional.data.sessions import test_data_session_proposal_list, test_data_session_list, test_data_session_dates_list
 from tests.core.utils import get_token
@@ -14,7 +15,7 @@ def _run_session_t(ispyb_app, test_elem):
     inputs = test_elem["input"]
     permissions = inputs["permissions"]
     username = inputs["username"]
-    route = ispyb_app.config["API_ROOT"] + inputs["route"]
+    route = settings.api_root + inputs["route"]
 
     expected = test_elem["expected"]
     code = expected["code"]
@@ -22,13 +23,12 @@ def _run_session_t(ispyb_app, test_elem):
 
     token = get_token(ispyb_app, permissions, user=username)
 
-    client = ispyb_app.test_client()
     headers = {"Authorization": "Bearer " + token}
 
-    response = client.get(route, headers=headers)
-    print(response.json)
+    response = ispyb_app.get(route, headers=headers)
+    print(response.json())
     assert response.status_code == code, "[GET] %s " % (name)
-    assert response.json == res, "[GET] %s " % (name)
+    assert response.json() == res, "[GET] %s " % (name)
 
 
 @pytest.mark.parametrize("test_elem",

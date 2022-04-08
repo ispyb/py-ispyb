@@ -17,3 +17,6 @@ keycloak-client
 python_ldap==3.4.0
 
 sqlparse
+
+mysql-connector
+mysql-connector-python

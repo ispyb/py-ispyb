@@ -17,28 +17,26 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along
 """
-
-from pyispyb import create_app
-from tests.core.utils import get_all_permissions_token
 __license__ = "LGPLv3+"
 
+
+from pyispyb.app.main import app
+from tests.core.utils import get_all_permissions_token
 
 import os
 import sys
 import pytest
 
+from fastapi.testclient import TestClient
+
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, ROOT_DIR)
 
-app = create_app(
-    ROOT_DIR + "/ispyb_core_config_test_full_db.yml", "test")
-
 
 @pytest.fixture()
 def ispyb_app():
-    with app.app_context():
-        yield app
+    yield TestClient(app)
 
 
 @pytest.fixture()

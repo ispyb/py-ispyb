@@ -2,6 +2,7 @@
 import pytest
 from tests.core.full_db.functional.data.authorization import test_data_session, test_data_proposal
 from tests.core.utils import get_token
+from pyispyb.config import settings
 
 
 def get_elem_name(test_elem):
@@ -14,18 +15,17 @@ def _run_authorization_t(ispyb_app, test_elem):
     inputs = test_elem["input"]
     permissions = inputs["permissions"]
     username = inputs["username"]
-    route = ispyb_app.config["API_ROOT"] + inputs["route"]
+    route = settings.api_root + inputs["route"]
 
     expected = test_elem["expected"]
     code = expected["code"]
 
     token = get_token(ispyb_app, permissions, user=username)
 
-    client = ispyb_app.test_client()
     headers = {"Authorization": "Bearer " + token}
 
-    response = client.get(route, headers=headers)
-    print(response.json)
+    response = ispyb_app.get(route, headers=headers)
+    print(response.json())
     assert response.status_code == code, "[GET] %s " % (name)
 
 

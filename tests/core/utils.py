@@ -1,15 +1,21 @@
-def get_token(app, permissions, user="test"):
-    client = app.test_client()
-    api_root = app.config["API_ROOT"]
 
-    response = client.post(
-        api_root + "/auth/login", headers={
+
+import json
+from pyispyb.config import settings
+
+from fastapi.testclient import TestClient
+
+
+def get_token(app: TestClient, permissions, user="test"):
+
+    response = app.post(
+        settings.api_root + "/auth/login", data=json.dumps({
             "plugin": "dummy",
             "username": user,
             "password": ",".join(permissions)
-        }
+        })
     )
-    return response.json["token"]
+    return response.json()["token"]
 
 
 def get_all_permissions_token(app, user="test"):
