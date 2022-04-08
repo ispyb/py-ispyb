@@ -51,17 +51,16 @@ class Settings(BaseSettings):
     static_root: str = os.path.join(PROJECT_ROOT, "static")
     queries_dir: str = os.path.join(RESOURCES_ROOT, "queries")
 
-    api_root: str = "/ispyb/api/v1"
-    site_name: str = "Generic"
+    api_root: str
     service_name: str
 
     sqlalchemy_database_uri: str = get_env("SQLALCHEMY_DATABASE_URI")
-    query_debug: bool = False
+    query_debug: bool
 
     auth = yaml_settings['AUTH']
 
-    jwt_coding_algorithm: str = "HS256"
-    token_exp_time: int = 300  # in minutes
+    jwt_coding_algorithm: str
+    token_exp_time: int  # in minutes
     secret_key: str = get_env("SECRET_KEY")
 
     cors: bool = False
@@ -76,6 +75,7 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+print(settings.secret_key)
 
 
 class LogConfig(BaseModel):
