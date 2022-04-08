@@ -24,6 +24,7 @@ __license__ = "LGPLv3+"
 
 from fastapi import Depends
 from pyispyb.app.base import AuthenticatedAPIRouter
+from pyispyb.app.extensions.auth.bearer import permission_required
 from pyispyb.app.globals import g
 from pyispyb.core.modules.legacy import proposal
 from pyispyb.core.routes.legacy.dependencies import proposal_authorisation
@@ -38,9 +39,13 @@ router = AuthenticatedAPIRouter(prefix="/proposals", tags=["Proposals - legacy w
 @router.get(
     "",
 )
-def get_proposals():
+def get_proposals(
+    permissions=Depends(
+        permission_required("any", ["own_proposals", "all_proposals"])
+    )
+):
     """Get all proposal that user is allowed to access."""
-    if "all_proposals" in g.permissions:
+    if "all_proposals" in permissions:
         return proposal.get_proposals_infos_all()
     return proposal.get_proposals_infos_login(g.username)
 

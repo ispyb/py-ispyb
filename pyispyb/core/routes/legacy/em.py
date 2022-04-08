@@ -22,7 +22,7 @@ router = AuthenticatedAPIRouter(prefix="/em", tags=["EM - legacy with header tok
     "/{token}/proposal/{proposal_id}/em/datacollection/{datacollection_id}/movie/all",
 )
 @router.get("/proposal/{proposal_id}/datacollection/{datacollection_id}/movies")
-def get_movies(datacollection_id: int, proposal_id: int = Depends(proposal_authorisation)):
+def get_movies(datacollection_id: int, proposal_id: str = Depends(proposal_authorisation)):
     """Get movies date for datacollection.
 
     Args:
@@ -39,7 +39,7 @@ def get_movies(datacollection_id: int, proposal_id: int = Depends(proposal_autho
     response_class=FileResponse
 )
 @router.get("/proposal/{proposal_id}/movie/{movie_id}/thumbnail")
-def get_movie_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authorisation)):
+def get_movie_thumbnail(movie_id: int, proposal_id: str = Depends(proposal_authorisation)):
     """Get thumbnails for movie.
 
     Args:
@@ -61,7 +61,7 @@ def get_movie_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_autho
     response_class=FileResponse
 )
 @router.get("/proposal/{proposal_id}/movie/{movie_id}/thumbnail/motioncorrection")
-def get_motion_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authorisation)):
+def get_motion_thumbnail(movie_id: int, proposal_id: str = Depends(proposal_authorisation)):
     """Get motion correction thumbnail for movie.
 
     Args:
@@ -82,7 +82,7 @@ def get_motion_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_auth
     "/{token}/proposal/{proposal_id}/em/datacollection/{datacollection_id}/movie/{movie_id}/ctf/thumbnail",
 )
 @router.get("/proposal/{proposal_id}/movie/{movie_id}/thumbnail/ctf")
-def get_ctf_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authorisation)):
+def get_ctf_thumbnail(movie_id: int, proposal_id: str = Depends(proposal_authorisation)):
     """Get CTF thumbnail for movie.
 
     Args:
@@ -104,7 +104,7 @@ def get_ctf_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authori
     response_class=FileResponse
 )
 @router.get("/proposal/{proposal_id}/movie/{movie_id}/plot/motioncorrectiondrift")
-def get_motion_drift_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authorisation)):
+def get_motion_drift_thumbnail(movie_id: int, proposal_id: str = Depends(proposal_authorisation)):
     """Get motion correction drift thumbnail for movie.
 
     Args:
@@ -142,7 +142,7 @@ def get_stats_session(session_id: int = Depends(session_authorisation)):
     "/proposal/{proposal_id}/data_collections/{data_collections_ids}/stats",
 )
 @router.get("/proposal/{proposal_id}/data_collections/{data_collections_ids}/stats")
-def get_stats_dcids(data_collections_ids: str, proposal_id: int = Depends(proposal_authorisation)):
+def get_stats_dcids(data_collections_ids: str, proposal_id: str = Depends(proposal_authorisation)):
     """Get stats for data collection ids.
 
     Args:
@@ -158,7 +158,7 @@ def get_stats_dcids(data_collections_ids: str, proposal_id: int = Depends(propos
     "/proposal/{proposal_id}/data_collections_group/{data_collections_group_id}/stats",
 )
 @router.get("/proposal/{proposal_id}/data_collections_group/{data_collections_group_id}/stats")
-def get_stats_group(data_collections_group_id: int, proposal_id: int = Depends(proposal_authorisation)):
+def get_stats_group(data_collections_group_id: int, proposal_id: str = Depends(proposal_authorisation)):
     """Get stats for datacollection group.
 
     Args:
@@ -178,7 +178,7 @@ def get_stats_group(data_collections_group_id: int, proposal_id: int = Depends(p
     "/{token}/proposal/{proposal_id}/em/datacollection/session/{session_id}/list",
 )
 @router.get("/proposal/{proposal_id}/session/{session_id}/data_collections/groups")
-def get_groups_for_session(proposal_id: int = Depends(proposal_authorisation), session_id: int = Depends(session_authorisation)):
+def get_groups_for_session(proposal_id: str = Depends(proposal_authorisation), session_id: int = Depends(session_authorisation)):
     """Get datacollection groups for session.
 
     Args:

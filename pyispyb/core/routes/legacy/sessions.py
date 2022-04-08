@@ -19,7 +19,9 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from fastapi import Depends
 from pyispyb.app.base import AuthenticatedAPIRouter
+from pyispyb.app.extensions.auth.bearer import permission_required
 from pyispyb.core.modules.legacy.proposal import find_proposal_id
 from pyispyb.core.modules.legacy import session
 from pyispyb.app.globals import g
@@ -38,9 +40,13 @@ router = AuthenticatedAPIRouter(prefix="/sessions", tags=["Sessions - legacy wit
 @router.get(
     "",
 )
-def get_sessions():
+def get_sessions(
+    permissions=Depends(
+        permission_required("any", ["own_sessions", "all_sessions"])
+    )
+):
     """Get all sessions that user is allowed to access."""
-    if "all_sessions" in g.permissions:
+    if "all_sessions" in permissions:
         return session.get_session_infos_all()
     return session.get_session_infos_login(g.username)
 
@@ -51,14 +57,20 @@ def get_sessions():
 @router.get(
     "/date/{start_date}/{end_date}",
 )
-def get_sessions_by_dates(start_date: str, end_date: str):
+def get_sessions_by_dates(
+    start_date: str,
+    end_date: str,
+    permissions=Depends(
+        permission_required("any", ["own_sessions", "all_sessions"])
+    )
+):
     """Get all sessions between two dates that user is allowed to access.
 
     Args:
         start_date (str): start date
         end_date (str): end date
     """
-    if "all_sessions" in g.permissions:
+    if "all_sessions" in permissions:
         return session.get_session_infos_all_dates(start_date, end_date)
     return session.get_session_infos_login_dates(
         g.username, start_date, end_date
@@ -71,14 +83,19 @@ def get_sessions_by_dates(start_date: str, end_date: str):
 @router.get(
     "/proposal/{proposal_id}",
 )
-def get_sessions_for_proposal(self, proposal_id: int, **kwargs):
+def get_sessions_for_proposal(
+    proposal_id: str,
+    permissions=Depends(
+        permission_required("any", ["own_sessions", "all_sessions"])
+    )
+):
     """Get all sessions for proposal that user is allowed to access.
 
     Args:
         proposal_id (str): proposal id or name
     """
     proposal_id = find_proposal_id(proposal_id)
-    if "all_sessions" in g.permissions:
+    if "all_sessions" in permissions:
         return session.get_session_infos_all_proposal(proposal_id)
     return session.get_session_infos_login_proposal(
         g.username, proposal_id
