@@ -3,12 +3,14 @@ __license__ = "LGPLv3+"
 
 from fastapi import Depends, HTTPException
 from fastapi.responses import FileResponse
+from pyispyb.app.base import AuthenticatedAPIRouter
 from pyispyb.core.modules.legacy.proposal import find_proposal_id
 
 from pyispyb.core.modules.legacy import em
 from pyispyb.core.routes.legacy.dependencies import proposal_authorisation, session_authorisation
 
-from .base import router
+from .base import router as legacy_router
+router = AuthenticatedAPIRouter(prefix="/em", tags=["EM - legacy with header token"])
 
 
 ############################
@@ -16,9 +18,10 @@ from .base import router
 ############################
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/{proposal_id}/em/datacollection/{datacollection_id}/movie/all",
 )
+@router.get("/proposal/{proposal_id}/datacollection/{datacollection_id}/movies")
 def get_movies(datacollection_id: int, proposal_id: int = Depends(proposal_authorisation)):
     """Get movies date for datacollection.
 
@@ -31,10 +34,11 @@ def get_movies(datacollection_id: int, proposal_id: int = Depends(proposal_autho
         proposal_id, datacollection_id)
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/{proposal_id}/em/datacollection/{datacollection_id}/movie/{movie_id}/thumbnail",
     response_class=FileResponse
 )
+@router.get("/proposal/{proposal_id}/movie/{movie_id}/thumbnail")
 def get_movie_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authorisation)):
     """Get thumbnails for movie.
 
@@ -52,10 +56,11 @@ def get_movie_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_autho
         raise HTTPException(status_code=404, detail="Sample not found")
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/{proposal_id}/em/datacollection/{datacollection_id}/movie/{movie_id}/motioncorrection/thumbnail",
     response_class=FileResponse
 )
+@router.get("/proposal/{proposal_id}/movie/{movie_id}/thumbnail/motioncorrection")
 def get_motion_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authorisation)):
     """Get motion correction thumbnail for movie.
 
@@ -73,9 +78,10 @@ def get_motion_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_auth
         raise HTTPException(status_code=404, detail="Sample not found")
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/{proposal_id}/em/datacollection/{datacollection_id}/movie/{movie_id}/ctf/thumbnail",
 )
+@router.get("/proposal/{proposal_id}/movie/{movie_id}/thumbnail/ctf")
 def get_ctf_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authorisation)):
     """Get CTF thumbnail for movie.
 
@@ -93,10 +99,11 @@ def get_ctf_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authori
         raise HTTPException(status_code=404, detail="Sample not found")
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/{proposal_id}/em/datacollection/{datacollection_id}/movie/{movie_id}/motioncorrection/drift",
     response_class=FileResponse
 )
+@router.get("/proposal/{proposal_id}/movie/{movie_id}/plot/motioncorrectiondrift")
 def get_motion_drift_thumbnail(movie_id: int, proposal_id: int = Depends(proposal_authorisation)):
     """Get motion correction drift thumbnail for movie.
 
@@ -118,9 +125,10 @@ def get_motion_drift_thumbnail(movie_id: int, proposal_id: int = Depends(proposa
 ############################
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/{proposal}/em/session/{session_id}/stats",
 )
+@router.get("/session/{session_id}/stats")
 def get_stats_session(session_id: int = Depends(session_authorisation)):
     """Get stats for session.
 
@@ -130,9 +138,10 @@ def get_stats_session(session_id: int = Depends(session_authorisation)):
     return em.get_stats_by_session_id(session_id)
 
 
-@router.get(
+@legacy_router.get(
     "/proposal/{proposal_id}/data_collections/{data_collections_ids}/stats",
 )
+@router.get("/proposal/{proposal_id}/data_collections/{data_collections_ids}/stats")
 def get_stats_dcids(data_collections_ids: str, proposal_id: int = Depends(proposal_authorisation)):
     """Get stats for data collection ids.
 
@@ -145,9 +154,10 @@ def get_stats_dcids(data_collections_ids: str, proposal_id: int = Depends(propos
         proposal_id, data_collections_ids)
 
 
-@router.get(
+@legacy_router.get(
     "/proposal/{proposal_id}/data_collections_group/{data_collections_group_id}/stats",
 )
+@router.get("/proposal/{proposal_id}/data_collections_group/{data_collections_group_id}/stats")
 def get_stats_group(data_collections_group_id: int, proposal_id: int = Depends(proposal_authorisation)):
     """Get stats for datacollection group.
 
@@ -164,9 +174,10 @@ def get_stats_group(data_collections_group_id: int, proposal_id: int = Depends(p
 ############################
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/{proposal_id}/em/datacollection/session/{session_id}/list",
 )
+@router.get("/proposal/{proposal_id}/session/{session_id}/data_collections/groups")
 def get_groups_for_session(proposal_id: int = Depends(proposal_authorisation), session_id: int = Depends(session_authorisation)):
     """Get datacollection groups for session.
 
@@ -176,3 +187,18 @@ def get_groups_for_session(proposal_id: int = Depends(proposal_authorisation), s
     """
     proposal_id = find_proposal_id(proposal_id)
     return em.get_data_collections_groups(proposal_id, session_id)
+
+############################
+#     CLASSIFICATION       #
+############################
+
+
+@legacy_router.get("/{token}/proposal/{proposal_id}/em/session/{session_id}/classification")
+@router.get("/session/{session_id}/classification")
+def get_classification(self, session_id: int = Depends(session_authorisation), **kwargs):
+    """Get classification for session.
+
+    Args:
+        session_id (str): session id
+    """
+    return em.get_classification_by_session_id(session_id)

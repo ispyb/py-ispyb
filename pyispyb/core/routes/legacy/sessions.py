@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from pyispyb.app.base import AuthenticatedAPIRouter
 from pyispyb.core.modules.legacy.proposal import find_proposal_id
 from pyispyb.core.modules.legacy import session
 from pyispyb.app.globals import g
@@ -26,11 +27,16 @@ from pyispyb.app.globals import g
 __license__ = "LGPLv3+"
 
 
-from .base import router
+from .base import router as legacy_router
+
+router = AuthenticatedAPIRouter(prefix="/sessions", tags=["Sessions - legacy with header token"])
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/session/list",
+)
+@router.get(
+    "",
 )
 def get_sessions():
     """Get all sessions that user is allowed to access."""
@@ -39,8 +45,11 @@ def get_sessions():
     return session.get_session_infos_login(g.username)
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/session/date/{start_date}/{end_date}/list",
+)
+@router.get(
+    "/date/{start_date}/{end_date}",
 )
 def get_sessions_by_dates(start_date: str, end_date: str):
     """Get all sessions between two dates that user is allowed to access.
@@ -56,8 +65,11 @@ def get_sessions_by_dates(start_date: str, end_date: str):
     )
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/{proposal_id}/session/list",
+)
+@router.get(
+    "/proposal/{proposal_id}",
 )
 def get_sessions_for_proposal(self, proposal_id: int, **kwargs):
     """Get all sessions for proposal that user is allowed to access.

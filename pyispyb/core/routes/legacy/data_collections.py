@@ -20,18 +20,21 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 """
 
 from fastapi import Depends
+from pyispyb.app.base import AuthenticatedAPIRouter
 from pyispyb.core.modules.legacy import data_collections
 from pyispyb.core.routes.legacy.dependencies import session_authorisation
 
-from .base import router
+from .base import router as legacy_router
+router = AuthenticatedAPIRouter(prefix="/data_collections", tags=["Data collections - legacy with header token"])
 
 
 __license__ = "LGPLv3+"
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/session/{session_id}/list",
 )
+@router.get("/groups/session/{session_id}")
 def get(session_id: int = Depends(session_authorisation)):
     """Get data collection groups for session.
 

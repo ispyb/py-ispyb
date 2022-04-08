@@ -23,15 +23,20 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 from fastapi import Depends
+from pyispyb.app.base import AuthenticatedAPIRouter
 from pyispyb.app.globals import g
 from pyispyb.core.modules.legacy import proposal
 from pyispyb.core.routes.legacy.dependencies import proposal_authorisation
 
-from .base import router
+from .base import router as legacy_router
+router = AuthenticatedAPIRouter(prefix="/proposals", tags=["Proposals - legacy with header token"])
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/list",
+)
+@router.get(
+    "",
 )
 def get_proposals():
     """Get all proposal that user is allowed to access."""
@@ -40,8 +45,11 @@ def get_proposals():
     return proposal.get_proposals_infos_login(g.username)
 
 
-@router.get(
+@legacy_router.get(
     "/{token}/proposal/{proposal_id}/info/get",
+)
+@router.get(
+    "/{proposal_id}",
 )
 def get_proposal(proposal_id: str = Depends(proposal_authorisation)):
     """Get proposal information.

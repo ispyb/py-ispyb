@@ -4,7 +4,6 @@ import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.schema
 
-from pyispyb.core.models import Base
 from pyispyb.config import settings
 
 engine = sqlalchemy.create_engine(
