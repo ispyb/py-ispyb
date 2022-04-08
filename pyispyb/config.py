@@ -39,6 +39,14 @@ with open(os.path.join(PROJECT_ROOT, "../auth.yml")) as f:
     yaml_settings.update(yaml.load(f, Loader=yaml.FullLoader))
 
 
+def get_env(name: str):
+    res = os.getenv(name, None)
+    if res is None or res == '':
+        raise Exception(f"You must define env variable {name}")
+    else:
+        return res
+
+
 class Settings(BaseSettings):
     static_root: str = os.path.join(PROJECT_ROOT, "static")
     queries_dir: str = os.path.join(RESOURCES_ROOT, "queries")
@@ -47,14 +55,14 @@ class Settings(BaseSettings):
     site_name: str = "Generic"
     service_name: str
 
-    sqlalchemy_database_uri: str
+    sqlalchemy_database_uri: str = get_env("SQLALCHEMY_DATABASE_URI")
     query_debug: bool = False
 
     auth = yaml_settings['AUTH']
 
     jwt_coding_algorithm: str = "HS256"
     token_exp_time: int = 300  # in minutes
-    secret_key: str
+    secret_key: str = get_env("SECRET_KEY")
 
     cors: bool = False
 

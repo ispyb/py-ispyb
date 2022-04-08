@@ -11,4 +11,3 @@ pyispyb.egg-info/
 
 .tox*
 .DS_Store
-.env
