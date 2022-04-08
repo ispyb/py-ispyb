@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *swp
 
-auth.yml
+/auth.yml
 
 build/
 dist/

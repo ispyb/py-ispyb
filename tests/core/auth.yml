@@ -1,0 +1,5 @@
+AUTH:
+    - dummy:
+          ENABLED: true
+          AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
+          AUTH_CLASS: "DummyAuthentication"

@@ -17,17 +17,13 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along
 """
+from fastapi.testclient import TestClient
+import pytest
+import sys
+from tests.core.utils import get_all_permissions_token
 __license__ = "LGPLv3+"
 
-
-from pyispyb.app.main import app
-from tests.core.utils import get_all_permissions_token
-
 import os
-import sys
-import pytest
-
-from fastapi.testclient import TestClient
 
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
@@ -35,8 +31,22 @@ sys.path.insert(0, ROOT_DIR)
 
 
 @pytest.fixture()
-def ispyb_app():
-    yield TestClient(app)
+def setup_env():
+    os.environ["SECRET_KEY"] = "test_secret"
+    os.environ["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://usr:pss@localhost/pydb"
+    os.environ["ISPYB_AUTH"] = "tests/core/auth.yml"
+
+
+@pytest.fixture()
+def ispyb_settings(setup_env):
+    from pyispyb.config import settings
+    return settings
+
+
+@pytest.fixture()
+def ispyb_app(setup_env):
+    from pyispyb.app.main import app
+    return TestClient(app)
 
 
 @pytest.fixture()

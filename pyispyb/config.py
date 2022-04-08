@@ -35,8 +35,12 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 RESOURCES_ROOT = os.path.join(PROJECT_ROOT, "resources")
 
 yaml_settings = dict()
-with open(os.path.join(PROJECT_ROOT, "../auth.yml")) as f:
-    yaml_settings.update(yaml.load(f, Loader=yaml.FullLoader))
+AUTH_CONFIG = os.path.realpath(os.path.join(PROJECT_ROOT, "..", os.getenv("ISPYB_AUTH", "auth.yml")))
+try:
+    with open(AUTH_CONFIG) as f:
+        yaml_settings.update(yaml.load(f, Loader=yaml.FullLoader))
+except IOError:
+    raise Exception(f"Could not access auth config: {AUTH_CONFIG}")
 
 
 def get_env(name: str):
@@ -75,7 +79,6 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
-print(settings.secret_key)
 
 
 class LogConfig(BaseModel):
