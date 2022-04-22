@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ispyb.gitlab-pages.esrf.fr/py-ispyb/auth/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Authentication and authorization - py-ISPyB</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Authentication and authorization";
+        var mkdocs_page_input_path = "auth.md";
+        var mkdocs_page_url = "/py-ispyb/auth/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> py-ISPyB
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../run/">Running</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Authentication and authorization</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#plugins">Plugins</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#dummyauthentication">DummyAuthentication</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#keycloakdbgroupsauthentication">KeycloakDBGroupsAuthentication</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#ldapauthentication">LdapAuthentication</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#implementing-new-plugins">Implementing new plugins</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#database-groups-and-permissions">Database groups and permissions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#how-to-authentify">How to authentify</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#decorators">Decorators</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#authentication_required">@authentication_required</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#permission_requiredoperator-permissions">@permission_required(operator, [permissions])</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#proposal_authorization_required">@proposal_authorization_required</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#session_authorization_required">@session_authorization_required</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../routes/">Routes</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tests/">Tests</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">py-ISPyB</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Authentication and authorization</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="py-ispyb-authentication-and-authorization-system">py-ISPyB Authentication and authorization system<a class="headerlink" href="#py-ispyb-authentication-and-authorization-system" title="Permanent link">#</a></h1>
+<hr />
+<h2 id="plugins">Plugins<a class="headerlink" href="#plugins" title="Permanent link">#</a></h2>
+<p>py-ISPyB is using the following authentication plugins, which you can find in <code>pyispyb/app/extension/auth</code>.</p>
+<h3 id="dummyauthentication"><code>DummyAuthentication</code><a class="headerlink" href="#dummyauthentication" title="Permanent link">#</a></h3>
+<p>Provides easy authentication for tests. Permissions listed in the password field are given.</p>
+<h3 id="keycloakdbgroupsauthentication"><code>KeycloakDBGroupsAuthentication</code><a class="headerlink" href="#keycloakdbgroupsauthentication" title="Permanent link">#</a></h3>
+<p>Provides authentication using keycloak with DB-managed groups.</p>
+<h3 id="ldapauthentication"><code>LdapAuthentication</code><a class="headerlink" href="#ldapauthentication" title="Permanent link">#</a></h3>
+<p>Provides authentication using LDAP users and groups.</p>
+<h3 id="implementing-new-plugins">Implementing new plugins<a class="headerlink" href="#implementing-new-plugins" title="Permanent link">#</a></h3>
+<p>New plugins should implement one of the two following classes :</p>
+<ul>
+<li><strong>AbstractAuthentication</strong> : plugin should override <code>get_user_and_groups(self, username, password, token)</code> method and return a tuple <code>(username, groups[])</code></li>
+<li><strong>AbstractDBGroupsAuthentication</strong> : plugin should override <code>get_person(self, username, password, token)</code> method and return a <code>pyispyb.core.models.Person</code> object. Groups managment is delegated to ISPyB database.</li>
+</ul>
+<hr />
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h2>
+<p>Authentication plugins to be activated are configured in the <code>ispyb_core_config.yml</code> file like this:</p>
+<pre><code class="language-yml">server:
+    AUTH:
+        - keycloak:
+              AUTH_MODULE: &quot;pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication&quot;
+              AUTH_CLASS: &quot;KeycloakDBGroupsAuthentication&quot;
+              CONFIG:
+                  KEYCLOAK_SERVER_URL: &quot;your_server&quot;
+                  KEYCLOAK_CLIENT_ID: &quot;your_client&quot;
+                  KEYCLOAK_REALM_NAME: &quot;your_realm&quot;
+                  KEYCLOAK_CLIENT_SECRET_KEY: &quot;your_secret&quot;
+        - ldap:
+              AUTH_MODULE: &quot;pyispyb.app.extensions.auth.LdapAuthentication&quot;
+              AUTH_CLASS: &quot;LdapAuthentication&quot;
+              CONFIG:
+                  LDAP_URI: &quot;ldap://your_ldap&quot;
+                  LDAP_BASE_INTERNAL: &quot;ou=People,dc=esrf,dc=fr&quot;
+                  LDAP_BASE_EXTERNAL: &quot;ou=Pxwebgroups,dc=esrf,dc=fr&quot;
+        - dummy: # /!\/!\/!\ ONLY USE FOR TESTS /!\/!\/!\
+              AUTH_MODULE: &quot;pyispyb.app.extensions.auth.DummyAuthentication&quot;
+              AUTH_CLASS: &quot;DummyAuthentication&quot;
+</code></pre>
+<hr />
+<h2 id="database-groups-and-permissions">Database groups and permissions<a class="headerlink" href="#database-groups-and-permissions" title="Permanent link">#</a></h2>
+<p>Fore some authentication plugins (for instance <code>KeycloakDBGroupsAuthentication</code>), groups are configured in the <strong>database</strong> using the following tables:</p>
+<ul>
+<li><strong>UserGroup</strong></li>
+<li><strong>Person</strong></li>
+<li><strong>UserGroup_has_Person</strong></li>
+</ul>
+<p>For all authentication plugins, permissions are configured in the <strong>database</strong> using the following tables:</p>
+<ul>
+<li><strong>UserGroup</strong></li>
+<li><strong>Permission</strong></li>
+<li><strong>UserGroup_has_Permission</strong></li>
+</ul>
+<hr />
+<h2 id="how-to-authentify">How to authentify<a class="headerlink" href="#how-to-authentify" title="Permanent link">#</a></h2>
+<p>To authentify their requests, users should get a py-ISPyB token. This token is provided by the <code>/auth/login</code> route with <code>POST</code> method and the following parameters in json body:</p>
+<ul>
+<li><strong>plugin</strong> - name of the plugin to be used for authentication, as specified in configuration</li>
+<li><strong>username</strong> <em>(optional)</em></li>
+<li><strong>password</strong> <em>(optional)</em></li>
+<li><strong>token</strong> <em>(optional)</em></li>
+</ul>
+<p>Then you can authorize your requets using this token in the <code>Authorization</code> header: <code>Bearer YOUR_TOKEN</code>. For example to retrieve proposals use:</p>
+<pre><code class="language-bash">curl -X GET -H 'Authorization: Bearer YOUR_TOKEN' -i http://localhost:5000/ispyb/api/v1/proposals
+</code></pre>
+<hr />
+<h2 id="decorators">Decorators<a class="headerlink" href="#decorators" title="Permanent link">#</a></h2>
+<p>The following decorators (from <code>pyispyb.app.extensions.auth.decorators</code>) can be used on the routes to manage authentication and authorization rules.</p>
+<h3 id="authentication_required"><code>@authentication_required</code><a class="headerlink" href="#authentication_required" title="Permanent link">#</a></h3>
+<p>Makes the route only accesible to <strong>authenticated users</strong> (no permissions checking).</p>
+<h3 id="permission_requiredoperator-permissions"><code>@permission_required(operator, [permissions])</code><a class="headerlink" href="#permission_requiredoperator-permissions" title="Permanent link">#</a></h3>
+<p>Makes the route only accesible to users with the <strong>specified permissions</strong>.</p>
+<ul>
+<li><code>operator</code> is either<ul>
+<li><code>"any"</code> User should have <strong>any</strong> of the specified permissions</li>
+<li><code>"all"</code> User should have <strong>all</strong> of the specified permissions</li>
+</ul>
+</li>
+</ul>
+<h3 id="proposal_authorization_required"><code>@proposal_authorization_required</code><a class="headerlink" href="#proposal_authorization_required" title="Permanent link">#</a></h3>
+<p>Verifies that the user is <strong>associated to the requested proposal</strong>. To do so, this decorator uses the <code>proposal_id</code> parameter in the route.
+User must verify any of the following conditions :</p>
+<ul>
+<li><code>Person.personId = Proposal.personId</code></li>
+<li><code>Person.personId = ProposalHasPerson.personId and ProposalHasPerson.proposalId = Proposal.proposalId</code></li>
+<li><em>has permission</em> <code>all_proposals</code></li>
+</ul>
+<h3 id="session_authorization_required"><code>@session_authorization_required</code><a class="headerlink" href="#session_authorization_required" title="Permanent link">#</a></h3>
+<p>Verifies that the user is <strong>associated to the requested session</strong>. To do so, this decorator uses the <code>session_id</code> parameter in the route.
+User must verify any of the following conditions :</p>
+<ul>
+<li><code>Person.personId = Session_has_Person.personId and Session_has_Person.sessionId = BLSession.sessionId</code></li>
+<li><code>BLSession.proposalId = Proposal.proposalId and Person.personId = Proposal.personId</code></li>
+<li><em>has permission</em> <code>all_sessions</code></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../run/" class="btn btn-neutral float-left" title="Running"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../routes/" class="btn btn-neutral float-right" title="Routes">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://gitlab.esrf.fr/ispyb/py-ispyb" class="icon icon-gitlab" style="color: #fcfcfc"> GitLab</a>
+        </span>
+    
+    
+      <span><a href="../run/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../routes/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
