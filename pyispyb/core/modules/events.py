@@ -14,8 +14,8 @@ from ..schemas import events as schema
 def with_sample(
     query: "sqlalchemy.orm.Query[Any]",
     column: "sqlalchemy.Column[Any]",
-    blSampleId: Optional[int] = None,
-    proteinId: Optional[int] = None,
+    bl_sample_id: Optional[int] = None,
+    protein_id: Optional[int] = None,
 ) -> "sqlalchemy.orm.Query[Any]":
     query = (
         query.outerjoin(models.BLSample, models.BLSample.blSampleId == column)
@@ -23,14 +23,14 @@ def with_sample(
         .add_columns(models.BLSample.blSampleId.label("blSampleId"))
     )
 
-    if blSampleId:
-        query = query.filter(column == blSampleId)
+    if bl_sample_id:
+        query = query.filter(column == bl_sample_id)
 
-    if proteinId:
+    if protein_id:
         query = (
             query.join(models.Crystal)
             .join(models.Protein)
-            .filter(models.Protein.proteinId == proteinId)
+            .filter(models.Protein.proteinId == protein_id)
         )
 
     return query
@@ -39,40 +39,40 @@ def with_sample(
 def get_events(
     skip: int,
     limit: int,
-    sessionId: Optional[int] = None,
-    dataCollectionGroupId: Optional[int] = None,
-    blSampleId: Optional[int] = None,
-    proteinId: Optional[int] = None,
+    session_id: Optional[int] = None,
+    data_collection_group_id: Optional[int] = None,
+    bl_sample_id: Optional[int] = None,
+    protein_id: Optional[int] = None,
 ) -> Paged[schema.Event]:
     queries = {}
 
-    dataCollectionId = models.DataCollection.dataCollectionId
-    startTime = models.DataCollection.startTime
-    endTime = models.DataCollection.endTime
+    data_collection_id = models.DataCollection.dataCollectionId
+    start_time = models.DataCollection.startTime
+    end_time = models.DataCollection.endTime
     duration = sqlalchemy.func.time_to_sec(
         sqlalchemy.func.timediff(
             models.DataCollection.endTime,
             models.DataCollection.startTime,
         )
     )
-    dataCollectionCount = literal_column("1")
+    data_collection_count = literal_column("1")
 
-    if dataCollectionGroupId is None:
+    if data_collection_group_id is None:
         duration = sqlalchemy.func.sum(duration)
         # Return the first dataCollectionId in a group
-        dataCollectionId = sqlalchemy.func.min(models.DataCollection.dataCollectionId)  # type: ignore
-        startTime = sqlalchemy.func.min(models.DataCollection.startTime)  # type: ignore
-        endTime = sqlalchemy.func.max(models.DataCollection.endTime)  # type: ignore
-        dataCollectionCount = sqlalchemy.func.count(
+        data_collection_id = sqlalchemy.func.min(models.DataCollection.dataCollectionId)  # type: ignore
+        start_time = sqlalchemy.func.min(models.DataCollection.startTime)  # type: ignore
+        end_time = sqlalchemy.func.max(models.DataCollection.endTime)  # type: ignore
+        data_collection_count = sqlalchemy.func.count(
             sqlalchemy.func.distinct(models.DataCollection.dataCollectionId)
         )  # type: ignore
 
     queries["dc"] = db.session.query(
-        dataCollectionId.label("id"),
-        startTime.label("startTime"),
-        endTime.label("endTime"),
+        data_collection_id.label("id"),
+        start_time.label("startTime"),
+        end_time.label("endTime"),
         literal_column("'dc'").label("type"),
-        dataCollectionCount.label("count"),
+        data_collection_count.label("count"),
     ).join(
         models.DataCollectionGroup,
         models.DataCollectionGroup.dataCollectionGroupId
@@ -108,25 +108,25 @@ def get_events(
         "es": models.EnergyScan.blSampleId,
     }
     for key, _query in queries.items():
-        queries[key] = with_sample(_query, _mapper[key], blSampleId, proteinId)
+        queries[key] = with_sample(_query, _mapper[key], bl_sample_id, protein_id)
 
     # Filter by sessionid
-    if sessionId:
+    if session_id:
         queries["dc"] = queries["dc"].filter(
-            models.DataCollectionGroup.sessionId == sessionId
+            models.DataCollectionGroup.sessionId == session_id
         )
         queries["robot"] = queries["robot"].filter(
-            models.RobotAction.blsessionId == sessionId
+            models.RobotAction.blsessionId == session_id
         )
         queries["xrf"] = queries["xrf"].filter(
-            models.XFEFluorescenceSpectrum.sessionId == sessionId
+            models.XFEFluorescenceSpectrum.sessionId == session_id
         )
-        queries["es"] = queries["es"].filter(models.EnergyScan.sessionId == sessionId)
+        queries["es"] = queries["es"].filter(models.EnergyScan.sessionId == session_id)
 
     # Ungroup a dataCollectionGroup
-    if dataCollectionGroupId:
+    if data_collection_group_id:
         queries["dc"] = queries["dc"].filter(
-            models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
+            models.DataCollectionGroup.dataCollectionGroupId == data_collection_group_id
         )
         queries["robot"] = queries["robot"].filter(
             models.RobotAction.robotActionId == 0
@@ -188,7 +188,7 @@ def get_events(
             type_map[name] = {getattr(item, ty[1]): item for item in items}
 
     for result in results:
-        for name, ty in types.items():
+        for name, _ty in types.items():
             if result["type"] == name:
                 if name in type_map:
                     result["Item"] = type_map[name][result["id"]]
@@ -200,11 +200,11 @@ def get_events(
 
 
 def get_datacollection(
-    dataCollectionId: int
+    data_collection_id: int
 ) -> Optional[models.DataCollection]:
     dc = (
         db.session.query(models.DataCollection)
-        .filter(models.DataCollection.dataCollectionId == dataCollectionId)
+        .filter(models.DataCollection.dataCollectionId == data_collection_id)
         .first()
     )
 
@@ -235,9 +235,9 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
 
 
 def get_datacollection_snapshot_path(
-    dataCollectionId: int, imageId: int = 0, fullSize: bool = False
+    data_collection_id: int, image_id: int = 0, full_size: bool = False
 ) -> Optional[str]:
-    dc = get_datacollection(dataCollectionId)
+    dc = get_datacollection(data_collection_id)
     if not dc:
         return None
 
@@ -248,11 +248,11 @@ def get_datacollection_snapshot_path(
         "xtalSnapshotFullPath4",
     ]
 
-    image_path: str = getattr(dc, images[imageId])
+    image_path: str = getattr(dc, images[image_id])
     if image_path is None:
         return None
 
-    if not fullSize:
+    if not full_size:
         ext = os.path.splitext(image_path)[1][1:].strip()
         image_path = image_path.replace(f".{ext}", f"t.{ext}")
 

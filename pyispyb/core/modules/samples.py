@@ -11,8 +11,8 @@ from pyispyb.app.extensions.database.utils import Paged, page, with_metadata
 def get_samples(
     skip: int,
     limit: int,
-    blSampleId: Optional[int] = None,
-    proteinId: Optional[int] = None,
+    bl_sample_id: Optional[int] = None,
+    protein_id: Optional[int] = None,
     admin: Optional[bool] = False,
 ) -> Paged[models.BLSample]:
     metadata = {
@@ -66,11 +66,11 @@ def get_samples(
         )
         query = with_auth_to_session(query, models.Shipping.proposalId)
 
-    if blSampleId:
-        query = query.filter(models.BLSample.blSampleId == blSampleId)
+    if bl_sample_id:
+        query = query.filter(models.BLSample.blSampleId == bl_sample_id)
 
-    if proteinId:
-        query = query.filter(models.Protein.proteinId == proteinId)
+    if protein_id:
+        query = query.filter(models.Protein.proteinId == protein_id)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

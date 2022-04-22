@@ -32,5 +32,5 @@ def order_by(
     return order_fields
 
 
-def filter(filter: str) -> str:
-    return filter
+def filter_dep(filter_dep: str) -> str:
+    return filter_dep

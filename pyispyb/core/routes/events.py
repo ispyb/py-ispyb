@@ -22,37 +22,37 @@ router = AuthenticatedAPIRouter(prefix="/events", tags=["Events"])
 def get_events(
     page: dict[str, int] = Depends(pagination),
     session: str = Depends(filters.session),
-    dataCollectionGroupId: int = Depends(filters.dataCollectionGroupId),
-    blSampleId: int = Depends(filters.blSampleId),
-    proteinId: int = Depends(filters.proteinId),
+    data_collection_group_id: int = Depends(filters.data_collection_group_id),
+    bl_sample_id: int = Depends(filters.bl_sample_id),
+    protein_id: int = Depends(filters.protein_id),
 ) -> Paged[schema.Event]:
     """Get a list of events"""
-    sessionId = None
+    session_id = None
     if session:
-        blSession = get_blsession(session)
-        if not blSession:
+        bl_session = get_blsession(session)
+        if not bl_session:
             raise HTTPException(status_code=404, detail="Session not found")
-        sessionId = blSession.sessionId
+        session_id = bl_session.sessionId
 
     return crud.get_events(
         # sessionId is an int
-        sessionId=sessionId,  # type: ignore
-        dataCollectionGroupId=dataCollectionGroupId,
-        blSampleId=blSampleId,
-        proteinId=proteinId,
+        session_id=session_id,  # type: ignore
+        data_collection_group_id=data_collection_group_id,
+        bl_sample_id=bl_sample_id,
+        protein_id=protein_id,
         **page
     )
 
 
-@router.get("/image/{dataCollectionId}", response_class=FileResponse)
+@router.get("/image/{data_collection_id}", response_class=FileResponse)
 def get_datacollection_image(
-    dataCollectionId: int,
-    imageId: int = Query(0, description="Image 1-4 to return"),
-    fullSize: bool = Query(False, description="Get full size image"),
+    data_collection_id: int,
+    image_id: int = Query(0, description="Image 1-4 to return"),
+    full_size: bool = Query(False, description="Get full size image"),
 ) -> str:
     """Get a data collection image"""
     path = crud.get_datacollection_snapshot_path(
-        dataCollectionId, imageId, fullSize
+        data_collection_id, image_id, full_size
     )
     if not path:
         raise HTTPException(status_code=404, detail="Image not found")

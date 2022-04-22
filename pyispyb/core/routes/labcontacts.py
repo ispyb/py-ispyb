@@ -22,15 +22,15 @@ def get_lab_contacts(
 
 
 @router.get(
-    "/{labContactId}",
+    "/{lab_contact_id}",
     response_model=schema.LabContact,
     responses={404: {"description": "No such contact"}},
 )
 def get_lab_contact(
-    labContactId: int
+    lab_contact_id: int
 ) -> models.LabContact:
     """Get a list of lab contacts"""
-    users = crud.get_labcontacts(labContactId=labContactId, skip=0, limit=1)
+    users = crud.get_labcontacts(lab_contact_id=lab_contact_id, skip=0, limit=1)
     try:
         return users.first
     except IndexError:

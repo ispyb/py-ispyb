@@ -10,21 +10,21 @@ def session(
     return session
 
 
-def dataCollectionGroupId(
-    dataCollectionGroupId: Optional[int] = Query(
+def data_collection_group_id(
+    data_collection_group_id: Optional[int] = Query(
         None, description="Data collection group id to filter by"
     )
 ) -> Optional[int]:
-    return dataCollectionGroupId
+    return data_collection_group_id
 
 
-def blSampleId(
-    blSampleId: Optional[int] = Query(None, description="Sample id to filter by")
+def bl_sample_id(
+    bl_sample_id: Optional[int] = Query(None, description="Sample id to filter by")
 ) -> Optional[int]:
-    return blSampleId
+    return bl_sample_id
 
 
-def proteinId(
-    proteinId: Optional[int] = Query(None, description="Protein id to filter by")
+def protein_id(
+    protein_id: Optional[int] = Query(None, description="Protein id to filter by")
 ) -> Optional[int]:
-    return proteinId
+    return protein_id

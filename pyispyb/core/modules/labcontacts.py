@@ -8,7 +8,7 @@ from ..schemas import labcontacts as schema
 
 
 def get_labcontacts(
-    skip: int, limit: int, labContactId: Optional[int] = None
+    skip: int, limit: int, lab_contact_id: Optional[int] = None
 ) -> Paged[models.LabContact]:
     query = (
         db.session.query(models.LabContact)
@@ -16,8 +16,8 @@ def get_labcontacts(
         .options(joinedload(models.LabContact.Person, models.Person.Laboratory))  # type: ignore
     )
 
-    if labContactId:
-        query = query.filter(models.LabContact.labContactId == labContactId)
+    if lab_contact_id:
+        query = query.filter(models.LabContact.labContactId == lab_contact_id)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

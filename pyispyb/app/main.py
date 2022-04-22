@@ -59,16 +59,16 @@ def custom_openapi() -> dict[str, Any]:
     # Convert nullable to ["null", type] for rjsf
     # https://github.com/rjsf-team/react-jsonschema-form/pull/1213
     # This is technically incorrect for OpenAPI v3, but nullable is not yet supported in rjsf
-    for schema_name, schema in openapi_schema["components"]["schemas"].items():
-        for property_name, property in schema["properties"].items():
-            if property.get("nullable"):
-                property["type"] = ["null", property["type"]]
+    for _schema_name, schema in openapi_schema["components"]["schemas"].items():
+        for _property_name, property_value in schema["properties"].items():
+            if property_value.get("nullable"):
+                property_value["type"] = ["null", property_value["type"]]
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
 
-setattr(app, "openapi", custom_openapi)
+app.openapi = custom_openapi
 
 auth_provider.init_app(app)
 base_routes.init_app(app, prefix=settings.api_root)

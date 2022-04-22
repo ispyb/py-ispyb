@@ -36,7 +36,6 @@ class AuthProvider:
 
     def init_app(self, app):
         """Init extension."""
-
         auth_list = settings.auth
         for auth_plugin in auth_list:
             for auth_name in auth_plugin:

@@ -19,7 +19,7 @@ def verify_jwt(token: str):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-async def JWTBearer(
+async def jwt_bearer(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
     if credentials:
