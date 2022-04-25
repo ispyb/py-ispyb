@@ -36,7 +36,7 @@ def setup_env():
     os.environ["SECRET_KEY"] = "test_secret"
     os.environ[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+mysqlconnector://test:test@localhost/test"
+    ] = "mysql+mysqlconnector://test:test@127.0.0.1/test"
     os.environ["ISPYB_AUTH"] = "tests/core/auth.yml"
 
 
