@@ -83,14 +83,14 @@ To authentify their requests, users should get a py-ISPyB token. This token is p
 Then you can authorize your requets using this token in the `Authorization` header: `Bearer YOUR_TOKEN`. For example to retrieve proposals use:
 
 ```bash
-curl -X GET -H 'Authorization: Bearer YOUR_TOKEN' -i http://localhost:5000/ispyb/api/v1/proposals
+curl -X GET -H 'Authorization: Bearer YOUR_TOKEN' -i http://localhost:8000/ispyb/api/v1/proposals
 ```
 
 ---
 
-## Authorization dependancies
+## Authorization dependencies
 
-The following dependancies can be used to manage authentication and authorization rules.
+The following dependencies can be used to manage authentication and authorization rules.
 
 ### `permission_required(operator, [permissions])`
 

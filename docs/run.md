@@ -52,5 +52,5 @@ Please see the [authentication and authorization section](auth.md) for more info
 For example to retrieve proposals call:
 
 ```bash
-curl -X GET -H 'Authorization: Bearer YOUR_JWT_TOKEN' -i http://localhost:5000/ispyb/api/v1/proposals
+curl -X GET -H 'Authorization: Bearer YOUR_JWT_TOKEN' -i http://localhost:8000/ispyb/api/v1/proposals
 ```
