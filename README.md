@@ -4,7 +4,7 @@ ISPyB backend server based on FastAPI.
 
 ## Getting started
 
-You need to have `python >= 3.9`.
+You need to have `python >= 3.10`.
 
 Install requirements with
 
@@ -27,10 +27,10 @@ sh uvicorn.sh
 
 You can start using the server through the [OpenAPI documenation](http://localhost:8000/docs)
 
-## Further documentation - not fully up to date with FastAPI
+## Further documentation
 
 Documentation can be found in the `/docs` directory.
-A web documentation is available for the latest version at [https://ispyb.gitlab-pages.esrf.fr/py-ispyb/](https://ispyb.gitlab-pages.esrf.fr/py-ispyb/).
+A web documentation is available for the latest version at [https://ispyb.github.io/py-ispyb/](https://ispyb.github.io/py-ispyb/).
 
 To serve it locally, follow these steps:
 
@@ -39,4 +39,4 @@ pip install mkdocs
 mkdocs serve
 ```
 
-Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/)

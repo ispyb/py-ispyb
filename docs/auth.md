@@ -29,29 +29,28 @@ New plugins should implement one of the two following classes :
 
 ## Configuration
 
-Authentication plugins to be activated are configured in the `ispyb_core_config.yml` file like this:
+Authentication plugins to be activated are configured in the `auth.yml` file like this:
 
 ```yml
-server:
-    AUTH:
-        - keycloak:
-              AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
-              AUTH_CLASS: "KeycloakDBGroupsAuthentication"
-              CONFIG:
-                  KEYCLOAK_SERVER_URL: "your_server"
-                  KEYCLOAK_CLIENT_ID: "your_client"
-                  KEYCLOAK_REALM_NAME: "your_realm"
-                  KEYCLOAK_CLIENT_SECRET_KEY: "your_secret"
-        - ldap:
-              AUTH_MODULE: "pyispyb.app.extensions.auth.LdapAuthentication"
-              AUTH_CLASS: "LdapAuthentication"
-              CONFIG:
-                  LDAP_URI: "ldap://your_ldap"
-                  LDAP_BASE_INTERNAL: "ou=People,dc=esrf,dc=fr"
-                  LDAP_BASE_EXTERNAL: "ou=Pxwebgroups,dc=esrf,dc=fr"
-        - dummy: # /!\/!\/!\ ONLY USE FOR TESTS /!\/!\/!\
-              AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
-              AUTH_CLASS: "DummyAuthentication"
+AUTH:
+    - keycloak:
+          AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
+          AUTH_CLASS: "KeycloakDBGroupsAuthentication"
+          CONFIG:
+              KEYCLOAK_SERVER_URL: "your_server"
+              KEYCLOAK_CLIENT_ID: "your_client"
+              KEYCLOAK_REALM_NAME: "your_realm"
+              KEYCLOAK_CLIENT_SECRET_KEY: "your_secret"
+    - ldap:
+          AUTH_MODULE: "pyispyb.app.extensions.auth.LdapAuthentication"
+          AUTH_CLASS: "LdapAuthentication"
+          CONFIG:
+              LDAP_URI: "ldap://your_ldap"
+              LDAP_BASE_INTERNAL: "ou=People,dc=esrf,dc=fr"
+              LDAP_BASE_EXTERNAL: "ou=Pxwebgroups,dc=esrf,dc=fr"
+    - dummy: # /!\/!\/!\ ONLY USE FOR TESTS /!\/!\/!\
+          AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
+          AUTH_CLASS: "DummyAuthentication"
 ```
 
 ---
@@ -84,20 +83,16 @@ To authentify their requests, users should get a py-ISPyB token. This token is p
 Then you can authorize your requets using this token in the `Authorization` header: `Bearer YOUR_TOKEN`. For example to retrieve proposals use:
 
 ```bash
-curl -X GET -H 'Authorization: Bearer YOUR_TOKEN' -i http://localhost:5000/ispyb/api/v1/proposals
+curl -X GET -H 'Authorization: Bearer YOUR_TOKEN' -i http://localhost:8000/ispyb/api/v1/proposals
 ```
 
 ---
 
-## Decorators
+## Authorization dependencies
 
-The following decorators (from `pyispyb.app.extensions.auth.decorators`) can be used on the routes to manage authentication and authorization rules.
+The following dependencies can be used to manage authentication and authorization rules.
 
-### `@authentication_required`
-
-Makes the route only accesible to **authenticated users** (no permissions checking).
-
-### `@permission_required(operator, [permissions])`
+### `permission_required(operator, [permissions])`
 
 Makes the route only accesible to users with the **specified permissions**.
 
@@ -105,18 +100,18 @@ Makes the route only accesible to users with the **specified permissions**.
     -   `"any"` User should have **any** of the specified permissions
     -   `"all"` User should have **all** of the specified permissions
 
-### `@proposal_authorization_required`
+### `proposal_authorisation`
 
-Verifies that the user is **associated to the requested proposal**. To do so, this decorator uses the `proposal_id` parameter in the route.
+Verifies that the user is **associated to the requested proposal**. To do so, it uses the `proposal_id` parameter.
 User must verify any of the following conditions :
 
 -   `Person.personId = Proposal.personId`
 -   `Person.personId = ProposalHasPerson.personId and ProposalHasPerson.proposalId = Proposal.proposalId`
 -   _has permission_ `all_proposals`
 
-### `@session_authorization_required`
+### `session_authorisation`
 
-Verifies that the user is **associated to the requested session**. To do so, this decorator uses the `session_id` parameter in the route.
+Verifies that the user is **associated to the requested session**. To do so, it uses the `session_id` parameter.
 User must verify any of the following conditions :
 
 -   `Person.personId = Session_has_Person.personId and Session_has_Person.sessionId = BLSession.sessionId`
