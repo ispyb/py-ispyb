@@ -20,3 +20,6 @@ sqlparse
 
 mysql-connector
 mysql-connector-python
+
+mkdocs
+mkdocs-material

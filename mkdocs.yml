@@ -5,7 +5,8 @@ nav:
     - Authentication and authorization: auth.md
     - Routes: routes.md
     - Tests: tests.md
-theme: readthedocs
+theme:
+    name: material
 site_dir: public
 site_url: https://ispyb.gitlab-pages.esrf.fr/py-ispyb/
 repo_url: https://gitlab.esrf.fr/ispyb/py-ispyb
@@ -13,3 +14,4 @@ repo_name: "GitLab"
 markdown_extensions:
     - toc:
           permalink: "#"
+dev_addr: "127.0.0.1:8080"

@@ -8,7 +8,7 @@ ISPyB backend server based on python flask-restx.
 
 ## Dependencies
 
--   [**Python**](https://www.python.org/) 3.5+ / pypy2
+-   [**Python**](https://www.python.org/) 3.10+
 -   [**flask-restx**](https://github.com/python-restx/flask-restx) (+
     [_flask_](http://flask.pocoo.org/)) - Web framework.
 -   [**sqlalchemy**](http://www.sqlalchemy.org/) (+
