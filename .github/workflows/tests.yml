@@ -3,14 +3,14 @@ name: Test
 on: [push]
 
 jobs:
-    services:
-      mariadb:
-        image: esrfbcu/ispyb-pydb:main
-        ports:
-          - 3306
-
     test:
         runs-on: ubuntu-latest
+        services:
+            mariadb:
+            image: esrfbcu/ispyb-pydb:main
+            ports:
+                - 3306
+
         strategy:
             matrix:
                 python-version: ["3.10"]
