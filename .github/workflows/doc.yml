@@ -25,6 +25,18 @@ jobs:
               run: |
                   mkdocs build --strict --verbose
 
+            - name: Create OpenAPI spec
+              run: |
+                  pip install -r requirements.txt
+                  pip install -e . --no-deps
+                  cp tests/core/auth.yml auth.yml
+                  python scripts/generate_apispec.py
+
+            - name: Run redoc
+              uses: seeebiii/redoc-cli-github-action@v10
+              with:
+                args: 'bundle -o api/index.html openapi.json'
+
             - name: Deploy
               uses: JamesIves/github-pages-deploy-action@v4.3.0
               with:

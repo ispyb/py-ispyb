@@ -45,14 +45,6 @@ except IOError:
     raise Exception(f"Could not access auth config: {AUTH_CONFIG}")
 
 
-def get_env(name: str):
-    res = os.getenv(name, None)
-    if res is None or res == "":
-        raise Exception(f"You must define env variable {name}")
-    else:
-        return res
-
-
 class Settings(BaseSettings):
     static_root: str = os.path.join(PROJECT_ROOT, "static")
     queries_dir: str = os.path.join(RESOURCES_ROOT, "queries")
@@ -60,14 +52,14 @@ class Settings(BaseSettings):
     api_root: str
     service_name: str
 
-    sqlalchemy_database_uri: str = get_env("SQLALCHEMY_DATABASE_URI")
+    sqlalchemy_database_uri: str
     query_debug: bool
 
     auth = yaml_settings["AUTH"]
 
     jwt_coding_algorithm: str
     token_exp_time: int  # in minutes
-    secret_key: str = get_env("SECRET_KEY")
+    secret_key: str
 
     cors: bool = False
 
