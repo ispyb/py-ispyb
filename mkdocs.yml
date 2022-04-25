@@ -8,9 +8,9 @@ nav:
 theme:
     name: material
 site_dir: public
-site_url: https://ispyb.gitlab-pages.esrf.fr/py-ispyb/
-repo_url: https://gitlab.esrf.fr/ispyb/py-ispyb
-repo_name: "GitLab"
+site_url: https://ispyb.github.io/py-ispyb/
+repo_url: https://github.com/ispyb/py-ispyb
+repo_name: "GitHub"
 markdown_extensions:
     - toc:
           permalink: "#"
