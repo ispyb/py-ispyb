@@ -7,9 +7,9 @@ jobs:
         runs-on: ubuntu-latest
         services:
             mariadb:
-            image: esrfbcu/ispyb-pydb:main
-            ports:
-                - 3306
+                image: esrfbcu/ispyb-pydb:main
+                ports:
+                    - 3306
 
         strategy:
             matrix:
