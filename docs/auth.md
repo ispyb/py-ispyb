@@ -6,9 +6,9 @@
 - [Authorization](#authorization)
 - [Configure the plugins](#configure-the-plugins)
 - [List of plugins](#list-of-plugins)
-  - [Configuration](#configuration)
-  - [Configuration](#configuration)
-  - [Configuration](#configuration)
+- [DummyAuthentication](#dummyauthentication)
+- [KeycloakDBGroupsAuthentication](#keycloakdbgroupsauthentication)
+- [LdapAuthentication](#ldapauthentication)
 - [Implementing new plugins](#implementing-new-plugins)
   - [Authorization dependencies](#authorization-dependencies)
 
@@ -76,7 +76,7 @@ AUTH:
 
 py-ISPyB is using the following authentication plugins, which code you can find in `pyispyb/app/extension/auth`.
 
-#### DummyAuthentication
+### DummyAuthentication
 
 Provides easy authentication for `tests`. Permissions listed in the password field are given.
 
@@ -90,7 +90,7 @@ AUTH:
       AUTH_CLASS: "DummyAuthentication"
 ```
 
-#### `KeycloakDBGroupsAuthentication`
+### `KeycloakDBGroupsAuthentication`
 
 Provides authentication using keycloak with DB-managed groups.
 
@@ -112,7 +112,7 @@ AUTH:
 
 Provides authentication using LDAP users and groups.
 
-#### Configuration
+Configuration
 
 ```yml
 AUTH:
