@@ -1,8 +1,20 @@
-# py-ISPyB Authentication and authorization system
+# Authentication and authorization
 
----
+`py-ispyb` relies on plugins to handle different methods of authenticating users to the system. There are some mechanisms that are implemented natively like LDAP, keycloak and dummy but it is worth noting that anyone can write his own plugin.
 
-# Authentication
+## Configure the authentication plugin
+
+A configuration file called `auth.yml` at the root of the project contains the configuration parameters.
+
+The next configuration will enable the plugin dummy:
+
+```
+AUTH:
+    - dummy:
+          ENABLED: true
+          AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
+          AUTH_CLASS: "DummyAuthentication"
+```
 
 ## Plugins
 
