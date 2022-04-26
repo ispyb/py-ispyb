@@ -1,8 +1,13 @@
 # Authentication and authorization
 
-`py-ispyb` relies on plugins to handle different methods of authenticating users to the system. There are some mechanisms that are implemented natively like LDAP, keycloak and dummy that can be used out-of-the-box but it is worth noting that anyone can write his own plugin.
+`py-ispyb` relies on plugins to handle different methods of authenticating users to the system. There are some mechanisms that are implemented natively like LDAP, keycloak and dummy that can be used out-of-the-box. However,it is worth noting that anyone can write his own plugin.
 
-There's a dedicated endpoint that allows to use the different plugins that are installed. This endpoint receives as parameters: `plugin`, `username`, `password` and `token`
+There's a dedicated endpoint that allows to use the different plugins that are installed. This endpoint receives as parameters:
+
+- **plugin** - name of the plugin to be used for authentication, as specified in configuration
+- **username** _(optional)_
+- **password** _(optional)_
+- **token** _(optional)_
 
 Example of the request:
 
@@ -56,7 +61,7 @@ The HS256 token is:
 
 One or more plugin can be enabled at the same time. A configuration file called `auth.yml` at the root of the project contains their configuration parameters.
 
-The next configuration will enable the plugin dummy:
+The next examples shows how to enable the dummy authentication plugin:
 
 ```
 AUTH:
@@ -66,38 +71,32 @@ AUTH:
           AUTH_CLASS: "DummyAuthentication"
 ```
 
-## Plugins
+## List of plugins
 
-py-ISPyB is using the following authentication plugins, which you can find in `pyispyb/app/extension/auth`.
+py-ISPyB is using the following authentication plugins, which code you can find in `pyispyb/app/extension/auth`.
 
 ### `DummyAuthentication`
 
-Provides easy authentication for tests. Permissions listed in the password field are given.
+Provides easy authentication for `tests`. Permissions listed in the password field are given.
+
+#### Configuration
+
+```
+AUTH:
+  - dummy: # /!\/!\/!\ ONLY USE FOR TESTS /!\/!\/!\
+      ENABLED: false
+      AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
+      AUTH_CLASS: "DummyAuthentication"
+```
 
 ### `KeycloakDBGroupsAuthentication`
 
 Provides authentication using keycloak with DB-managed groups.
 
-### `LdapAuthentication`
+#### Configuration
 
-Provides authentication using LDAP users and groups.
-
-### Implementing new plugins
-
-New plugins should implement one of the two following classes :
-
-- **AbstractAuthentication** : plugin should override `get_user_and_groups(self, username, password, token)` method and return a tuple `(username, groups[])`
-- **AbstractDBGroupsAuthentication** : plugin should override `get_person(self, username, password, token)` method and return a `pyispyb.core.models.Person` object. Groups managment is delegated to ISPyB database.
-
----
-
-## Configuration
-
-Authentication plugins to be activated are configured in the `auth.yml` file like this:
-
-```yml
+```
 AUTH:
-  - keycloak:
       ENABLED: true
       AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
       AUTH_CLASS: "KeycloakDBGroupsAuthentication"
@@ -106,36 +105,32 @@ AUTH:
         KEYCLOAK_CLIENT_ID: "your_client"
         KEYCLOAK_REALM_NAME: "your_realm"
         KEYCLOAK_CLIENT_SECRET_KEY: "your_secret"
+```
+
+### `LdapAuthentication`
+
+Provides authentication using LDAP users and groups.
+
+#### Configuration
+
+```yml
+AUTH:
   - ldap:
       ENABLED: true
       AUTH_MODULE: "pyispyb.app.extensions.auth.LdapAuthentication"
       AUTH_CLASS: "LdapAuthentication"
       CONFIG:
         LDAP_URI: "ldap://your_ldap"
-        LDAP_BASE_INTERNAL: "ou=People,dc=esrf,dc=fr"
-        LDAP_BASE_EXTERNAL: "ou=Pxwebgroups,dc=esrf,dc=fr"
-  - dummy: # /!\/!\/!\ ONLY USE FOR TESTS /!\/!\/!\
-      ENABLED: false
-      AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
-      AUTH_CLASS: "DummyAuthentication"
+        LDAP_BASE_INTERNAL: "ou=People,dc=test,dc=fr"
+        LDAP_BASE_EXTERNAL: "ou=Pxwebgroups,dc=test,dc=fr"
 ```
 
----
+### Implementing new plugins
 
-## How to authenticate
+New plugins should implement one of the two following classes :
 
-To authenticate their requests, users should get a py-ISPyB token. This token is provided by the `/auth/login` route with `POST` method and the following parameters in json body:
-
-- **plugin** - name of the plugin to be used for authentication, as specified in configuration
-- **username** _(optional)_
-- **password** _(optional)_
-- **token** _(optional)_
-
-Then you can authorize your requets using this token in the `Authorization` header: `Bearer YOUR_TOKEN`. For example to retrieve proposals use:
-
-```bash
-curl -X GET -H 'Authorization: Bearer YOUR_TOKEN' -i http://localhost:8000/ispyb/api/v1/proposals
-```
+- **AbstractAuthentication** : plugin should override `get_user_and_groups(self, username, password, token)` method and return a tuple `(username, groups[])`
+- **AbstractDBGroupsAuthentication** : plugin should override `get_person(self, username, password, token)` method and return a `pyispyb.core.models.Person` object. Groups managment is delegated to ISPyB database.
 
 ---
 
