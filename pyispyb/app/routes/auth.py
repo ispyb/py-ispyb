@@ -73,7 +73,10 @@ def login(login: Login) -> TokenResponse:
         token_info = generate_token(username, groups, permissions)
 
         if hasattr(models, "Login"):
-            token_ispyb = hashlib.sha1(token_info["token"].encode("utf-8")).hexdigest()
+            # TODO: Use better encryption if this is used in a security context?
+            token_ispyb = hashlib.sha1(
+                token_info["token"].encode("utf-8")
+            ).hexdigest()  # nosec
 
             bd_login = models.Login(
                 token=token_ispyb,

@@ -40,7 +40,7 @@ AUTH_CONFIG = os.path.realpath(
 )
 try:
     with open(AUTH_CONFIG) as f:
-        yaml_settings.update(yaml.load(f, Loader=yaml.FullLoader))
+        yaml_settings.update(yaml.safe_load(f, Loader=yaml.FullLoader))
 except IOError:
     raise Exception(f"Could not access auth config: {AUTH_CONFIG}")
 
