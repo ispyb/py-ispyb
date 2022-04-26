@@ -1,8 +1,20 @@
 # Authentication and authorization
 
-`py-ispyb` relies on plugins to handle different methods of authenticating users to the system. There are some mechanisms that are implemented natively like LDAP, keycloak and dummy that can be used out-of-the-box. However, it is worth noting that anyone can write his own plugin.
+## Index
+
+- [Authentication](#authentication)
+- [Authorization](#authorization)
+- [Configure the plugins](#configure-the-plugins)
+- [List of plugins](#list-of-plugins)
+  - [Configuration](#configuration)
+  - [Configuration](#configuration)
+  - [Configuration](#configuration)
+- [Implementing new plugins](#implementing-new-plugins)
+  - [Authorization dependencies](#authorization-dependencies)
 
 ## Authentication
+
+`py-ispyb` relies on plugins to handle different methods of authenticating users to the system. There are some mechanisms that are implemented natively like LDAP, keycloak and dummy that can be used out-of-the-box. However, it is worth noting that anyone can write his own plugin.
 
 There's a dedicated endpoint that allows to use the different plugins that are installed. This endpoint receives as parameters:
 
