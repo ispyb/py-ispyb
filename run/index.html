@@ -278,13 +278,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#regenerate-data-base-models-and-schemas" class="md-nav__link">
-    Regenerate data base models and schemas
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#run-application" class="md-nav__link">
     Run application
   </a>
@@ -403,13 +396,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#regenerate-data-base-models-and-schemas" class="md-nav__link">
-    Regenerate data base models and schemas
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#run-application" class="md-nav__link">
     Run application
   </a>
@@ -453,16 +439,8 @@
 <hr />
 <h3 id="copy-and-edit-yaml-auth-configuration-file">Copy and edit yaml auth configuration file<a class="headerlink" href="#copy-and-edit-yaml-auth-configuration-file" title="Permanent link">#</a></h3>
 <p><code>cp examples/auth.yml auth.yml</code></p>
-<p>If you do not have a running ispyb database then you can create one by running:</p>
-<p><code>scripts/create_core_db.sh</code></p>
-<hr />
-<h3 id="regenerate-data-base-models-and-schemas">Regenerate data base models and schemas<a class="headerlink" href="#regenerate-data-base-models-and-schemas" title="Permanent link">#</a></h3>
-<p>When the database model is updated, you need to genenerate the python model to take it into acount. Please follow these steps:</p>
-<pre><code class="language-bash">cd scripts
-./generate_core_models.sh ../ispyb_core_config.yml
-python3 generate_core_schemas.py
-cd ..
-</code></pre>
+<p>If you do not have a running ispyb database then you can create one using:</p>
+<p><code>examples/pydb_empty.sql</code></p>
 <hr />
 <h3 id="run-application">Run application<a class="headerlink" href="#run-application" title="Permanent link">#</a></h3>
 <p><code>. uvicorn.sh</code></p>
