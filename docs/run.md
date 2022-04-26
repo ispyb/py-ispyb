@@ -22,22 +22,9 @@ Install python dependencies:
 
 `cp examples/auth.yml auth.yml`
 
-If you do not have a running ispyb database then you can create one by running:
+If you do not have a running ispyb database then you can create one using:
 
-`scripts/create_core_db.sh`
-
----
-
-### Regenerate data base models and schemas
-
-When the database model is updated, you need to genenerate the python model to take it into acount. Please follow these steps:
-
-```bash
-cd scripts
-./generate_core_models.sh ../ispyb_core_config.yml
-python3 generate_core_schemas.py
-cd ..
-```
+`examples/pydb_empty.sql`
 
 ---
 
