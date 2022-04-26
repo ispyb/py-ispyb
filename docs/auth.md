@@ -1,6 +1,8 @@
 # Authentication and authorization
 
-`py-ispyb` relies on plugins to handle different methods of authenticating users to the system. There are some mechanisms that are implemented natively like LDAP, keycloak and dummy that can be used out-of-the-box. However,it is worth noting that anyone can write his own plugin.
+`py-ispyb` relies on plugins to handle different methods of authenticating users to the system. There are some mechanisms that are implemented natively like LDAP, keycloak and dummy that can be used out-of-the-box. However, it is worth noting that anyone can write his own plugin.
+
+## Authentication
 
 There's a dedicated endpoint that allows to use the different plugins that are installed. This endpoint receives as parameters:
 
@@ -11,7 +13,7 @@ There's a dedicated endpoint that allows to use the different plugins that are i
 
 Example of the request:
 
-```
+```bash
 curl -X 'POST' \
   'http://localhost:8000/ispyb/api/v1/auth/login' \
   -H 'accept: application/json' \
@@ -27,48 +29,35 @@ curl -X 'POST' \
 
 If the authentication is successful the response will be a json with the following fields:
 
-```
+```json
 {
   "username": "test",
   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJncm91cHMiOlsiQWRtaW4iXSwicGVybWlzc2lvbnMiOlsiQWRtaW4iXSwiaWF0IjoxNjUwOTgxNjA5LCJleHAiOjE2NTA5OTk2MDl9.3Iq2lGG5RR6Gebss5qEDdASrEMwCIne2jFhaVqp91m0",
-  "permissions": [
-    "Admin"
-  ],
-  "groups": [
-    "Admin"
-  ]
+  "permissions": ["Admin"],
+  "groups": ["Admin"]
 }
 ```
 
-The HS256 token is:
+## Authorization
 
-```
-{
-  "username": "test",
-  "groups": [
-    "Admin"
-  ],
-  "permissions": [
-    "Admin"
-  ],
-  "iat": 1650981609,
-  "exp": 1650999609
-}
+For all authentication plugins, permissions are configured in the **database** using the following tables (with example data):
 
-```
+- **UserGroup**: [Admin, user]
+- **Permission**: [own_proposals, own_sessions, all_proposals, all_sessions]
+- **UserGroup_has_Permission**: [{Admin, all_proposals}, {Admin, all_sessions}, {user, own_proposals}, {user, own_sessions}]
 
-## Configure the authentication plugins
+## Configure the plugins
 
 One or more plugin can be enabled at the same time. A configuration file called `auth.yml` at the root of the project contains their configuration parameters.
 
 The next examples shows how to enable the dummy authentication plugin:
 
-```
+```yml
 AUTH:
-    - dummy:
-          ENABLED: true
-          AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
-          AUTH_CLASS: "DummyAuthentication"
+  - dummy:
+      ENABLED: true
+      AUTH_MODULE: "pyispyb.app.extensions.auth.DummyAuthentication"
+      AUTH_CLASS: "DummyAuthentication"
 ```
 
 ## List of plugins
@@ -81,7 +70,7 @@ Provides easy authentication for `tests`. Permissions listed in the password fie
 
 #### Configuration
 
-```
+```yml
 AUTH:
   - dummy: # /!\/!\/!\ ONLY USE FOR TESTS /!\/!\/!\
       ENABLED: false
@@ -95,16 +84,16 @@ Provides authentication using keycloak with DB-managed groups.
 
 #### Configuration
 
-```
+```yml
 AUTH:
-      ENABLED: true
-      AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
-      AUTH_CLASS: "KeycloakDBGroupsAuthentication"
-      CONFIG:
-        KEYCLOAK_SERVER_URL: "your_server"
-        KEYCLOAK_CLIENT_ID: "your_client"
-        KEYCLOAK_REALM_NAME: "your_realm"
-        KEYCLOAK_CLIENT_SECRET_KEY: "your_secret"
+  ENABLED: true
+  AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
+  AUTH_CLASS: "KeycloakDBGroupsAuthentication"
+  CONFIG:
+    KEYCLOAK_SERVER_URL: "your_server"
+    KEYCLOAK_CLIENT_ID: "your_client"
+    KEYCLOAK_REALM_NAME: "your_realm"
+    KEYCLOAK_CLIENT_SECRET_KEY: "your_secret"
 ```
 
 ### `LdapAuthentication`
@@ -135,20 +124,6 @@ New plugins should implement one of the two following classes :
 ---
 
 # Authorization
-
-## Database groups and permissions
-
-Fore some authentication plugins (for instance `KeycloakDBGroupsAuthentication`), groups are configured in the **database** using the following tables:
-
-- **UserGroup**
-- **Person**
-- **UserGroup_has_Person**
-
-For all authentication plugins, permissions are configured in the **database** using the following tables:
-
-- **UserGroup**
-- **Permission**
-- **UserGroup_has_Permission**
 
 ---
 
