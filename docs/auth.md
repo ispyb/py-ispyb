@@ -76,7 +76,7 @@ AUTH:
 
 py-ISPyB is using the following authentication plugins, which code you can find in `pyispyb/app/extension/auth`.
 
-### DummyAuthentication
+#### DummyAuthentication
 
 Provides easy authentication for `tests`. Permissions listed in the password field are given.
 
@@ -90,11 +90,11 @@ AUTH:
       AUTH_CLASS: "DummyAuthentication"
 ```
 
-### `KeycloakDBGroupsAuthentication`
+#### `KeycloakDBGroupsAuthentication`
 
 Provides authentication using keycloak with DB-managed groups.
 
-#### Configuration
+Configuration
 
 ```yml
 AUTH:
