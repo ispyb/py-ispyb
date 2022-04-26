@@ -6,9 +6,9 @@
 - [Authorization](#authorization)
 - [Configure the plugins](#configure-the-plugins)
 - [List of plugins](#list-of-plugins)
-- [DummyAuthentication](#dummyauthentication)
-- [KeycloakDBGroupsAuthentication](#keycloakdbgroupsauthentication)
-- [LdapAuthentication](#ldapauthentication)
+  - [DummyAuthentication](#dummyauthentication)
+  - [KeycloakDBGroupsAuthentication](#keycloakdbgroupsauthentication)
+  - [LdapAuthentication](#ldapauthentication)
 - [Implementing new plugins](#implementing-new-plugins)
   - [Authorization dependencies](#authorization-dependencies)
 
