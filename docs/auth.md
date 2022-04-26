@@ -58,7 +58,7 @@ For any authentication plugin, permissions are configured in the **database** us
 - **Permission**: [own_proposals, own_sessions, all_proposals, all_sessions]
 - **UserGroup_has_Permission**: [{Admin, all_proposals}, {Admin, all_sessions}, {user, own_proposals}, {user, own_sessions}]
 
-## Configure the plugins
+## Configure a plugin
 
 One or more plugin can be enabled at the same time. A configuration file called `auth.yml` at the root of the project contains their configuration parameters.
 
@@ -80,7 +80,7 @@ py-ISPyB is using the following authentication plugins, which code you can find 
 
 Provides easy authentication for `tests`. Permissions listed in the password field are given.
 
-#### Configuration
+Configuration
 
 ```yml
 AUTH:
