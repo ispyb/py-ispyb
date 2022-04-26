@@ -40,7 +40,7 @@ If the authentication is successful the response will be a json with the followi
 
 ## Authorization
 
-For all authentication plugins, permissions are configured in the **database** using the following tables (with example data):
+For any authentication plugin, permissions are configured in the **database** using the following tables (with example data):
 
 - **UserGroup**: [Admin, user]
 - **Permission**: [own_proposals, own_sessions, all_proposals, all_sessions]
@@ -114,7 +114,7 @@ AUTH:
         LDAP_BASE_EXTERNAL: "ou=Pxwebgroups,dc=test,dc=fr"
 ```
 
-### Implementing new plugins
+## Implementing new plugins
 
 New plugins should implement one of the two following classes :
 
@@ -123,15 +123,11 @@ New plugins should implement one of the two following classes :
 
 ---
 
-# Authorization
-
----
-
-## Authorization dependencies
+### Authorization dependencies
 
 The following dependencies can be used to manage authentication and authorization rules.
 
-### `permission_required(operator, [permissions])`
+#### `permission_required(operator, [permissions])`
 
 Makes the route only accesible to users with the **specified permissions**.
 
@@ -139,7 +135,7 @@ Makes the route only accesible to users with the **specified permissions**.
   - `"any"` User should have **any** of the specified permissions
   - `"all"` User should have **all** of the specified permissions
 
-### `proposal_authorisation`
+#### `proposal_authorisation`
 
 Verifies that the user is **associated to the requested proposal**. To do so, it uses the `proposal_id` parameter.
 User must verify any of the following conditions :
@@ -148,7 +144,7 @@ User must verify any of the following conditions :
 - `Person.personId = ProposalHasPerson.personId and ProposalHasPerson.proposalId = Proposal.proposalId`
 - _has permission_ `all_proposals`
 
-### `session_authorisation`
+#### `session_authorisation`
 
 Verifies that the user is **associated to the requested session**. To do so, it uses the `session_id` parameter.
 User must verify any of the following conditions :
