@@ -74,9 +74,9 @@ def login(login: Login) -> TokenResponse:
 
         if hasattr(models, "Login"):
             # TODO: Use better encryption if this is used in a security context?
-            token_ispyb = hashlib.sha1(
+            token_ispyb = hashlib.sha1(  # nosec
                 token_info["token"].encode("utf-8")
-            ).hexdigest()  # nosec
+            ).hexdigest()
 
             bd_login = models.Login(
                 token=token_ispyb,
