@@ -5,25 +5,19 @@ test_data_session = [
             "permissions": [
                 "all_sessions",
             ],
-            "username":"admin",
-            "route":"/em/session/4583/stats"
+            "username": "admin",
+            "route": "/em/session/4583/stats",
         },
-        "expected":{
-            "code": 200
-        }
+        "expected": {"code": 200},
     },
     {
         "name": "no all_sessions permission DENIED",
         "input": {
-            "permissions": [
-                "none"
-            ],
-            "username":"admin",
-            "route":"/em/session/4583/stats"
+            "permissions": ["none"],
+            "username": "admin",
+            "route": "/em/session/4583/stats",
         },
-        "expected":{
-            "code": 401
-        }
+        "expected": {"code": 401},
     },
     {
         "name": "own_sessions permission OK (proposal.personId)",
@@ -31,25 +25,19 @@ test_data_session = [
             "permissions": [
                 "own_sessions",
             ],
-            "username":"DI MARCO",
-            "route":"/em/session/4583/stats"
+            "username": "DI MARCO",
+            "route": "/em/session/4583/stats",
         },
-        "expected":{
-            "code": 200
-        }
+        "expected": {"code": 200},
     },
     {
         "name": "no own_sessions permission DENIED (proposal.personId)",
         "input": {
-            "permissions": [
-                "none"
-            ],
-            "username":"DI MARCO",
-            "route":"/em/session/4583/stats"
+            "permissions": ["none"],
+            "username": "DI MARCO",
+            "route": "/em/session/4583/stats",
         },
-        "expected":{
-            "code": 401
-        }
+        "expected": {"code": 401},
     },
     {
         "name": "own_sessions permission OK (Session_has_Person.personId)",
@@ -57,12 +45,10 @@ test_data_session = [
             "permissions": [
                 "own_sessions",
             ],
-            "username":"SERRE",
-            "route":"/em/session/8569/stats"
+            "username": "SERRE",
+            "route": "/em/session/8569/stats",
         },
-        "expected":{
-            "code": 200
-        }
+        "expected": {"code": 200},
     },
     {
         "name": "no own_sessions permission DENIED (Session_has_Person.personId)",
@@ -70,12 +56,10 @@ test_data_session = [
             "permissions": [
                 "none",
             ],
-            "username":"SHEPARD",
-            "route":"/em/session/4583/stats"
+            "username": "SHEPARD",
+            "route": "/em/session/4583/stats",
         },
-        "expected":{
-            "code": 401
-        }
+        "expected": {"code": 401},
     },
     {
         "name": "own_sessions permission DENIED",
@@ -83,12 +67,10 @@ test_data_session = [
             "permissions": [
                 "own_sessions",
             ],
-            "username":"user",
-            "route":"/em/session/4583/stats"
+            "username": "user",
+            "route": "/em/session/4583/stats",
         },
-        "expected":{
-            "code": 401
-        }
+        "expected": {"code": 401},
     },
 ]
 
@@ -99,25 +81,19 @@ test_data_proposal = [
             "permissions": [
                 "all_proposals",
             ],
-            "username":"admin",
-            "route":"/proposals/899"
+            "username": "admin",
+            "route": "/proposals/899",
         },
-        "expected":{
-            "code": 200
-        }
+        "expected": {"code": 200},
     },
     {
         "name": "no all_proposals permission DENIED",
         "input": {
-            "permissions": [
-                "none"
-            ],
-            "username":"admin",
-            "route":"/proposals/899"
+            "permissions": ["none"],
+            "username": "admin",
+            "route": "/proposals/899",
         },
-        "expected":{
-            "code": 401
-        }
+        "expected": {"code": 401},
     },
     {
         "name": "own_proposals permission OK (proposal.personId)",
@@ -125,25 +101,19 @@ test_data_proposal = [
             "permissions": [
                 "own_proposals",
             ],
-            "username":"DI MARCO",
-            "route":"/proposals/899"
+            "username": "DI MARCO",
+            "route": "/proposals/899",
         },
-        "expected":{
-            "code": 200
-        }
+        "expected": {"code": 200},
     },
     {
         "name": "no own_proposals permission DENIED (proposal.personId)",
         "input": {
-            "permissions": [
-                "none"
-            ],
-            "username":"DI MARCO",
-            "route":"/proposals/899"
+            "permissions": ["none"],
+            "username": "DI MARCO",
+            "route": "/proposals/899",
         },
-        "expected":{
-            "code": 401
-        }
+        "expected": {"code": 401},
     },
     {
         "name": "own_proposals permission OK (proposal_has_Person.personId)",
@@ -151,12 +121,10 @@ test_data_proposal = [
             "permissions": [
                 "own_proposals",
             ],
-            "username":"leonard",
-            "route":"/proposals/1170"
+            "username": "leonard",
+            "route": "/proposals/1170",
         },
-        "expected":{
-            "code": 200
-        }
+        "expected": {"code": 200},
     },
     {
         "name": "no own_proposals permission DENIED (proposal_has_Person.personId)",
@@ -164,12 +132,10 @@ test_data_proposal = [
             "permissions": [
                 "none",
             ],
-            "username":"leonard",
-            "route":"/proposals/1170"
+            "username": "leonard",
+            "route": "/proposals/1170",
         },
-        "expected":{
-            "code": 401
-        }
+        "expected": {"code": 401},
     },
     {
         "name": "own_proposals permission DENIED",
@@ -177,11 +143,9 @@ test_data_proposal = [
             "permissions": [
                 "own_proposals",
             ],
-            "username":"user",
-            "route":"/proposals/1170"
+            "username": "user",
+            "route": "/proposals/1170",
         },
-        "expected":{
-            "code": 401
-        }
+        "expected": {"code": 401},
     },
 ]

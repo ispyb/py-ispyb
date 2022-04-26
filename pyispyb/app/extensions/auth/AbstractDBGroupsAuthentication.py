@@ -56,7 +56,9 @@ class AbstractDBGroupsAuthentication(AbstractAuthentication):
         """
         pass
 
-    def get_user_and_groups(self, username: str | None, password: str | None, token: str | None) -> tuple[str | None, list[str] | None]:
+    def get_user_and_groups(
+        self, username: str | None, password: str | None, token: str | None
+    ) -> tuple[str | None, list[str] | None]:
         """Return username and groups associated to the user.
 
         Args:
@@ -82,7 +84,9 @@ class AbstractDBGroupsAuthentication(AbstractAuthentication):
         return db_person.login, get_person_groups(db_person)
 
     @abc.abstractmethod
-    def get_person(self, username: str | None, password: str | None, token: str | None) -> models.Person | None:
+    def get_person(
+        self, username: str | None, password: str | None, token: str | None
+    ) -> models.Person | None:
         """Return db person associated to the user.
 
         Args:

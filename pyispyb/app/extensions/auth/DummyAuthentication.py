@@ -28,7 +28,9 @@ from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentic
 class DummyAuthentication(AbstractAuthentication):
     """Dummy authentication class."""
 
-    def get_auth(self, username: str | None, password: str | None, token: str | None) -> tuple[str | None, list[str] | None, list[str] | None]:
+    def get_auth(
+        self, username: str | None, password: str | None, token: str | None
+    ) -> tuple[str | None, list[str] | None, list[str] | None]:
         """Return username, groups and permissions associated to the user.
 
         Args:

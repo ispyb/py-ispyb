@@ -26,9 +26,7 @@ def get_lab_contacts(
     response_model=schema.LabContact,
     responses={404: {"description": "No such contact"}},
 )
-def get_lab_contact(
-    labContactId: int
-) -> models.LabContact:
+def get_lab_contact(labContactId: int) -> models.LabContact:
     """Get a list of lab contacts"""
     users = crud.get_labcontacts(labContactId=labContactId, skip=0, limit=1)
     try:
@@ -42,8 +40,6 @@ def get_lab_contact(
     response_model=schema.LabContact,
     status_code=status.HTTP_201_CREATED,
 )
-def create_lab_contact(
-    labcontact: schema.LabContactCreate
-) -> models.LabContact:
+def create_lab_contact(labcontact: schema.LabContactCreate) -> models.LabContact:
     """Create a new lab contact"""
     return crud.create_labcontact(labcontact=labcontact)

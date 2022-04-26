@@ -1,4 +1,3 @@
-
 # Project: py-ispyb.
 
 # https://github.com/ispyb/py-ispyb
@@ -42,9 +41,9 @@ def get_movies_data_by_datacollection_id(proposal_id, datacollection_id):
     """
     sql = get_sql_query(
         "em/movie",
-        append=" where Movie_dataCollectionId = :dataCollectionId and Proposal_proposalId=:proposalId")
-    sql = sql.bindparams(dataCollectionId=datacollection_id,
-                         proposalId=proposal_id)
+        append=" where Movie_dataCollectionId = :dataCollectionId and Proposal_proposalId=:proposalId",
+    )
+    sql = sql.bindparams(dataCollectionId=datacollection_id, proposalId=proposal_id)
     res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
@@ -59,10 +58,8 @@ def get_movie_thumbnails(proposal_id, movie_id):
     Returns:
         dict: thumnails object
     """
-    sql = get_sql_query(
-        "em/movie_thumbnails")
-    sql = sql.bindparams(movieId=movie_id,
-                         proposalId=proposal_id)
+    sql = get_sql_query("em/movie_thumbnails")
+    sql = sql.bindparams(movieId=movie_id, proposalId=proposal_id)
     res = db.session.execute(sql)
     res = queryresult_to_dict(res)
     if len(res) > 0:
@@ -84,8 +81,7 @@ def get_stats_by_session_id(session_id):
     Returns:
         dict: stats
     """
-    sql = get_sql_query(
-        "em/sessionStats", append=" where sessionId = :sessionId")
+    sql = get_sql_query("em/sessionStats", append=" where sessionId = :sessionId")
     sql = sql.bindparams(sessionId=session_id)
     res = db.session.execute(sql)
     return queryresult_to_dict(res)
@@ -103,15 +99,16 @@ def get_stats_by_data_collections_ids(proposal_id, data_collection_ids):
     """
     sql = get_sql_query(
         "em/dataCollectionsStats",
-        append=" where dataCollectionId in (:dataCollectionIdList) and BLSession.proposalId=:proposalId")
+        append=" where dataCollectionId in (:dataCollectionIdList) and BLSession.proposalId=:proposalId",
+    )
     sql = sql.bindparams(
-        dataCollectionIdList=data_collection_ids, proposalId=proposal_id)
+        dataCollectionIdList=data_collection_ids, proposalId=proposal_id
+    )
     res = db.session.execute(sql)
     return queryresult_to_dict(res)
 
 
-def get_stats_by_data_collections_group_id(
-        proposal_id, data_collection_group_id):
+def get_stats_by_data_collections_group_id(proposal_id, data_collection_group_id):
     """Get stats for datacollection group.
 
     Args:
@@ -123,11 +120,14 @@ def get_stats_by_data_collections_group_id(
     """
     sql = get_sql_query(
         "em/dataCollectionsStats",
-        append=" where DataCollection.dataCollectionGroupId=:dataCollectionGroupId and BLSession.proposalId=:proposalId")
+        append=" where DataCollection.dataCollectionGroupId=:dataCollectionGroupId and BLSession.proposalId=:proposalId",
+    )
     sql = sql.bindparams(
-        dataCollectionGroupId=data_collection_group_id, proposalId=proposal_id)
+        dataCollectionGroupId=data_collection_group_id, proposalId=proposal_id
+    )
     res = db.session.execute(sql)
     return queryresult_to_dict(res)
+
 
 ############################
 #     DATA COLLECTION      #
@@ -148,10 +148,10 @@ def get_data_collections_groups(proposal_id, session_id):
     res = data_collections.get_data_collections_groups(session_id)
     for row in res:
         row["stats"] = get_stats_by_data_collections_group_id(
-            proposal_id,
-            row["DataCollectionGroup_dataCollectionGroupId"]
+            proposal_id, row["DataCollectionGroup_dataCollectionGroupId"]
         )
     return res
+
 
 ############################
 #     CLASSIFICATION       #
@@ -167,8 +167,7 @@ def get_classification_by_session_id(session_id):
     Returns:
         dict: classification
     """
-    sql = get_sql_query(
-        "em/classification", append=" where sessionId = :sessionId")
+    sql = get_sql_query("em/classification", append=" where sessionId = :sessionId")
     sql = sql.bindparams(sessionId=session_id)
     res = db.session.execute(sql)
     return queryresult_to_dict(res)

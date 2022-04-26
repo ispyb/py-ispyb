@@ -25,9 +25,7 @@ def get_labcontacts(
     return Paged(total=total, results=query.all(), skip=skip, limit=limit)
 
 
-def create_labcontact(
-    labcontact: schema.LabContactCreate
-) -> models.LabContact:
+def create_labcontact(labcontact: schema.LabContactCreate) -> models.LabContact:
 
     labcontact_dict = labcontact.dict()
     person_dict = labcontact_dict.pop("Person")

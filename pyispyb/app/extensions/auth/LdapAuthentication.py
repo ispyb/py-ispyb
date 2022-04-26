@@ -1,4 +1,3 @@
-
 # Project: py-ispyb
 # https://github.com/ispyb/py-ispyb
 
@@ -50,7 +49,9 @@ class LdapAuthentication(AbstractAuthentication):
         self.ldap_base_internal = config["LDAP_BASE_INTERNAL"]
         self.ldap_base_groups = config["LDAP_BASE_GROUPS"]
 
-    def get_user_and_groups(self, username: str | None, password: str | None, token: str | None) -> tuple[str | None, list[str] | None]:
+    def get_user_and_groups(
+        self, username: str | None, password: str | None, token: str | None
+    ) -> tuple[str | None, list[str] | None]:
         """Return username and groups associated to the user.
 
         Args:
@@ -67,10 +68,7 @@ class LdapAuthentication(AbstractAuthentication):
             log.debug(msg)
             search_filter = "(uid=%s)" % username
             attrs = ["*"]
-            search_str = (
-                "uid=" + username + "," +
-                self.ldap_base_internal
-            )
+            search_str = "uid=" + username + "," + self.ldap_base_internal
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(
                 self.ldap_base_internal,
@@ -90,13 +88,13 @@ class LdapAuthentication(AbstractAuthentication):
         try:
             msg = "LDAP login: try to find user %s groups" % username
             log.debug(msg)
-            search_filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember=uid=" + \
-                username + ",ou=People,dc=esrf,dc=fr))"
-            attrs = ["cn"]
-            search_str = (
-                "uid=" + username + "," +
-                self.ldap_base_internal
+            search_filter = (
+                "(&(objectClass=groupOfUniqueNames)(uniqueMember=uid="
+                + username
+                + ",ou=People,dc=esrf,dc=fr))"
             )
+            attrs = ["cn"]
+            search_str = "uid=" + username + "," + self.ldap_base_internal
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(
                 self.ldap_base_groups,
@@ -105,8 +103,11 @@ class LdapAuthentication(AbstractAuthentication):
                 attrs,
             )
             if result:
-                groups = [group_name.decode(
-                    "utf-8") for group in result for group_name in group[1]["cn"]]
+                groups = [
+                    group_name.decode("utf-8")
+                    for group in result
+                    for group_name in group[1]["cn"]
+                ]
                 if not groups:
                     groups = ["User"]
         except ldap.INVALID_CREDENTIALS as ex:

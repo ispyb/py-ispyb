@@ -21,6 +21,7 @@ from fastapi.testclient import TestClient
 import pytest
 import sys
 from tests.core.utils import get_all_permissions_token
+
 __license__ = "LGPLv3+"
 
 import os
@@ -33,19 +34,23 @@ sys.path.insert(0, ROOT_DIR)
 @pytest.fixture()
 def setup_env():
     os.environ["SECRET_KEY"] = "test_secret"
-    os.environ["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://usr:pss@localhost/pydb"
+    os.environ[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = "mysql+mysqlconnector://usr:pss@localhost/pydb"
     os.environ["ISPYB_AUTH"] = "tests/core/auth.yml"
 
 
 @pytest.fixture()
 def ispyb_settings(setup_env):
     from pyispyb.config import settings
+
     return settings
 
 
 @pytest.fixture()
 def ispyb_app(setup_env):
     from pyispyb.app.main import app
+
     return TestClient(app)
 
 

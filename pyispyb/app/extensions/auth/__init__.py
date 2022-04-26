@@ -47,8 +47,7 @@ class AuthProvider:
                     config = {}
                     if "CONFIG" in auth_plugin[auth_name]:
                         config = auth_plugin[auth_name]["CONFIG"]
-                    cls = getattr(importlib.import_module(
-                        module_name), class_name)
+                    cls = getattr(importlib.import_module(module_name), class_name)
                     instance = cls()
                     instance.configure(config)
                     self.site_authentications[auth_name] = instance
@@ -71,7 +70,8 @@ class AuthProvider:
         if plugin not in self.site_authentications:
             return None, None, None
         username, groups, permissions = self.site_authentications[plugin].get_auth(
-            username, password, token)
+            username, password, token
+        )
         if username is not None and groups is not None and permissions is not None:
             return username, groups, permissions
         return None, None, None

@@ -62,9 +62,9 @@ router = BaseRouter(prefix="/auth", tags=["Authentication"])
 )
 def login(login: Login) -> TokenResponse:
     """Login a user"""
-    username, groups, permissions = auth_provider.get_auth(login.plugin,
-                                                           login.username, login.password, login.token
-                                                           )
+    username, groups, permissions = auth_provider.get_auth(
+        login.plugin, login.username, login.password, login.token
+    )
 
     if not username:
         raise HTTPException(status_code=401, detail="Could not verify")

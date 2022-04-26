@@ -60,27 +60,33 @@ def permission_required(operator, permissions):
             user_permissions = []
 
         if (
-            (
-                operator == "any" and (
-                    "all" in permissions or any(
-                        permission in list(permissions) for permission in list(user_permissions)
-                    )
+            operator == "any"
+            and (
+                "all" in permissions
+                or any(
+                    permission in list(permissions)
+                    for permission in list(user_permissions)
                 )
-            ) or (
-                operator == "all" and (
-                            all(
-                                permission in list(permissions) for permission in list(user_permissions)
-                            )
+            )
+        ) or (
+            operator == "all"
+            and (
+                all(
+                    permission in list(permissions)
+                    for permission in list(user_permissions)
                 )
             )
         ):
             return user_permissions
         else:
-            msg = "User %s (permissions assigned: %s) has no appropriate permission (%s: %s) " % (
-                g.username,
-                str(user_permissions),
-                operator,
-                str(permissions),
+            msg = (
+                "User %s (permissions assigned: %s) has no appropriate permission (%s: %s) "
+                % (
+                    g.username,
+                    str(user_permissions),
+                    operator,
+                    str(permissions),
+                )
             )
             msg += " to execute method."
             raise HTTPException(status_code=401, detail=msg)

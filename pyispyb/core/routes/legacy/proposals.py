@@ -30,7 +30,10 @@ from pyispyb.core.modules.legacy import proposal
 from pyispyb.core.routes.legacy.dependencies import proposal_authorisation
 
 from .base import router as legacy_router
-router = AuthenticatedAPIRouter(prefix="/proposals", tags=["Proposals - legacy with header token"])
+
+router = AuthenticatedAPIRouter(
+    prefix="/proposals", tags=["Proposals - legacy with header token"]
+)
 
 
 @legacy_router.get(
@@ -40,9 +43,7 @@ router = AuthenticatedAPIRouter(prefix="/proposals", tags=["Proposals - legacy w
     "",
 )
 def get_proposals(
-    permissions=Depends(
-        permission_required("any", ["own_proposals", "all_proposals"])
-    )
+    permissions=Depends(permission_required("any", ["own_proposals", "all_proposals"]))
 ):
     """Get all proposal that user is allowed to access."""
     if "all_proposals" in permissions:

@@ -1,4 +1,3 @@
-
 # Project: py-ispyb.
 
 # https://github.com/ispyb/py-ispyb
@@ -36,7 +35,8 @@ def get_data_collections_groups(session_id):
     """
     sql = get_sql_query(
         "dataCollection/groups",
-        append=" where DataCollectionGroup_sessionId = :sessionId group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId order by DataCollection_startTime desc")
+        append=" where DataCollectionGroup_sessionId = :sessionId group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId order by DataCollection_startTime desc",
+    )
     sql = sql.bindparams(sessionId=session_id)
     group_list = db.sesion.execute(sql)
     return queryresult_to_dict(group_list)

@@ -41,4 +41,5 @@ def init_app(app: FastAPI, prefix: str = None, **kwargs):
                 logger.exception(f"Could not import module `{module_name}`")
 
     from pyispyb.core.routes.legacy import init_app
+
     init_app(app, prefix=prefix)
