@@ -22,8 +22,13 @@ def generate_token(username, groups, permissions):
     )
 
     token = jwt.encode(
-        {"username": username, "groups": groups,
-            "permissions": permissions, "iat": iat, "exp": exp},
+        {
+            "username": username,
+            "groups": groups,
+            "permissions": permissions,
+            "iat": iat,
+            "exp": exp,
+        },
         settings.secret_key,
         algorithm=settings.jwt_coding_algorithm,
     )
@@ -34,7 +39,7 @@ def generate_token(username, groups, permissions):
         "iat": iat.strftime("%Y-%m-%d %H:%M:%S"),
         "exp": exp.strftime("%Y-%m-%d %H:%M:%S"),
         "groups": groups,
-        "permissions": permissions
+        "permissions": permissions,
     }
 
 

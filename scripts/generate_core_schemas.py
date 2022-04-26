@@ -127,13 +127,11 @@ for table in tables:
             ma_text += "    %s = ma_fields.%s()\n" % (name, data_type)
         dict_text += "        }\n\n"
 
-        class_text = "f_schema = api.model('%s', dict_schema)\n" % (
-            table_name,)
+        class_text = "f_schema = api.model('%s', dict_schema)\n" % (table_name,)
         class_text += "ma_schema = %sSchema()\n" % (table_name)
         json_text = "json_schema = JSONSchema().dump(ma_schema)\n"
 
-        schema_file_path = "%s/pyispyb/core/schemas/%s.py" % (
-            ispyb_root, schema_name)
+        schema_file_path = "%s/pyispyb/core/schemas/%s.py" % (ispyb_root, schema_name)
         if not os.path.exists(os.path.dirname(schema_file_path)):
             os.makedirs(os.path.dirname(schema_file_path))
         schema_file = open(schema_file_path, "w")

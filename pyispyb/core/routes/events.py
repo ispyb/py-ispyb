@@ -51,9 +51,7 @@ def get_datacollection_image(
     fullSize: bool = Query(False, description="Get full size image"),
 ) -> str:
     """Get a data collection image"""
-    path = crud.get_datacollection_snapshot_path(
-        dataCollectionId, imageId, fullSize
-    )
+    path = crud.get_datacollection_snapshot_path(dataCollectionId, imageId, fullSize)
     if not path:
         raise HTTPException(status_code=404, detail="Image not found")
 

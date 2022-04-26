@@ -43,7 +43,8 @@ def get_groups_permissions(groups: list[str]) -> list[str]:
         db_group: models.UserGroup | None = (
             db.session.query(models.UserGroup)
             .options(joinedload(models.UserGroup.Permission))
-            .filter_by(name=group_name).first()
+            .filter_by(name=group_name)
+            .first()
         )
         if db_group is not None:
             for permission in db_group.Permission:
@@ -68,7 +69,9 @@ class AbstractAuthentication(object):
         """
         return
 
-    def get_auth(self, username: str | None, password: str | None, token: str | None) -> tuple[str | None, list[str] | None, list[str] | None]:
+    def get_auth(
+        self, username: str | None, password: str | None, token: str | None
+    ) -> tuple[str | None, list[str] | None, list[str] | None]:
         """Return username, groups and permissions associated to the user.
 
         Args:
@@ -84,7 +87,9 @@ class AbstractAuthentication(object):
         return username, groups, get_groups_permissions(groups)
 
     @abc.abstractmethod
-    def get_user_and_groups(self, username: str | None, password: str | None, token: str | None) -> tuple[str | None, list[str] | None]:
+    def get_user_and_groups(
+        self, username: str | None, password: str | None, token: str | None
+    ) -> tuple[str | None, list[str] | None]:
         """Return username and groups associated to the user.
 
         Args:

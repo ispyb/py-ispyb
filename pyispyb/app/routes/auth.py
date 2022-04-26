@@ -62,9 +62,9 @@ router = BaseRouter(prefix="/auth", tags=["Authentication"])
 )
 def login(login: Login) -> TokenResponse:
     """Login a user"""
-    username, groups, permissions = auth_provider.get_auth(login.plugin,
-                                                           login.username, login.password, login.token
-                                                           )
+    username, groups, permissions = auth_provider.get_auth(
+        login.plugin, login.username, login.password, login.token
+    )
 
     if not username:
         raise HTTPException(status_code=401, detail="Could not verify")
@@ -73,7 +73,10 @@ def login(login: Login) -> TokenResponse:
         token_info = generate_token(username, groups, permissions)
 
         if hasattr(models, "Login"):
-            token_ispyb = hashlib.sha1(token_info["token"].encode("utf-8")).hexdigest()
+            # TODO: Use better encryption if this is used in a security context?
+            token_ispyb = hashlib.sha1(  # nosec
+                token_info["token"].encode("utf-8")
+            ).hexdigest()
 
             bd_login = models.Login(
                 token=token_ispyb,

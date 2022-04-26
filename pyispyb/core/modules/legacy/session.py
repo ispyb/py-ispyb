@@ -63,8 +63,9 @@ def get_session_infos_login_proposal(login, proposal_id):
     Returns:
         list: sessions infos
     """
-    sql = get_sql_query("session/sessionsInfosLogin",
-                        append=" and proposalId = :proposalId")
+    sql = get_sql_query(
+        "session/sessionsInfosLogin", append=" and proposalId = :proposalId"
+    )
     sql = sql.bindparams(login=login, proposalId=proposal_id)
     res = db.session.execute(sql)
     return queryresult_to_dict(res)
@@ -79,8 +80,9 @@ def get_session_infos_all_proposal(proposal_id):
     Returns:
         list: sessions infos
     """
-    sql = get_sql_query("session/sessionsInfosAll",
-                        append=" where proposalId = :proposalId")
+    sql = get_sql_query(
+        "session/sessionsInfosAll", append=" where proposalId = :proposalId"
+    )
     sql = sql.bindparams(proposalId=proposal_id)
     res = db.session.execute(sql)
     return queryresult_to_dict(res)
@@ -97,8 +99,9 @@ def get_session_infos_login_dates(login, start_date, end_date):
     Returns:
         list: sessions infos
     """
-    sql = get_sql_query("session/sessionsInfosLogin",
-                        append="""
+    sql = get_sql_query(
+        "session/sessionsInfosLogin",
+        append="""
     and (
         (BLSession_startDate >= :startDate and BLSession_startDate <= :endDate)
         or
@@ -109,7 +112,8 @@ def get_session_infos_login_dates(login, start_date, end_date):
         (BLSession_endDate <= :endDate and BLSession_startDate >= :startDate)
         )
     order by v_session.sessionId DESC
-    """)
+    """,
+    )
     sql = sql.bindparams(login=login, startDate=start_date, endDate=end_date)
     res = db.session.execute(sql)
     return queryresult_to_dict(res)
@@ -125,8 +129,9 @@ def get_session_infos_all_dates(start_date, end_date):
     Returns:
         list: sessions infos
     """
-    sql = get_sql_query("session/sessionsInfosAll",
-                        append="""
+    sql = get_sql_query(
+        "session/sessionsInfosAll",
+        append="""
     where (
         (BLSession_startDate >= :startDate and BLSession_startDate <= :endDate)
         or
@@ -137,7 +142,8 @@ def get_session_infos_all_dates(start_date, end_date):
         (BLSession_endDate <= :endDate and BLSession_startDate >= :startDate)
         )
     order by v_session.sessionId DESC
-    """)
+    """,
+    )
     sql = sql.bindparams(startDate=start_date, endDate=end_date)
     res = db.session.execute(sql)
     return queryresult_to_dict(res)

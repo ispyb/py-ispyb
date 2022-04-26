@@ -31,7 +31,9 @@ __license__ = "LGPLv3+"
 
 from .base import router as legacy_router
 
-router = AuthenticatedAPIRouter(prefix="/sessions", tags=["Sessions - legacy with header token"])
+router = AuthenticatedAPIRouter(
+    prefix="/sessions", tags=["Sessions - legacy with header token"]
+)
 
 
 @legacy_router.get(
@@ -41,9 +43,7 @@ router = AuthenticatedAPIRouter(prefix="/sessions", tags=["Sessions - legacy wit
     "",
 )
 def get_sessions(
-    permissions=Depends(
-        permission_required("any", ["own_sessions", "all_sessions"])
-    )
+    permissions=Depends(permission_required("any", ["own_sessions", "all_sessions"]))
 ):
     """Get all sessions that user is allowed to access."""
     if "all_sessions" in permissions:
@@ -60,9 +60,7 @@ def get_sessions(
 def get_sessions_by_dates(
     start_date: str,
     end_date: str,
-    permissions=Depends(
-        permission_required("any", ["own_sessions", "all_sessions"])
-    )
+    permissions=Depends(permission_required("any", ["own_sessions", "all_sessions"])),
 ):
     """Get all sessions between two dates that user is allowed to access.
 
@@ -72,9 +70,7 @@ def get_sessions_by_dates(
     """
     if "all_sessions" in permissions:
         return session.get_session_infos_all_dates(start_date, end_date)
-    return session.get_session_infos_login_dates(
-        g.username, start_date, end_date
-    )
+    return session.get_session_infos_login_dates(g.username, start_date, end_date)
 
 
 @legacy_router.get(
@@ -85,9 +81,7 @@ def get_sessions_by_dates(
 )
 def get_sessions_for_proposal(
     proposal_id: str,
-    permissions=Depends(
-        permission_required("any", ["own_sessions", "all_sessions"])
-    )
+    permissions=Depends(permission_required("any", ["own_sessions", "all_sessions"])),
 ):
     """Get all sessions for proposal that user is allowed to access.
 
@@ -97,6 +91,4 @@ def get_sessions_for_proposal(
     proposal_id = find_proposal_id(proposal_id)
     if "all_sessions" in permissions:
         return session.get_session_infos_all_proposal(proposal_id)
-    return session.get_session_infos_login_proposal(
-        g.username, proposal_id
-    )
+    return session.get_session_infos_login_proposal(g.username, proposal_id)

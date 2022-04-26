@@ -1,6 +1,8 @@
-
 import pytest
-from tests.core.full_db.functional.data.authorization import test_data_session, test_data_proposal
+from tests.core.full_db.functional.data.authorization import (
+    test_data_session,
+    test_data_proposal,
+)
 from tests.core.utils import get_token
 
 
@@ -19,7 +21,9 @@ def _run_authorization_t(ispyb_app, ispyb_settings, test_elem):
     expected = test_elem["expected"]
     code = expected["code"]
 
-    token = get_token(ispyb_app, permissions, api_root=ispyb_settings.api_root, user=username)
+    token = get_token(
+        ispyb_app, permissions, api_root=ispyb_settings.api_root, user=username
+    )
 
     headers = {"Authorization": "Bearer " + token}
 

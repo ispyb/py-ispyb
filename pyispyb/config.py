@@ -35,17 +35,19 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 RESOURCES_ROOT = os.path.join(PROJECT_ROOT, "resources")
 
 yaml_settings = dict()
-AUTH_CONFIG = os.path.realpath(os.path.join(PROJECT_ROOT, "..", os.getenv("ISPYB_AUTH", "auth.yml")))
+AUTH_CONFIG = os.path.realpath(
+    os.path.join(PROJECT_ROOT, "..", os.getenv("ISPYB_AUTH", "auth.yml"))
+)
 try:
     with open(AUTH_CONFIG) as f:
-        yaml_settings.update(yaml.load(f, Loader=yaml.FullLoader))
+        yaml_settings.update(yaml.safe_load(f, Loader=yaml.FullLoader))
 except IOError:
     raise Exception(f"Could not access auth config: {AUTH_CONFIG}")
 
 
 def get_env(name: str):
     res = os.getenv(name, None)
-    if res is None or res == '':
+    if res is None or res == "":
         raise Exception(f"You must define env variable {name}")
     else:
         return res
@@ -61,7 +63,7 @@ class Settings(BaseSettings):
     sqlalchemy_database_uri: str = get_env("SQLALCHEMY_DATABASE_URI")
     query_debug: bool
 
-    auth = yaml_settings['AUTH']
+    auth = yaml_settings["AUTH"]
 
     jwt_coding_algorithm: str
     token_exp_time: int  # in minutes

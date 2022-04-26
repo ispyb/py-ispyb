@@ -182,9 +182,7 @@ def get_events(
                     .all()
                 )
             else:
-                items = (
-                    db.session.query(ty[0]).filter(column.in_(ids[name])).all()
-                )
+                items = db.session.query(ty[0]).filter(column.in_(ids[name])).all()
             type_map[name] = {getattr(item, ty[1]): item for item in items}
 
     for result in results:
@@ -199,9 +197,7 @@ def get_events(
     return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
-def get_datacollection(
-    dataCollectionId: int
-) -> Optional[models.DataCollection]:
+def get_datacollection(dataCollectionId: int) -> Optional[models.DataCollection]:
     dc = (
         db.session.query(models.DataCollection)
         .filter(models.DataCollection.dataCollectionId == dataCollectionId)

@@ -1,4 +1,3 @@
-
 # Project: py-ispyb
 # https://github.com/ispyb/py-ispyb
 

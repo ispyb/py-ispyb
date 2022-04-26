@@ -26,7 +26,9 @@ from typing import Any
 from keycloak.exceptions import KeycloakAuthenticationError
 from keycloak.keycloak_openid import KeycloakOpenID
 
-from pyispyb.app.extensions.auth.AbstractDBGroupsAuthentication import AbstractDBGroupsAuthentication
+from pyispyb.app.extensions.auth.AbstractDBGroupsAuthentication import (
+    AbstractDBGroupsAuthentication,
+)
 from pyispyb.core import models
 import logging
 
@@ -53,9 +55,12 @@ class KeycloakDBGroupsAuthentication(AbstractDBGroupsAuthentication):
             client_id=client_id,
             realm_name=realm_name,
             client_secret_key=client_secret_key,
-            verify=True)
+            verify=True,
+        )
 
-    def get_person(self, username: str | None, password: str | None, token: str | None) -> models.Person | None:
+    def get_person(
+        self, username: str | None, password: str | None, token: str | None
+    ) -> models.Person | None:
         """Return db person associated to the user.
 
         Args:
