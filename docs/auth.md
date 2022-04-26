@@ -1,10 +1,60 @@
 # Authentication and authorization
 
-`py-ispyb` relies on plugins to handle different methods of authenticating users to the system. There are some mechanisms that are implemented natively like LDAP, keycloak and dummy but it is worth noting that anyone can write his own plugin.
+`py-ispyb` relies on plugins to handle different methods of authenticating users to the system. There are some mechanisms that are implemented natively like LDAP, keycloak and dummy that can be used out-of-the-box but it is worth noting that anyone can write his own plugin.
 
-## Configure the authentication plugin
+There's a dedicated endpoint that allows to use the different plugins that are installed. This endpoint receives as parameters: `plugin`, `username`, `password` and `token`
 
-A configuration file called `auth.yml` at the root of the project contains the configuration parameters.
+Example of the request:
+
+```
+curl -X 'POST' \
+  'http://localhost:8000/ispyb/api/v1/auth/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "plugin": "dummy",
+  "username": "test",
+  "password": "Admin",
+  "token": "Admin"
+
+}'
+```
+
+If the authentication is successful the response will be a json with the following fields:
+
+```
+{
+  "username": "test",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJncm91cHMiOlsiQWRtaW4iXSwicGVybWlzc2lvbnMiOlsiQWRtaW4iXSwiaWF0IjoxNjUwOTgxNjA5LCJleHAiOjE2NTA5OTk2MDl9.3Iq2lGG5RR6Gebss5qEDdASrEMwCIne2jFhaVqp91m0",
+  "permissions": [
+    "Admin"
+  ],
+  "groups": [
+    "Admin"
+  ]
+}
+```
+
+The HS256 token is:
+
+```
+{
+  "username": "test",
+  "groups": [
+    "Admin"
+  ],
+  "permissions": [
+    "Admin"
+  ],
+  "iat": 1650981609,
+  "exp": 1650999609
+}
+
+```
+
+## Configure the authentication plugins
+
+One or more plugin can be enabled at the same time. A configuration file called `auth.yml` at the root of the project contains their configuration parameters.
 
 The next configuration will enable the plugin dummy:
 
@@ -23,54 +73,6 @@ py-ISPyB is using the following authentication plugins, which you can find in `p
 ### `DummyAuthentication`
 
 Provides easy authentication for tests. Permissions listed in the password field are given.
-
-#### Example
-
-```
-curl -X 'POST' \
-  'http://localhost:8000/ispyb/api/v1/auth/login' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "plugin": "dummy",
-  "username": "test",
-  "password": "Admin",
-  "token": "Admin"
-
-}'
-```
-
-Response:
-
-```
-{
-  "username": "test",
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJncm91cHMiOlsiQWRtaW4iXSwicGVybWlzc2lvbnMiOlsiQWRtaW4iXSwiaWF0IjoxNjUwOTgxNjA5LCJleHAiOjE2NTA5OTk2MDl9.3Iq2lGG5RR6Gebss5qEDdASrEMwCIne2jFhaVqp91m0",
-  "permissions": [
-    "Admin"
-  ],
-  "groups": [
-    "Admin"
-  ]
-}
-```
-
-The HS256 payload token is:
-
-```
-{
-  "username": "test",
-  "groups": [
-    "Admin"
-  ],
-  "permissions": [
-    "Admin"
-  ],
-  "iat": 1650981609,
-  "exp": 1650999609
-}
-
-```
 
 ### `KeycloakDBGroupsAuthentication`
 
