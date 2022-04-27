@@ -86,9 +86,9 @@ settings = get_settings()
 class LogConfig(BaseModel):
     """Logging configuration to be set for the server"""
 
-    LOGGER_NAME: str = "mycoolapp"
+    LOGGER_NAME: str = "py-ispyb"
     LOG_FORMAT: str = "%(levelprefix)s | %(asctime)s | %(message)s"
-    LOG_LEVEL: str = "INFO"
+    LOG_LEVEL: str = "DEBUG"
 
     version = 1
     disable_existing_loggers = False
@@ -100,11 +100,20 @@ class LogConfig(BaseModel):
         },
     }
     handlers = {
+        "root": {
+            "formatter": "default",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stderr",
+        },
         "default": {
             "formatter": "default",
             "class": "logging.StreamHandler",
             "stream": "ext://sys.stderr",
         },
+    }
+    root = {
+        'handlers': ['root'],
+        'level': LOG_LEVEL,
     }
     loggers = {
         "ispyb": {"handlers": ["default"], "level": LOG_LEVEL},

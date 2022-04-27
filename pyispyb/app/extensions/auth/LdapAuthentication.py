@@ -64,11 +64,11 @@ class LdapAuthentication(AbstractAuthentication):
         user = None
         groups = None
         try:
-            msg = "LDAP login: try to authenticate user %s as internal user" % username
-            log.debug(msg)
+            
+            log.debug(f'LDAP login: try to authenticate user {username} as internal user')
             search_filter = "(uid=%s)" % username
             attrs = ["*"]
-            search_str = "uid=" + username + "," + self.ldap_base_internal
+            search_str = f'uid={username}, {self.ldap_base_internal}'
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(
                 self.ldap_base_internal,
@@ -77,24 +77,19 @@ class LdapAuthentication(AbstractAuthentication):
                 attrs,
             )
             user = username
-        except ldap.INVALID_CREDENTIALS as ex:
-            msg = "LDAP login: unable to authenticate user %s (%s)" % (
-                username,
-                str(ex),
-            )
-            log.exception(msg)
+        except ldap.INVALID_CREDENTIALS as ex:            
+            log.exception(f'LDAP login: unable to authenticate user {username} ({str(ex)})')
             return None, None
 
         try:
-            msg = "LDAP login: try to find user %s groups" % username
-            log.debug(msg)
+            
+            log.debug(f'LDAP login: Find {username} in  {self.ldap_base_internal}')
+            
             search_filter = (
-                "(&(objectClass=groupOfUniqueNames)(uniqueMember=uid="
-                + username
-                + ",ou=People,dc=esrf,dc=fr))"
+                f'(&(objectClass=groupOfUniqueNames)(uniqueMember=uid={username},{self.ldap_base_internal}))'
             )
             attrs = ["cn"]
-            search_str = "uid=" + username + "," + self.ldap_base_internal
+            search_str = f'uid={username},{self.ldap_base_internal}'
             self.ldap_conn.simple_bind_s(search_str, password)
             result = self.ldap_conn.search_s(
                 self.ldap_base_groups,
@@ -111,11 +106,7 @@ class LdapAuthentication(AbstractAuthentication):
                 if not groups:
                     groups = ["User"]
         except ldap.INVALID_CREDENTIALS as ex:
-            msg = "LDAP login: unable to authenticate user %s (%s)" % (
-                username,
-                str(ex),
-            )
-            log.exception(msg)
+            log.exception(f'LDAP login: unable to authenticate user {username} ({str(ex)})')
             return None, None
 
         if user is None or groups is None:
