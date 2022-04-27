@@ -100,11 +100,6 @@ class LogConfig(BaseModel):
         },
     }
     handlers = {
-        "root": {
-            "formatter": "default",
-            "class": "logging.StreamHandler",
-            "stream": "ext://sys.stderr",
-        },
         "default": {
             "formatter": "default",
             "class": "logging.StreamHandler",
@@ -112,7 +107,7 @@ class LogConfig(BaseModel):
         },
     }
     root = {
-        'handlers': ['root'],
+        'handlers': ['default'],
         'level': LOG_LEVEL,
     }
     loggers = {
