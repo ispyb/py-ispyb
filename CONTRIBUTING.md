@@ -1,183 +1,71 @@
-## How to contribute to repository
+# How to contribute to py-ISPyB
 
-Before submiting the code to the repository please read these contributing guidlines.
-The aim of these guidlines is to help the developers community to maintain the code stable and reusable.
+Before submiting the code to the repository please read these contributing guidelines. The aim of these guidelines is to help the developers community to maintain the code stable and reusable.
+
+Thsi is a contribution guide for [py-ISPyB](https://github.com/ispyb/py-ispyb). If you would like to learn more about the project, please start with the [README](https://github.com/ispyb/py-ispyb/blob/master/README.md).
+
+This guide is intended for members of the ISPyB collaboration with contributor access to the repository. If you are not a member but would like to contribute, please contact us.
+
+-   [Reporting Bugs](#reporting-bugs)
+-   [Submiting code to the repository](#submiting-code-to-the-repository)
+-   [Reviewing process](#reviewing-process)
+-   [Coding style guidelines](#coding-style-guidelines)
 
 ### Reporting bugs
 
-Before submitting a new bug check if the bug is not already reported in the [issues]().
-If the corresponding issue do not exist then:
+Before submitting a new bug check if the bug is not already reported in the [bug issues](https://github.com/ispyb/py-ispyb/issues?q=is%3Aopen+is%3Aissue+label%3Abug).
+If the corresponding issue does not exist then:
 
--   Open a new issue with a short description in the title.
+-   [Open a new issue](https://github.com/ispyb/py-ispyb/issues/new) with a short description in the title.
 -   In the description describe the bug:
-    -   Conditions when the bug appears.
-    -   How it can be reproduced.
-    -   Possible cause of the bug and source code where it occures.
-    -   If possible add error log and screenshot.
--   Assign a label to the issue (see available labels).
+    -   Conditions when the bug appears;
+    -   How it can be reproduced;
+    -   Possible cause of the bug and source code where it occures;
+    -   If possible add error log.
+-   Assign the `bug` label to the issue.
 
 ### Submiting code to the repository
 
-Pull request (PR) is the most convinient way of submitting a new code to the repository. It helps developers to see the proposed code and publicly review it. To avoid any conflicts in the code base it is important to keep your local git repository syncronized with the latest code in the repository. If repository is checkout out directly then use `git pull` to obtain the latest code from the repository. If a local fork is used then:
+In order to submit code to the repository, please follow these steps:
 
--   If necessary add link to the upstream repository:
+1. All code contribution has to be done from an issue. If there is no existing issue for the submission you wish to make, start by [creating a new one](https://github.com/ispyb/py-ispyb/issues/new), and describe what should be done for it to be considered as fullfiled;
 
-    ```bash
-    git remote add upstream https://github.com/---
-    ```
+2. Once you have identified your contribution issue, [assign it to yourself](https://docs.github.com/en/issues/tracking-your-work-with-issues/assigning-issues-and-pull-requests-to-other-github-users) so that everyone can keep track of what is in progress;
 
--   Fetch all branches and merge upstream to your forked master:
-    ```bash
-    git fetch --all
-    git checkout master
-    git merge upstream/master
-    ```
+3. Create a branch for the contribution. You should create a branch from the GitHub issue page, by clicking the `Create a branch` button under the `Development` section on the right;
 
-#### Preparing a new commit
+4. Start implementing your changes and [commit](https://github.com/git-guides/git-commit) them;
 
--   Create a new branch:
-    `git checkout -b NEW_BRACH_NAME`
-    -   If the pull request is associated with an issue then reference the issue in the name. For example:
-        `git checkout -b issue_100`
--   Edit necessary files, delete existing or add a new file.
--   Add files to the staging area:
-    `git add ChangedFile1 ChangedFile2`
--   Save your new commit to the local repository:
-    `git commit`
--   Commit command will open a text editor:
-    -   In the first line write a short commit summary (max 50 characters. It will appear as a title of PR.
-    -   Add an empty line.
-    -   Write a longer description.
--   Upload the content of the new branch to the remote repository:
-    `git push origin NEW_BRACH_NAME`
--   Go to the github webpage and create a new PR.
+5. Once the changes are mature enought to be discussed on, create a `draft` [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) in the repository;
 
-#### Anouncing a new pull request via github webpage
+6. When you fell like your changes are ready for production, mark the pull request as `ready`;
 
--   Go to the project webpage and press "Create pull request".
--   Edit information about the PR.
--   If needed assign a developer who shall review the PR.
+7. Wait for [review](#reviewing-process);
 
-### Accepting a pull request
+8. Once a reviewer has accepted your pull request, you are in charge of [merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request). We use `squash and merge` to keep history clear and simple.
 
--   The author of a PR may request a PR review from a certain amount of developers.
--   A reviewer can Comment, Approve or Request changes.
--   Before accepting the PR reviewer has to test the proposed code changes. To test the PR pull the proposed PR:
-    ```bash
-    git fetch origin pull/ID/head:NEW_BRANCH_NAME
-    git checkout NEW_BRANCH_NAME
-    ```
--   All the assigned reviewers of a PR have to approve the PR before it can be merged.
--   The last reviewer to review the PR have the responsibility of merging it.
--   A PR that has no reviewer can be approved and merged by anyone.
+### Reviewing process
 
-### Coding style guidlines
+Pull requests marked as ready have to be reviewed before they can be merged.
 
-It is very important to write a clean and readable code. Therefore we follow the [PEP8 guidlines](https://www.python.org/dev/peps/pep-0008/). Minimal required guidlines are:
+**The reviewer must be, if possible, from a differente facility than the author.**
 
--   Maximum 88 characters per line.
--   Use 4 spaces (not a tab) per identation level.
--   Do not use wild (star) imports.
--   Used naming styles:
-    -   lower_case_with_underscores (snake style) for variables, methods.
-    -   CapitalizedWords for class names.
-    -   UPPERCASE for constants.
--   When catching exceptions, mention specific exceptions whenever possible instead of using a bare except.
--   Add [google style](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html?highlight=google%20style) doc strings to describe methods and classes:
+The reviewer is in charge of verifying the following conditions:
 
-An example how to describe a class:
+-   the contribution matches the issue requirements
+-   no breaking change has been introduced without proper discussion
+-   sufficient testing has been implemented
+-   CI checks are green
+-   the coding style is respected
 
-```bash
-class ExampleClass(object):
-  """The summary line for a class docstring should fit on one line.
+If necessary, make comments on the code with clear hints on what to do for the author.
 
-  If the class has public attributes, they may be documented here
-  in an ``Attributes`` section and follow the same formatting as a
-  function's ``Args`` section. Alternatively, attributes may be documented
-  inline with the attribute's declaration (see __init__ method below).
+When the code is ready for production, mark the pull request as ready.
 
-  Properties created with the ``@property`` decorator should be documented
-  in the property's getter method.
+**When the reviewer validates the pull request, its author is in charge of merging.**
 
-  Attributes:
-      attr1 (str): Description of `attr1`.
-      attr2 (:obj:`int`, optional): Description of `attr2`.
+### Coding style guidelines
 
-  """
+It is very important to write a clean and readable code. Therefore we follow the [PEP8 guidlines](https://www.python.org/dev/peps/pep-0008/).
 
-  def __init__(self, param1, param2, param3):
-      """Example of docstring on the __init__ method.
-
-      The __init__ method may be documented in either the class level
-      docstring, or as a docstring on the __init__ method itself.
-
-      Either form is acceptable, but the two should not be mixed. Choose one
-      convention to document the __init__ method and be consistent with it.
-
-      Note:
-          Do not include the `self` parameter in the ``Args`` section.
-
-      Args:
-          param1 (str): Description of `param1`.
-          param2 (:obj:`int`, optional): Description of `param2`. Multiple
-              lines are supported.
-          param3 (list(str)): Description of `param3`.
-
-      """
-      self.attr1 = param1
-      self.attr2 = param2
-      self.attr3 = param3  #: Doc comment *inline* with attribute
-
-      #: list(str): Doc comment *before* attribute, with type specified
-      self.attr4 = ['attr4']
-
-      self.attr5 = None
-      """str: Docstring *after* attribute, with type specified."""
-
-```
-
-An example how to describe a function:
-
-```bash
-def function_with_types_in_docstring(param1, param2):
-  """Example function with types documented in the docstring.
-
-  `PEP 484`_ type annotations are supported. If attribute, parameter, and
-  return types are annotated according to `PEP 484`_, they do not need to be
-  included in the docstring:
-
-  Args:
-      param1 (int): The first parameter.
-      param2 (str): The second parameter.
-
-  Returns:
-      bool: The return value. True for success, False otherwise.
-
-  .. _PEP 484:
-      https://www.python.org/dev/peps/pep-0484/
-
-  """
-
-```
-
-You can use [autopep8](https://pypi.org/project/autopep8/) and [black](https://pypi.org/project/autopep8/) to format your code:
-
-```bash
-autopep8 -a -r -j 0 -i --max-line-length 88 ./
-black --safe ./
-```
-
-### Continuous integration (CI)
-
-For continuous integration Gitlab-CI is used.
-
-### Additional notes
-
-Issue and Pull request Labels
-
--   bug: indicates a bug in the code. Issue has a highest priority.
--   abstract: Abstract class involved. Issue has a hight priority.
--   question: general question.
--   not used code: suggestion to remove a code block or a file from the repository.
--   wip: work in progress
--   enchancement: code improvement.
+**In addition to this, it was decided to name variabled that refer to database colums, such as `sessionId` named the same way as they are in the schema. This is not enforced by CI linting and should be verified by reviewers.**
