@@ -1,8 +1,8 @@
 # How to contribute to py-ISPyB
 
-Before submiting the code to the repository please read these contributing guidelines. The aim of these guidelines is to help the developers community to maintain the code stable and reusable.
+Before submitting the code to this repository please read these contributing guidelines. These guidelines aim to help the developer community to maintain the code stable and reusable.
 
-Thsi is a contribution guide for [py-ISPyB](https://github.com/ispyb/py-ispyb). If you would like to learn more about the project, please start with the [README](https://github.com/ispyb/py-ispyb/blob/master/README.md).
+This is a contribution guide for [py-ISPyB](https://github.com/ispyb/py-ispyb). If you would like to learn more about the project, please start with the [README](https://github.com/ispyb/py-ispyb/blob/master/README.md).
 
 This guide is intended for members of the ISPyB collaboration with contributor access to the repository. If you are not a member but would like to contribute, please contact us.
 
@@ -20,15 +20,15 @@ If the corresponding issue does not exist then:
 -   In the description describe the bug:
     -   Conditions when the bug appears;
     -   How it can be reproduced;
-    -   Possible cause of the bug and source code where it occures;
-    -   If possible add error log.
+    -   Possible cause of the bug and source code where it occurs;
+    -   If possible add an error log.
 -   Assign the `bug` label to the issue.
 
-### Submiting code to the repository
+### Submitting code to the repository
 
-In order to submit code to the repository, please follow these steps:
+To submit code to the repository, please follow these steps:
 
-1. All code contribution has to be done from an issue. If there is no existing issue for the submission you wish to make, start by [creating a new one](https://github.com/ispyb/py-ispyb/issues/new), and describe what should be done for it to be considered as fullfiled;
+1. All code contribution has to be done from an issue. If there is no existing issue for the submission you wish to make, start by [creating a new one](https://github.com/ispyb/py-ispyb/issues/new), and describe what should be done for it to be considered as fulfilled;
 
 2. Once you have identified your contribution issue, [assign it to yourself](https://docs.github.com/en/issues/tracking-your-work-with-issues/assigning-issues-and-pull-requests-to-other-github-users) so that everyone can keep track of what is in progress;
 
@@ -36,9 +36,9 @@ In order to submit code to the repository, please follow these steps:
 
 4. Start implementing your changes and [commit](https://github.com/git-guides/git-commit) them;
 
-5. Once the changes are mature enought to be discussed on, create a `draft` [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) in the repository;
+5. Once the changes are mature enough to be discussed, create a `draft` [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) in the repository;
 
-6. When you fell like your changes are ready for production, mark the pull request as `ready`;
+6. When you feel like your changes are ready for production, mark the pull request as `ready`;
 
 7. Wait for [review](#reviewing-process);
 
@@ -48,7 +48,7 @@ In order to submit code to the repository, please follow these steps:
 
 Pull requests marked as ready have to be reviewed before they can be merged.
 
-**The reviewer must be, if possible, from a differente facility than the author.**
+**The reviewer must be, if possible, from a different facility than the author.**
 
 The reviewer is in charge of verifying the following conditions:
 
@@ -66,6 +66,6 @@ When the code is ready for production, mark the pull request as ready.
 
 ### Coding style guidelines
 
-It is very important to write a clean and readable code. Therefore we follow the [PEP8 guidlines](https://www.python.org/dev/peps/pep-0008/).
+It is very important to write clean and readable code. Therefore we follow the [PEP8 guidlines](https://www.python.org/dev/peps/pep-0008/).
 
-**In addition to this, it was decided to name variabled that refer to database colums, such as `sessionId` named the same way as they are in the schema. This is not enforced by CI linting and should be verified by reviewers.**
+**In addition to this, it was decided to name variables that refer to database columns, such as `sessionId` named the same way as they are in the schema. This is not enforced by CI linting and should be verified by reviewers.**
