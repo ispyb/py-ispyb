@@ -19,12 +19,6 @@ class AuthClient:
         self._token = res.json()["token"]
         return res
 
-    def logout(self):
-        return
-        # TODO: no logout method yet!
-        res = self._client.delete(f"{self._base_url}/auth/login")
-        assert res.status_code == 200
-
     def client(self, method, url, *args, use_base_url=True, **kwargs):
         headers = {"Authorization": f"Bearer {self._token}"}
         full_url = url
@@ -83,7 +77,6 @@ def auth_client(client, settings):
     auth = AuthClient(client, settings.api_root)
     auth.login()
     yield auth
-    auth.logout()
 
 
 @pytest.fixture
@@ -91,7 +84,6 @@ def auth_client_admin(client, settings):
     auth = AuthClient(client, settings.api_root)
     auth.login(username="efgh")
     yield auth
-    auth.logout()
 
 
 @pytest.fixture
