@@ -42,7 +42,7 @@ To submit code to the repository, please follow these steps:
 
 7. Wait for [review](#reviewing-process);
 
-8. Once a reviewer has accepted your pull request, you are in charge of [merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request). We use `squash and merge` to keep history clear and simple.
+8. Once a reviewer has approved your pull request, you are in charge of [merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request). We use `squash and merge` to keep history clear and simple.
 
 ### Reviewing process
 
