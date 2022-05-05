@@ -7,6 +7,12 @@ jobs:
     build-and-deploy:
         concurrency: ci-${{ github.ref }}
         runs-on: ubuntu-latest
+        services:
+            mariadb:
+                image: esrfbcu/ispyb-pydb:main
+                ports:
+                    - 3306:3306
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -26,16 +32,20 @@ jobs:
                   mkdocs build --strict --verbose
 
             - name: Create OpenAPI spec
+              env:
+                SQLALCHEMY_DATABASE_URI: mysql+mysqlconnector://test:test@127.0.0.1/test
+                SECRET_KEY: secret_key
+                ISPYB_AUTH: tests/config/auth.yml
               run: |
                   pip install -r requirements.txt
                   pip install -e . --no-deps
-                  cp tests/core/auth.yml auth.yml
                   python scripts/generate_apispec.py
+                  mkdir public/api
 
             - name: Run redoc
               uses: seeebiii/redoc-cli-github-action@v10
               with:
-                args: 'bundle -o api/index.html openapi.json'
+                args: 'bundle -o public/api/index.html openapi.json'
 
             - name: Deploy
               uses: JamesIves/github-pages-deploy-action@v4.3.0
