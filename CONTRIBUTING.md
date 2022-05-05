@@ -66,6 +66,6 @@ When the code is ready for production, mark the pull request as ready.
 
 ### Coding style guidelines
 
-It is very important to write clean and readable code. Therefore we follow the [PEP8 guidlines](https://www.python.org/dev/peps/pep-0008/).
+It is very important to write clean and readable code. Therefore we use `Flake8` linting and `black` formatting as a style standard. This standard is enforced in CI.
 
 **In addition to this, it was decided to name variables that refer to database columns, such as `sessionId` named the same way as they are in the schema. This is not enforced by CI linting and should be verified by reviewers.**
