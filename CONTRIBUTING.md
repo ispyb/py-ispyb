@@ -38,7 +38,7 @@ To submit code to the repository, please follow these steps:
 
 5. Once the changes are mature enough to be discussed, create a `draft` [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) in the repository;
 
-6. When you feel like your changes are ready for production, mark the pull request as `ready`;
+6. When you feel like your changes are ready for production, mark the pull request as `ready for review`;
 
 7. Wait for [review](#reviewing-process);
 
