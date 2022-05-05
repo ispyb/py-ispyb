@@ -24,7 +24,6 @@ class AuthClient:
         full_url = url
         if use_base_url:
             full_url = self._base_url + url
-        print("BASE URL", full_url)
         return getattr(self._client, method)(
             full_url, json=kwargs.get("payload"), headers=headers
         )
