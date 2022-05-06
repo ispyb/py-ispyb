@@ -40,7 +40,7 @@ def proposal_authorisation(proposal_id: str):
             )
         )
 
-    raise HTTPException(status_code=401, detail=msg)
+    raise HTTPException(status_code=403, detail=msg)
 
 
 def session_authorisation(session_id: str):
@@ -75,4 +75,4 @@ def session_authorisation(session_id: str):
             )
         )
 
-    raise HTTPException(status_code=401, detail=msg)
+    raise HTTPException(status_code=403, detail=msg)
