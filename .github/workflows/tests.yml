@@ -3,21 +3,29 @@ name: Test
 on: [push]
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                python-version: ["3.10"]
-        steps:
-            - uses: actions/checkout@v3
-            - name: Set up Python ${{ matrix.python-version }}
-              uses: actions/setup-python@v3
-              with:
-                  python-version: ${{ matrix.python-version }}
-            - name: Install dependencies
-              run: |
-                  pip install tox
-            - name: Analysing the code with flake8
-              run: |
-                  echo TODO setup test db
-            #   tox -e py310
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: ispyb/ispyb-pydb:latest
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y libldap2-dev libsasl2-dev
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install -e . --no-deps
+      - name: Run tests
+        run: |
+          pytest
