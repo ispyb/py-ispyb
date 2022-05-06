@@ -4,16 +4,32 @@
 
 ### Run test
 
-In order to run the test, you need to install `tox`:
+In order to run the test, you need to have the test database up and running:
 
 ```bash
-pip install tox
+sudo docker run -p 3306:3306 -d --rm --name pydb-test ispyb/ispyb-pydb:latest
 ```
 
-This command manages the test and linting verification.
+Install dev dependencies:
 
-To tun both of them simply type `tox`.
+```
+pip install -r requirements-dev.txt
+```
 
-To run only the test, you can type `tox -e py38`.
+Then, to run the tests, simply type:
 
-To run only the linters, you can type `tox -e flake8`.
+```
+pytest
+```
+
+To run the linting, type:
+
+```
+flake8
+```
+
+Convenience script to run both of them:
+
+```
+. scripts/test.sh
+```
