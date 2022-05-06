@@ -388,13 +388,21 @@
 <h2 id="py-ispyb-tests">py-ispyb tests<a class="headerlink" href="#py-ispyb-tests" title="Permanent link">#</a></h2>
 <hr />
 <h3 id="run-test">Run test<a class="headerlink" href="#run-test" title="Permanent link">#</a></h3>
-<p>In order to run the test, you need to install <code>tox</code>:</p>
-<pre><code class="language-bash">pip install tox
+<p>In order to run the test, you need to have the test database up and running:</p>
+<pre><code class="language-bash">sudo docker run -p 3306:3306 -d --rm --name pydb-test ispyb/ispyb-pydb:latest
 </code></pre>
-<p>This command manages the test and linting verification.</p>
-<p>To tun both of them simply type <code>tox</code>.</p>
-<p>To run only the test, you can type <code>tox -e py38</code>.</p>
-<p>To run only the linters, you can type <code>tox -e flake8</code>.</p>
+<p>Install dev dependencies:</p>
+<pre><code>pip install -r requirements-dev.txt
+</code></pre>
+<p>Then, to run the tests, simply type:</p>
+<pre><code>pytest
+</code></pre>
+<p>To run the linting, type:</p>
+<pre><code>flake8
+</code></pre>
+<p>Convenience script to run both of them:</p>
+<pre><code>. scripts/test.sh
+</code></pre>
 
               
             </article>
