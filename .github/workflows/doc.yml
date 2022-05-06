@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         services:
             mariadb:
-                image: esrfbcu/ispyb-pydb:main
+                image: ispyb/ispyb-pydb:latest
                 ports:
                     - 3306:3306
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
