@@ -18,18 +18,13 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
-import json
-import hashlib
 from typing import Optional
 from pydantic import BaseModel
 from fastapi import status, HTTPException
 
 from pyispyb.app.extensions.auth import auth_provider
 from pyispyb.app.extensions.auth.token import generate_token
-from pyispyb.app.extensions.database.middleware import db
 
-from pyispyb.core import models
 from ..base import BaseRouter
 
 
@@ -71,22 +66,5 @@ def login(login: Login) -> TokenResponse:
 
     else:
         token_info = generate_token(username, groups, permissions)
-
-        if hasattr(models, "Login"):
-            # TODO: Use better encryption if this is used in a security context?
-            token_ispyb = hashlib.sha1(  # nosec
-                token_info["token"].encode("utf-8")
-            ).hexdigest()
-
-            bd_login = models.Login(
-                token=token_ispyb,
-                username=token_info["username"],
-                roles=json.dumps(token_info["groups"]),
-                expirationTime=datetime.datetime.strptime(
-                    token_info["exp"], "%Y-%m-%d %H:%M:%S"
-                ),
-            )
-            db.session.add(bd_login)
-            db.session.commit()
 
         return token_info
