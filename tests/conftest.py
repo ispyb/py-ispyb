@@ -81,7 +81,7 @@ def auth_client(client: TestClient):
 def short_session():
     old_token_exp_time = settings.token_exp_time
 
-    new_token_exp_time = 3 / 60
+    new_token_exp_time = 0
     settings.token_exp_time = new_token_exp_time
 
     yield new_token_exp_time
