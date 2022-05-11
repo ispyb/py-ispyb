@@ -1,25 +1,29 @@
-import os
+from fastapi import Response
 from fastapi.testclient import TestClient
 import pytest
 
+from tests.appsettings import app, settings
+
 
 class AuthClient:
-    def __init__(self, client, base_url):
+    def __init__(self, client: TestClient, base_url: str):
         self._client = client
         self._base_url = base_url
 
-    def login(self, username="abcd", password="abcd"):
+    def login(self, username: str, permissions: str):
         res = self._client.post(
             f"{self._base_url}/auth/login",
-            json={"username": username, "password": password, "plugin": "dummy"},
+            json={"username": username, "password": permissions, "plugin": "dummy"},
         )
 
         assert res.status_code == 201
 
-        self._token = res.json()["token"]
+        self._token: str = res.json()["token"]
         return res
 
-    def client(self, method, url, *args, use_base_url=True, **kwargs):
+    def client(
+        self, method: str, url: str, *args, use_base_url=True, **kwargs
+    ) -> Response:
         headers = {"Authorization": f"Bearer {self._token}"}
         full_url = url
         if use_base_url:
@@ -49,46 +53,32 @@ class AuthClient:
 
 
 @pytest.fixture()
-def setup_env():
-    os.environ["SECRET_KEY"] = "test_secret"
-    os.environ[
-        "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+mysqlconnector://test:test@127.0.0.1/test"
-    os.environ["ISPYB_AUTH"] = "tests/config/auth.yml"
-
-
-@pytest.fixture()
-def client(setup_env, settings):
-    from pyispyb.app.main import app
-
+def client():
     return TestClient(app)
 
 
-@pytest.fixture()
-def settings():
-    from pyispyb.config import settings
-
-    yield settings
-
-
 @pytest.fixture
-def auth_client(client, settings):
+def auth_client_abcd(client: TestClient):
     auth = AuthClient(client, settings.api_root)
-    auth.login()
+    auth.login(username="abcd", permissions="abcd")
     yield auth
 
 
 @pytest.fixture
-def auth_client_admin(client, settings):
+def auth_client_efgh(client: TestClient):
     auth = AuthClient(client, settings.api_root)
-    auth.login(username="efgh")
+    auth.login(username="efgh", permissions="efgh")
+    yield auth
+
+
+@pytest.fixture
+def auth_client(client: TestClient):
+    auth = AuthClient(client, settings.api_root)
     yield auth
 
 
 @pytest.fixture
 def short_session():
-    from pyispyb.config import settings
-
     old_token_exp_time = settings.token_exp_time
 
     new_token_exp_time = 3 / 60
