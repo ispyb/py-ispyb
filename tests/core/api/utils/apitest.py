@@ -1,6 +1,7 @@
 from typing import Any
 
 from tests.authclient import AuthClient
+from jsondiff import diff
 
 
 class ApiTestInput:
@@ -36,12 +37,34 @@ def run_test(auth_client: AuthClient, test_elem: ApiTestElem):
     auth_client.login(test_elem.input.username, ",".join(test_elem.input.permissions))
 
     response = auth_client.get(test_elem.input.route)
-    print(response.json())
 
     if test_elem.expected.code is not None:
-        assert response.status_code == test_elem.expected.code, "[GET] %s " % (
-            test_elem.name
-        )
+        assert (
+            response.status_code == test_elem.expected.code
+        ), f"""
+        TEST { test_elem.name }
+        EXPECTED code { test_elem.expected.code }
+        GOT code { response.status_code }
+        """
 
     if test_elem.expected.res is not None:
-        assert response.json() == test_elem.expected.res, "[GET] %s " % (test_elem.name)
+        assert (
+            response.json() == test_elem.expected.res
+        ), f"""
+        TEST { test_elem.name }
+
+        EXPECTED json
+        =============================
+        { test_elem.expected.res }
+        =============================
+
+        GOT json
+        =============================
+        { response.json() }
+        =============================
+        
+        DIFF
+        =============================
+        { diff(test_elem.expected.res, response.json()) }
+        =============================
+        """
