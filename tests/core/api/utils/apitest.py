@@ -1,0 +1,47 @@
+from typing import Any
+
+from tests.authclient import AuthClient
+
+
+class ApiTestInput:
+    def __init__(self, username: str, permissions: list[str], route: str) -> None:
+        self.username = username
+        self.permissions = permissions
+        self.route = route
+
+
+class ApiTestExpected:
+    def __init__(
+        self, code: int | None = None, res: dict[str, Any] | None = None
+    ) -> None:
+        self.code = code
+        self.res = res
+
+
+class ApiTestElem:
+    def __init__(
+        self, name: str, input: ApiTestInput, expected: ApiTestExpected
+    ) -> None:
+        self.name = name
+        self.input = input
+        self.expected = expected
+
+
+def get_elem_name(test_elem: ApiTestElem):
+    return test_elem.name
+
+
+def run_test(auth_client: AuthClient, test_elem: ApiTestElem):
+
+    auth_client.login(test_elem.input.username, ",".join(test_elem.input.permissions))
+
+    response = auth_client.get(test_elem.input.route)
+    print(response.json())
+
+    if test_elem.expected.code is not None:
+        assert response.status_code == test_elem.expected.code, "[GET] %s " % (
+            test_elem.name
+        )
+
+    if test_elem.expected.res is not None:
+        assert response.json() == test_elem.expected.res, "[GET] %s " % (test_elem.name)
