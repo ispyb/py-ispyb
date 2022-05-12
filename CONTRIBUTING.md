@@ -40,15 +40,16 @@ To submit code to the repository, please follow these steps:
 
 6. If your pull request is a draft, when you feel like your changes are ready for production, mark the pull request as `ready for review`;
 
-7. Wait for [review](#reviewing-process);
+7. You may add one or more reviewers to the pull request; if so the pull request must wait till all of these have made a review. Alternatively you can leave the pull request for reviewers to volunteer. People are free to review pull requests whether invited or not.
+8. Wait for [review](#reviewing-process);
 
-8. Once a reviewer has approved your pull request, you are in charge of [merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request). We use `squash and merge` to keep history clear and simple.
+9. Once a reviewer has approved your pull request, you are in charge of [merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request). We use `squash and merge` to keep history clear and simple.
 
 ### Reviewing process
 
 Pull requests marked as ready have to be reviewed before they can be merged.
 
-**The reviewer must be, if possible, from a different facility than the author.**
+**At least one reviewer must be, if possible, from a different facility than the author.**
 
 The reviewer is in charge of verifying the following conditions:
 
