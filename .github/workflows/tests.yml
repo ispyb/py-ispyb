@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mariadb:
-        image: ispyb/ispyb-pydb:v0.3.0
+        image: ispyb/ispyb-pydb:latest
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -28,4 +28,9 @@ jobs:
           pip install -e . --no-deps
       - name: Run tests
         run: |
-          pytest
+          pytest --cov=pyispyb --cov-report xml tests/
+      - name: Coverage report
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: true
