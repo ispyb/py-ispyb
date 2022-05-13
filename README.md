@@ -2,6 +2,8 @@
 
 ISPyB backend server based on FastAPI.
 
+[![codecov](https://codecov.io/gh/ispyb/py-ispyb/branch/master/graph/badge.svg?token=aqUsyDbqOG)](https://codecov.io/gh/ispyb/py-ispyb)
+
 ## Getting started
 
 You need to have `python >= 3.10`.
