@@ -26,16 +26,21 @@ def sync_proposal(proposal: schema.UserPortalProposalSync) -> time:
     # Get source entity dicts
     source_proposal = full_dict.pop("proposal")
     source_persons = full_dict.pop("persons")
+    source_proteins = full_dict.pop("proteins")
 
     try:
         # Process the Persons
         user_portal_sync.process_persons(source_persons)
-        # At this point all Persons have been either updated or created
+        # At this point all Person/Laboratory entities have been either updated or created
 
         # Process the Proposal
         # The first Person in the list will be the one having the relation to the proposal table
         # For now ignoring the update if the person list changes the order
         user_portal_sync.process_proposal(source_proposal, source_persons[0])
+        # At this point the Proposal entity has been either updated or created
+
+        # Process proteins
+        user_portal_sync.process_proteins(source_proteins)
 
         session.commit()
     except Exception as e:
@@ -115,6 +120,8 @@ class UserPortalSync(object):
                     and tar["proposalNumber"] == sourceProposal["proposalNumber"]
                 ):
                     update = False
+                    # Set the proposalId to be used to link other entities (sessions, proteins, etc)
+                    self.proposalId = tar["proposalId"]
                     # Check which Proposal values should we inspect to see if they changed
                     for k in ["title"]:
                         if tar[k] != sourceProposal[k]:
@@ -168,23 +175,15 @@ class UserPortalSync(object):
             self.session.flush()
         return prop
 
-    def update_laboratory(
-        self, laboratoryId: int, sourceLaboratory: dict[str, Any]
-    ) -> models.Laboratory:
-        """Updates a Laboratory entity."""
-        lab = (
-            self.session.query(models.Laboratory)
-            .filter(models.Laboratory.laboratoryId == laboratoryId)
-            .first()
-        )
-        if lab:
-            lab.name = sourceLaboratory["name"]
-            lab.address = sourceLaboratory["address"]
-            lab.city = sourceLaboratory["city"]
-            lab.country = sourceLaboratory["country"]
-            # Do not update the laboratory until the commit is done
-            self.session.flush()
-        return lab
+    def add_person(self, sourcePerson: dict[str, Any], laboratoryId=None) -> int:
+        """Add a new person together with relation to a laboratory if passed."""
+        if laboratoryId:
+            sourcePerson["laboratoryId"] = laboratoryId
+        person = models.Person(**sourcePerson)
+        self.session.add(person)
+        # Flush to get the new personId
+        self.session.flush()
+        return person.personId
 
     def update_person(
         self, personId: int, sourcePerson: dict[str, Any]
@@ -206,16 +205,6 @@ class UserPortalSync(object):
             self.session.flush()
         return pers
 
-    def add_person(self, sourcePerson: dict[str, Any], laboratoryId=None) -> int:
-        """Add a new person together with relation to a laboratory if passed."""
-        if laboratoryId:
-            sourcePerson["laboratoryId"] = laboratoryId
-        person = models.Person(**sourcePerson)
-        self.session.add(person)
-        # Flush to get the new personId
-        self.session.flush()
-        return person.personId
-
     def add_laboratory(self, sourceLaboratory: dict[str, Any]) -> int:
         """Add a new laboratory."""
         laboratory = models.Laboratory(**sourceLaboratory)
@@ -223,6 +212,24 @@ class UserPortalSync(object):
         # Flush to get the new laboratoryId
         self.session.flush()
         return laboratory.laboratoryId
+
+    def update_laboratory(
+        self, laboratoryId: int, sourceLaboratory: dict[str, Any]
+    ) -> models.Laboratory:
+        """Updates a Laboratory entity."""
+        lab = (
+            self.session.query(models.Laboratory)
+            .filter(models.Laboratory.laboratoryId == laboratoryId)
+            .first()
+        )
+        if lab:
+            lab.name = sourceLaboratory["name"]
+            lab.address = sourceLaboratory["address"]
+            lab.city = sourceLaboratory["city"]
+            lab.country = sourceLaboratory["country"]
+            # Do not update the laboratory until the commit is done
+            self.session.flush()
+        return lab
 
     @timed
     def process_persons(self, sourcePersons: dict[str, Any]):
@@ -330,3 +337,54 @@ class UserPortalSync(object):
                 laboratory_id = self.add_laboratory(src_lab)
                 person.laboratoryId = laboratory_id
                 self.session.flush()
+
+    def check_proteins(self, sourceProteins):
+        """Check Protein entities to see if they exist already, if not it creates a new one."""
+        for protein in sourceProteins:
+            prot = (
+                self.session.query(models.Protein)
+                .filter(models.Protein.proposalId == self.proposalId)
+                .filter(models.Protein.acronym == protein["acronym"])
+                .first()
+            )
+            if not prot:
+                logger.debug(
+                    f"Protein with acronym {protein['acronym']} "
+                    f"for Proposal {self.proposalId} does not exist. Creating it"
+                )
+                self.add_protein(protein)
+            else:
+                # if the protein already exist we just update all the values
+                del protein["person"]
+                self.session.query(models.Protein).filter(
+                    models.Protein.proposalId == self.proposalId
+                ).filter(models.Protein.acronym == protein["acronym"]).update(protein)
+                self.session.flush()
+
+    def add_protein(self, sourceProtein) -> int:
+        """Add a new Protein.
+        Here we assume the person related to the protein will be always a proposal participant
+        meaning the person is already on the DB or pending to be commited
+        """
+        pers = (
+            self.session.query(models.Person)
+            .options(joinedload(models.Person.Laboratory))
+            .filter(models.Person.siteId == sourceProtein["person"]["siteId"])
+            .first()
+        )
+        if pers:
+            """Add a new protein."""
+            del sourceProtein["person"]
+            protein = models.Protein(**sourceProtein)
+            protein.proposalId = self.proposalId
+            protein.personId = pers.personId
+            self.session.add(protein)
+            # Flush to get the new proteinId
+            self.session.flush()
+            return protein.proteinId
+
+    @timed
+    def process_proteins(self, sourceProteins: dict[str, Any]):
+        """Process the creation or update of Proteins"""
+        # Check if proteins exist the DB
+        self.check_proteins(sourceProteins)
