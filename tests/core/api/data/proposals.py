@@ -35,6 +35,17 @@ test_data_proposal_list = [
         ),
         expected=ApiTestExpected(code=200, res=[]),
     ),
+    ApiTestElem(
+        name="list all_proposals",
+        input=ApiTestInput(
+            permissions=[
+                "all_proposals",
+            ],
+            username="pasteur",
+            route="/proposals",
+        ),
+        expected=ApiTestExpected(code=200),
+    ),
 ]
 
 test_data_proposal_info = [

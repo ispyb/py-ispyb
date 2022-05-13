@@ -208,6 +208,17 @@ test_data_session_list = [
         ),
         expected=ApiTestExpected(code=200, res=[]),
     ),
+    ApiTestElem(
+        name="list all_sessions",
+        input=ApiTestInput(
+            permissions=[
+                "all_sessions",
+            ],
+            username="pasteur",
+            route="/sessions",
+        ),
+        expected=ApiTestExpected(code=200),
+    ),
 ]
 
 
@@ -774,5 +785,16 @@ test_data_session_proposal_list = [
             route="/sessions/proposal/UNKN",
         ),
         expected=ApiTestExpected(code=200, res=[]),
+    ),
+    ApiTestElem(
+        name="list all_sessions",
+        input=ApiTestInput(
+            permissions=[
+                "all_sessions",
+            ],
+            username="pasteur",
+            route="/sessions/proposal/MX1",
+        ),
+        expected=ApiTestExpected(code=200),
     ),
 ]
