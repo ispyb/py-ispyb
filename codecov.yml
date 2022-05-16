@@ -30,3 +30,6 @@ comment:
 
 github_checks:
     annotations: false
+
+ignore:
+    - "pyispyb/core/models.py"
