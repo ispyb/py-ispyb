@@ -47,7 +47,7 @@ def get_groups_permissions(groups: list[str]) -> list[str]:
             .first()
         )
         if db_group is not None:
-            for permission in db_group.Permission:
+            for permission in db_group.permissions:
                 permissions.append(permission.type)
     return permissions
 

@@ -1,0 +1,55 @@
+--- pyispyb/core/models.py	2022-05-16 10:59:21.378383096 +0200
++++ pyispyb/core/models_patched.py	2022-05-16 10:51:49.581463629 +0200
+@@ -22,8 +22,10 @@
+ from sqlalchemy.dialects.mysql.types import LONGBLOB
+ from sqlalchemy.ext.declarative import declarative_base
+ 
++from pyispyb.app.extensions.database.utils import CustomBase
+ 
+-Base = declarative_base()
++
++Base = declarative_base(cls=CustomBase)
+ metadata = Base.metadata
+ 
+ 
+@@ -46,25 +48,22 @@
+     comments = Column(String(512))
+     creationTime = Column(DateTime)
+ 
+-    Model = relationship(
++    AveragedModel = relationship(
+         "Model",
+         primaryjoin="AbInitioModel.averagedModelId == Model.modelId",
+-        backref="model_model_ab_initio_models",
+     )
+     ModelList = relationship(
+         "ModelList",
+         primaryjoin="AbInitioModel.modelListId == ModelList.modelListId",
+         backref="ab_initio_models",
+     )
+-    Model1 = relationship(
++    RapidShapeDeterminationModel = relationship(
+         "Model",
+         primaryjoin="AbInitioModel.rapidShapeDeterminationModelId == Model.modelId",
+-        backref="model_model_ab_initio_models_0",
+     )
+-    Model2 = relationship(
++    ShapeDeterminationModel = relationship(
+         "Model",
+         primaryjoin="AbInitioModel.shapeDeterminationModelId == Model.modelId",
+-        backref="model_model_ab_initio_models",
+     )
+ 
+ 
+@@ -2558,11 +2557,6 @@
+         primaryjoin="Image.dataCollectionId == DataCollection.dataCollectionId",
+         backref="datacollection_images",
+     )
+-    DataCollection1 = relationship(
+-        "DataCollection",
+-        primaryjoin="Image.dataCollectionId == DataCollection.dataCollectionId",
+-        backref="datacollection_images_0",
+-    )
+ 
+ 
+ class ImageQualityIndicators(Base):

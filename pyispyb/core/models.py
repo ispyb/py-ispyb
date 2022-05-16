@@ -22,8 +22,10 @@ from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql.types import LONGBLOB
 from sqlalchemy.ext.declarative import declarative_base
 
+from pyispyb.app.extensions.database.utils import CustomBase
 
-Base = declarative_base()
+
+Base = declarative_base(cls=CustomBase)
 metadata = Base.metadata
 
 
@@ -46,25 +48,22 @@ class AbInitioModel(Base):
     comments = Column(String(512))
     creationTime = Column(DateTime)
 
-    Model = relationship(
+    AveragedModel = relationship(
         "Model",
         primaryjoin="AbInitioModel.averagedModelId == Model.modelId",
-        backref="model_model_ab_initio_models",
     )
     ModelList = relationship(
         "ModelList",
         primaryjoin="AbInitioModel.modelListId == ModelList.modelListId",
         backref="ab_initio_models",
     )
-    Model1 = relationship(
+    RapidShapeDeterminationModel = relationship(
         "Model",
         primaryjoin="AbInitioModel.rapidShapeDeterminationModelId == Model.modelId",
-        backref="model_model_ab_initio_models_0",
     )
-    Model2 = relationship(
+    ShapeDeterminationModel = relationship(
         "Model",
         primaryjoin="AbInitioModel.shapeDeterminationModelId == Model.modelId",
-        backref="model_model_ab_initio_models",
     )
 
 
@@ -2557,11 +2556,6 @@ class Image(Base):
         "DataCollection",
         primaryjoin="Image.dataCollectionId == DataCollection.dataCollectionId",
         backref="datacollection_images",
-    )
-    DataCollection1 = relationship(
-        "DataCollection",
-        primaryjoin="Image.dataCollectionId == DataCollection.dataCollectionId",
-        backref="datacollection_images_0",
     )
 
 
