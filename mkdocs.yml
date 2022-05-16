@@ -5,6 +5,7 @@ nav:
     - Authentication and authorization: auth.md
     - Routes: routes.md
     - Tests: tests.md
+    - Models: model.md
 theme:
     name: material
 site_dir: public
