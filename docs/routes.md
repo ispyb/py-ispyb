@@ -6,6 +6,9 @@
 
 To get a documentation gathering all the available routes, simply open the `/docs` route.
 
+You may also check the automatic generated API documentation (Redoc) at:
+[https://ispyb.github.io/py-ispyb/api/](https://ispyb.github.io/py-ispyb/api/)
+
 ---
 
 ## Java ISPyB compatibility
