@@ -27,6 +27,8 @@ jobs:
           pip install -r requirements-dev.txt
           pip install -e . --no-deps
       - name: Run tests
+        env:
+          ISPYB_ENVIRONMENT: ci
         run: |
           pytest --cov=pyispyb --cov-report xml tests/
       - name: Coverage report

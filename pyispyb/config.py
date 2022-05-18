@@ -45,6 +45,17 @@ except IOError:
     raise Exception(f"Could not access auth config: {AUTH_CONFIG}")
 
 
+def get_env_file():
+    res = os.getenv("ISPYB_ENVIRONMENT", None)
+    if res is None or res == "":
+        return "config/.env"
+    v = f"config/{res}.env"
+    if os.path.exists(v):
+        return v
+
+    raise Exception(f"Config file {v} could not be found.")
+
+
 class Settings(BaseSettings):
     static_root: str = os.path.join(PROJECT_ROOT, "static")
     queries_dir: str = os.path.join(RESOURCES_ROOT, "queries")
@@ -64,7 +75,7 @@ class Settings(BaseSettings):
     cors: bool = False
 
     class Config:
-        env_file = ".env"
+        env_file = get_env_file()
 
 
 @lru_cache

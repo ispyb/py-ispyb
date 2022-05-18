@@ -1,7 +1,8 @@
 from fastapi.testclient import TestClient
 import pytest
 
-from tests.appsettings import app, settings
+from pyispyb.config import settings
+from pyispyb.app.main import app
 from tests.authclient import AuthClient
 
 

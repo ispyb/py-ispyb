@@ -1,6 +1,6 @@
 import time
 from fastapi.testclient import TestClient
-from tests.appsettings import settings
+from pyispyb.config import settings
 
 
 def test_token_create_decode(client: TestClient):
