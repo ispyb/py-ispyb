@@ -34,16 +34,6 @@ import yaml
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 RESOURCES_ROOT = os.path.join(PROJECT_ROOT, "resources")
 
-yaml_settings = dict()
-AUTH_CONFIG = os.path.realpath(
-    os.path.join(PROJECT_ROOT, "..", os.getenv("ISPYB_AUTH", "auth.yml"))
-)
-try:
-    with open(AUTH_CONFIG) as f:
-        yaml_settings.update(yaml.safe_load(f))
-except IOError:
-    raise Exception(f"Could not access auth config: {AUTH_CONFIG}")
-
 
 def get_env_file():
     res = os.getenv("ISPYB_ENVIRONMENT", None)
@@ -66,7 +56,8 @@ class Settings(BaseSettings):
     sqlalchemy_database_uri: str
     query_debug: bool
 
-    auth = yaml_settings["AUTH"]
+    auth = {}
+    auth_config: str
 
     jwt_coding_algorithm: str
     token_exp_time: int  # in minutes
@@ -84,6 +75,17 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+
+AUTH_CONFIG = os.path.realpath(
+    os.path.join(PROJECT_ROOT, "..", settings.auth_config)
+)
+try:
+    with open(AUTH_CONFIG) as f:
+        yaml_settings = dict()
+        yaml_settings.update(yaml.safe_load(f))
+        settings.auth = yaml_settings["AUTH"]
+except IOError:
+    raise Exception(f"Could not access auth config: {AUTH_CONFIG}")
 
 
 class LogConfig(BaseModel):
