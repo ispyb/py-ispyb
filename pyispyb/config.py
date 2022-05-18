@@ -76,9 +76,7 @@ def get_settings() -> Settings:
 
 settings = get_settings()
 
-AUTH_CONFIG = os.path.realpath(
-    os.path.join(PROJECT_ROOT, "..", settings.auth_config)
-)
+AUTH_CONFIG = os.path.realpath(os.path.join(PROJECT_ROOT, "..", settings.auth_config))
 try:
     with open(AUTH_CONFIG) as f:
         yaml_settings = dict()
