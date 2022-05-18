@@ -5,4 +5,14 @@
     "python.linting.flake8Path": "flake8",
     "editor.formatOnSave": true,
     "python.formatting.provider": "black",
+    "prettier.tabWidth": 4,
+    "[yaml]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }
