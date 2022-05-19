@@ -37,7 +37,7 @@ jobs:
           SECRET_KEY: secret_key
           ISPYB_AUTH: tests/config/auth.yml
         run: |
-          sudo apt-get install -y libldap2-dev libsasl2-dev
+          sudo apt-get update && sudo apt-get install -y libldap2-dev libsasl2-dev
           pip install -r requirements.txt
           pip install -e . --no-deps
           python scripts/generate_apispec.py
