@@ -2,5 +2,4 @@
 
 export ISPYB_ENVIRONMENT="test"
 
-pytest
-flake8
+pytest --cov=pyispyb --cov-report html tests/

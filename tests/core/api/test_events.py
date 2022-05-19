@@ -1,3 +1,13 @@
-def test_events(auth_client):
-    res = auth_client.get("/events")
-    assert res.status_code == 200
+import pytest
+
+from tests.conftest import AuthClient
+from tests.core.api.utils.apitest import get_elem_name, run_test, ApiTestElem
+
+from tests.core.api.data.events import (
+    test_data_events,
+)
+
+
+@pytest.mark.parametrize("test_elem", test_data_events, ids=get_elem_name)
+def test_proposal_list(auth_client: AuthClient, test_elem: ApiTestElem):
+    run_test(auth_client, test_elem)

@@ -2,6 +2,11 @@
 
 ---
 
+### Coverage information
+
+Test coverage information is available at
+https://app.codecov.io/gh/ispyb/py-ispyb/
+
 ### Run test
 
 In order to run the test, you need to have the test database up and running:
