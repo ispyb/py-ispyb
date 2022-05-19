@@ -4,40 +4,120 @@
 
 ### Get project code
 
-Clone [py-ISPyB repository](https://gitlab.esrf.fr/ispyb/py-ispyb)
+Clone [py-ISPyB repository](https://github.com/ispyb/py-ispyb)
+
+```bash
+# SSH (recommended)
+git clone git@github.com:ispyb/py-ispyb.git
+
+# HTTPS
+git clone https://github.com/ispyb/py-ispyb.git
+```
+
+Recommended IDE is [Visual Studio Code](https://code.visualstudio.com/), which will automatically get configured when opening the project.
+
+---
+
+### Setup Python
+
+You need to have `python >= 3.10`
+
+> To achieve this easily, you can use a conda virtual environment:  
+> See [installation instuctions](https://docs.anaconda.com/anaconda/install/linux/).  
+> Then set up the environment:
+>
+> ```bash
+> conda create -n py-ispyb python=3.10
+> conda activate py-ispyb
+> ```
 
 ---
 
 ### Install requirements
 
-You need to have `python >= 3.10`
+Install linux requirements:
+
+```bash
+sudo apt-get update && sudo apt-get install -y libldap2-dev libsasl2-dev libmariadb-dev  build-essential
+```
 
 Install python dependencies:
 
-`sudo pip install -r requirements.txt`
+```bash
+# For development and production
+pip install -r requirements.txt
+
+# For development only
+pip install -r requirements-dev.txt
+```
 
 ---
 
-### Copy and edit yaml auth configuration file
+### Configure py-ISPyB
 
-`cp examples/auth.yml auth.yml`
+Configure authentication
+(more information in [auth section](auth.md)).
 
-If you do not have a running ispyb database then you can create one using:
+```bash
+# edit this file to configure authentication
+cp examples/auth.yml auth.yml
+```
 
-`examples/pydb_empty.sql`
+[Configuration](<(conf.md)>) is provided through environment variables.
+
+- Ready-to-run configuration preset is provided for test and development environments.
+- Production needs some further configuration before running (see [configuration section](conf.md)).
+
+---
+
+### Setup database
+
+#### Mockup database
+
+For development and test, a mockup database is available.  
+You can have it up and running easily with docker:
+
+```bash
+sudo docker run -p 3306:3306 --rm --name ispyb-pydb ispyb/ispyb-pydb:latest
+```
+
+#### For tests
+
+To run the tests, you need to have the mockup database up and running.
+
+#### For development
+
+By default, the development environment will connect to the mockup database.  
+If you want to use a different one, make sure to override it by setting the `SQLALCHEMY_DATABASE_URI` environment variable.
+
+#### For production
+
+Make sure to set the `SQLALCHEMY_DATABASE_URI` environment variable.
 
 ---
 
 ### Run application
 
-`. uvicorn.sh`
-
-Now you can go to [http://localhost:8000/docs](http://localhost:8000/docs) and explore py-ispyb via OpenAPI ui. Please see the [routes section](routes.md) for more information.
-
-For requests use the token in the `Authorization` header: `YOUR_JWT_TOKEN`.
-Please see the [authentication and authorization section](auth.md) for more information.
-For example to retrieve proposals call:
+#### Tests
 
 ```bash
-curl -X GET -H 'Authorization: Bearer YOUR_JWT_TOKEN' -i http://localhost:8000/ispyb/api/v1/proposals
+. scripts/test.sh
 ```
+
+#### Development
+
+```bash
+. uvicorn.sh
+```
+
+#### Production
+
+```bash
+uvicorn pyispyb.app.main:app
+```
+
+---
+
+### More information
+
+Please see the [routes section](routes.md) and the [authentication and authorization section](auth.md) for more information on how to use py-ispyb.

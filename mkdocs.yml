@@ -1,18 +1,26 @@
 site_name: py-ISPyB
 nav:
-    - Home: index.md
-    - Running: run.md
-    - Authentication and authorization: auth.md
-    - Routes: routes.md
-    - Tests: tests.md
-    - Models: model.md
+  - Home: index.md
+  - Get started: run.md
+  - Tests: tests.md
+  - Configuration: conf.md
+  - Authentication and authorization: auth.md
+  - Routes: routes.md
+  - Models: model.md
+  - ⧉ Tests coverage: https://app.codecov.io/gh/ispyb/py-ispyb/
+  - ⧉ Endpoints documentation: https://ispyb.github.io/py-ispyb/api/
 theme:
-    name: material
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes
+    - navigation.top
 site_dir: public
 site_url: https://ispyb.github.io/py-ispyb/
 repo_url: https://github.com/ispyb/py-ispyb
 repo_name: "GitHub"
 markdown_extensions:
-    - toc:
-          permalink: "#"
+  - toc:
+      permalink: "#"
 dev_addr: "127.0.0.1:8080"

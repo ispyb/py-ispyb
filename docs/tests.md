@@ -5,7 +5,7 @@
 ### Coverage information
 
 Test coverage information is available at
-https://app.codecov.io/gh/ispyb/py-ispyb/
+[https://app.codecov.io/gh/ispyb/py-ispyb/](https://app.codecov.io/gh/ispyb/py-ispyb/)
 
 ### Run test
 
