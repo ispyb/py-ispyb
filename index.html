@@ -73,7 +73,9 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="." title="py-ISPyB" class="md-header__button md-logo" aria-label="py-ISPyB" data-md-component="logo">
       
@@ -151,13 +153,132 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+
+
+  <li class="md-tabs__item">
+    <a href="." class="md-tabs__link md-tabs__link--active">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="run/" class="md-tabs__link">
+      Get started
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="tests/" class="md-tabs__link">
+      Tests
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="conf/" class="md-tabs__link">
+      Configuration
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="auth/" class="md-tabs__link">
+      Authentication and authorization
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="routes/" class="md-tabs__link">
+      Routes
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="model/" class="md-tabs__link">
+      Models
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="https://app.codecov.io/gh/ispyb/py-ispyb/" class="md-tabs__link">
+      ⧉ Tests coverage
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="https://ispyb.github.io/py-ispyb/api/" class="md-tabs__link">
+      ⧉ Endpoints documentation
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -170,8 +291,10 @@
                   <div class="md-sidebar__inner">
                     
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="." title="py-ISPyB" class="md-nav__button md-logo" aria-label="py-ISPyB" data-md-component="logo">
       
@@ -238,8 +361,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dependencies" class="md-nav__link">
-    Dependencies
+  <a href="#main-dependencies" class="md-nav__link">
+    Main dependencies
   </a>
   
 </li>
@@ -261,7 +384,37 @@
   
     <li class="md-nav__item">
       <a href="run/" class="md-nav__link">
-        Running
+        Get started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tests/" class="md-nav__link">
+        Tests
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="conf/" class="md-nav__link">
+        Configuration
       </a>
     </li>
   
@@ -305,8 +458,8 @@
   
   
     <li class="md-nav__item">
-      <a href="tests/" class="md-nav__link">
-        Tests
+      <a href="model/" class="md-nav__link">
+        Models
       </a>
     </li>
   
@@ -320,8 +473,23 @@
   
   
     <li class="md-nav__item">
-      <a href="model/" class="md-nav__link">
-        Models
+      <a href="https://app.codecov.io/gh/ispyb/py-ispyb/" class="md-nav__link">
+        ⧉ Tests coverage
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://ispyb.github.io/py-ispyb/api/" class="md-nav__link">
+        ⧉ Endpoints documentation
       </a>
     </li>
   
@@ -354,8 +522,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dependencies" class="md-nav__link">
-    Dependencies
+  <a href="#main-dependencies" class="md-nav__link">
+    Main dependencies
   </a>
   
 </li>
@@ -380,17 +548,14 @@
 
 <h1 id="py-ispyb">py-ISPyB<a class="headerlink" href="#py-ispyb" title="Permanent link">#</a></h1>
 <p><a href="https://www.gnu.org/licenses/lgpl-3.0"><img alt="License: LGPL v3" src="https://img.shields.io/badge/License-LGPL%20v3-blue.svg" /></a></p>
-<p>ISPyB backend server based on python flask-restx.</p>
+<p>ISPyB backend server based on python with FastAPI.</p>
 <hr />
-<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">#</a></h2>
+<h2 id="main-dependencies">Main dependencies<a class="headerlink" href="#main-dependencies" title="Permanent link">#</a></h2>
 <ul>
 <li><a href="https://www.python.org/"><strong>Python</strong></a> 3.10+</li>
-<li><a href="https://github.com/python-restx/flask-restx"><strong>flask-restx</strong></a> (+
-    <a href="http://flask.pocoo.org/"><em>flask</em></a>) - Web framework.</li>
-<li><a href="http://www.sqlalchemy.org/"><strong>sqlalchemy</strong></a> (+
-    <a href="http://flask-sqlalchemy.pocoo.org/"><em>flask-sqlalchemy</em></a>) - Database ORM.</li>
-<li><a href="http://marshmallow.rtfd.org/"><strong>marshmallow</strong></a> - Object serialization.</li>
-<li><a href="https://pypi.org/project/ruamel.yaml/"><strong>ruamel.yaml</strong></a> - YAML parser/emitter.</li>
+<li><a href="https://fastapi.tiangolo.com/"><strong>FastAPI</strong></a> - Web framework</li>
+<li><a href="http://www.sqlalchemy.org/"><strong>SQLAlchemy</strong></a> - Database ORM</li>
+<li><a href="https://pydantic-docs.helpmanual.io/"><strong>pydantic</strong></a> - Data validation and settings management</li>
 </ul>
 <hr />
 <p>Go to the <a href="run/">run the app</a> section to start exploring and contributing.</p>
@@ -400,6 +565,11 @@
           </div>
         </div>
         
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
       </main>
       
         <footer class="md-footer">
@@ -408,13 +578,13 @@
       
       
         
-        <a href="run/" class="md-footer__link md-footer__link--next" aria-label="Next: Running" rel="next">
+        <a href="run/" class="md-footer__link md-footer__link--next" aria-label="Next: Get started" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Running
+              Get started
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -444,7 +614,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.indexes", "navigation.top"], "search": "assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
       <script src="assets/javascripts/bundle.a6c66575.min.js"></script>

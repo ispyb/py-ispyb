@@ -15,7 +15,7 @@
     
     
       
-        <title>Running - py-ISPyB</title>
+        <title>Get started - py-ISPyB</title>
       
     
     
@@ -73,7 +73,9 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="py-ISPyB" class="md-header__button md-logo" aria-label="py-ISPyB" data-md-component="logo">
       
@@ -94,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Running
+              Get started
             
           </span>
         </div>
@@ -151,13 +153,132 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href=".." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  <li class="md-tabs__item">
+    <a href="./" class="md-tabs__link md-tabs__link--active">
+      Get started
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../tests/" class="md-tabs__link">
+      Tests
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../conf/" class="md-tabs__link">
+      Configuration
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../auth/" class="md-tabs__link">
+      Authentication and authorization
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../routes/" class="md-tabs__link">
+      Routes
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../model/" class="md-tabs__link">
+      Models
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="https://app.codecov.io/gh/ispyb/py-ispyb/" class="md-tabs__link">
+      ⧉ Tests coverage
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="https://ispyb.github.io/py-ispyb/api/" class="md-tabs__link">
+      ⧉ Endpoints documentation
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -170,8 +291,10 @@
                   <div class="md-sidebar__inner">
                     
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="py-ISPyB" class="md-nav__button md-logo" aria-label="py-ISPyB" data-md-component="logo">
       
@@ -227,12 +350,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Running
+          Get started
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Running
+        Get started
       </a>
       
         
@@ -264,6 +387,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#setup-python" class="md-nav__link">
+    Setup Python
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#install-requirements" class="md-nav__link">
     Install requirements
   </a>
@@ -271,15 +401,90 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#copy-and-edit-yaml-auth-configuration-file" class="md-nav__link">
-    Copy and edit yaml auth configuration file
+  <a href="#configure-py-ispyb" class="md-nav__link">
+    Configure py-ISPyB
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setup-database" class="md-nav__link">
+    Setup database
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mockup-database" class="md-nav__link">
+    Mockup database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-tests" class="md-nav__link">
+    For tests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-development" class="md-nav__link">
+    For development
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-production" class="md-nav__link">
+    For production
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#run-application" class="md-nav__link">
     Run application
+  </a>
+  
+    <nav class="md-nav" aria-label="Run application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    Tests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    Development
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production" class="md-nav__link">
+    Production
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#more-information" class="md-nav__link">
+    More information
   </a>
   
 </li>
@@ -293,6 +498,36 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tests/" class="md-nav__link">
+        Tests
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conf/" class="md-nav__link">
+        Configuration
+      </a>
     </li>
   
 
@@ -335,8 +570,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../tests/" class="md-nav__link">
-        Tests
+      <a href="../model/" class="md-nav__link">
+        Models
       </a>
     </li>
   
@@ -350,8 +585,23 @@
   
   
     <li class="md-nav__item">
-      <a href="../model/" class="md-nav__link">
-        Models
+      <a href="https://app.codecov.io/gh/ispyb/py-ispyb/" class="md-nav__link">
+        ⧉ Tests coverage
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://ispyb.github.io/py-ispyb/api/" class="md-nav__link">
+        ⧉ Endpoints documentation
       </a>
     </li>
   
@@ -397,6 +647,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#setup-python" class="md-nav__link">
+    Setup Python
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#install-requirements" class="md-nav__link">
     Install requirements
   </a>
@@ -404,15 +661,90 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#copy-and-edit-yaml-auth-configuration-file" class="md-nav__link">
-    Copy and edit yaml auth configuration file
+  <a href="#configure-py-ispyb" class="md-nav__link">
+    Configure py-ISPyB
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setup-database" class="md-nav__link">
+    Setup database
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mockup-database" class="md-nav__link">
+    Mockup database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-tests" class="md-nav__link">
+    For tests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-development" class="md-nav__link">
+    For development
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-production" class="md-nav__link">
+    For production
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#run-application" class="md-nav__link">
     Run application
+  </a>
+  
+    <nav class="md-nav" aria-label="Run application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    Tests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    Development
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production" class="md-nav__link">
+    Production
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#more-information" class="md-nav__link">
+    More information
   </a>
   
 </li>
@@ -440,36 +772,92 @@
 
 
 
-  <h1>Running</h1>
+  <h1>Get started</h1>
 
 <h2 id="how-to-run-py-ispyb">How to run py-ispyb<a class="headerlink" href="#how-to-run-py-ispyb" title="Permanent link">#</a></h2>
 <hr />
 <h3 id="get-project-code">Get project code<a class="headerlink" href="#get-project-code" title="Permanent link">#</a></h3>
-<p>Clone <a href="https://gitlab.esrf.fr/ispyb/py-ispyb">py-ISPyB repository</a></p>
+<p>Clone <a href="https://github.com/ispyb/py-ispyb">py-ISPyB repository</a></p>
+<pre><code class="language-bash"># SSH (recommended)
+git clone git@github.com:ispyb/py-ispyb.git
+
+# HTTPS
+git clone https://github.com/ispyb/py-ispyb.git
+</code></pre>
+<p>Recommended IDE is <a href="https://code.visualstudio.com/">Visual Studio Code</a>, which will automatically get configured when opening the project.</p>
+<hr />
+<h3 id="setup-python">Setup Python<a class="headerlink" href="#setup-python" title="Permanent link">#</a></h3>
+<p>You need to have <code>python &gt;= 3.10</code></p>
+<blockquote>
+<p>To achieve this easily, you can use a conda virtual environment:<br />
+See <a href="https://docs.anaconda.com/anaconda/install/linux/">installation instuctions</a>.<br />
+Then set up the environment:</p>
+<p><code>bash
+conda create -n py-ispyb python=3.10
+conda activate py-ispyb</code></p>
+</blockquote>
 <hr />
 <h3 id="install-requirements">Install requirements<a class="headerlink" href="#install-requirements" title="Permanent link">#</a></h3>
-<p>You need to have <code>python &gt;= 3.10</code></p>
+<p>Install linux requirements:</p>
+<pre><code class="language-bash">sudo apt-get update &amp;&amp; sudo apt-get install -y libldap2-dev libsasl2-dev libmariadb-dev  build-essential
+</code></pre>
 <p>Install python dependencies:</p>
-<p><code>sudo pip install -r requirements.txt</code></p>
+<pre><code class="language-bash"># For development and production
+pip install -r requirements.txt
+
+# For development only
+pip install -r requirements-dev.txt
+</code></pre>
 <hr />
-<h3 id="copy-and-edit-yaml-auth-configuration-file">Copy and edit yaml auth configuration file<a class="headerlink" href="#copy-and-edit-yaml-auth-configuration-file" title="Permanent link">#</a></h3>
-<p><code>cp examples/auth.yml auth.yml</code></p>
-<p>If you do not have a running ispyb database then you can create one using:</p>
-<p><code>examples/pydb_empty.sql</code></p>
+<h3 id="configure-py-ispyb">Configure py-ISPyB<a class="headerlink" href="#configure-py-ispyb" title="Permanent link">#</a></h3>
+<p>Configure authentication
+(more information in <a href="../auth/">auth section</a>).</p>
+<pre><code class="language-bash"># edit this file to configure authentication
+cp examples/auth.yml auth.yml
+</code></pre>
+<p><a href="../conf/">Configuration</a> is provided through environment variables.</p>
+<ul>
+<li>Ready-to-run configuration preset is provided for test and development environments.</li>
+<li>Production needs some further configuration before running (see <a href="../conf/">configuration section</a>).</li>
+</ul>
+<hr />
+<h3 id="setup-database">Setup database<a class="headerlink" href="#setup-database" title="Permanent link">#</a></h3>
+<h4 id="mockup-database">Mockup database<a class="headerlink" href="#mockup-database" title="Permanent link">#</a></h4>
+<p>For development and test, a mockup database is available.<br />
+You can have it up and running easily with docker:</p>
+<pre><code class="language-bash">sudo docker run -p 3306:3306 --rm --name ispyb-pydb ispyb/ispyb-pydb:latest
+</code></pre>
+<h4 id="for-tests">For tests<a class="headerlink" href="#for-tests" title="Permanent link">#</a></h4>
+<p>To run the tests, you need to have the mockup database up and running.</p>
+<h4 id="for-development">For development<a class="headerlink" href="#for-development" title="Permanent link">#</a></h4>
+<p>By default, the development environment will connect to the mockup database.<br />
+If you want to use a different one, make sure to override it by setting the <code>SQLALCHEMY_DATABASE_URI</code> environment variable.</p>
+<h4 id="for-production">For production<a class="headerlink" href="#for-production" title="Permanent link">#</a></h4>
+<p>Make sure to set the <code>SQLALCHEMY_DATABASE_URI</code> environment variable.</p>
 <hr />
 <h3 id="run-application">Run application<a class="headerlink" href="#run-application" title="Permanent link">#</a></h3>
-<p><code>. uvicorn.sh</code></p>
-<p>Now you can go to <a href="http://localhost:8000/docs">http://localhost:8000/docs</a> and explore py-ispyb via OpenAPI ui. Please see the <a href="../routes/">routes section</a> for more information.</p>
-<p>For requests use the token in the <code>Authorization</code> header: <code>YOUR_JWT_TOKEN</code>.
-Please see the <a href="../auth/">authentication and authorization section</a> for more information.
-For example to retrieve proposals call:</p>
-<pre><code class="language-bash">curl -X GET -H 'Authorization: Bearer YOUR_JWT_TOKEN' -i http://localhost:8000/ispyb/api/v1/proposals
+<h4 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">#</a></h4>
+<pre><code class="language-bash">. scripts/test.sh
 </code></pre>
+<h4 id="development">Development<a class="headerlink" href="#development" title="Permanent link">#</a></h4>
+<pre><code class="language-bash">. uvicorn.sh
+</code></pre>
+<h4 id="production">Production<a class="headerlink" href="#production" title="Permanent link">#</a></h4>
+<pre><code class="language-bash">uvicorn pyispyb.app.main:app
+</code></pre>
+<hr />
+<h3 id="more-information">More information<a class="headerlink" href="#more-information" title="Permanent link">#</a></h3>
+<p>Please see the <a href="../routes/">routes section</a> and the <a href="../auth/">authentication and authorization section</a> for more information on how to use py-ispyb.</p>
 
               
             </article>
           </div>
         </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
         
       </main>
       
@@ -494,13 +882,13 @@ For example to retrieve proposals call:</p>
       
       
         
-        <a href="../auth/" class="md-footer__link md-footer__link--next" aria-label="Next: Authentication and authorization" rel="next">
+        <a href="../tests/" class="md-footer__link md-footer__link--next" aria-label="Next: Tests" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Authentication and authorization
+              Tests
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -530,7 +918,7 @@ For example to retrieve proposals call:</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.indexes", "navigation.top"], "search": "../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
       <script src="../assets/javascripts/bundle.a6c66575.min.js"></script>
