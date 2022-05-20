@@ -63,7 +63,7 @@ Configure authentication
 cp examples/auth.yml auth.yml
 ```
 
-[Configuration](<(conf.md)>) is provided through environment variables.
+[Configuration](conf.md) is provided through environment variables.
 
 - Ready-to-run configuration preset is provided for test and development environments.
 - Production needs some further configuration before running (see [configuration section](conf.md)).
