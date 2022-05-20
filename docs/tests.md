@@ -17,24 +17,25 @@ sudo docker run -p 3306:3306 -d --rm --name pydb-test ispyb/ispyb-pydb:latest
 
 Install dev dependencies:
 
-```
+```bash
 pip install -r requirements-dev.txt
 ```
 
 Then, to run the tests, simply type:
 
-```
+```bash
+export ISPYB_ENVIRONMENT="test"
 pytest
 ```
 
 To run the linting, type:
 
-```
+```bash
 flake8
 ```
 
 Convenience script to run both of them:
 
-```
+```bash
 . scripts/test.sh
 ```
