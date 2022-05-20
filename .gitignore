@@ -11,3 +11,7 @@ pyispyb.egg-info/
 
 .tox*
 .DS_Store
+
+.coverage
+coverage.xml
+*.py,cover

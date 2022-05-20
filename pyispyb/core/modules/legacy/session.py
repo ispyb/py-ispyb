@@ -42,7 +42,7 @@ def get_session_infos_login(login):
     return queryresult_to_dict(res)
 
 
-def get_session_infos_all(db):
+def get_session_infos_all():
     """Get info for all sessions.
 
     Returns:

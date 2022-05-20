@@ -34,23 +34,16 @@ import yaml
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 RESOURCES_ROOT = os.path.join(PROJECT_ROOT, "resources")
 
-yaml_settings = dict()
-AUTH_CONFIG = os.path.realpath(
-    os.path.join(PROJECT_ROOT, "..", os.getenv("ISPYB_AUTH", "auth.yml"))
-)
-try:
-    with open(AUTH_CONFIG) as f:
-        yaml_settings.update(yaml.safe_load(f))
-except IOError:
-    raise Exception(f"Could not access auth config: {AUTH_CONFIG}")
 
-
-def get_env(name: str):
-    res = os.getenv(name, None)
+def get_env_file():
+    res = os.getenv("ISPYB_ENVIRONMENT", None)
     if res is None or res == "":
-        raise Exception(f"You must define env variable {name}")
-    else:
-        return res
+        return "config/.env"
+    v = f"config/{res}.env"
+    if os.path.exists(v):
+        return v
+
+    raise Exception(f"Config file {v} could not be found.")
 
 
 class Settings(BaseSettings):
@@ -60,19 +53,20 @@ class Settings(BaseSettings):
     api_root: str
     service_name: str
 
-    sqlalchemy_database_uri: str = get_env("SQLALCHEMY_DATABASE_URI")
+    sqlalchemy_database_uri: str
     query_debug: bool
 
-    auth = yaml_settings["AUTH"]
+    auth = {}
+    auth_config: str
 
     jwt_coding_algorithm: str
     token_exp_time: int  # in minutes
-    secret_key: str = get_env("SECRET_KEY")
+    secret_key: str
 
     cors: bool = False
 
     class Config:
-        env_file = ".env"
+        env_file = get_env_file()
 
 
 @lru_cache
@@ -81,6 +75,15 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+
+AUTH_CONFIG = os.path.realpath(os.path.join(PROJECT_ROOT, "..", settings.auth_config))
+try:
+    with open(AUTH_CONFIG) as f:
+        yaml_settings = dict()
+        yaml_settings.update(yaml.safe_load(f))
+        settings.auth = yaml_settings["AUTH"]
+except IOError:
+    raise Exception(f"Could not access auth config: {AUTH_CONFIG}")
 
 
 class LogConfig(BaseModel):
