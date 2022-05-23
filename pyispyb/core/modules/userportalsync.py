@@ -1,6 +1,7 @@
 import logging
 import time
 from typing import Any
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session, joinedload
 from pyispyb.core import models
 from pyispyb.app.extensions.database.session import engine
@@ -25,19 +26,22 @@ def sync_proposal(proposal: schema.UserPortalProposalSync) -> time:
     full_dict = proposal.dict()
     # Get source entity dicts
     source_proposal = full_dict.pop("proposal")
-    source_persons = full_dict.pop("persons")
+    source_proposal_persons = source_proposal.pop("persons")
+    source_sessions = full_dict.pop("sessions")
     source_proteins = full_dict.pop("proteins")
 
     try:
         # Process the Persons
-        user_portal_sync.process_persons(source_persons)
-        # At this point all Person/Laboratory entities have been either updated or created
+        user_portal_sync.process_persons(source_proposal_persons)
+        # At this point all Person/Laboratory entities related to the proposal have been either updated or created
 
         # Process the Proposal
         # The first Person in the list will be the one having the relation to the proposal table
-        # For now ignoring the update if the person list changes the order
-        user_portal_sync.process_proposal(source_proposal, source_persons[0])
+        user_portal_sync.process_proposal(source_proposal, source_proposal_persons[0])
         # At this point the Proposal entity has been either updated or created
+
+        # Process sessions
+        user_portal_sync.process_sessions(source_sessions)
 
         # Process proteins
         user_portal_sync.process_proteins(source_proteins)
@@ -388,3 +392,56 @@ class UserPortalSync(object):
         """Process the creation or update of Proteins"""
         # Check if proteins exist the DB
         self.check_proteins(sourceProteins)
+
+    def check_sessions(self, sourceSessions):
+        """Check Session entities to see if they exist already, if not it creates a new one."""
+        for session in sourceSessions:
+            sess = (
+                self.session.query(models.BLSession)
+                .filter(models.BLSession.proposalId == self.proposalId)
+                .filter(models.BLSession.expSessionPk == session["expSessionPk"])
+                .first()
+            )
+            if not sess:
+                logger.debug(
+                    f"Session with expSessionPk {session['expSessionPk']} "
+                    f"for Proposal {self.proposalId} does not exist. Creating it"
+                )
+                self.add_session(session)
+            else:
+                # if the session already exist we just update all the values
+                del session["persons"]
+                self.session.query(models.BLSession).filter(
+                    models.BLSession.proposalId == self.proposalId
+                ).filter(
+                    models.BLSession.expSessionPk == session["expSessionPk"]
+                ).update(
+                    session
+                )
+                self.session.flush()
+
+    def add_session(self, sourceSession) -> int:
+        """Add a new Session"""
+        # Remove the persons
+        del sourceSession["persons"]
+        if not sourceSession["lastUpdate"]:
+            """
+            When adding a new session, if lastUpdate is not present, set as now()
+            Needed for backward compatibility with the Java API, since it does not
+            like lastUpdate = 0000-00-00 00:00:00
+            """
+            now = datetime.now()
+            now = now.replace(tzinfo=timezone.utc)
+            sourceSession["lastUpdate"] = now
+        session = models.BLSession(**sourceSession)
+        session.proposalId = self.proposalId
+        self.session.add(session)
+        # Flush to get the new sessionId
+        self.session.flush()
+        return session.sessionId
+
+    @timed
+    def process_sessions(self, sourceSessions: dict[str, Any]):
+        """Process the creation or update of Sessions"""
+        # Check if sessions exist the DB
+        self.check_sessions(sourceSessions)
