@@ -1,3 +1,4 @@
+import copy
 import logging
 import time
 from typing import Any
@@ -17,6 +18,9 @@ def sync_proposal(proposal: schema.UserPortalProposalSync) -> time:
     https://docs.sqlalchemy.org/en/14/orm/session_transaction.html
     """
     start = time.time()
+    # Using the same sqlalchemy engine from pyispyb.app.extensions.database.session
+    # Creating a different Session since nothing should be committed until the end of the UserPortalSync process
+    # session.flush is used everywhere to get new auto-increment IDs
     session = Session(engine)
 
     # Initialize UserPortalSync class
@@ -31,14 +35,14 @@ def sync_proposal(proposal: schema.UserPortalProposalSync) -> time:
     source_proteins = full_dict.pop("proteins")
 
     try:
-        # Process the Persons
-        user_portal_sync.process_persons(source_proposal_persons)
+        # Process the proposal Persons
+        user_portal_sync.process_persons(source_proposal_persons, "proposal")
         # At this point all Person/Laboratory entities related to the proposal have been either updated or created
 
         # Process the Proposal
         # The first Person in the list will be the one having the relation to the proposal table
         user_portal_sync.process_proposal(source_proposal, source_proposal_persons[0])
-        # At this point the Proposal entity has been either updated or created
+        # At this point the Proposal entity has been either updated or created, and we have a proposalID
 
         # Process sessions
         user_portal_sync.process_sessions(source_sessions)
@@ -48,8 +52,8 @@ def sync_proposal(proposal: schema.UserPortalProposalSync) -> time:
 
         session.commit()
     except Exception as e:
+        logger.debug(f"sync_proposal exception: {e}")
         session.rollback()
-        logger.debug(e)
     finally:
         session.close()
     took = round(time.time() - start, 3)
@@ -60,6 +64,12 @@ class UserPortalSync(object):
     def __init__(self, session):
         self.session = session
         self.proposalId = None
+        # List of persons to be checked/added to ProposalHasPerson table
+        self.proposal_person_ids = []
+        # List of persons to be checked/added to Session_has_Person table
+        self.session_person_ids = []
+        # Dict of sessionIds with related personIds to be checked/added to Session_has_Person table
+        self.session_ids = {}
 
     def get_ispyb_proposals(self):
         proposals = self.session.query(
@@ -105,6 +115,34 @@ class UserPortalSync(object):
         to_add_proposal = self.check_proposal(sourceProposal, sourcePerson)
         if to_add_proposal:
             self.add_proposal(sourceProposal, sourcePerson)
+        # Second add/update here the relations between proposalId and personId (proposalHasPerson)
+        self.process_proposal_has_person()
+
+    def process_proposal_has_person(self):
+        # First check the entry in ProposalHasPerson does not exist already in DB
+        # if that is the case create it
+        for personId in self.proposal_person_ids:
+            proposal_person = (
+                self.session.query(models.ProposalHasPerson)
+                .filter(models.ProposalHasPerson.personId == personId)
+                .filter(models.ProposalHasPerson.proposalId == self.proposalId)
+                .first()
+            )
+            if not proposal_person:
+                # Add the relation
+                proposal_has_person = models.ProposalHasPerson(
+                    personId=personId, proposalId=self.proposalId
+                )
+                self.session.add(proposal_has_person)
+                # Flush to get the new proposalId
+                self.session.flush()
+                logger.debug(
+                    f"ProposalHasPerson with proposalId {self.proposalId} and {personId} added in DB"
+                )
+            else:
+                logger.debug(
+                    f"ProposalHasPerson with proposalId {self.proposalId} and {personId} already in DB"
+                )
 
     def check_proposal(
         self, sourceProposal: dict[str, Any], sourceProposer: dict[str, Any]
@@ -112,36 +150,35 @@ class UserPortalSync(object):
         """Updates the proposal if it needed and exists on the DB"""
         target_proposals = self.get_ispyb_proposals()
         to_add_proposal = []
-        if target_proposals:
-            for tar in target_proposals:
-                # Iterate over all the target proposals
-                # Check if the Proposal already exist in the DB by comparing against the proposalCode and proposalNumber
-                if (
-                    tar["proposalCode"] is not None
-                    and tar["proposalCode"] == sourceProposal["proposalCode"]
-                ) and (
-                    tar["proposalNumber"] is not None
-                    and tar["proposalNumber"] == sourceProposal["proposalNumber"]
-                ):
-                    update = False
-                    # Set the proposalId to be used to link other entities (sessions, proteins, etc)
-                    self.proposalId = tar["proposalId"]
-                    # Check which Proposal values should we inspect to see if they changed
-                    for k in ["title"]:
-                        if tar[k] != sourceProposal[k]:
-                            logger.debug(
-                                f"Field {k} to update for proposal {tar['proposalId']}"
-                            )
-                            update = True
+        for tar in target_proposals:
+            # Iterate over all the target proposals
+            # Check if the Proposal already exist in the DB by comparing against the proposalCode and proposalNumber
+            if (
+                tar["proposalCode"] is not None
+                and tar["proposalCode"] == sourceProposal["proposalCode"]
+            ) and (
+                tar["proposalNumber"] is not None
+                and tar["proposalNumber"] == sourceProposal["proposalNumber"]
+            ):
+                update = False
+                logger.debug(
+                    f"Proposal with code {tar['proposalCode']}{tar['proposalNumber']} found in DB with proposalId {tar['proposalId']}"
+                )
+                # Set the proposalId to be used to link other entities (sessions, proteins, etc)
+                self.proposalId = tar["proposalId"]
+                # Check which Proposal values should we inspect to see if they changed
+                for k in ["title"]:
+                    if tar[k] != sourceProposal[k]:
+                        logger.debug(
+                            f"Field {k} to update for proposal {tar['proposalId']}"
+                        )
+                        update = True
 
-                    if update:
-                        # Update the existing proposal with new values
-                        logger.debug(f"Updating proposal {tar['proposalId']}")
-                        self.update_proposal(tar["proposalId"], sourceProposal)
-                    break
-                else:
-                    # New proposal to be added
-                    to_add_proposal.append(sourceProposal)
+                if update:
+                    # Update the existing proposal with new values
+                    logger.debug(f"Updating proposal {tar['proposalId']}")
+                    self.update_proposal(tar["proposalId"], sourceProposal)
+                break
         else:
             to_add_proposal.append(sourceProposal)
         return to_add_proposal
@@ -157,6 +194,10 @@ class UserPortalSync(object):
         )
         proposal = models.Proposal(**sourceProposal)
         proposal.personId = pers.personId
+        logger.debug(
+            f"Proposal with code {proposal.proposalCode}{proposal.proposalNumber}"
+            f"does not exist. Creating it"
+        )
         self.session.add(proposal)
         # Flush to get the new proposalId
         self.session.flush()
@@ -179,14 +220,30 @@ class UserPortalSync(object):
             self.session.flush()
         return prop
 
-    def add_person(self, sourcePerson: dict[str, Any], laboratoryId=None) -> int:
+    def add_person(
+        self, sourcePerson: dict[str, Any], laboratoryId=None, person_type: str = None
+    ) -> int:
         """Add a new person together with relation to a laboratory if passed."""
+        # Make a deep copy to session option original values from self.session_ids are not removed
+        copy_source_person = copy.deepcopy(sourcePerson)
+        if person_type == "session":
+            if copy_source_person["session_options"]:
+                copy_source_person.pop("session_options")
         if laboratoryId:
-            sourcePerson["laboratoryId"] = laboratoryId
-        person = models.Person(**sourcePerson)
+            copy_source_person["laboratoryId"] = laboratoryId
+        person = models.Person(**copy_source_person)
         self.session.add(person)
         # Flush to get the new personId
         self.session.flush()
+        # Add the personId to a list to be used later to create the relation to proposalHasPerson/Session_has_Person
+        if person_type == "proposal":
+            self.proposal_person_ids.append(person.personId)
+        elif person_type == "session":
+            person_ids = {}
+            person_ids["personId"] = person.personId
+            person_ids["login"] = person.login
+            person_ids["siteId"] = person.siteId
+            self.session_person_ids.append(person_ids)
         return person.personId
 
     def update_person(
@@ -236,14 +293,15 @@ class UserPortalSync(object):
         return lab
 
     @timed
-    def process_persons(self, sourcePersons: dict[str, Any]):
+    def process_persons(self, sourcePersons: dict[str, Any], person_type: str = None):
         """Process the creation or update of Persons"""
         # First check to update persons existing in the DB
-        to_add_persons = self.check_persons(sourcePersons)
+        to_add_persons = self.check_persons(sourcePersons, person_type)
         # Second add new persons
-        self.create_persons(to_add_persons)
+        if to_add_persons:
+            self.create_persons(to_add_persons, person_type)
 
-    def create_persons(self, sourcePersons: dict[str, Any]):
+    def create_persons(self, sourcePersons: dict[str, Any], person_type: str = None):
         """Process the creation of Persons"""
         for new_person in sourcePersons:
             # Add a new person
@@ -254,6 +312,10 @@ class UserPortalSync(object):
                 if (
                     tar_lab["laboratoryExtPk"] is not None
                     and tar_lab["laboratoryExtPk"] == src_lab["laboratoryExtPk"]
+                ) or (
+                    tar_lab["name"] == src_lab["name"]
+                    and tar_lab["city"] == src_lab["city"]
+                    and tar_lab["country"] == src_lab["country"]
                 ):
                     update = False
                     laboratory_id = tar_lab["laboratoryId"]
@@ -276,9 +338,9 @@ class UserPortalSync(object):
                 # New laboratory to add
                 laboratory_id = self.add_laboratory(src_lab)
 
-            self.add_person(new_person, laboratory_id)
+            self.add_person(new_person, laboratory_id, person_type)
 
-    def check_persons(self, sourcePersons) -> dict[str, Any]:
+    def check_persons(self, sourcePersons, person_type: str = None) -> dict[str, Any]:
         """Updates person entities if needed and returns only the new ones to be added."""
         target_persons = self.get_ispyb_persons()
         to_add_persons = []
@@ -291,6 +353,20 @@ class UserPortalSync(object):
                     tar["login"] is not None and tar["login"] == src["login"]
                 ):
                     update = False
+                    logger.debug(
+                        f"Person with personId {tar['personId']} already in DB"
+                    )
+
+                    if person_type == "proposal":
+                        # Add personId to proposal_person_ids list
+                        self.proposal_person_ids.append(tar["personId"])
+                    elif person_type == "session":
+                        person_ids = {}
+                        # Add personids to session_person_ids list
+                        person_ids["personId"] = tar["personId"]
+                        person_ids["login"] = tar["login"]
+                        person_ids["siteId"] = tar["siteId"]
+                        self.session_person_ids.append(person_ids)
                     # Check which Person values should we inspect to see if they changed
                     for k in ["givenName", "familyName", "emailAddress", "phoneNumber"]:
                         if tar[k] != src[k]:
@@ -342,6 +418,12 @@ class UserPortalSync(object):
                 person.laboratoryId = laboratory_id
                 self.session.flush()
 
+    @timed
+    def process_proteins(self, sourceProteins: dict[str, Any]):
+        """Process the creation or update of Proteins"""
+        # Check if proteins exist the DB
+        self.check_proteins(sourceProteins)
+
     def check_proteins(self, sourceProteins):
         """Check Protein entities to see if they exist already, if not it creates a new one."""
         for protein in sourceProteins:
@@ -358,7 +440,11 @@ class UserPortalSync(object):
                 )
                 self.add_protein(protein)
             else:
-                # if the protein already exist we just update all the values
+                # If there is not any macromolecule with that acronym
+                # and proposalId then it will be created
+                logger.debug(
+                    f"Protein with acronym {protein['acronym']} found in DB for proposalId {self.proposalId}"
+                )
                 del protein["person"]
                 self.session.query(models.Protein).filter(
                     models.Protein.proposalId == self.proposalId
@@ -388,14 +474,81 @@ class UserPortalSync(object):
             return protein.proteinId
 
     @timed
-    def process_proteins(self, sourceProteins: dict[str, Any]):
-        """Process the creation or update of Proteins"""
-        # Check if proteins exist the DB
-        self.check_proteins(sourceProteins)
+    def process_sessions(self, sourceSessions: dict[str, Any]):
+        """Process the creation or update of Sessions"""
+        # First process the sessions
+        self.check_sessions(sourceSessions)
+        # Second process the relation between sessions and persons (Session_has_Person)
+        self.process_session_has_person()
+
+    def process_session_has_person(self):
+        # Iterate over all the session_ids
+        for session_id in self.session_ids:
+            self.session_person_ids = []
+            # Create/Update new persons if needed first
+            self.process_persons(self.session_ids[session_id], "session")
+            # Check if the entry in Session_has_Person does not exist already in DB
+            for dict_person in self.session_person_ids:
+                session_person = (
+                    self.session.query(models.SessionHasPerson)
+                    .filter(models.SessionHasPerson.sessionId == session_id)
+                    .filter(models.SessionHasPerson.personId == dict_person["personId"])
+                    .first()
+                )
+
+                role = None
+                remote = 0
+                person_found_in_session = None
+                for p in self.session_ids[session_id]:
+                    if (
+                        p["login"] == dict_person["login"]
+                        or p["siteId"] == dict_person["siteId"]
+                    ):
+                        person_found_in_session = p
+                        break
+
+                try:
+                    # Get the session options (role, remote)
+                    session_options = person_found_in_session["session_options"]
+                    if session_options:
+                        if session_options["role"]:
+                            role = session_options["role"]
+                        if session_options["remote"]:
+                            remote = session_options["remote"]
+                except KeyError as e:
+                    logger.debug(f"session_options not found for : {e}")
+
+                if not session_person:
+                    # Add the relation between sessionId and personId
+                    session_has_person = models.SessionHasPerson(
+                        sessionId=session_id,
+                        personId=dict_person["personId"],
+                        role=role,
+                        remote=remote,
+                    )
+                    self.session.add(session_has_person)
+                    self.session.flush()
+                    logger.debug(
+                        f"Session_has_Person with sessionId {session_id} and personId {dict_person['personId']} added in DB"
+                    )
+                else:
+                    # Update the Session_has_Person relation with the JSON values
+                    self.session.query(models.SessionHasPerson).filter(
+                        models.SessionHasPerson.personId == dict_person["personId"]
+                    ).filter(models.SessionHasPerson.sessionId == session_id).update(
+                        {"role": role, "remote": remote}
+                    )
+                    self.session.flush()
+                    logger.debug(
+                        f"Session_has_Person with sessionId {session_id} and personId {dict_person['personId']} already in DB"
+                    )
 
     def check_sessions(self, sourceSessions):
         """Check Session entities to see if they exist already, if not it creates a new one."""
         for session in sourceSessions:
+            # Get the session persons
+            session_persons = session.pop("persons")
+            # Check first if session is already on DB
             sess = (
                 self.session.query(models.BLSession)
                 .filter(models.BLSession.proposalId == self.proposalId)
@@ -403,14 +556,19 @@ class UserPortalSync(object):
                 .first()
             )
             if not sess:
+                # Creates the session if it does not exist
                 logger.debug(
                     f"Session with expSessionPk {session['expSessionPk']} "
                     f"for Proposal {self.proposalId} does not exist. Creating it"
                 )
-                self.add_session(session)
+                sessionId = self.add_session(session)
+                # Set the new session id with the related session persons
+                self.session_ids[sessionId] = session_persons
             else:
                 # if the session already exist we just update all the values
-                del session["persons"]
+                logger.debug(
+                    f"Session with expSessionPk {session['expSessionPk']} found in DB for proposalId {self.proposalId}"
+                )
                 self.session.query(models.BLSession).filter(
                     models.BLSession.proposalId == self.proposalId
                 ).filter(
@@ -419,11 +577,11 @@ class UserPortalSync(object):
                     session
                 )
                 self.session.flush()
+                # Set the session id with the related session persons
+                self.session_ids[sess.sessionId] = session_persons
 
     def add_session(self, sourceSession) -> int:
         """Add a new Session"""
-        # Remove the persons
-        del sourceSession["persons"]
         if not sourceSession["lastUpdate"]:
             """
             When adding a new session, if lastUpdate is not present, set as now()
@@ -439,9 +597,3 @@ class UserPortalSync(object):
         # Flush to get the new sessionId
         self.session.flush()
         return session.sessionId
-
-    @timed
-    def process_sessions(self, sourceSessions: dict[str, Any]):
-        """Process the creation or update of Sessions"""
-        # Check if sessions exist the DB
-        self.check_sessions(sourceSessions)
