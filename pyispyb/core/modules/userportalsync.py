@@ -224,11 +224,14 @@ class UserPortalSync(object):
         self, sourcePerson: dict[str, Any], laboratoryId=None, person_type: str = None
     ) -> int:
         """Add a new person together with relation to a laboratory if passed."""
-        # Make a deep copy to session option original values from self.session_ids are not removed
+        # Make a deep copy to session_options original values from self.session_ids, so they are not removed
         copy_source_person = copy.deepcopy(sourcePerson)
         if person_type == "session":
             if copy_source_person["session_options"]:
                 copy_source_person.pop("session_options")
+        else:
+            # session_options always None for Person related to Proposal, so it can be removed
+            del copy_source_person["session_options"]
         if laboratoryId:
             copy_source_person["laboratoryId"] = laboratoryId
         person = models.Person(**copy_source_person)
@@ -239,7 +242,7 @@ class UserPortalSync(object):
         if person_type == "proposal":
             self.proposal_person_ids.append(person.personId)
         elif person_type == "session":
-            person_ids = {}
+            person_ids = dict()
             person_ids["personId"] = person.personId
             person_ids["login"] = person.login
             person_ids["siteId"] = person.siteId
