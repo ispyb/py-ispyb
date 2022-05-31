@@ -1,14 +1,12 @@
 from typing import List, Optional, Literal
 from pydantic import BaseModel, conlist, root_validator
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+from pyispyb.core.schemas.laboratories import Laboratory
 from pyispyb.core import models
 from datetime import datetime
 
 PydanticPerson = sqlalchemy_to_pydantic(
     models.Person, exclude={"personId", "laboratoryId", "recordTimeStamp"}
-)
-PydanticLaboratory = sqlalchemy_to_pydantic(
-    models.Laboratory, exclude={"laboratoryId", "recordTimeStamp"}
 )
 PydanticProposal = sqlalchemy_to_pydantic(
     models.Proposal, exclude={"proposalId", "personId", "bltimeStamp"}
@@ -35,17 +33,6 @@ class Person(PydanticPerson):
         if (values.get("siteId") is None) and (values.get("login") is None):
             raise ValueError("either siteId or login is required")
         return values
-
-    class Config:
-        orm_mode = True
-
-
-class Laboratory(PydanticLaboratory):
-    # name, city and country required to be able to check for existing Laboratory in DB (to update or create)
-    # Optionally it will check also against laboratoryExtPk
-    name: str
-    city: str
-    country: str
 
     class Config:
         orm_mode = True

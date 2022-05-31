@@ -2,6 +2,7 @@ from typing import Optional
 from pyispyb.core import models
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
+from pyispyb.core.schemas import laboratories as schema
 
 
 def get_laboratories(
@@ -34,3 +35,17 @@ def get_laboratories(
     query = page(query, skip=skip, limit=limit)
 
     return Paged(total=total, results=query.all(), skip=skip, limit=limit)
+
+
+def create_laboratory(laboratory: schema.Laboratory) -> models.Laboratory:
+
+    laboratory_dict = laboratory.dict()
+
+    laboratory = models.Laboratory(**laboratory_dict)
+    db.session.add(laboratory)
+    db.session.commit()
+
+    new_laboratory = get_laboratories(
+        laboratoryId=int(laboratory.labContactId), skip=0, limit=1
+    )
+    return new_laboratory.first

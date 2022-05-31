@@ -8,6 +8,7 @@ from pyispyb.core.modules.proposals import get_proposals
 from pyispyb.core.modules.persons import get_persons
 from pyispyb.core.modules.laboratories import get_laboratories
 from pyispyb.core.modules.proteins import get_proteins
+from pyispyb.core.modules.sessions import get_sessions
 from tests.core.api.data.userportalsync import (
     test_data_proposal_userportalsync,
 )
@@ -46,6 +47,7 @@ def test_proposal_persons_sync():
         limit=10,
         proposalCode=test_data_proposal_userportalsync["proposal"]["proposalCode"],
         proposalNumber=test_data_proposal_userportalsync["proposal"]["proposalNumber"],
+        proposalHasPerson=True,
     )
 
     assert proposals.total == 1
@@ -77,6 +79,14 @@ def test_proposal_persons_sync():
     # should be the one having the relation with the Proposal table in DB (foreign constraint)
     assert first_person_id == proposals.results[0].personId
 
+    # Check the number of persons within the ProposalHasPerson table
+    assert len(test_data_proposal_userportalsync["proposal"]["persons"]) == len(
+        proposals.results[0].proposal_has_people
+    )
+
+
+# We could check also if the right persons where added within the ProposalHasPerson table
+
 
 def test_proposal_persons_laboratories_sync():
     # Get a list of unique laboratories from proposal persons
@@ -103,6 +113,29 @@ def test_proposal_persons_laboratories_sync():
 
     # Check the amount of unique laboratories corresponds with the entries in the DB
     assert len(unique_laboratories) == labs_in_db
+
+
+def test_session_persons_sync():
+    # Iterate over the session
+    sessions_in_db = 0
+    for json_session in test_data_proposal_userportalsync["sessions"]:
+
+        sessions = get_sessions(
+            skip=0,
+            limit=10,
+            expSessionPk=json_session["expSessionPk"],
+            sessionHasPerson=True,
+        )
+
+        if sessions.total == 1:
+            sessions_in_db += 1
+            # Check the number of persons within the Session_has_Person table
+            assert len(sessions.results[0].session_has_people) == len(
+                json_session["persons"]
+            )
+
+    # Check the amount of sessions corresponds with the entries in the DB
+    assert len(test_data_proposal_userportalsync["sessions"]) == sessions_in_db
 
 
 def test_proteins_sync():

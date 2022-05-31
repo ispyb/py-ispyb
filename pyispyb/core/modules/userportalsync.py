@@ -196,7 +196,7 @@ class UserPortalSync(object):
         proposal.personId = pers.personId
         logger.debug(
             f"Proposal with code {proposal.proposalCode}{proposal.proposalNumber}"
-            f"does not exist. Creating it"
+            f" does not exist. Creating it"
         )
         self.session.add(proposal)
         # Flush to get the new proposalId
@@ -221,7 +221,7 @@ class UserPortalSync(object):
         return prop
 
     def add_person(
-        self, sourcePerson: dict[str, Any], laboratoryId=None, person_type: str = None
+        self, sourcePerson: dict[str, Any], laboratoryId: int =None, person_type: str = None
     ) -> int:
         """Add a new person together with relation to a laboratory if passed."""
         # Make a deep copy to session_options original values from self.session_ids, so they are not removed
@@ -427,7 +427,7 @@ class UserPortalSync(object):
         # Check if proteins exist the DB
         self.check_proteins(sourceProteins)
 
-    def check_proteins(self, sourceProteins):
+    def check_proteins(self, sourceProteins: dict[str, Any]):
         """Check Protein entities to see if they exist already, if not it creates a new one."""
         for protein in sourceProteins:
             prot = (
