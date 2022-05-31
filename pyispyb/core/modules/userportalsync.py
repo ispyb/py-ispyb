@@ -221,7 +221,10 @@ class UserPortalSync(object):
         return prop
 
     def add_person(
-        self, sourcePerson: dict[str, Any], laboratoryId: int =None, person_type: str = None
+        self,
+        sourcePerson: dict[str, Any],
+        laboratoryId: int = None,
+        person_type: str = None,
     ) -> int:
         """Add a new person together with relation to a laboratory if passed."""
         # Make a deep copy to session_options original values from self.session_ids, so they are not removed
