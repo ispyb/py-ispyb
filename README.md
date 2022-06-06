@@ -8,7 +8,7 @@ ISPyB backend server based on FastAPI.
 
 For dependencies, see [https://ispyb.github.io/py-ispyb/](https://ispyb.github.io/py-ispyb/).
 
-For installation instructions, see [https://ispyb.github.io/py-ispyb/run.md](https://ispyb.github.io/py-ispyb/run.md)
+For installation instructions, see [https://ispyb.github.io/py-ispyb/run](https://ispyb.github.io/py-ispyb/run)
 
 Once installed and started, you can start using the server through the [OpenAPI documenation](http://localhost:8000/docs)
 
