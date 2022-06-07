@@ -12,7 +12,8 @@ ISPyB backend server based on python with FastAPI.
 - [**FastAPI**](https://fastapi.tiangolo.com/) - Web framework
 - [**SQLAlchemy**](http://www.sqlalchemy.org/) - Database ORM
 - [**pydantic**](https://pydantic-docs.helpmanual.io/) - Data validation and settings management
+- [**MariaDB**](https://mariadb.org/) with an ISPyB database schema
 
 ---
 
-Go to the [run the app](run.md) section to start exploring and contributing.
+Go to the [run the app](run.md) section to see how these dependencies can be satisfied, start exploring and contributing to the project.
