@@ -52,7 +52,11 @@ class PersonSessionOptions(PydanticSessionHasPerson):
     ]
 
 
-class PersonLaboratory(Person):
+class PersonProposalLaboratory(Person):
+    laboratory: Laboratory
+
+
+class PersonSessionLaboratory(Person):
     laboratory: Laboratory
     # Optional section to be used in Session_has_Person
     session_options: Optional[PersonSessionOptions]
@@ -63,14 +67,14 @@ class Proposal(PydanticProposal):
     proposalCode: str
     proposalNumber: str
     # Here we need minimum 1 Person to be related to the Proposal (foreign key constraint)
-    persons: conlist(PersonLaboratory, min_items=1)
+    persons: conlist(PersonProposalLaboratory, min_items=1)
 
     class Config:
         orm_mode = True
 
 
 class Protein(PydanticProtein):
-    person: PersonLaboratory
+    person: PersonProposalLaboratory
 
     class Config:
         orm_mode = True
@@ -81,7 +85,7 @@ class Session(PydanticSession):
     expSessionPk: int
     lastUpdate: Optional[datetime]
     # persons related to sessions is optional
-    persons: Optional[List[PersonLaboratory]]
+    persons: Optional[List[PersonSessionLaboratory]]
 
     class Config:
         orm_mode = True

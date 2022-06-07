@@ -50,10 +50,13 @@ def sync_proposal(proposal: schema.UserPortalProposalSync) -> time:
         # Process proteins
         user_portal_sync.process_proteins(source_proteins)
 
+        # Session commit is only applied once at the end of the whole process to commit all changes
+        # https://stackoverflow.com/questions/65699977/fastapi-sqlalchemy-how-to-manage-transaction-session-and-multiple-commits
         session.commit()
     except Exception as e:
         logger.debug(f"sync_proposal exception: {e}")
         session.rollback()
+        raise Exception(e)
     finally:
         session.close()
     took = round(time.time() - start, 3)
@@ -232,9 +235,7 @@ class UserPortalSync(object):
         if person_type == "session":
             if copy_source_person["session_options"]:
                 copy_source_person.pop("session_options")
-        else:
-            # session_options always None for Person related to Proposal, so it can be removed
-            del copy_source_person["session_options"]
+
         if laboratoryId:
             copy_source_person["laboratoryId"] = laboratoryId
         person = models.Person(**copy_source_person)
@@ -522,7 +523,9 @@ class UserPortalSync(object):
                         if session_options["remote"]:
                             remote = session_options["remote"]
                 except KeyError as e:
-                    logger.debug(f"session_options not found for : {e}")
+                    logger.debug(
+                        f"session_options not found for login {dict_person['login']}: {e}"
+                    )
 
                 if not session_person:
                     # Add the relation between sessionId and personId

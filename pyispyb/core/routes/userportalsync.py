@@ -28,11 +28,11 @@ def sync_proposal(proposal: schema.UserPortalProposalSync):
         )
     except Exception as e:
         logging.debug(e)
-        raise HTTPException(status_code=500, detail="Something went wrong!")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get(
-    "/json_schema",
+    "/sync_proposal_json_schema",
     status_code=status.HTTP_200_OK,
 )
 def get_user_portal_sync_schema() -> str:
