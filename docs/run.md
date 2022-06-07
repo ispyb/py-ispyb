@@ -22,24 +22,32 @@ Recommended IDE is [Visual Studio Code](https://code.visualstudio.com/), which w
 
 You need to have `python >= 3.10`
 
-> To achieve this easily, you can use a conda virtual environment:  
-> See [installation instuctions](https://docs.anaconda.com/anaconda/install/linux/).  
-> Then set up the environment:
->
-> ```bash
-> conda create -n py-ispyb python=3.10
-> conda activate py-ispyb
-> ```
+To achieve this easily, you can use a conda virtual environment:
+See [installation instuctions](https://docs.anaconda.com/anaconda/install/linux/).
+Then set up the environment:
+
+```bash
+conda create -n py-ispyb python=3.10
+conda activate py-ispyb
+```
 
 ---
 
 ### Install requirements
 
-Install linux requirements:
+Install required packages
+
+* For Debian and derivatives:
 
 ```bash
-sudo apt-get update && sudo apt-get install -y libldap2-dev libsasl2-dev libmariadb-dev  build-essential
+sudo apt-get update && sudo apt-get install -y libldap2-dev libsasl2-dev libmariadb-dev build-essential
 ```
+
+* For Fedora and derivatives (use `yum` if you don't have `dnf`):
+```bash
+sudo dnf update && sudo dnf install -y openldap-devel mariadb-connector-c-devel
+```
+
 
 Install python dependencies:
 
@@ -75,11 +83,13 @@ cp examples/auth.yml auth.yml
 #### Mockup database
 
 For development and test, a mockup database is available.  
-You can have it up and running easily with docker:
+You can have it up and running easily with `docker`:
 
 ```bash
 sudo docker run -p 3306:3306 --rm --name ispyb-pydb ispyb/ispyb-pydb:latest
 ```
+
+If you have `podman`, you can replace `sudo docker` with `podman` in the command above - no `sudo` needed.
 
 #### For tests
 
