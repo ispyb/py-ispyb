@@ -42,7 +42,7 @@ def get_groups_permissions(groups: list[str]) -> list[str]:
     for group_name in groups:
         db_group: models.UserGroup | None = (
             db.session.query(models.UserGroup)
-            .options(joinedload(models.UserGroup.Permission))
+            .options(joinedload(models.UserGroup.permissions))
             .filter_by(name=group_name)
             .first()
         )
