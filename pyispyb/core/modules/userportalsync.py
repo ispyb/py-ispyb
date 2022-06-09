@@ -31,6 +31,7 @@ def sync_proposal(proposal: schema.UserPortalProposalSync) -> time:
     # Get source entity dicts
     source_proposal = full_dict.pop("proposal")
     source_proposal_persons = source_proposal.pop("persons")
+    source_proposal_labcontacts = source_proposal.pop("labcontacts")
     source_sessions = full_dict.pop("sessions")
     source_proteins = full_dict.pop("proteins")
 
@@ -44,10 +45,13 @@ def sync_proposal(proposal: schema.UserPortalProposalSync) -> time:
         user_portal_sync.process_proposal(source_proposal, source_proposal_persons[0])
         # At this point the Proposal entity has been either updated or created, and we have a proposalID
 
-        # Process sessions
+        # Process the LabContacts
+        user_portal_sync.process_labcontacts(source_proposal_labcontacts)
+
+        # Process Sessions
         user_portal_sync.process_sessions(source_sessions)
 
-        # Process proteins
+        # Process Proteins
         user_portal_sync.process_proteins(source_proteins)
 
         # Session commit is only applied once at the end of the whole process to commit all changes
@@ -69,6 +73,8 @@ class UserPortalSync(object):
         self.proposalId = None
         # List of persons to be checked/added to ProposalHasPerson table
         self.proposal_person_ids = []
+        # Lab contact Person ID to be processed
+        self.labcontact_person_id = None
         # List of persons to be checked/added to Session_has_Person table
         self.session_person_ids = []
         # Dict of sessionIds with related personIds to be checked/added to Session_has_Person table
@@ -251,6 +257,8 @@ class UserPortalSync(object):
             person_ids["login"] = person.login
             person_ids["siteId"] = person.siteId
             self.session_person_ids.append(person_ids)
+        elif person_type == "labcontact":
+            self.labcontact_person_id = person.personId
         return person.personId
 
     def update_person(
@@ -368,12 +376,14 @@ class UserPortalSync(object):
                         # Add personId to proposal_person_ids list
                         self.proposal_person_ids.append(tar["personId"])
                     elif person_type == "session":
-                        person_ids = {}
+                        person_ids = dict()
                         # Add personids to session_person_ids list
                         person_ids["personId"] = tar["personId"]
                         person_ids["login"] = tar["login"]
                         person_ids["siteId"] = tar["siteId"]
                         self.session_person_ids.append(person_ids)
+                    elif person_type == "labcontact":
+                        self.labcontact_person_id = tar["personId"]
                     # Check which Person values should we inspect to see if they changed
                     for k in ["givenName", "familyName", "emailAddress", "phoneNumber"]:
                         if tar[k] != src[k]:
@@ -426,10 +436,51 @@ class UserPortalSync(object):
                 self.session.flush()
 
     @timed
+    def process_labcontacts(self, sourceLabContacts: dict[str, Any]):
+        """Process the creation or update of LabContacts"""
+        if sourceLabContacts:
+            self.check_lab_contacts(sourceLabContacts)
+
+    def check_lab_contacts(self, sourceLabContacts: dict[str, Any]):
+        for lab_contact in sourceLabContacts:
+            # Check first if lab contact is already on DB
+            lb = (
+                self.session.query(models.LabContact)
+                .filter(models.LabContact.proposalId == self.proposalId)
+                .filter(models.LabContact.cardName == lab_contact["cardName"])
+                .first()
+            )
+            if not lb:
+                # Get the lab contact person
+                lab_contact_person = lab_contact.pop("person")
+                # First check to create/update persons existing in the DB
+                to_add_person = self.check_persons([lab_contact_person], "labcontact")
+                if to_add_person:
+                    self.create_persons(to_add_person, "labcontact")
+                # At this point labcontact_person_id has been populated either by
+                # the creation of a new person or by an existing person entity
+                # Add a new LabContact a link it to Person and Proposal
+                logger.debug(
+                    f"Creating and linking a new LabContact for personID {self.labcontact_person_id}"
+                )
+                self.add_lab_contact(self.labcontact_person_id, lab_contact)
+
+    def add_lab_contact(self, personId: int, sourceLabContact: dict[str, Any]):
+        """Add a new Lab Contact."""
+        lab_contact = models.LabContact(**sourceLabContact)
+        lab_contact.proposalId = self.proposalId
+        lab_contact.personId = personId
+        self.session.add(lab_contact)
+        # Flush to get the new labContactId
+        self.session.flush()
+        return lab_contact.labContactId
+
+    @timed
     def process_proteins(self, sourceProteins: dict[str, Any]):
         """Process the creation or update of Proteins"""
-        # Check if proteins exist the DB
-        self.check_proteins(sourceProteins)
+        if sourceProteins:
+            # Check if proteins exist the DB
+            self.check_proteins(sourceProteins)
 
     def check_proteins(self, sourceProteins: dict[str, Any]):
         """Check Protein entities to see if they exist already, if not it creates a new one."""
@@ -483,10 +534,11 @@ class UserPortalSync(object):
     @timed
     def process_sessions(self, sourceSessions: dict[str, Any]):
         """Process the creation or update of Sessions"""
-        # First process the sessions
-        self.check_sessions(sourceSessions)
-        # Second process the relation between sessions and persons (Session_has_Person)
-        self.process_session_has_person()
+        if sourceSessions:
+            # First process the sessions
+            self.check_sessions(sourceSessions)
+            # Second process the relation between sessions and persons (Session_has_Person)
+            self.process_session_has_person()
 
     def process_session_has_person(self):
         # Iterate over all the session_ids

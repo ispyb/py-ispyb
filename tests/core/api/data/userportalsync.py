@@ -48,6 +48,43 @@ test_data_proposal_userportalsync = {
                 },
             },
         ],
+        "labcontacts": [
+            {
+                "cardName": "DESY - Amity Weaver",
+                "person": {
+                    "givenName": "Amity",
+                    "familyName": "Weaver",
+                    "title": "Dr.",
+                    "siteId": 157,
+                    "login": "aewaver",
+                    "emailAddress": "test@test.test",
+                    "laboratory": {
+                        "name": "DESY",
+                        "city": "HAMBURG",
+                        "country": "DE",
+                        "address": "Notkestr. 85\n22706",
+                        "laboratoryExtPk": 1,
+                    },
+                },
+            },
+            {
+                "cardName": "MAXIV - Michael Lingle",
+                "person": {
+                    "givenName": "Michael",
+                    "familyName": "Lingle",
+                    "siteId": 181,
+                    "login": "mlingle",
+                    "emailAddress": "test@test.test",
+                    "laboratory": {
+                        "name": "MAXIV",
+                        "city": "LUND",
+                        "country": "SE",
+                        "address": "Fotongatan 2\n224 84",
+                        "laboratoryExtPk": 5,
+                    },
+                },
+            },
+        ],
     },
     "sessions": [
         {

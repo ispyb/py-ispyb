@@ -9,6 +9,7 @@ from pyispyb.core.modules.persons import get_persons
 from pyispyb.core.modules.laboratories import get_laboratories
 from pyispyb.core.modules.proteins import get_proteins
 from pyispyb.core.modules.sessions import get_sessions
+from pyispyb.core.modules.labcontacts import get_labcontacts
 from tests.core.api.data.userportalsync import (
     test_data_proposal_userportalsync,
 )
@@ -136,6 +137,31 @@ def test_session_persons_sync():
 
     # Check the amount of sessions corresponds with the entries in the DB
     assert len(test_data_proposal_userportalsync["sessions"]) == sessions_in_db
+
+
+def test_lab_contacts_sync():
+    # Get the proposal from the DB
+    proposals = get_proposals(
+        skip=0,
+        limit=10,
+        proposalCode=test_data_proposal_userportalsync["proposal"]["proposalCode"],
+        proposalNumber=test_data_proposal_userportalsync["proposal"]["proposalNumber"],
+        proposalHasPerson=False,
+    )
+    # Get the lab contacts for the proposal in DB
+    labcontacts = get_labcontacts(
+        skip=0,
+        limit=10,
+        proposalId=proposals.results[0].proposalId,
+    )
+
+    # Check the amount of LabContacts for the proposal corresponds with the entries in the DB
+    assert (
+        len(test_data_proposal_userportalsync["proposal"]["labcontacts"])
+        == labcontacts.total
+    )
+
+    # Later we can add more automatic testings to see if the right persons were added, etc
 
 
 def test_proteins_sync():

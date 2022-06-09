@@ -20,6 +20,10 @@ PydanticProtein = sqlalchemy_to_pydantic(
 PydanticSessionHasPerson = sqlalchemy_to_pydantic(
     models.SessionHasPerson, exclude={"sessionId", "personId"}
 )
+PydanticLabContact = sqlalchemy_to_pydantic(
+    models.LabContact,
+    exclude={"labContactId", "proposalId", "personId", "recordTimeStamp"},
+)
 
 
 class Person(PydanticPerson):
@@ -62,12 +66,26 @@ class PersonSessionLaboratory(Person):
     session_options: Optional[PersonSessionOptions]
 
 
+class LabContact(PydanticLabContact):
+    # Person is required for a LabContact
+    person: PersonProposalLaboratory
+    # Make dewarAvgCustomsValue and dewarAvgTransportValue optional fields
+    # Somehow they are required by default
+    dewarAvgCustomsValue: Optional[int]
+    dewarAvgTransportValue: Optional[int]
+
+    class Config:
+        orm_mode = True
+
+
 class Proposal(PydanticProposal):
     # proposalCode and proposalNumber required
     proposalCode: str
     proposalNumber: str
     # Here we need minimum 1 Person to be related to the Proposal (foreign key constraint)
     persons: conlist(PersonProposalLaboratory, min_items=1)
+    # LabContacts are always related to a proposal
+    labcontacts: Optional[List[LabContact]]
 
     class Config:
         orm_mode = True
