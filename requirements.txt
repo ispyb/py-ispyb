@@ -6,6 +6,7 @@ pydantic-sqlalchemy
 uvicorn
 
 SQLAlchemy
+pydantic_sqlalchemy
 
 pyjwt
 pdfkit
