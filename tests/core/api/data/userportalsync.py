@@ -11,6 +11,7 @@ test_data_proposal_userportalsync = {
                 "familyName": "Weaver",
                 "title": "Dr.",
                 "siteId": 157,
+                "externalId": 157,
                 "login": "aewaver",
                 "emailAddress": "test@test.test",
                 "laboratory": {

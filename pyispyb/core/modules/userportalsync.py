@@ -112,6 +112,7 @@ class UserPortalSync(object):
             models.Person.phoneNumber,
             models.Person.login,
             models.Person.siteId,
+            self.decode(models.Person.externalId).label("externalId"),
         )
         ispyb_persons = [p._asdict() for p in persons.all()]
         return ispyb_persons
@@ -224,10 +225,11 @@ class UserPortalSync(object):
         )
         # Taken from https://gitlab.esrf.fr/ui/replicator/-/blob/master/replicator/impl/ispyb.py#L338
         if "externalId" in sourceProposal:
-            # Encode the externalId
-            sourceProposal["externalId"] = sourceProposal["externalId"].to_bytes(
-                16, byteorder="big"
-            )
+            if sourceProposal["externalId"] is not None:
+                # Encode the externalId
+                sourceProposal["externalId"] = sourceProposal["externalId"].to_bytes(
+                    16, byteorder="big"
+                )
         proposal = models.Proposal(**sourceProposal)
         proposal.personId = pers.personId
         logger.debug(
@@ -271,6 +273,13 @@ class UserPortalSync(object):
 
         if laboratoryId:
             copy_source_person["laboratoryId"] = laboratoryId
+
+        if "externalId" in sourcePerson:
+            if sourcePerson["externalId"] is not None:
+                # Encode the externalId
+                copy_source_person["externalId"] = sourcePerson["externalId"].to_bytes(
+                    16, byteorder="big"
+                )
         person = models.Person(**copy_source_person)
         self.session.add(person)
         # Flush to get the new personId
@@ -283,6 +292,7 @@ class UserPortalSync(object):
             person_ids["personId"] = person.personId
             person_ids["login"] = person.login
             person_ids["siteId"] = person.siteId
+            person_ids["externalId"] = sourcePerson["externalId"]
             self.session_person_ids.append(person_ids)
         elif person_type == "labcontact":
             self.labcontact_person_id = person.personId
@@ -390,9 +400,14 @@ class UserPortalSync(object):
             # Iterate over all the source persons
             for tar in target_persons:
                 # Iterate over all the target persons
-                # Check if the Person already exist in the DB by comparing against the siteId or login
-                if (tar["siteId"] is not None and tar["siteId"] == src["siteId"]) or (
-                    tar["login"] is not None and tar["login"] == src["login"]
+                # Check if the Person already exist in the DB by comparing against the siteId or login or externalId
+                if (
+                    (
+                        tar["externalId"] is not None
+                        and tar["externalId"] == src["externalId"]
+                    )
+                    or (tar["siteId"] is not None and tar["siteId"] == src["siteId"])
+                    or (tar["login"] is not None and tar["login"] == src["login"])
                 ):
                     update = False
                     logger.debug(
@@ -408,6 +423,7 @@ class UserPortalSync(object):
                         person_ids["personId"] = tar["personId"]
                         person_ids["login"] = tar["login"]
                         person_ids["siteId"] = tar["siteId"]
+                        person_ids["externalId"] = tar["externalId"]
                         self.session_person_ids.append(person_ids)
                     elif person_type == "labcontact":
                         self.labcontact_person_id = tar["personId"]
