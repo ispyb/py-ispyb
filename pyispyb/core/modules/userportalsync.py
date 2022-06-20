@@ -4,10 +4,16 @@ import time
 from typing import Any
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.sql.expression import cast
 from pyispyb.core import models
 from pyispyb.app.extensions.database.session import engine
 from ..schemas import userportalsync as schema
 from pyispyb.app.utils import timed
+from sqlalchemy import (
+    func,
+    Integer,
+)
+
 
 logger = logging.getLogger("ispyb")
 
@@ -80,6 +86,10 @@ class UserPortalSync(object):
         # Dict of sessionIds with related personIds to be checked/added to Session_has_Person table
         self.session_ids = {}
 
+    # Taken from https://gitlab.esrf.fr/ui/replicator/-/blob/master/replicator/impl/ispyb.py#L116
+    def decode(self, column):
+        return cast(func.CONV(func.HEX(column), 16, 10), Integer)
+
     def get_ispyb_proposals(self):
         proposals = self.session.query(
             models.Proposal.proposalId,
@@ -87,6 +97,8 @@ class UserPortalSync(object):
             models.Proposal.proposalCode,
             models.Proposal.proposalNumber,
             models.Proposal.proposalType,
+            # Decode binary 16 externalId field so it can be compared against Integer
+            self.decode(models.Proposal.externalId).label("externalId"),
         )
         ispyb_proposals = [p._asdict() for p in proposals.all()]
         return ispyb_proposals
@@ -161,17 +173,26 @@ class UserPortalSync(object):
         to_add_proposal = []
         for tar in target_proposals:
             # Iterate over all the target proposals
-            # Check if the Proposal already exist in the DB by comparing against the proposalCode and proposalNumber
+            # Check if the Proposal already exist in the DB
+            # by comparing against the proposalCode and proposalNumber or externalId
             if (
-                tar["proposalCode"] is not None
-                and tar["proposalCode"] == sourceProposal["proposalCode"]
-            ) and (
-                tar["proposalNumber"] is not None
-                and tar["proposalNumber"] == sourceProposal["proposalNumber"]
+                (
+                    tar["externalId"] is not None
+                    and tar["externalId"] == sourceProposal["externalId"]
+                )
+                or (
+                    tar["proposalCode"] is not None
+                    and tar["proposalCode"] == sourceProposal["proposalCode"]
+                )
+                and (
+                    tar["proposalNumber"] is not None
+                    and tar["proposalNumber"] == sourceProposal["proposalNumber"]
+                )
             ):
                 update = False
                 logger.debug(
-                    f"Proposal with code {tar['proposalCode']}{tar['proposalNumber']} found in DB with proposalId {tar['proposalId']}"
+                    f"Proposal with code {tar['proposalCode']}{tar['proposalNumber']} or "
+                    f"externalId {tar['externalId']} found in DB with proposalId {tar['proposalId']}"
                 )
                 # Set the proposalId to be used to link other entities (sessions, proteins, etc)
                 self.proposalId = tar["proposalId"]
@@ -201,6 +222,12 @@ class UserPortalSync(object):
             .filter(models.Person.siteId == sourceProposer["siteId"])
             .first()
         )
+        # Taken from https://gitlab.esrf.fr/ui/replicator/-/blob/master/replicator/impl/ispyb.py#L338
+        if "externalId" in sourceProposal:
+            # Encode the externalId
+            sourceProposal["externalId"] = sourceProposal["externalId"].to_bytes(
+                16, byteorder="big"
+            )
         proposal = models.Proposal(**sourceProposal)
         proposal.personId = pers.personId
         logger.debug(

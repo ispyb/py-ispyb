@@ -82,6 +82,8 @@ class Proposal(PydanticProposal):
     # proposalCode and proposalNumber required
     proposalCode: str
     proposalNumber: str
+    # externailId is an optional Integer and conversions to bynary 16 are done internally
+    externalId: Optional[int]
     # Here we need minimum 1 Person to be related to the Proposal (foreign key constraint)
     persons: conlist(PersonProposalLaboratory, min_items=1)
     # LabContacts are always related to a proposal

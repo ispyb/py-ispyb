@@ -2,8 +2,9 @@ test_data_proposal_userportalsync = {
     "proposal": {
         "title": "Proposal title",
         "proposalCode": "I",
-        "proposalNumber": "234444",
+        "proposalNumber": "20140076",
         "proposalType": "MX",
+        "externalId": 20140076,
         "persons": [
             {
                 "givenName": "Amity",
