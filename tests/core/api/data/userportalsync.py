@@ -90,7 +90,7 @@ test_data_proposal_userportalsync = {
     },
     "sessions": [
         {
-            "expSessionPk": 23458,
+            "externalId": 23458,
             "startDate": "2022-05-20T14:09:20.340Z",
             "endDate": "2022-05-21T14:09:20.340Z",
             "beamLineName": "P11",
@@ -143,7 +143,7 @@ test_data_proposal_userportalsync = {
             ],
         },
         {
-            "expSessionPk": 23459,
+            "externalId": 23459,
             "startDate": "2022-06-20T16:09:20.340Z",
             "endDate": "2022-06-21T16:09:20.340Z",
             "beamLineName": "P11",

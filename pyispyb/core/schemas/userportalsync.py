@@ -40,7 +40,9 @@ class Person(PydanticPerson):
             and (values.get("login") is None)
             and (values.get("externalId") is None)
         ):
-            raise ValueError("either siteId or login or externalId is required")
+            raise ValueError(
+                "either siteId or login or externalId is required for a Person entity"
+            )
         return values
 
     class Config:
@@ -106,8 +108,8 @@ class Protein(PydanticProtein):
 
 
 class Session(PydanticSession):
-    # expSessionPk required to be able to check for existing session in DB (to update or create)
-    expSessionPk: int
+    # externalId to be able to check for existing session in DB (to update or create)
+    externalId: int
     lastUpdate: Optional[datetime]
     # persons related to sessions is optional
     persons: Optional[List[PersonSessionLaboratory]]

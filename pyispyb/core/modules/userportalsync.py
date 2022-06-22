@@ -605,6 +605,7 @@ class UserPortalSync(object):
                     if (
                         p["login"] == dict_person["login"]
                         or p["siteId"] == dict_person["siteId"]
+                        or p["externalId"] == dict_person["externalId"]
                     ):
                         person_found_in_session = p
                         break
@@ -652,17 +653,23 @@ class UserPortalSync(object):
         for session in sourceSessions:
             # Get the session persons
             session_persons = session.pop("persons")
+            # If externalId is present encode it for comparison in DB
+            if session["externalId"] is not None:
+                externalId = session["externalId"]
+                session["externalId"] = session["externalId"].to_bytes(
+                    16, byteorder="big"
+                )
             # Check first if session is already on DB
             sess = (
                 self.session.query(models.BLSession)
                 .filter(models.BLSession.proposalId == self.proposalId)
-                .filter(models.BLSession.expSessionPk == session["expSessionPk"])
+                .filter(models.BLSession.externalId == session["externalId"])
                 .first()
             )
             if not sess:
                 # Creates the session if it does not exist
                 logger.debug(
-                    f"Session with expSessionPk {session['expSessionPk']} "
+                    f"Session with externalId {externalId} "
                     f"for Proposal {self.proposalId} does not exist. Creating it"
                 )
                 sessionId = self.add_session(session)
@@ -671,13 +678,11 @@ class UserPortalSync(object):
             else:
                 # if the session already exist we just update all the values
                 logger.debug(
-                    f"Session with expSessionPk {session['expSessionPk']} found in DB for proposalId {self.proposalId}"
+                    f"Session with externalId {externalId} found in DB for proposalId {self.proposalId}"
                 )
                 self.session.query(models.BLSession).filter(
                     models.BLSession.proposalId == self.proposalId
-                ).filter(
-                    models.BLSession.expSessionPk == session["expSessionPk"]
-                ).update(
+                ).filter(models.BLSession.externalId == session["externalId"]).update(
                     session
                 )
                 self.session.flush()
@@ -695,6 +700,7 @@ class UserPortalSync(object):
             now = datetime.now()
             now = now.replace(tzinfo=timezone.utc)
             sourceSession["lastUpdate"] = now
+        # externalId is encoded already at this point if present
         session = models.BLSession(**sourceSession)
         session.proposalId = self.proposalId
         self.session.add(session)

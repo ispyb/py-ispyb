@@ -121,12 +121,13 @@ def test_session_persons_sync():
     sessions_in_db = 0
     for json_session in test_data_proposal_userportalsync["sessions"]:
 
-        sessions = get_sessions(
-            skip=0,
-            limit=10,
-            expSessionPk=json_session["expSessionPk"],
-            sessionHasPerson=True,
-        )
+        if json_session["externalId"] is not None:
+            sessions = get_sessions(
+                skip=0,
+                limit=10,
+                externalId=json_session["externalId"],
+                sessionHasPerson=True,
+            )
 
         if sessions.total == 1:
             sessions_in_db += 1

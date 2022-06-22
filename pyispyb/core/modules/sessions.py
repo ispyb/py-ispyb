@@ -9,7 +9,7 @@ def get_sessions(
     skip: int,
     limit: int,
     sessionId: Optional[int] = None,
-    expSessionPk: Optional[int] = None,
+    externalId: Optional[int] = None,
     proposalId: Optional[int] = None,
     sessionHasPerson: Optional[bool] = False,
 ) -> Paged[models.Proposal]:
@@ -29,8 +29,9 @@ def get_sessions(
     if sessionId:
         query = query.filter(models.BLSession.sessionId == sessionId)
 
-    if expSessionPk:
-        query = query.filter(models.BLSession.expSessionPk == expSessionPk)
+    if externalId:
+        externalId = externalId.to_bytes(16, byteorder="big")
+        query = query.filter(models.BLSession.externalId == externalId)
 
     if proposalId:
         query = query.filter(models.BLSession.proposalId == proposalId)
