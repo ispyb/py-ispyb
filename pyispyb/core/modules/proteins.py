@@ -10,6 +10,7 @@ def get_proteins(
     limit: int,
     proteinId: Optional[int] = None,
     proposalId: Optional[int] = None,
+    externalId: Optional[int] = None,
     name: Optional[str] = None,
 ) -> Paged[models.Protein]:
     query = db.session.query(models.Protein).options(
@@ -24,6 +25,10 @@ def get_proteins(
 
     if proposalId:
         query = query.filter(models.Protein.proposalId == proposalId)
+
+    if externalId:
+        externalId = externalId.to_bytes(16, byteorder="big")
+        query = query.filter(models.Protein.externalId == externalId)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

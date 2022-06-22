@@ -180,7 +180,7 @@ def test_proteins_sync():
         proteins = get_proteins(
             skip=0,
             limit=10,
-            name=protein["name"],
+            externalId=protein["externalId"],
             proposalId=proposals.results[0].proposalId,
         )
         if proteins.total == 1:

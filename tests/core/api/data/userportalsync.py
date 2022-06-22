@@ -202,6 +202,7 @@ test_data_proposal_userportalsync = {
             "acronym": "P4R2",
             "hazardGroup": 1,
             "containmentLevel": 1,
+            "externalId": 3789,
             "person": {
                 "givenName": "Amity",
                 "familyName": "Weaver",
@@ -216,6 +217,27 @@ test_data_proposal_userportalsync = {
                     "laboratoryExtPk": 1,
                 },
             },
-        }
+        },
+        {
+            "name": "Dithiothreitol",
+            "acronym": "DTT5",
+            "hazardGroup": 1,
+            "containmentLevel": 1,
+            "externalId": 3790,
+            "person": {
+                "givenName": "Amity",
+                "familyName": "Weaver",
+                "siteId": 157,
+                "login": "aweaver",
+                "emailAddress": "test@test.test",
+                "laboratory": {
+                    "name": "DESY",
+                    "city": "HAMBURG",
+                    "country": "DE",
+                    "address": "Notkestr. 85\n22706",
+                    "laboratoryExtPk": 1,
+                },
+            },
+        },
     ],
 }

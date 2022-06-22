@@ -101,6 +101,8 @@ class Proposal(PydanticProposal):
 
 
 class Protein(PydanticProtein):
+    # externalId to be able to check for existing protein in DB (to update or create)
+    externalId: int
     person: PersonProposalLaboratory
 
     class Config:

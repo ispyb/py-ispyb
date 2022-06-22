@@ -528,28 +528,36 @@ class UserPortalSync(object):
     def check_proteins(self, sourceProteins: dict[str, Any]):
         """Check Protein entities to see if they exist already, if not it creates a new one."""
         for protein in sourceProteins:
+            if protein["externalId"] is not None:
+                externalId = protein["externalId"]
+                protein["externalId"] = protein["externalId"].to_bytes(
+                    16, byteorder="big"
+                )
             prot = (
                 self.session.query(models.Protein)
                 .filter(models.Protein.proposalId == self.proposalId)
-                .filter(models.Protein.acronym == protein["acronym"])
+                .filter(models.Protein.externalId == protein["externalId"])
                 .first()
             )
             if not prot:
+                # If there is not any macromolecule matching any externalId
+                # and proposalId then it will be created
                 logger.debug(
-                    f"Protein with acronym {protein['acronym']} "
+                    f"Protein with externalId {externalId} "
                     f"for Proposal {self.proposalId} does not exist. Creating it"
                 )
                 self.add_protein(protein)
             else:
-                # If there is not any macromolecule with that acronym
-                # and proposalId then it will be created
+                # If a Protein with a externalId already exist, update the protein
                 logger.debug(
-                    f"Protein with acronym {protein['acronym']} found in DB for proposalId {self.proposalId}"
+                    f"Protein with externalId {externalId} found in DB for proposalId {self.proposalId}"
                 )
                 del protein["person"]
                 self.session.query(models.Protein).filter(
                     models.Protein.proposalId == self.proposalId
-                ).filter(models.Protein.acronym == protein["acronym"]).update(protein)
+                ).filter(models.Protein.externalId == protein["externalId"]).update(
+                    protein
+                )
                 self.session.flush()
 
     def add_protein(self, sourceProtein) -> int:
