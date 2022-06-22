@@ -27,21 +27,16 @@ PydanticLabContact = sqlalchemy_to_pydantic(
 
 
 class Person(PydanticPerson):
-    # At least siteId or login required to be able to check for existing Person in DB (to update or create)
-    siteId: Optional[int] = None
+    # At least login or externalId required to be able to check for existing Person in DB (to update or create)
     login: Optional[str] = None
     externalId: Optional[int] = None
 
     # https://github.com/samuelcolvin/pydantic/issues/506
     @root_validator()
-    def check_siteId_or_login_or_externalId(cls, values):
-        if (
-            (values.get("siteId") is None)
-            and (values.get("login") is None)
-            and (values.get("externalId") is None)
-        ):
+    def check_login_or_externalId(cls, values):
+        if (values.get("login") is None) and (values.get("externalId") is None):
             raise ValueError(
-                "either siteId or login or externalId is required for a Person entity"
+                "either login or externalId is required for a Person entity"
             )
         return values
 

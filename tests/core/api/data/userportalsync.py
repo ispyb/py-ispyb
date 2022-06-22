@@ -10,7 +10,6 @@ test_data_proposal_userportalsync = {
                 "givenName": "Amity",
                 "familyName": "Weaver",
                 "title": "Dr.",
-                "siteId": 157,
                 "externalId": 157,
                 "login": "aewaver",
                 "emailAddress": "test@test.test",
@@ -25,7 +24,7 @@ test_data_proposal_userportalsync = {
             {
                 "givenName": "Kirk",
                 "familyName": "Chambers",
-                "siteId": 158,
+                "externalId": 158,
                 "login": "kchambers",
                 "emailAddress": "test@test.test",
                 "laboratory": {
@@ -38,7 +37,7 @@ test_data_proposal_userportalsync = {
             {
                 "givenName": "Sherri",
                 "familyName": "Quinlan",
-                "siteId": 159,
+                "externalId": 159,
                 "login": "squinlan",
                 "emailAddress": "test@test.test",
                 "laboratory": {
@@ -57,7 +56,7 @@ test_data_proposal_userportalsync = {
                     "givenName": "Amity",
                     "familyName": "Weaver",
                     "title": "Dr.",
-                    "siteId": 157,
+                    "externalId": 157,
                     "login": "aewaver",
                     "emailAddress": "test@test.test",
                     "laboratory": {
@@ -74,7 +73,7 @@ test_data_proposal_userportalsync = {
                 "person": {
                     "givenName": "Michael",
                     "familyName": "Lingle",
-                    "siteId": 181,
+                    "externalId": 181,
                     "login": "mlingle",
                     "emailAddress": "test@test.test",
                     "laboratory": {
@@ -111,7 +110,7 @@ test_data_proposal_userportalsync = {
                 {
                     "givenName": "Saim",
                     "familyName": "Gross",
-                    "siteId": 160,
+                    "externalId": 160,
                     "login": "sgross",
                     "emailAddress": "test@test.test",
                     "laboratory": {
@@ -126,7 +125,7 @@ test_data_proposal_userportalsync = {
                 {
                     "givenName": "Jaspal",
                     "familyName": "Bernal",
-                    "siteId": 161,
+                    "externalId": 161,
                     "login": "jbernal",
                     "title": "Dr.",
                     "phoneNumber": "+123456789",
@@ -164,7 +163,7 @@ test_data_proposal_userportalsync = {
                 {
                     "givenName": "Saim",
                     "familyName": "Gross",
-                    "siteId": 160,
+                    "externalId": 160,
                     "login": "sgross",
                     "emailAddress": "test@test.test",
                     "laboratory": {
@@ -179,7 +178,7 @@ test_data_proposal_userportalsync = {
                 {
                     "givenName": "Jaspal",
                     "familyName": "Bernal",
-                    "siteId": 161,
+                    "externalId": 161,
                     "login": "jbernal",
                     "title": "Dr.",
                     "phoneNumber": "+123456789",
@@ -206,7 +205,7 @@ test_data_proposal_userportalsync = {
             "person": {
                 "givenName": "Amity",
                 "familyName": "Weaver",
-                "siteId": 157,
+                "externalId": 157,
                 "login": "aweaver",
                 "emailAddress": "test@test.test",
                 "laboratory": {
@@ -227,7 +226,7 @@ test_data_proposal_userportalsync = {
             "person": {
                 "givenName": "Amity",
                 "familyName": "Weaver",
-                "siteId": 157,
+                "externalId": 157,
                 "login": "aweaver",
                 "emailAddress": "test@test.test",
                 "laboratory": {

@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.sql.expression import cast
 from pyispyb.core import models
 from pyispyb.app.extensions.database.session import engine
+from pyispyb.core.modules.persons import get_persons
 from ..schemas import userportalsync as schema
 from pyispyb.app.utils import timed
 from sqlalchemy import (
@@ -111,7 +112,6 @@ class UserPortalSync(object):
             models.Person.emailAddress,
             models.Person.phoneNumber,
             models.Person.login,
-            models.Person.siteId,
             self.decode(models.Person.externalId).label("externalId"),
         )
         ispyb_persons = [p._asdict() for p in persons.all()]
@@ -218,9 +218,10 @@ class UserPortalSync(object):
         self, sourceProposal: dict[str, Any], sourceProposer: dict[str, Any]
     ):
         """Add a new proposal."""
+        # First get the person that will be associated to the proposal
         pers = (
             self.session.query(models.Person)
-            .filter(models.Person.siteId == sourceProposer["siteId"])
+            .filter(models.Person.login == sourceProposer["login"])
             .first()
         )
         # Taken from https://gitlab.esrf.fr/ui/replicator/-/blob/master/replicator/impl/ispyb.py#L338
@@ -291,7 +292,6 @@ class UserPortalSync(object):
             person_ids = dict()
             person_ids["personId"] = person.personId
             person_ids["login"] = person.login
-            person_ids["siteId"] = person.siteId
             person_ids["externalId"] = sourcePerson["externalId"]
             self.session_person_ids.append(person_ids)
         elif person_type == "labcontact":
@@ -400,15 +400,11 @@ class UserPortalSync(object):
             # Iterate over all the source persons
             for tar in target_persons:
                 # Iterate over all the target persons
-                # Check if the Person already exist in the DB by comparing against the siteId or login or externalId
+                # Check if the Person already exist in the DB by comparing against the login or externalId
                 if (
-                    (
-                        tar["externalId"] is not None
-                        and tar["externalId"] == src["externalId"]
-                    )
-                    or (tar["siteId"] is not None and tar["siteId"] == src["siteId"])
-                    or (tar["login"] is not None and tar["login"] == src["login"])
-                ):
+                    tar["externalId"] is not None
+                    and tar["externalId"] == src["externalId"]
+                ) or (tar["login"] is not None and tar["login"] == src["login"]):
                     update = False
                     logger.debug(
                         f"Person with personId {tar['personId']} already in DB"
@@ -422,7 +418,6 @@ class UserPortalSync(object):
                         # Add personids to session_person_ids list
                         person_ids["personId"] = tar["personId"]
                         person_ids["login"] = tar["login"]
-                        person_ids["siteId"] = tar["siteId"]
                         person_ids["externalId"] = tar["externalId"]
                         self.session_person_ids.append(person_ids)
                     elif person_type == "labcontact":
@@ -565,13 +560,14 @@ class UserPortalSync(object):
         Here we assume the person related to the protein will be always a proposal participant
         meaning the person is already on the DB or pending to be commited
         """
-        pers = (
-            self.session.query(models.Person)
-            .options(joinedload(models.Person.Laboratory))
-            .filter(models.Person.siteId == sourceProtein["person"]["siteId"])
-            .first()
+        persons = get_persons(
+            skip=0,
+            limit=10,
+            externalId=sourceProtein["person"]["externalId"],
         )
-        if pers:
+
+        if persons.total > 0:
+            pers = persons.results[0]
             """Add a new protein."""
             del sourceProtein["person"]
             protein = models.Protein(**sourceProtein)
@@ -612,7 +608,6 @@ class UserPortalSync(object):
                 for p in self.session_ids[session_id]:
                     if (
                         p["login"] == dict_person["login"]
-                        or p["siteId"] == dict_person["siteId"]
                         or p["externalId"] == dict_person["externalId"]
                     ):
                         person_found_in_session = p

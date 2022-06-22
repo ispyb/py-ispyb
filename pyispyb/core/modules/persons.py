@@ -9,7 +9,7 @@ def get_persons(
     skip: int,
     limit: int,
     personId: Optional[int] = None,
-    siteId: Optional[int] = None,
+    externalId: Optional[int] = None,
     familyName: Optional[str] = None,
     givenName: Optional[str] = None,
     login: Optional[str] = None,
@@ -22,8 +22,9 @@ def get_persons(
     if personId:
         query = query.filter(models.Person.personId == personId)
 
-    if siteId:
-        query = query.filter(models.Person.siteId == siteId)
+    if externalId:
+        externalId = externalId.to_bytes(16, byteorder="big")
+        query = query.filter(models.Person.externalId == externalId)
 
     if familyName:
         query = query.filter(models.Person.familyName == familyName)
