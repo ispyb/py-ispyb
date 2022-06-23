@@ -30,7 +30,7 @@ class SSXSampleCreate(BaseModel):
 
 
 class SSXDataCollectionCreate(BaseModel):
-    
+
     # Table DataCollection
     exposureTime: Optional[float]
     transmission: Optional[float]
