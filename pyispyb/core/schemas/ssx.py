@@ -7,13 +7,29 @@ class SSXDataCollectionResponse(
     sqlalchemy_to_pydantic(models.SSXDataCollection, exclude=["dataCollectionId"])
 ):
     DataCollection: sqlalchemy_to_pydantic(
-        models.DataCollection, exclude=["dataCollectionId"]
+        models.DataCollection, exclude=["dataCollectionId"]  # noqa: F821 flake8 bug
     )
+
+
+class SSXSampleCreate(
+    sqlalchemy_to_pydantic(models.SSXSample, exclude=["ssxSampleId", "ssxBufferId"])
+):
+    buffer: sqlalchemy_to_pydantic(
+        models.SSXBuffer, exclude=["ssxBufferId"]  # noqa: F821 flake8 bug
+    )
+
+
+class DataCollectionCreate(
+    sqlalchemy_to_pydantic(models.DataCollection, exclude=["dataCollectionId"])
+):
+    pass
 
 
 class SSXDataCollectionCreate(
-    sqlalchemy_to_pydantic(models.SSXDataCollection, exclude=["dataCollectionId"])
+    DataCollectionCreate,
+    sqlalchemy_to_pydantic(
+        models.SSXDataCollection,
+        exclude=["ssxSampleId", "ssxDataCollectionId", "dataCollectionId"],
+    ),
 ):
-    DataCollection: sqlalchemy_to_pydantic(
-        models.DataCollection, exclude=["dataCollectionId"]
-    )
+    sample: SSXSampleCreate
