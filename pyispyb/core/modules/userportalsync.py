@@ -269,7 +269,10 @@ class UserPortalSync(object):
         # Make a deep copy to session_options original values from self.session_ids, so they are not removed
         copy_source_person = copy.deepcopy(sourcePerson)
         if person_type == "session":
-            if copy_source_person["session_options"]:
+            if (
+                copy_source_person["session_options"]
+                or copy_source_person["session_options"] is None
+            ):
                 copy_source_person.pop("session_options")
 
         if laboratoryId:
@@ -351,6 +354,9 @@ class UserPortalSync(object):
         to_add_persons = self.check_persons(sourcePersons, person_type)
         # Second add new persons
         if to_add_persons:
+            logger.debug(
+                f"There are {len(to_add_persons)} person/s to add for type {person_type}"
+            )
             self.create_persons(to_add_persons, person_type)
 
     def create_persons(self, sourcePersons: dict[str, Any], person_type: str = None):
@@ -407,7 +413,7 @@ class UserPortalSync(object):
                 ) or (tar["login"] is not None and tar["login"] == src["login"]):
                     update = False
                     logger.debug(
-                        f"Person with personId {tar['personId']} already in DB"
+                        f"Person with personId {tar['personId']} and type {person_type} already in DB"
                     )
 
                     if person_type == "proposal":
@@ -589,9 +595,11 @@ class UserPortalSync(object):
 
     def process_session_has_person(self):
         # Iterate over all the session_ids
+        logger.debug("Executing process_session_has_person")
         for session_id in self.session_ids:
             self.session_person_ids = []
             # Create/Update new persons if needed first
+            logger.debug("Checking persons for session id " + str(session_id))
             self.process_persons(self.session_ids[session_id], "session")
             # Check if the entry in Session_has_Person does not exist already in DB
             for dict_person in self.session_person_ids:
