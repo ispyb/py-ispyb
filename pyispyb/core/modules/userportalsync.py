@@ -351,7 +351,10 @@ class UserPortalSync(object):
     @timed
     def process_persons(self, sourcePersons: dict[str, Any], person_type: str = None):
         """Process the creation or update of Persons"""
-        # First check to update persons existing in the DB
+        # Make sure the list of sourcePersons has unique login to avoid duplications
+        # https://stackoverflow.com/questions/11092511/list-of-unique-dictionaries
+        sourcePersons = list({v["login"]: v for v in sourcePersons}.values())
+        # Check to update persons existing in the DB
         to_add_persons = self.check_persons(sourcePersons, person_type)
         # Second add new persons
         if to_add_persons:
