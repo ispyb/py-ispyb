@@ -96,8 +96,10 @@ class Proposal(PydanticProposal):
 
 
 class Protein(PydanticProtein):
-    # externalId to be able to check for existing protein in DB (to update or create)
-    externalId: int
+    # It may sync by checking protein acronym and proposalId in DB
+    acronym: str
+    # Can also use externalId to be able to check for existing protein in DB (to update or create)
+    externalId: Optional[int]
     person: PersonProposalLaboratory
 
     class Config:

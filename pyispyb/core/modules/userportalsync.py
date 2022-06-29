@@ -530,6 +530,7 @@ class UserPortalSync(object):
     def check_proteins(self, sourceProteins: dict[str, Any]):
         """Check Protein entities to see if they exist already, if not it creates a new one."""
         for protein in sourceProteins:
+            externalId = None
             if protein["externalId"] is not None:
                 externalId = protein["externalId"]
                 protein["externalId"] = protein["externalId"].to_bytes(
@@ -538,26 +539,34 @@ class UserPortalSync(object):
             prot = (
                 self.session.query(models.Protein)
                 .filter(models.Protein.proposalId == self.proposalId)
-                .filter(models.Protein.externalId == protein["externalId"])
+                .filter(
+                    or_(
+                        models.Protein.externalId == protein["externalId"],
+                        models.Protein.acronym == protein["acronym"],
+                    )
+                )
                 .first()
             )
             if not prot:
                 # If there is not any macromolecule matching any externalId
                 # and proposalId then it will be created
                 logger.debug(
-                    f"Protein with externalId {externalId} "
+                    f"Protein with externalId {externalId} or acronym {protein['acronym']}"
                     f"for Proposal {self.proposalId} does not exist. Creating it"
                 )
                 self.add_protein(protein)
             else:
-                # If a Protein with a externalId already exist, update the protein
+                # If a Protein with a externalId or acronym already exist, update the protein
                 logger.debug(
-                    f"Protein with externalId {externalId} found in DB for proposalId {self.proposalId}"
+                    f"Protein with externalId {externalId} or acronym {protein['acronym']} found in DB for proposalId {self.proposalId}"
                 )
                 del protein["person"]
                 self.session.query(models.Protein).filter(
                     models.Protein.proposalId == self.proposalId
-                ).filter(models.Protein.externalId == protein["externalId"]).update(
+                ).filter(
+                    or_(models.Protein.externalId == protein["externalId"]),
+                    models.Protein.acronym == protein["acronym"],
+                ).update(
                     protein
                 )
                 self.session.flush()
@@ -570,7 +579,8 @@ class UserPortalSync(object):
         persons = get_persons(
             skip=0,
             limit=10,
-            externalId=sourceProtein["person"]["externalId"],
+            login=sourceProtein["person"]["login"],
+            withLaboratory=False,
         )
 
         if persons.total > 0:

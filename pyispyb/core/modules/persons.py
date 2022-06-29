@@ -14,10 +14,14 @@ def get_persons(
     givenName: Optional[str] = None,
     login: Optional[str] = None,
     emailAddress: Optional[str] = None,
+    withLaboratory: Optional[bool] = False,
 ) -> Paged[models.Person]:
-    query = db.session.query(models.Person).options(
-        joinedload(models.Person.Laboratory)
-    )
+    if withLaboratory:
+        query = db.session.query(models.Person).options(
+            joinedload(models.Person.Laboratory)
+        )
+    else:
+        query = db.session.query(models.Person)
 
     if personId:
         query = query.filter(models.Person.personId == personId)

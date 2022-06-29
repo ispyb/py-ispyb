@@ -206,7 +206,7 @@ test_data_proposal_userportalsync = {
                 "givenName": "Amity",
                 "familyName": "Weaver",
                 "externalId": 157,
-                "login": "aweaver",
+                "login": "aewaver",
                 "emailAddress": "test@test.test",
                 "laboratory": {
                     "name": "DESY",
@@ -222,12 +222,10 @@ test_data_proposal_userportalsync = {
             "acronym": "DTT5",
             "hazardGroup": 1,
             "containmentLevel": 1,
-            "externalId": 3790,
             "person": {
                 "givenName": "Amity",
                 "familyName": "Weaver",
-                "externalId": 157,
-                "login": "aweaver",
+                "login": "aewaver",
                 "emailAddress": "test@test.test",
                 "laboratory": {
                     "name": "DESY",

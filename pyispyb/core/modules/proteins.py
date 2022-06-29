@@ -12,6 +12,7 @@ def get_proteins(
     proposalId: Optional[int] = None,
     externalId: Optional[int] = None,
     name: Optional[str] = None,
+    acronym: Optional[str] = None,
 ) -> Paged[models.Protein]:
     query = db.session.query(models.Protein).options(
         joinedload(models.Protein.Proposal)
@@ -22,6 +23,9 @@ def get_proteins(
 
     if name:
         query = query.filter(models.Protein.name == name)
+
+    if acronym:
+        query = query.filter(models.Protein.acronym == acronym)
 
     if proposalId:
         query = query.filter(models.Protein.proposalId == proposalId)

@@ -65,6 +65,7 @@ def test_proposal_persons_sync():
             login=json_person["login"],
             givenName=json_person["givenName"],
             familyName=json_person["familyName"],
+            withLaboratory=False,
         )
         if persons.total == 1:
             total_proposal_persons += 1
@@ -193,12 +194,27 @@ def test_proteins_sync():
     proteins_in_db = 0
     for i, protein in enumerate(test_data_proposal_userportalsync["proteins"]):
         # Check all proteins in DB related to the proposalID
-        proteins = get_proteins(
-            skip=0,
-            limit=10,
-            externalId=protein["externalId"],
-            proposalId=proposals.results[0].proposalId,
-        )
+        try:
+            if protein["externalId"] is not None:
+                proteins = get_proteins(
+                    skip=0,
+                    limit=10,
+                    externalId=protein["externalId"],
+                    proposalId=proposals.results[0].proposalId,
+                )
+        except KeyError:
+            pass
+
+        try:
+            proteins = get_proteins(
+                skip=0,
+                limit=10,
+                acronym=protein["acronym"],
+                proposalId=proposals.results[0].proposalId,
+            )
+        except KeyError:
+            pass
+
         if proteins.total == 1:
             proteins_in_db += 1
     # Check the amount of proteins in JSON corresponds with the entries in the DB
