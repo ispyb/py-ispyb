@@ -13,6 +13,7 @@ from pyispyb.app.utils import timed
 from sqlalchemy import (
     func,
     Integer,
+    or_,
 )
 
 
@@ -664,24 +665,31 @@ class UserPortalSync(object):
         for session in sourceSessions:
             # Get the session persons
             session_persons = session.pop("persons")
+            externalId = None
             # If externalId is present encode it for comparison in DB
             if session["externalId"] is not None:
                 externalId = session["externalId"]
                 session["externalId"] = session["externalId"].to_bytes(
                     16, byteorder="big"
                 )
-            # Check first if session is already on DB
+            # Check if session is already on DB by using externalId or expSessionPk.
+            # The expSessionPk field might be deprecated later.
             sess = (
                 self.session.query(models.BLSession)
                 .filter(models.BLSession.proposalId == self.proposalId)
-                .filter(models.BLSession.externalId == session["externalId"])
+                .filter(
+                    or_(
+                        models.BLSession.externalId == session["externalId"],
+                        models.BLSession.expSessionPk == session["expSessionPk"],
+                    )
+                )
                 .first()
             )
             if not sess:
                 # Creates the session if it does not exist
                 logger.debug(
-                    f"Session with externalId {externalId} "
-                    f"for Proposal {self.proposalId} does not exist. Creating it"
+                    f"Session with externalId {externalId} or expSessionPk {session['expSessionPk']}"
+                    f" for Proposal {self.proposalId} does not exist. Creating it"
                 )
                 sessionId = self.add_session(session)
                 # Set the new session id with the related session persons
@@ -689,11 +697,17 @@ class UserPortalSync(object):
             else:
                 # if the session already exist we just update all the values
                 logger.debug(
-                    f"Session with externalId {externalId} found in DB for proposalId {self.proposalId}"
+                    f"Session with externalId {externalId} or expSessionPk {session['expSessionPk']}"
+                    f" found in DB for proposalId {self.proposalId}"
                 )
                 self.session.query(models.BLSession).filter(
                     models.BLSession.proposalId == self.proposalId
-                ).filter(models.BLSession.externalId == session["externalId"]).update(
+                ).filter(
+                    or_(
+                        models.BLSession.externalId == session["externalId"],
+                        models.BLSession.expSessionPk == session["expSessionPk"],
+                    )
+                ).update(
                     session
                 )
                 self.session.flush()

@@ -105,11 +105,21 @@ class Protein(PydanticProtein):
 
 
 class Session(PydanticSession):
-    # externalId to be able to check for existing session in DB (to update or create)
-    externalId: int
+    # expSessionPk or externalId to be able to check for existing session in DB (to update or create)
+    # The expSessionPk field might be deprecated later
+    expSessionPk: Optional[int]
+    externalId: Optional[int]
     lastUpdate: Optional[datetime]
     # persons related to sessions is optional
     persons: Optional[List[PersonSessionLaboratory]]
+
+    @root_validator()
+    def check_expSessionPk_or_externalId(cls, values):
+        if (values.get("expSessionPk") is None) and (values.get("externalId") is None):
+            raise ValueError(
+                "either expSessionPk or externalId is required for a Session entity"
+            )
+        return values
 
     class Config:
         orm_mode = True

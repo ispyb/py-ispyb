@@ -142,7 +142,7 @@ test_data_proposal_userportalsync = {
             ],
         },
         {
-            "externalId": 23459,
+            "expSessionPk": 23459,
             "startDate": "2022-06-20T16:09:20.340Z",
             "endDate": "2022-06-21T16:09:20.340Z",
             "beamLineName": "P11",

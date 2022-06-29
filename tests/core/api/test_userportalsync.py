@@ -121,13 +121,29 @@ def test_session_persons_sync():
     sessions_in_db = 0
     for json_session in test_data_proposal_userportalsync["sessions"]:
 
-        if json_session["externalId"] is not None:
-            sessions = get_sessions(
-                skip=0,
-                limit=10,
-                externalId=json_session["externalId"],
-                sessionHasPerson=True,
-            )
+        try:
+            if json_session["externalId"] is not None:
+                sessions = get_sessions(
+                    skip=0,
+                    limit=10,
+                    externalId=json_session["externalId"],
+                    sessionHasPerson=True,
+                )
+        except KeyError:
+            pass
+
+        try:
+            # Keeping expSessionPk for now for backward compatibility with the ISPyB JAVA API
+            # It might be deprecated later
+            if json_session["expSessionPk"] is not None:
+                sessions = get_sessions(
+                    skip=0,
+                    limit=10,
+                    expSessionPk=json_session["expSessionPk"],
+                    sessionHasPerson=True,
+                )
+        except KeyError:
+            pass
 
         if sessions.total == 1:
             sessions_in_db += 1
