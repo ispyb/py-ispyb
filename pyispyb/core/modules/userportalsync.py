@@ -13,7 +13,6 @@ from pyispyb.app.utils import timed
 from sqlalchemy import (
     func,
     Integer,
-    or_,
 )
 
 
@@ -535,21 +534,25 @@ class UserPortalSync(object):
         for protein in sourceProteins:
             externalId = None
             if protein["externalId"] is not None:
+                logger.debug("Finding protein by Externalid")
                 externalId = protein["externalId"]
                 protein["externalId"] = protein["externalId"].to_bytes(
                     16, byteorder="big"
                 )
-            prot = (
-                self.session.query(models.Protein)
-                .filter(models.Protein.proposalId == self.proposalId)
-                .filter(
-                    or_(
-                        models.Protein.externalId == protein["externalId"],
-                        models.Protein.acronym == protein["acronym"],
-                    )
+                prot = (
+                    self.session.query(models.Protein)
+                    .filter(models.Protein.proposalId == self.proposalId)
+                    .filter(models.Protein.externalId == protein["externalId"])
+                    .first()
                 )
-                .first()
-            )
+            else:
+                logger.debug("Finding protein by acronym")
+                prot = (
+                    self.session.query(models.Protein)
+                    .filter(models.Protein.proposalId == self.proposalId)
+                    .filter(models.Protein.acronym == protein["acronym"])
+                    .first()
+                )
             if not prot:
                 # If there is not any macromolecule matching any externalId
                 # and proposalId then it will be created
@@ -564,14 +567,20 @@ class UserPortalSync(object):
                     f"Protein with externalId {externalId} or acronym {protein['acronym']} found in DB for proposalId {self.proposalId}"
                 )
                 del protein["person"]
-                self.session.query(models.Protein).filter(
-                    models.Protein.proposalId == self.proposalId
-                ).filter(
-                    or_(models.Protein.externalId == protein["externalId"]),
-                    models.Protein.acronym == protein["acronym"],
-                ).update(
-                    protein
-                )
+                if externalId:
+                    logger.debug("Updating protein by externalId")
+                    self.session.query(models.Protein).filter(
+                        models.Protein.proposalId == self.proposalId
+                    ).filter(models.Protein.externalId == protein["externalId"]).update(
+                        protein
+                    )
+                else:
+                    logger.debug("Updating protein by acronym")
+                    self.session.query(models.Protein).filter(
+                        models.Protein.proposalId == self.proposalId
+                    ).filter(models.Protein.acronym == protein["acronym"]).update(
+                        protein
+                    )
                 self.session.flush()
 
     def add_protein(self, sourceProtein) -> int:
@@ -685,19 +694,22 @@ class UserPortalSync(object):
                 session["externalId"] = session["externalId"].to_bytes(
                     16, byteorder="big"
                 )
-            # Check if session is already on DB by using externalId or expSessionPk.
-            # The expSessionPk field might be deprecated later.
-            sess = (
-                self.session.query(models.BLSession)
-                .filter(models.BLSession.proposalId == self.proposalId)
-                .filter(
-                    or_(
-                        models.BLSession.externalId == session["externalId"],
-                        models.BLSession.expSessionPk == session["expSessionPk"],
-                    )
+                # Check if session is already on DB by using externalId.
+                sess = (
+                    self.session.query(models.BLSession)
+                    .filter(models.BLSession.proposalId == self.proposalId)
+                    .filter(models.BLSession.externalId == session["externalId"])
+                    .first()
                 )
-                .first()
-            )
+            else:
+                # Check if session is already on DB by using expSessionPk.
+                # The expSessionPk field might be deprecated later.
+                sess = (
+                    self.session.query(models.BLSession)
+                    .filter(models.BLSession.proposalId == self.proposalId)
+                    .filter(models.BLSession.expSessionPk == session["expSessionPk"])
+                    .first()
+                )
             if not sess:
                 # Creates the session if it does not exist
                 logger.debug(
@@ -713,16 +725,22 @@ class UserPortalSync(object):
                     f"Session with externalId {externalId} or expSessionPk {session['expSessionPk']}"
                     f" found in DB for proposalId {self.proposalId}"
                 )
-                self.session.query(models.BLSession).filter(
-                    models.BLSession.proposalId == self.proposalId
-                ).filter(
-                    or_(
+                if externalId:
+                    self.session.query(models.BLSession).filter(
+                        models.BLSession.proposalId == self.proposalId
+                    ).filter(
                         models.BLSession.externalId == session["externalId"],
-                        models.BLSession.expSessionPk == session["expSessionPk"],
+                    ).update(
+                        session
                     )
-                ).update(
-                    session
-                )
+                else:
+                    self.session.query(models.BLSession).filter(
+                        models.BLSession.proposalId == self.proposalId
+                    ).filter(
+                        models.BLSession.expSessionPk == session["expSessionPk"],
+                    ).update(
+                        session
+                    )
                 self.session.flush()
                 # Set the session id with the related session persons
                 self.session_ids[sess.sessionId] = session_persons

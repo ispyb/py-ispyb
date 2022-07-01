@@ -10,8 +10,8 @@ from pyispyb.core.modules.laboratories import get_laboratories
 from pyispyb.core.modules.proteins import get_proteins
 from pyispyb.core.modules.sessions import get_sessions
 from pyispyb.core.modules.labcontacts import get_labcontacts
-from tests.core.api.data.userportalsync import (
-    test_data_proposal_userportalsync,
+from tests.core.api.data.userportalsync_create import (
+    test_data_proposal_userportalsync_create,
 )
 
 
@@ -24,14 +24,14 @@ db.set_session(session)
 client = TestClient(app)
 
 
-def test_call_sync_proposal():
+def test_call_sync_proposal_create():
     res = client.post(
         f"{settings.api_root}/auth/login",
         json={"username": "efgh", "password": "efgh", "plugin": "dummy"},
     )
     assert res.status_code == 201
 
-    data = test_data_proposal_userportalsync
+    data = test_data_proposal_userportalsync_create
     headers = {"Authorization": f"Bearer {res.json()['token']}"}
     res2 = client.post(
         f"{settings.api_root}/userportalsync/sync_proposal", headers=headers, json=data
@@ -46,8 +46,8 @@ def test_proposal_persons_sync():
     proposals = get_proposals(
         skip=0,
         limit=10,
-        proposalCode=test_data_proposal_userportalsync["proposal"]["proposalCode"],
-        proposalNumber=test_data_proposal_userportalsync["proposal"]["proposalNumber"],
+        proposalCode=test_data_proposal_userportalsync_create["proposal"]["proposalCode"],
+        proposalNumber=test_data_proposal_userportalsync_create["proposal"]["proposalNumber"],
         proposalHasPerson=True,
     )
 
@@ -56,7 +56,7 @@ def test_proposal_persons_sync():
     # Check the persons related to the proposal were created
     total_proposal_persons = 0
     for i, json_person in enumerate(
-        test_data_proposal_userportalsync["proposal"]["persons"]
+        test_data_proposal_userportalsync_create["proposal"]["persons"]
     ):
         # Lookup for the persons in DB according to the input JSON data
         persons = get_persons(
@@ -74,7 +74,7 @@ def test_proposal_persons_sync():
             first_person_id = persons.results[i].personId
 
     assert total_proposal_persons == len(
-        test_data_proposal_userportalsync["proposal"]["persons"]
+        test_data_proposal_userportalsync_create["proposal"]["persons"]
     )
 
     # The first person related to the proposal (PI or leader)
@@ -82,7 +82,7 @@ def test_proposal_persons_sync():
     assert first_person_id == proposals.results[0].personId
 
     # Check the number of persons within the ProposalHasPerson table
-    assert len(test_data_proposal_userportalsync["proposal"]["persons"]) == len(
+    assert len(test_data_proposal_userportalsync_create["proposal"]["persons"]) == len(
         proposals.results[0].proposal_has_people
     )
 
@@ -94,7 +94,7 @@ def test_proposal_persons_laboratories_sync():
     # Get a list of unique laboratories from proposal persons
     unique_laboratories = []
     for i, person in enumerate(
-        test_data_proposal_userportalsync["proposal"]["persons"]
+        test_data_proposal_userportalsync_create["proposal"]["persons"]
     ):
         if person["laboratory"] not in unique_laboratories:
             # Make a list of unique laboratories
@@ -120,7 +120,7 @@ def test_proposal_persons_laboratories_sync():
 def test_session_persons_sync():
     # Iterate over the session
     sessions_in_db = 0
-    for json_session in test_data_proposal_userportalsync["sessions"]:
+    for json_session in test_data_proposal_userportalsync_create["sessions"]:
 
         try:
             if json_session["externalId"] is not None:
@@ -154,7 +154,7 @@ def test_session_persons_sync():
             )
 
     # Check the amount of sessions corresponds with the entries in the DB
-    assert len(test_data_proposal_userportalsync["sessions"]) == sessions_in_db
+    assert len(test_data_proposal_userportalsync_create["sessions"]) == sessions_in_db
 
 
 def test_lab_contacts_sync():
@@ -162,8 +162,8 @@ def test_lab_contacts_sync():
     proposals = get_proposals(
         skip=0,
         limit=10,
-        proposalCode=test_data_proposal_userportalsync["proposal"]["proposalCode"],
-        proposalNumber=test_data_proposal_userportalsync["proposal"]["proposalNumber"],
+        proposalCode=test_data_proposal_userportalsync_create["proposal"]["proposalCode"],
+        proposalNumber=test_data_proposal_userportalsync_create["proposal"]["proposalNumber"],
         proposalHasPerson=False,
     )
     # Get the lab contacts for the proposal in DB
@@ -175,7 +175,7 @@ def test_lab_contacts_sync():
 
     # Check the amount of LabContacts for the proposal corresponds with the entries in the DB
     assert (
-        len(test_data_proposal_userportalsync["proposal"]["labcontacts"])
+        len(test_data_proposal_userportalsync_create["proposal"]["labcontacts"])
         == labcontacts.total
     )
 
@@ -187,12 +187,12 @@ def test_proteins_sync():
     proposals = get_proposals(
         skip=0,
         limit=10,
-        proposalCode=test_data_proposal_userportalsync["proposal"]["proposalCode"],
-        proposalNumber=test_data_proposal_userportalsync["proposal"]["proposalNumber"],
+        proposalCode=test_data_proposal_userportalsync_create["proposal"]["proposalCode"],
+        proposalNumber=test_data_proposal_userportalsync_create["proposal"]["proposalNumber"],
     )
 
     proteins_in_db = 0
-    for i, protein in enumerate(test_data_proposal_userportalsync["proteins"]):
+    for i, protein in enumerate(test_data_proposal_userportalsync_create["proteins"]):
         # Check all proteins in DB related to the proposalID
         try:
             if protein["externalId"] is not None:
@@ -218,4 +218,4 @@ def test_proteins_sync():
         if proteins.total == 1:
             proteins_in_db += 1
     # Check the amount of proteins in JSON corresponds with the entries in the DB
-    assert len(test_data_proposal_userportalsync["proteins"]) == proteins_in_db
+    assert len(test_data_proposal_userportalsync_create["proteins"]) == proteins_in_db

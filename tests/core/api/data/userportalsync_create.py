@@ -1,4 +1,4 @@
-test_data_proposal_userportalsync = {
+test_data_proposal_userportalsync_create = {
     "proposal": {
         "title": "Proposal title",
         "proposalCode": "I",
