@@ -1,9 +1,9 @@
-from typing import Optional
+from typing import Literal, Optional, Union
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 
 from pyispyb.core import models
 
-from pydantic.schema import BaseModel
+from pydantic import BaseModel
 
 
 class SSXDataCollectionResponse(
@@ -21,6 +21,7 @@ class SSXBufferCreate(BaseModel):
 
 class SSXSampleCreate(BaseModel):
     proteinId: int
+
     avgXtalSize: Optional[float]
     xtalConcentration: Optional[float]
     sampleSupport: Optional[str]
@@ -30,6 +31,7 @@ class SSXSampleCreate(BaseModel):
 
 
 class SSXDataCollectionCreate(BaseModel):
+    sessionId: int
 
     # Table DataCollection
     exposureTime: Optional[float]
@@ -42,6 +44,9 @@ class SSXDataCollectionCreate(BaseModel):
     beamSizeAtSampleX: Optional[float]
     beamSizeAtSampleY: Optional[float]
     averageTemperature: Optional[float]
+
+    # Table DataCollectionGroup
+    experimentType: Optional[Literal["SSXChip", "SSXInjector"]]
 
     # Table SSXDataCollection
     repetitionRate: Optional[float]

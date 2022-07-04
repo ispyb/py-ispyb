@@ -2,7 +2,7 @@ from pyispyb.app.base import AuthenticatedAPIRouter
 from pyispyb.core import models
 import pyispyb.core.modules.ssx as crud
 
-from ..schemas import ssx as schema
+from pyispyb.core.schemas import ssx as schema
 
 router = AuthenticatedAPIRouter(prefix="/ssx", tags=["Serial crystallography"])
 
@@ -22,6 +22,6 @@ def get_datacollection(ssxDataCollectionId: int) -> models.SSXDataCollection:
     responses={404: {"description": "Entity not found"}},
 )
 def create_datacollection(
-    ssxDataCollection: schema.SSXDataCollectionCreate,
+    ssx_data_collection_create: schema.SSXDataCollectionCreate,
 ) -> models.SSXDataCollection:
-    return None
+    return crud.create_ssx_datacollection(ssx_data_collection_create)
