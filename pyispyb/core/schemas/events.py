@@ -1,11 +1,11 @@
 from datetime import datetime
-from typing import Union, Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel, Field
 
 from .datacollections import DataCollection
-from .robotactions import RobotAction
 from .energyscan import EnergyScan
+from .robotactions import RobotAction
 from .xfefluorescencespectrum import XFEFluorescenceSpectrum
 
 

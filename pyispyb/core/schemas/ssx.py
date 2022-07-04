@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Union
+from typing import Literal, Optional
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 
 from pyispyb.core import models
