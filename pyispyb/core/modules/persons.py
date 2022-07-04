@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import contains_eager
 from pyispyb.core import models
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
@@ -17,8 +17,12 @@ def get_persons(
     withLaboratory: Optional[bool] = False,
 ) -> Paged[models.Person]:
     if withLaboratory:
-        query = db.session.query(models.Person).options(
-            joinedload(models.Person.Laboratory)
+        query = (
+            db.session.query(models.Person)
+            .join(models.Person.Laboratory)
+            .options(
+                contains_eager(models.Person.Laboratory),
+            )
         )
     else:
         query = db.session.query(models.Person)
@@ -41,6 +45,9 @@ def get_persons(
 
     if emailAddress:
         query = query.filter(models.Person.emailAddress == emailAddress)
+
+    if withLaboratory:
+        query = query.populate_existing()
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)
