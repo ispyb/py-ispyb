@@ -37,7 +37,7 @@ def test_call_sync_proposal_create():
         f"{settings.api_root}/userportalsync/sync_proposal", headers=headers, json=data
     )
 
-    # No errors running the sync_proposal endpoint passing the test_data_proposal_userportalsync JSON data
+    # No errors running the sync_proposal endpoint passing the test_data_proposal_userportalsync_create JSON data
     assert res2.status_code == 200
 
 
@@ -46,8 +46,12 @@ def test_proposal_persons_sync():
     proposals = get_proposals(
         skip=0,
         limit=10,
-        proposalCode=test_data_proposal_userportalsync_create["proposal"]["proposalCode"],
-        proposalNumber=test_data_proposal_userportalsync_create["proposal"]["proposalNumber"],
+        proposalCode=test_data_proposal_userportalsync_create["proposal"][
+            "proposalCode"
+        ],
+        proposalNumber=test_data_proposal_userportalsync_create["proposal"][
+            "proposalNumber"
+        ],
         proposalHasPerson=True,
     )
 
@@ -162,8 +166,12 @@ def test_lab_contacts_sync():
     proposals = get_proposals(
         skip=0,
         limit=10,
-        proposalCode=test_data_proposal_userportalsync_create["proposal"]["proposalCode"],
-        proposalNumber=test_data_proposal_userportalsync_create["proposal"]["proposalNumber"],
+        proposalCode=test_data_proposal_userportalsync_create["proposal"][
+            "proposalCode"
+        ],
+        proposalNumber=test_data_proposal_userportalsync_create["proposal"][
+            "proposalNumber"
+        ],
         proposalHasPerson=False,
     )
     # Get the lab contacts for the proposal in DB
@@ -187,8 +195,12 @@ def test_proteins_sync():
     proposals = get_proposals(
         skip=0,
         limit=10,
-        proposalCode=test_data_proposal_userportalsync_create["proposal"]["proposalCode"],
-        proposalNumber=test_data_proposal_userportalsync_create["proposal"]["proposalNumber"],
+        proposalCode=test_data_proposal_userportalsync_create["proposal"][
+            "proposalCode"
+        ],
+        proposalNumber=test_data_proposal_userportalsync_create["proposal"][
+            "proposalNumber"
+        ],
     )
 
     proteins_in_db = 0
