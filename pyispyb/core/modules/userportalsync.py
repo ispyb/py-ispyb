@@ -462,8 +462,9 @@ class UserPortalSync(object):
             .first()
         )
         src_lab = sourcePerson.pop("laboratory")
+        # If the relation to a laboratory changed
         if person.Laboratory.laboratoryExtPk != src_lab["laboratoryExtPk"]:
-            logger.debug(f"Updating Laboratory for {personId}")
+            logger.debug(f"Updating Laboratory relation for {personId}")
             # Check if source laboratoryExtPk exists already in ISPyB
             laboratory = (
                 self.session.query(models.Laboratory)
@@ -476,11 +477,20 @@ class UserPortalSync(object):
                 person.laboratoryId = laboratory.laboratoryId
                 self.session.flush()
             else:
-                # Add new laboratory a link it to person
+                # Add a new laboratory and link it to person
                 logger.debug(f"Creating and linking a new Laboratory for {personId}")
                 laboratory_id = self.add_laboratory(src_lab)
                 person.laboratoryId = laboratory_id
                 self.session.flush()
+        else:
+            # The relation to laboratory has not changed but other laboratory fields might have changed
+            # Check which Laboratory values should we inspect to see if they changed
+            for k in ["name", "address", "city", "country"]:
+                if getattr(person.Laboratory, k) != src_lab[k]:
+                    logger.debug(
+                        f"Field {k} to update for Laboratory with laboratoryId {person.Laboratory.laboratoryId}"
+                    )
+                    self.update_laboratory(person.Laboratory.laboratoryId, src_lab)
 
     @timed
     def process_labcontacts(self, sourceLabContacts: dict[str, Any]):
