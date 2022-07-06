@@ -6,12 +6,16 @@ from pyispyb.core import models
 from pydantic import BaseModel
 
 
+class DataCollectionResponse(
+    sqlalchemy_to_pydantic(models.DataCollection, exclude=["dataCollectionId"])
+):
+    DataCollectionGroup: sqlalchemy_to_pydantic(models.DataCollectionGroup)
+
+
 class SSXDataCollectionResponse(
     sqlalchemy_to_pydantic(models.SSXDataCollection, exclude=["dataCollectionId"])
 ):
-    DataCollection: sqlalchemy_to_pydantic(
-        models.DataCollection, exclude=["dataCollectionId"]  # noqa: F821 flake8 bug
-    )
+    DataCollection: DataCollectionResponse
 
 
 class SSXBufferCreate(BaseModel):

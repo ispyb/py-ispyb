@@ -17,8 +17,28 @@ def get_ssx_datacollection(
     dc = (
         db.session.query(models.SSXDataCollection)
         .options(joinedload(models.SSXDataCollection.DataCollection))
+        .options(joinedload(models.DataCollection.DataCollectionGroup))
         .filter(models.SSXDataCollection.ssxDataCollectionId == ssxDataCollectionId)
         .first()
+    )
+
+    return dc
+
+
+def get_ssx_datacollections(
+    sessionId: int,
+) -> list[models.SSXDataCollection]:
+    dc = (
+        db.session.query(models.SSXDataCollection)
+        .options(joinedload(models.SSXDataCollection.DataCollection))
+        .options(
+            joinedload(
+                models.SSXDataCollection.DataCollection,
+                models.DataCollection.DataCollectionGroup,
+            )
+        )
+        .filter(models.DataCollectionGroup.sessionId == sessionId)
+        .all()
     )
 
     return dc

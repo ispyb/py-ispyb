@@ -8,6 +8,15 @@ router = AuthenticatedAPIRouter(prefix="/ssx", tags=["Serial crystallography"])
 
 
 @router.get(
+    "/datacollection",
+    response_model=list[schema.SSXDataCollectionResponse],
+    responses={404: {"description": "Entity not found"}},
+)
+def get_datacollections(sessionId: int) -> list[models.SSXDataCollection]:
+    return crud.get_ssx_datacollections(sessionId)
+
+
+@router.get(
     "/datacollection/{ssxDataCollectionId:int}",
     response_model=schema.SSXDataCollectionResponse,
     responses={404: {"description": "Entity not found"}},
