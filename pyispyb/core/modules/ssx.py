@@ -17,7 +17,12 @@ def get_ssx_datacollection(
     dc = (
         db.session.query(models.SSXDataCollection)
         .options(joinedload(models.SSXDataCollection.DataCollection))
-        .options(joinedload(models.DataCollection.DataCollectionGroup))
+        .options(
+            joinedload(
+                models.SSXDataCollection.DataCollection,
+                models.DataCollection.DataCollectionGroup,
+            )
+        )
         .filter(models.SSXDataCollection.ssxDataCollectionId == ssxDataCollectionId)
         .first()
     )
@@ -48,8 +53,8 @@ def create_ssx_datacollection(
     ssx_data_collection_create: schema.SSXDataCollectionCreate,
 ) -> Optional[models.SSXDataCollection]:
     data_collection_dict = ssx_data_collection_create.dict()
-    sample_dict = data_collection_dict.pop("sample")
-    buffer_dict = sample_dict.pop("buffer")
+    # sample_dict = data_collection_dict.pop("sample")
+    # buffer_dict = sample_dict.pop("buffer")
 
     try:
 
@@ -69,31 +74,31 @@ def create_ssx_datacollection(
         db.session.add(data_collection)
         db.session.flush()
 
-        ssx_buffer = model_from_json(models.SSXBuffer, buffer_dict)
-        db.session.add(ssx_buffer)
-        db.session.flush()
+        # ssx_buffer = model_from_json(models.SSXBuffer, buffer_dict)
+        # db.session.add(ssx_buffer)
+        # db.session.flush()
 
-        ssx_sample = model_from_json(
-            models.SSXSample, {**sample_dict, "ssxBufferId": ssx_buffer.ssxBufferId}
-        )
-        db.session.add(ssx_sample)
-        db.session.flush()
+        # ssx_sample = model_from_json(
+        #     models.SSXSample, {**sample_dict, "ssxBufferId": ssx_buffer.ssxBufferId}
+        # )
+        # db.session.add(ssx_sample)
+        # db.session.flush()
 
         ssx_data_collection = model_from_json(
             models.SSXDataCollection,
             {
                 **data_collection_dict,
                 "dataCollectionId": data_collection.dataCollectionId,
-                "ssxSampleId": ssx_sample.ssxSampleId,
+                # "ssxSampleId": ssx_sample.ssxSampleId,
             },
         )
         db.session.add(ssx_data_collection)
         db.session.flush()
 
         db.session.commit()
+        return get_ssx_datacollection(ssx_data_collection.ssxDataCollectionId)
 
-    except Exception:
+    except Exception as e:
         logging.error(traceback.format_exc())
         db.session.rollback()
-
-    return get_ssx_datacollection(ssx_data_collection.ssxDataCollectionId)
+        raise e

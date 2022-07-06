@@ -18,20 +18,20 @@ class SSXDataCollectionResponse(
     DataCollection: DataCollectionResponse
 
 
-class SSXBufferCreate(BaseModel):
-    type: Optional[str]
-    concentration: Optional[float]
+# class SSXBufferCreate(BaseModel):
+#     type: Optional[str]
+#     concentration: Optional[float]
 
 
-class SSXSampleCreate(BaseModel):
-    proteinId: int
+# class SSXSampleCreate(BaseModel):
+#     proteinId: int
 
-    avgXtalSize: Optional[float]
-    xtalConcentration: Optional[float]
-    sampleSupport: Optional[str]
-    jetMaterial: Optional[str]
+#     avgXtalSize: Optional[float]
+#     xtalConcentration: Optional[float]
+#     sampleSupport: Optional[str]
+#     jetMaterial: Optional[str]
 
-    buffer: SSXBufferCreate
+#     buffer: SSXBufferCreate
 
 
 class SSXDataCollectionCreate(BaseModel):
@@ -57,4 +57,4 @@ class SSXDataCollectionCreate(BaseModel):
     energyBandwidth: Optional[float]
     monoStripe: Optional[str]
 
-    sample: SSXSampleCreate
+    # sample: SSXSampleCreate
