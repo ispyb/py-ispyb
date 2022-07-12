@@ -16,11 +16,31 @@ def get_ssx_datacollection(
 ) -> Optional[models.SSXDataCollection]:
     dc = (
         db.session.query(models.SSXDataCollection)
-        .options(joinedload(models.SSXDataCollection.DataCollection))
         .options(
             joinedload(
                 models.SSXDataCollection.DataCollection,
                 models.DataCollection.DataCollectionGroup,
+            )
+        )
+        .options(
+            joinedload(
+                models.SSXDataCollection.SSXSpecimen,
+                models.SSXSpecimen.Specimen,
+                models.Specimen.Macromolecule,
+            )
+        )
+        .options(
+            joinedload(
+                models.SSXDataCollection.SSXSpecimen,
+                models.SSXSpecimen.Specimen,
+                models.Specimen.Experiment,
+            )
+        )
+        .options(
+            joinedload(
+                models.SSXDataCollection.SSXSpecimen,
+                models.SSXSpecimen.Specimen,
+                models.Specimen.Buffer,
             )
         )
         .filter(models.SSXDataCollection.ssxDataCollectionId == ssxDataCollectionId)
@@ -35,7 +55,6 @@ def get_ssx_datacollections(
 ) -> list[models.SSXDataCollection]:
     dc = (
         db.session.query(models.SSXDataCollection)
-        .options(joinedload(models.SSXDataCollection.DataCollection))
         .options(
             joinedload(
                 models.SSXDataCollection.DataCollection,
@@ -53,8 +72,7 @@ def create_ssx_datacollection(
     ssx_data_collection_create: schema.SSXDataCollectionCreate,
 ) -> Optional[models.SSXDataCollection]:
     data_collection_dict = ssx_data_collection_create.dict()
-    # sample_dict = data_collection_dict.pop("sample")
-    # buffer_dict = sample_dict.pop("buffer")
+    sample_dict = data_collection_dict.pop("sample")
 
     try:
 
@@ -74,22 +92,69 @@ def create_ssx_datacollection(
         db.session.add(data_collection)
         db.session.flush()
 
-        # ssx_buffer = model_from_json(models.SSXBuffer, buffer_dict)
-        # db.session.add(ssx_buffer)
-        # db.session.flush()
+        experiment = model_from_json(
+            models.Experiment,
+            {
+                **data_collection_dict,
+                "proposalId": data_collection_group.BLSession.Proposal.proposalId,
+            },
+        )
+        db.session.add(experiment)
+        db.session.flush()
 
-        # ssx_sample = model_from_json(
-        #     models.SSXSample, {**sample_dict, "ssxBufferId": ssx_buffer.ssxBufferId}
-        # )
-        # db.session.add(ssx_sample)
-        # db.session.flush()
+        buffer = model_from_json(
+            models.Buffer,
+            {
+                "name": sample_dict["bufferName"],
+                "composition": sample_dict["bufferComposition"],
+            },
+        )
+        db.session.add(buffer)
+        db.session.flush()
+
+        macromolecule = model_from_json(models.Macromolecule, sample_dict)
+        db.session.add(macromolecule)
+        db.session.flush()
+
+        ligand = model_from_json(
+            models.Structure,
+            {
+                "macromoleculeId": macromolecule.macromoleculeId,
+                "structureType": "Ligand",
+                "name": sample_dict["ligandName"],
+            },
+        )
+        db.session.add(ligand)
+        db.session.flush()
+
+        specimen = model_from_json(
+            models.Specimen,
+            {
+                "macromoleculeId": macromolecule.macromoleculeId,
+                "experimentId": experiment.experimentId,
+                "bufferId": buffer.bufferId,
+                "concentration": sample_dict["crystalConcentration"],
+            },
+        )
+        db.session.add(specimen)
+        db.session.flush()
+
+        ssx_specimen = model_from_json(
+            models.SSXSpecimen,
+            {
+                "specimenId": specimen.specimenId,
+                **sample_dict,
+            },
+        )
+        db.session.add(ssx_specimen)
+        db.session.flush()
 
         ssx_data_collection = model_from_json(
             models.SSXDataCollection,
             {
                 **data_collection_dict,
                 "dataCollectionId": data_collection.dataCollectionId,
-                # "ssxSampleId": ssx_sample.ssxSampleId,
+                "ssxSpecimenId": ssx_specimen.ssxSpecimenId,
             },
         )
         db.session.add(ssx_data_collection)

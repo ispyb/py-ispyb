@@ -12,26 +12,54 @@ class DataCollectionResponse(
     DataCollectionGroup: sqlalchemy_to_pydantic(models.DataCollectionGroup)
 
 
+class MacromoleculeResponse(sqlalchemy_to_pydantic(models.Macromolecule)):
+    pass
+
+
+class BufferResponse(sqlalchemy_to_pydantic(models.Buffer)):
+    pass
+
+
+class ExperimentResponse(sqlalchemy_to_pydantic(models.Experiment)):
+    pass
+
+
+class SpecimenResponse(sqlalchemy_to_pydantic(models.Specimen)):
+    Macromolecule: MacromoleculeResponse
+    Buffer: BufferResponse
+    Experiment: ExperimentResponse
+
+
+class SSXSpecimenResponse(sqlalchemy_to_pydantic(models.SSXSpecimen)):
+    Specimen: SpecimenResponse
+
+
 class SSXDataCollectionResponse(
     sqlalchemy_to_pydantic(models.SSXDataCollection, exclude=["dataCollectionId"])
 ):
     DataCollection: DataCollectionResponse
+    SSXSpecimen: SSXSpecimenResponse
 
 
-# class SSXBufferCreate(BaseModel):
-#     type: Optional[str]
-#     concentration: Optional[float]
+class SSXSampleCreate(BaseModel):
+    # Table SSXSpecimen
+    avgXtalSize: Optional[float]
+    ligandConcentration: Optional[float]
+    sampleSupport: Optional[str]
+    jetMaterial: Optional[str]
 
+    # Table Specimen
+    crystalConcentration: Optional[float]
 
-# class SSXSampleCreate(BaseModel):
-#     proteinId: int
+    # Table Buffer
+    bufferName: Optional[str]
+    bufferComposition: Optional[str]
 
-#     avgXtalSize: Optional[float]
-#     xtalConcentration: Optional[float]
-#     sampleSupport: Optional[str]
-#     jetMaterial: Optional[str]
+    # Table Macromolecule
+    acronym: Optional[str]
 
-#     buffer: SSXBufferCreate
+    # Table Structure
+    ligandName: Optional[str]
 
 
 class SSXDataCollectionCreate(BaseModel):
@@ -57,4 +85,4 @@ class SSXDataCollectionCreate(BaseModel):
     energyBandwidth: Optional[float]
     monoStripe: Optional[str]
 
-    # sample: SSXSampleCreate
+    sample: SSXSampleCreate
