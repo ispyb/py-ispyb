@@ -24,10 +24,12 @@ __license__ = "LGPLv3+"
 
 import abc
 from typing import Any
+
+from sqlalchemy.orm import joinedload
+from ispyb import models
+
 from pyispyb.app.extensions.auth.AbstractAuthentication import AbstractAuthentication
 from pyispyb.app.extensions.database.middleware import db
-from pyispyb.core import models
-from sqlalchemy.orm import joinedload
 
 
 def get_person_groups(person: models.Person):

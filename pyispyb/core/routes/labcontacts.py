@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException, status
+from ispyb import models
 
 from pyispyb.dependencies import pagination
-from pyispyb.core import models
 from pyispyb.app.extensions.database.utils import Paged
 from pyispyb.app.base import AuthenticatedAPIRouter
 

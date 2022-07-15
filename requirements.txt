@@ -1,3 +1,5 @@
+ispyb-models
+
 fastapi
 pydantic[dotenv]
 uvicorn

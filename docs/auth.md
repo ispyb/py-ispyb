@@ -119,7 +119,7 @@ AUTH:
 New plugins should implement one of the two following classes :
 
 - **AbstractAuthentication** : plugin should override `get_user_and_groups(self, username, password, token)` method and return a tuple `(username, groups[])`
-- **AbstractDBGroupsAuthentication** : plugin should override `get_person(self, username, password, token)` method and return a `pyispyb.core.models.Person` object. Groups management is delegated to ISPyB database.
+- **AbstractDBGroupsAuthentication** : plugin should override `get_person(self, username, password, token)` method and return a `ispyb.models.Person` object. Groups management is delegated to ISPyB database.
 
 ### Authorization dependencies
 

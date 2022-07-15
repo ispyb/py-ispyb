@@ -1,8 +1,9 @@
 from typing import Optional, Any
+
 import sqlalchemy
 from sqlalchemy.orm import joinedload
+from ispyb import models
 
-from pyispyb.core import models
 from pyispyb.app.globals import g
 from pyispyb.app.extensions.database.middleware import db
 
