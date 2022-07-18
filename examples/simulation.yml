@@ -20,6 +20,7 @@ components:
     # columns to populate for this component
     acronym: Component1
     sequence: SiSP
+    molecularMass: 12.5
 
   comp2:
     acronym: Component2

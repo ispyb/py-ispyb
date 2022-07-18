@@ -174,7 +174,7 @@ class SimulateDataCollection(Simulation):
                         name=comp.get("name", comp.get("acronym")),
                         sequence=comp.get("sequence"),
                         density=comp.get("density"),
-                        molecularMass=comp.get("molecularmass"),
+                        molecularMass=comp.get("molecularMass"),
                         description="Simulated component",
                     )
                     ses.add(component)
