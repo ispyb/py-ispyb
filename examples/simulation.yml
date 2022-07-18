@@ -75,7 +75,7 @@ experiments:
       dx_mm: 0.001
       dy_mm: 0.001
       pixelsPerMicronX: -0.44994
-      pixelsPerMicrony: -0.46537
+      pixelsPerMicronY: -0.46537
       snapshot_offsetXPixel: 682.16
       snapshot_offsetYPixel: 554
 

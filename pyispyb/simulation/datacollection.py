@@ -287,12 +287,12 @@ class SimulateDataCollection(Simulation):
                 )
 
                 if hasattr(grid, "snapshot_offsetXPixel"):
-                    grid.snapshot_offsetXPixel = exp["grid"]["snapshot_offsetxpixel"]
-                    grid.snapshot_offsetYPixel = exp["grid"]["snapshot_offsetypixel"]
+                    grid.snapshot_offsetXPixel = exp["grid"]["snapshot_offsetXPixel"]
+                    grid.snapshot_offsetYPixel = exp["grid"]["snapshot_offsetYPixel"]
 
                 if hasattr(grid, "pixelsPerMicronX"):
-                    grid.pixelsPerMicronX = exp["grid"]["pixelspermicronx"]
-                    grid.pixelsPerMicronY = exp["grid"]["pixelspermicrony"]
+                    grid.pixelsPerMicronX = exp["grid"]["pixelsPerMicronX"]
+                    grid.pixelsPerMicronY = exp["grid"]["pixelsPerMicronY"]
 
                 if hasattr(grid, "dataCollectionId"):
                     grid.dataCollectionId = dc.dataCollectionId
@@ -303,7 +303,7 @@ class SimulateDataCollection(Simulation):
                 ses.add(grid)
                 ses.commit()
 
-            logger.info(f"Created datacollection: {dc.dataCollectionId}")
+            logger.info(f"Created datacollection: `{dc.dataCollectionId}`")
             logger.info(
                 f"{self.config['ispyb_url']}/visit/{blses}/id/{dc.dataCollectionId}"
             )
