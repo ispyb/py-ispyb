@@ -8,6 +8,7 @@ nav:
   - Routes: routes.md
   - ⧉ Tests coverage: https://app.codecov.io/gh/ispyb/py-ispyb/
   - ⧉ Endpoints documentation: https://ispyb.github.io/py-ispyb/api/
+  - Simulator: simulator.md
 theme:
   name: material
   features:

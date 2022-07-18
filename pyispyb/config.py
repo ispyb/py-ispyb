@@ -65,6 +65,8 @@ class Settings(BaseSettings):
 
     cors: bool = False
 
+    simulation_config: str = None
+
     class Config:
         env_file = get_env_file()
 

@@ -14,6 +14,10 @@ _session = sqlalchemy.func.concat(
     models.BLSession.visit_number,
 ).label("session")
 
+_proposal = sqlalchemy.func.concat(
+    models.Proposal.proposalCode, models.Proposal.proposalNumber
+).label("proposal")
+
 
 def get_blsession(session: str) -> Optional[models.BLSession]:
     return (
