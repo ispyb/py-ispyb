@@ -25,6 +25,15 @@ def get_datacollection(ssxDataCollectionId: int) -> models.SSXDataCollection:
     return crud.get_ssx_datacollection(ssxDataCollectionId)
 
 
+@router.get(
+    "/datacollection/{ssxDataCollectionId:int}/sample",
+    response_model=schema.SSXSpecimenResponse,
+    responses={404: {"description": "Entity not found"}},
+)
+def get_datacollection_sample(ssxDataCollectionId: int) -> models.SSXDataCollection:
+    return crud.get_ssx_datacollection_sample(ssxDataCollectionId)
+
+
 @router.post(
     "/datacollection",
     response_model=schema.SSXDataCollectionResponse,

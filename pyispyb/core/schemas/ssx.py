@@ -6,9 +6,7 @@ from pyispyb.core import models
 from pydantic import BaseModel
 
 
-class DataCollectionResponse(
-    sqlalchemy_to_pydantic(models.DataCollection, exclude=["dataCollectionId"])
-):
+class DataCollectionResponse(sqlalchemy_to_pydantic(models.DataCollection)):
     DataCollectionGroup: sqlalchemy_to_pydantic(models.DataCollectionGroup)
 
 
@@ -20,25 +18,22 @@ class BufferResponse(sqlalchemy_to_pydantic(models.Buffer)):
     pass
 
 
-class ExperimentResponse(sqlalchemy_to_pydantic(models.Experiment)):
+class StructureResponse(sqlalchemy_to_pydantic(models.Structure)):
     pass
 
 
 class SpecimenResponse(sqlalchemy_to_pydantic(models.Specimen)):
     Macromolecule: MacromoleculeResponse
     Buffer: BufferResponse
-    Experiment: ExperimentResponse
+    Structures: list[StructureResponse] = []
 
 
 class SSXSpecimenResponse(sqlalchemy_to_pydantic(models.SSXSpecimen)):
     Specimen: SpecimenResponse
 
 
-class SSXDataCollectionResponse(
-    sqlalchemy_to_pydantic(models.SSXDataCollection, exclude=["dataCollectionId"])
-):
+class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)):
     DataCollection: DataCollectionResponse
-    SSXSpecimen: SSXSpecimenResponse
 
 
 class SSXSampleCreate(BaseModel):

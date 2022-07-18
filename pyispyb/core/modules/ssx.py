@@ -11,38 +11,55 @@ from sqlalchemy.orm import joinedload
 from pyispyb.core.schemas import ssx as schema
 
 
-def get_ssx_datacollection(
+def get_ssx_datacollection_sample(
     ssxDataCollectionId: int,
-) -> Optional[models.SSXDataCollection]:
-    dc = (
-        db.session.query(models.SSXDataCollection)
-        .options(
-            joinedload(
-                models.SSXDataCollection.DataCollection,
-                models.DataCollection.DataCollectionGroup,
-            )
+) -> Optional[schema.SSXSpecimenResponse]:
+    specimen = (
+        db.session.query(models.SSXSpecimen)
+        .join(
+            models.SSXDataCollection,
+            models.SSXDataCollection.ssxSpecimenId == models.SSXSpecimen.ssxSpecimenId,
         )
+        .filter(models.SSXDataCollection.ssxDataCollectionId == ssxDataCollectionId)
         .options(
             joinedload(
-                models.SSXDataCollection.SSXSpecimen,
                 models.SSXSpecimen.Specimen,
                 models.Specimen.Macromolecule,
             )
         )
         .options(
             joinedload(
-                models.SSXDataCollection.SSXSpecimen,
-                models.SSXSpecimen.Specimen,
-                models.Specimen.Experiment,
-            )
-        )
-        .options(
-            joinedload(
-                models.SSXDataCollection.SSXSpecimen,
                 models.SSXSpecimen.Specimen,
                 models.Specimen.Buffer,
             )
         )
+        .first()
+    )
+    structures = (
+        db.session.query(models.Structure)
+        .filter(models.Structure.macromoleculeId == specimen.Specimen.macromoleculeId)
+        .all()
+    )
+    res = specimen.__dict__
+    res["Specimen"] = specimen.Specimen.__dict__
+    res["Specimen"]["Structures"] = structures
+    return res
+
+
+def _ssx_datacollection_query():
+    return db.session.query(models.SSXDataCollection).options(
+        joinedload(
+            models.SSXDataCollection.DataCollection,
+            models.DataCollection.DataCollectionGroup,
+        )
+    )
+
+
+def get_ssx_datacollection(
+    ssxDataCollectionId: int,
+) -> Optional[models.SSXDataCollection]:
+    dc = (
+        _ssx_datacollection_query()
         .filter(models.SSXDataCollection.ssxDataCollectionId == ssxDataCollectionId)
         .first()
     )
@@ -54,13 +71,7 @@ def get_ssx_datacollections(
     sessionId: int,
 ) -> list[models.SSXDataCollection]:
     dc = (
-        db.session.query(models.SSXDataCollection)
-        .options(
-            joinedload(
-                models.SSXDataCollection.DataCollection,
-                models.DataCollection.DataCollectionGroup,
-            )
-        )
+        _ssx_datacollection_query()
         .filter(models.DataCollectionGroup.sessionId == sessionId)
         .all()
     )
