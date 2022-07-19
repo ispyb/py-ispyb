@@ -33,8 +33,7 @@ If the authentication is successful the response will be a json with the followi
 {
   "username": "test",
   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJncm91cHMiOlsiQWRtaW4iXSwicGVybWlzc2lvbnMiOlsiQWRtaW4iXSwiaWF0IjoxNjUwOTgxNjA5LCJleHAiOjE2NTA5OTk2MDl9.3Iq2lGG5RR6Gebss5qEDdASrEMwCIne2jFhaVqp91m0",
-  "permissions": ["Admin"],
-  "groups": ["Admin"]
+  "permissions": ["Admin"]
 }
 ```
 
@@ -116,10 +115,52 @@ AUTH:
 
 ## Implementing new plugins
 
-New plugins should implement one of the two following classes :
+New plugins should inerit from `AbstractAuthentication` and override either `authenticate_by_login` or `authenticate_by_token` dependning on whether they accept a username / password combination or an authorisation token. Both functions return `login` on success.
 
-- **AbstractAuthentication** : plugin should override `get_user_and_groups(self, username, password, token)` method and return a tuple `(username, groups[])`
-- **AbstractDBGroupsAuthentication** : plugin should override `get_person(self, username, password, token)` method and return a `ispyb.models.Person` object. Groups management is delegated to ISPyB database.
+For example:
+
+```python
+from typing import Optional
+
+from .AbstractAuthentication import AbstractAuthentication
+
+
+class MyAuthentication(AbstractAuthentication):
+    """My authentication class."""
+
+    def configure(self, config: dict[str, Any]):
+      self._config = config
+
+    def authenticate_by_login(self, username: str, password: str) -> Optional[str]:
+        if ...
+          return login
+        else:
+          logger.exception("Something went wrong")
+```
+
+Or for token based authentication:
+
+```python
+from typing import Optional
+
+from .AbstractAuthentication import AbstractAuthentication, AuthType
+
+
+class MyAuthentication(AbstractAuthentication):
+    """My authentication class."""
+
+    authentication_type = AuthType.token
+
+    def configure(self, config: dict[str, Any]):
+      self._config = config
+
+    def authenticate_by_token(self, token: str) -> Optional[str]:
+        if ...
+          return login
+        else:
+          logger.exception("Something went wrong")
+```
+>>>>>>> refactor and simplify auth classes
 
 ### Authorization dependencies
 

@@ -1,28 +1,7 @@
-# Project: py-ispyb
-# https://github.com/ispyb/py-ispyb
-
-# This file is part of py-ispyb software.
-
-# py-ispyb is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# py-ispyb is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-
-# You should have received a copy of the GNU Lesser General Public License
-# along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-
-
-import logging
 import importlib
+import logging
 
 from pyispyb.config import settings
-
-__license__ = "LGPLv3+"
 
 
 log = logging.getLogger(__name__)
@@ -52,9 +31,11 @@ class AuthProvider:
                     instance.configure(config)
                     self.site_authentications[auth_name] = instance
 
-    def get_auth(self, plugin, username, password, token):
+    def get_auth(
+        self, plugin: str, username: str | None, password: str | None, token: str | None
+    ):
         """
-        Return username, groups, permissions associated to user.
+        Check the user is authenticated and return the login.
 
         Basically this is the main authentification method where site_auth is site specific authentication class.
 
@@ -65,16 +46,12 @@ class AuthProvider:
             token (str): auth token
 
         Returns:
-            username, groups, permissions
+            login (str): The login
         """
         if plugin not in self.site_authentications:
-            return None, None, None
-        username, groups, permissions = self.site_authentications[plugin].get_auth(
-            username, password, token
-        )
-        if username is not None and groups is not None and permissions is not None:
-            return username, groups, permissions
-        return None, None, None
+            return None
+
+        return self.site_authentications[plugin].authenticate(username, password, token)
 
 
 auth_provider = AuthProvider()

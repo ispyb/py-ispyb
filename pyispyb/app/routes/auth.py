@@ -1,34 +1,12 @@
-# encoding: utf-8
-#
-#  Project: py-ispyb
-#  https://github.com/ispyb/py-ispyb
-#
-#  This file is part of py-ispyb software.
-#
-#  py-ispyb is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  py-ispyb is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-
 from typing import Optional
+
 from pydantic import BaseModel
 from fastapi import status, HTTPException
 
-from pyispyb.app.extensions.auth import auth_provider
-from pyispyb.app.extensions.auth.token import generate_token
-
+from ..extensions.auth import auth_provider
+from ..extensions.auth.token import generate_token
+from ..extensions.database.definitions import get_current_person
 from ..base import BaseRouter
-
-
-__license__ = "LGPLv3+"
 
 
 class Login(BaseModel):
@@ -40,10 +18,9 @@ class Login(BaseModel):
 
 
 class TokenResponse(BaseModel):
-    username: str
+    login: str
     token: str
     permissions: list[str]
-    groups: list[str]
 
 
 router = BaseRouter(prefix="/auth", tags=["Authentication"])
@@ -55,16 +32,29 @@ router = BaseRouter(prefix="/auth", tags=["Authentication"])
     status_code=status.HTTP_201_CREATED,
     responses={401: {"description": "Could not login user"}},
 )
-def login(login: Login) -> TokenResponse:
+def login(login_details: Login) -> TokenResponse:
     """Login a user"""
-    username, groups, permissions = auth_provider.get_auth(
-        login.plugin, login.username, login.password, login.token
-    )
+    login = auth_provider.get_auth(**login_details.dict())
 
-    if not username:
+    if not login:
         raise HTTPException(status_code=401, detail="Could not verify")
 
+    person = get_current_person(login)
+    if not person:
+        if False:  # request.app.db_options.create_person_on_missing:
+            pass
+        else:
+            raise HTTPException(
+                status_code=401, detail="User does not exist in database."
+            )
+
     else:
-        token_info = generate_token(username, groups, permissions)
+        token_info = generate_token(
+            login,
+            person.personId,
+            person._metadata["permissions"],
+            person.familyName,
+            person.givenName,
+        )
 
         return token_info

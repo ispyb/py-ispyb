@@ -1,9 +1,9 @@
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pyispyb.app.globals import g
 import jwt
 
-from .token import decode_token
+from ...globals import g
+from .token import decode_token, set_token_data
 
 security = HTTPBearer()
 
@@ -33,9 +33,7 @@ async def JWTBearer(
                 status_code=401, detail="Invalid token or expired token."
             )
 
-        g.username = decoded["username"]
-        g.permissions = decoded["permissions"]
-        g.groups = decoded["groups"]
+        set_token_data(decoded)
 
         return credentials.credentials
     else:
@@ -82,7 +80,7 @@ def permission_required(operator, permissions):
             msg = (
                 "User %s (permissions assigned: %s) has no appropriate permission (%s: %s) "
                 % (
-                    g.username,
+                    g.login,
                     str(user_permissions),
                     operator,
                     str(permissions),

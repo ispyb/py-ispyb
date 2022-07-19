@@ -1,8 +1,9 @@
 from fastapi import Depends, HTTPException
-from pyispyb.app.base import BaseRouter
-from pyispyb.app.globals import g
-from pyispyb.app.extensions.auth.bearer import verify_jwt
 from fastapi.routing import APIRoute
+
+from pyispyb.app.base import BaseRouter
+from pyispyb.app.extensions.auth.token import set_token_data
+from pyispyb.app.extensions.auth.bearer import verify_jwt
 
 
 async def token(token: str):
@@ -10,10 +11,7 @@ async def token(token: str):
     if not decoded:
         raise HTTPException(status_code=401, detail="Invalid token or expired token.")
 
-    g.username = decoded["username"]
-    g.permissions = decoded["permissions"]
-    g.groups = decoded["groups"]
-
+    set_token_data(decoded)
     return token
 
 
