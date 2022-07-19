@@ -39,7 +39,7 @@ def update_options(
 ) -> Options:
     """Update the database options"""
     crud.update_options(options)
-    options = get_options(get_all=True)
+    options = crud.get_options(get_all=True)
     request.app.db_options = options
     return options
 
