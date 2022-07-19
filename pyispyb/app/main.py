@@ -7,6 +7,7 @@ from fastapi.openapi.utils import get_openapi
 
 from pyispyb.app.extensions.database.utils import enable_debug_logging
 from pyispyb.app.extensions.database.middleware import get_session
+from pyispyb.app.extensions.options.base import setup_options
 from pyispyb.app.globals import GlobalsMiddleware
 
 from ..config import settings, LogConfig
@@ -26,6 +27,9 @@ app.add_middleware(GlobalsMiddleware)
 async def get_session_as_middleware(request, call_next):
     with get_session():
         return await call_next(request)
+
+
+setup_options(app)
 
 
 def enable_cors() -> None:
@@ -60,9 +64,10 @@ def custom_openapi() -> dict[str, Any]:
     # https://github.com/rjsf-team/react-jsonschema-form/pull/1213
     # This is technically incorrect for OpenAPI v3, but nullable is not yet supported in rjsf
     for schema_name, schema in openapi_schema["components"]["schemas"].items():
-        for property_name, property in schema["properties"].items():
-            if property.get("nullable"):
-                property["type"] = ["null", property["type"]]
+        if "properties" in schema:
+            for property_name, property in schema["properties"].items():
+                if property.get("nullable"):
+                    property["type"] = ["null", property["type"]]
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema

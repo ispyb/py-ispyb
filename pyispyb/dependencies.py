@@ -1,7 +1,9 @@
 import enum
 from typing import Optional, Any
 
-from fastapi import Query
+from fastapi import HTTPException, Query
+
+from .app.globals import g
 
 
 class Order(str, enum.Enum):
@@ -30,3 +32,15 @@ def order_by(
 
 def filter(filter: str) -> str:
     return filter
+
+
+def permission(permission: str):
+    """Requires the user to have the specified permission"""
+
+    async def with_permission() -> bool:
+        if permission not in g.permissions:
+            raise HTTPException(status_code=401, detail="Not Authorised")
+
+        return True
+
+    return with_permission
