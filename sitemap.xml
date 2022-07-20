@@ -2,37 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://ispyb.github.io/py-ispyb/</loc>
-         <lastmod>2022-06-08</lastmod>
+         <lastmod>2022-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/auth/</loc>
-         <lastmod>2022-06-08</lastmod>
+         <lastmod>2022-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/conf/</loc>
-         <lastmod>2022-06-08</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://ispyb.github.io/py-ispyb/model/</loc>
-         <lastmod>2022-06-08</lastmod>
+         <lastmod>2022-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/routes/</loc>
-         <lastmod>2022-06-08</lastmod>
+         <lastmod>2022-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/run/</loc>
-         <lastmod>2022-06-08</lastmod>
+         <lastmod>2022-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/tests/</loc>
-         <lastmod>2022-06-08</lastmod>
+         <lastmod>2022-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
