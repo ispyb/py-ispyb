@@ -1,12 +1,8 @@
 from datetime import datetime
 import json
-<<<<<<< HEAD
 import logging
 
 from sqlalchemy import exc
-=======
-
->>>>>>> add db options, add example for legacy routes
 from starlette.types import ASGIApp
 
 from ispyb import models
@@ -14,19 +10,12 @@ from ispyb import models
 from ...globals import g
 from ..database.middleware import db
 from ..database.session import get_session
-<<<<<<< HEAD
 from .schema import Options, UIOptions
 
 
 logger = logging.getLogger(__file__)
 
 
-=======
-from ..database.utils import Paged, page
-from .schema import Options, UIOptions
-
-
->>>>>>> add db options, add example for legacy routes
 def setup_options(app: ASGIApp):
     """Add the db_options to the current app global"""
     with get_session() as session:
@@ -66,17 +55,12 @@ def update_options(options: Options) -> Options:
         if adminVar:
             adminVar.value = json.dumps(option_value)
         else:
-<<<<<<< HEAD
             adminVar = models.AdminVar(name=option_key, value=json.dumps(option_value))
-=======
-            adminVar = models.AdminVar(name=option_key, value=option_value)
->>>>>>> add db options, add example for legacy routes
             db.session.add(adminVar)
 
         db.session.commit()
 
         # Log changes in db_options
-<<<<<<< HEAD
         try:
             # Requires unique constraint to be lifted on `username` to enable storing more than
             # just online stats
@@ -100,31 +84,3 @@ def update_options(options: Options) -> Options:
             logger.exception("Could not log option change")
 
     return options
-=======
-        adminActivity = models.AdminActivity(
-            username=g.username,
-            action="db_options",
-            comments=f"changed `{option_key}` to `{option_value}`",
-            dateTime=datetime.now(),
-        )
-        db.session.add(adminActivity)
-
-        db.session.commit()
-
-    return options
-
-
-def get_activity(
-    skip: int,
-    limit: int,
-) -> Paged[models.AdminActivity]:
-    """Get admin activity"""
-    query = db.session.query(models.AdminActivity).order_by(
-        models.AdminActivity.dateTime.desc()
-    )
-
-    total = query.count()
-    query = page(query, skip=skip, limit=limit)
-
-    return Paged(total=total, results=query.all(), skip=skip, limit=limit)
->>>>>>> add db options, add example for legacy routes
