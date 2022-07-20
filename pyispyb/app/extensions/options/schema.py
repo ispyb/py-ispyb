@@ -1,16 +1,4 @@
-from datetime import datetime
-
 from pydantic import BaseModel, Field
-
-
-class AdminActivity(BaseModel):
-    username: str
-    action: str
-    comments: str
-    dateTime: datetime
-
-    class Config:
-        orm_mode = True
 
 
 class UIOptions(BaseModel):

@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import logging
 
 from starlette.types import ASGIApp
 
@@ -8,8 +9,10 @@ from ispyb import models
 from ...globals import g
 from ..database.middleware import db
 from ..database.session import get_session
-from ..database.utils import Paged, page
 from .schema import Options, UIOptions
+
+
+logger = logging.getLogger(__file__)
 
 
 def setup_options(app: ASGIApp):
@@ -57,29 +60,18 @@ def update_options(options: Options) -> Options:
         db.session.commit()
 
         # Log changes in db_options
-        adminActivity = models.AdminActivity(
-            username=g.username,
-            action="db_options",
-            comments=f"changed `{option_key}` to `{option_value}`",
-            dateTime=datetime.now(),
-        )
-        db.session.add(adminActivity)
-
-        db.session.commit()
+        try:
+            # Requires unique constraint to be lifted on `username` to enable storing more than
+            # just online stats
+            adminActivity = models.AdminActivity(
+                username=g.username,
+                action="db_options",
+                comments=f"changed `{option_key}` to `{option_value}`",
+                dateTime=datetime.now(),
+            )
+            db.session.add(adminActivity)
+            db.session.commit()
+        except Exception:
+            logger.exception("Could not log option change")
 
     return options
-
-
-def get_activity(
-    skip: int,
-    limit: int,
-) -> Paged[models.AdminActivity]:
-    """Get admin activity"""
-    query = db.session.query(models.AdminActivity).order_by(
-        models.AdminActivity.dateTime.desc()
-    )
-
-    total = query.count()
-    query = page(query, skip=skip, limit=limit)
-
-    return Paged(total=total, results=query.all(), skip=skip, limit=limit)

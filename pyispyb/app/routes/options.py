@@ -1,13 +1,9 @@
 from fastapi import Depends, Request
 
-from ispyb import models
-
-from ...dependencies import pagination, permission
-from ..extensions.database.utils import Paged
-from ...core.schemas.utils import paginated
+from ...dependencies import permission
 from ..base import AuthenticatedAPIRouter
 from ..extensions.options import base as crud
-from ..extensions.options.schema import AdminActivity, Options, UIOptions
+from ..extensions.options.schema import Options, UIOptions
 
 router = AuthenticatedAPIRouter(prefix="/options", tags=["Options"])
 
@@ -42,15 +38,3 @@ def update_options(
     options = crud.get_options(get_all=True)
     request.app.db_options = options
     return options
-
-
-@router.get(
-    "/activity",
-    response_model=paginated(AdminActivity),
-)
-def get_activity(
-    page: dict[str, int] = Depends(pagination),
-    depends=Depends(permission("admin_options")),
-) -> Paged[models.AdminActivity]:
-    """Get list of admin activity"""
-    return crud.get_activity(**page)
