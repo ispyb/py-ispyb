@@ -23,8 +23,9 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 __license__ = "LGPLv3+"
 
 from typing import Optional
+
 from pydantic import BaseModel, Field
-from pyispyb.core import models
+from ispyb import models
 
 from .protein import Protein
 

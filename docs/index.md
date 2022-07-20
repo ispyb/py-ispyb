@@ -14,6 +14,7 @@ ISPyB backend server based on python with FastAPI.
 - [**pydantic**](https://pydantic-docs.helpmanual.io/) - Data validation and settings management
 - [**MariaDB**](https://mariadb.org/) with an ISPyB database schema
 - [**ISPyB Database Schema**](https://github.com/ispyb/ispyb-database)
+- [**ISPyB Models**](https://github.com/ispyb/ispyb-models)
 
 ---
 

@@ -4,8 +4,8 @@ import os
 import sqlalchemy
 from sqlalchemy.orm import contains_eager
 from sqlalchemy.sql.expression import literal_column
+from ispyb import models
 
-from pyispyb.core import models
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
 from ..schemas import events as schema

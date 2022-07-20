@@ -26,10 +26,11 @@ from typing import Any
 from keycloak.exceptions import KeycloakAuthenticationError
 from keycloak.keycloak_openid import KeycloakOpenID
 
+from ispyb import models
+
 from pyispyb.app.extensions.auth.AbstractDBGroupsAuthentication import (
     AbstractDBGroupsAuthentication,
 )
-from pyispyb.core import models
 import logging
 
 
