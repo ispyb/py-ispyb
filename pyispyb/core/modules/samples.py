@@ -1,10 +1,11 @@
 from typing import Optional
+
 from sqlalchemy.orm import contains_eager
 from sqlalchemy.sql.expression import func, distinct
+from ispyb import models
+
 from pyispyb.app.extensions.database.definitions import with_auth_to_session
 from pyispyb.app.extensions.database.middleware import db
-
-from pyispyb.core import models
 from pyispyb.app.extensions.database.utils import Paged, page, with_metadata
 
 

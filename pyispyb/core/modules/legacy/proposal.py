@@ -22,9 +22,10 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 
 __license__ = "LGPLv3+"
 
+from ispyb import models
+
 from pyispyb.app.utils import get_sql_query, queryresult_to_dict
 from pyispyb.app.extensions.database.middleware import db
-from pyispyb.core import models
 
 
 def get_proposals_infos_login(login):

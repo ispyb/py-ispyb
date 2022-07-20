@@ -24,7 +24,8 @@ __license__ = "LGPLv3+"
 
 
 from pydantic import BaseModel
-from pyispyb.core import models
+
+from ispyb import models
 
 p = models.Protein
 
