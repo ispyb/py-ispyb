@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class AuthType(str, enum.Enum):
     login = "login"
-    token = "token"
+    token = "token"  # nosec
 
 
 class AbstractAuthentication(ABC):
