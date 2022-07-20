@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 class DataCollectionResponse(sqlalchemy_to_pydantic(models.DataCollection)):
     DataCollectionGroup: sqlalchemy_to_pydantic(models.DataCollectionGroup)
+    Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
 
 
 class MacromoleculeResponse(sqlalchemy_to_pydantic(models.Macromolecule)):
@@ -57,6 +58,13 @@ class SSXSampleCreate(BaseModel):
     ligandName: Optional[str]
 
 
+class UntrustedRegionCreate(BaseModel):
+    x1: Optional[int]
+    x2: Optional[int]
+    y1: Optional[int]
+    y2: Optional[int]
+
+
 class SSXDataCollectionCreate(BaseModel):
     sessionId: int
 
@@ -71,6 +79,17 @@ class SSXDataCollectionCreate(BaseModel):
     beamSizeAtSampleX: Optional[float]
     beamSizeAtSampleY: Optional[float]
     averageTemperature: Optional[float]
+    xtalSnapshotFullPath1: Optional[str]
+    xtalSnapshotFullPath2: Optional[str]
+    xtalSnapshotFullPath3: Optional[str]
+    xtalSnapshotFullPath4: Optional[str]
+    imagePrefix: Optional[str]
+    numberOfPasses: Optional[str]
+    numberOfImages: Optional[str]
+    resolution: Optional[str]
+    resolutionAtCorner: Optional[str]
+    flux_end: Optional[str]
+    detectorId: Optional[int]
 
     # Table DataCollectionGroup
     experimentType: Optional[Literal["SSXChip", "SSXInjector"]]

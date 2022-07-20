@@ -51,7 +51,11 @@ def _ssx_datacollection_query():
         joinedload(
             models.SSXDataCollection.DataCollection,
             models.DataCollection.DataCollectionGroup,
-        )
+        ),
+        joinedload(
+            models.SSXDataCollection.DataCollection,
+            models.DataCollection.Detector,
+        ),
     )
 
 
@@ -72,6 +76,16 @@ def get_ssx_datacollections(
 ) -> list[models.SSXDataCollection]:
     dc = (
         _ssx_datacollection_query()
+        .join(
+            models.DataCollection,
+            models.DataCollection.dataCollectionId
+            == models.SSXDataCollection.dataCollectionId,
+        )
+        .join(
+            models.DataCollectionGroup,
+            models.DataCollectionGroup.dataCollectionGroupId
+            == models.DataCollection.dataCollectionGroupId,
+        )
         .filter(models.DataCollectionGroup.sessionId == sessionId)
         .all()
     )

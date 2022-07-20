@@ -1,6 +1,11 @@
+from fastapi import HTTPException
+from pydantic import conint
 from pyispyb.app.base import AuthenticatedAPIRouter
 from pyispyb.core import models
 import pyispyb.core.modules.ssx as crud
+from fastapi.responses import FileResponse
+import os
+
 
 from pyispyb.core.schemas import ssx as schema
 
@@ -43,3 +48,26 @@ def create_datacollection(
     ssx_data_collection_create: schema.SSXDataCollectionCreate,
 ) -> models.SSXDataCollection:
     return crud.create_ssx_datacollection(ssx_data_collection_create)
+
+
+@router.get(
+    "/datacollection/{ssxDataCollectionId:int}/sample/thumbnail/{thumbnailNumber:int}",
+    response_class=FileResponse,
+    responses={404: {"description": "Entity not found"}},
+)
+def get_datacollection_sample_thumbnail(
+    ssxDataCollectionId: int, thumbnailNumber: conint(ge=1, le=3)
+) -> str:
+    dc = crud.get_ssx_datacollection(ssxDataCollectionId)
+    if dc is None:
+        raise HTTPException(status_code=404, detail="Data collection not found")
+    res = None
+    if thumbnailNumber == 1:
+        res = dc.DataCollection.xtalSnapshotFullPath1
+    if thumbnailNumber == 2:
+        res = dc.DataCollection.xtalSnapshotFullPath2
+    if thumbnailNumber == 3:
+        res = dc.DataCollection.xtalSnapshotFullPath3
+    if res is not None and os.path.isfile(res):
+        return res
+    raise HTTPException(status_code=404, detail="Thumbnail not found")
