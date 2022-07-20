@@ -2,7 +2,7 @@ import datetime
 import jwt
 from typing import Any
 
-from pyispyb.core import models
+from ispyb import models
 
 from pyispyb.config import settings
 from ...globals import g
