@@ -35,10 +35,10 @@ class AbstractAuthentication(ABC):
         self, login: Optional[str], password: Optional[str], token: Optional[str]
     ) -> Optional[str]:
         if self.authentication_type == AuthType.token:
-            logger.error("Authenticating via token")
+            logger.debug("Authenticating via token")
             return self.authenticate_by_token(token)
         else:
-            logger.error("Authenticating via username")
+            logger.debug("Authenticating via username")
             return self.authenticate_by_login(login, password)
 
     def authenticate_by_login(self, login: str, password: str) -> Optional[str]:
