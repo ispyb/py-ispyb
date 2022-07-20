@@ -16,5 +16,5 @@ class Options(UIOptions):
         False, title="Query Debugging", description="Enable query debugging"
     )
     enable_legacy_routes: bool = Field(
-        False, title="Legacy Routes", description="Enable legacy routes"
+        True, title="Legacy Routes", description="Enable legacy routes"
     )
