@@ -4,3 +4,6 @@ This is the current list of permissions and what they allow:
 | -------------- | -------------- | ----------------------------------------------- |
 | manage_options | Administration | Add and update the database application options |
 | view_activity  | Administration | View the activity log                           |
+| -              | -              | -                                               |
+| manage_groups  | Administration | Add, remove, and update UserGroups              |
+| manage_perms   | Administration | Add, remove, and update Permissions             |

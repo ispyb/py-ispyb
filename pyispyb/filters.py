@@ -40,3 +40,9 @@ def userGroupId(
     userGroupId: Optional[int] = Query(None, description="UserGroup id to filter by")
 ) -> Optional[int]:
     return userGroupId
+
+
+def permissionId(
+    permissionId: Optional[int] = Query(None, description="Permission id to filter by")
+) -> Optional[int]:
+    return permissionId
