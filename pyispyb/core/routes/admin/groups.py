@@ -8,7 +8,6 @@ from ...schemas.utils import make_optional
 from .... import filters
 from .base import router
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImVmZ2giLCJncm91cHMiOlsibWFuYWdlX2dyb3VwcyIsIm1hbmFnZV9wZXJtcyJdLCJwZXJtaXNzaW9ucyI6WyJtYW5hZ2VfZ3JvdXBzIiwibWFuYWdlX3Blcm1zIl0sImlhdCI6MTY1ODQwNTk1MiwiZXhwIjoxNjU4NDIzOTUyfQ.B67vMH2BvAVhwd5ZyaagmjtV8O5ydWnPVlZgwjQbpS0
 
 # Groups
 @router.get(
@@ -41,6 +40,10 @@ def add_group(group: schema.NewUserGroup, depends=Depends(permission("manage_gro
 @router.patch(
     "/groups/{userGroupId}",
     response_model=schema.UserGroup,
+    responses={
+        404: {"description": "No such group"},
+        400: {"description": "Could not update group"},
+    },
 )
 def update_group(
     userGroupId: int,
@@ -50,6 +53,8 @@ def update_group(
     """Update a UserGroup"""
     try:
         return crud.update_group(userGroupId, userGroup)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"No such group: `{userGroupId}`")
     except Exception as e:
         raise HTTPException(
             status_code=400, detail=f"Could not update group: `{str(e)}`"
@@ -183,6 +188,10 @@ def add_permission(
 @router.patch(
     "/permissions/{permissionId}",
     response_model=schema.Permission,
+    responses={
+        404: {"description": "No such permission"},
+        400: {"description": "Could not update permission"},
+    },
 )
 def update_permission(
     permissionId: int,
@@ -192,6 +201,10 @@ def update_permission(
     """Update a Permission"""
     try:
         return crud.update_permission(permissionId, permission)
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=400, detail=f"No such permission: `{permissionId}`"
+        )
     except Exception as e:
         raise HTTPException(
             status_code=400, detail=f"Could not update group: `{str(e)}`"

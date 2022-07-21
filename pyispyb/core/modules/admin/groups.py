@@ -61,7 +61,7 @@ def update_group(userGroupId: int, group: schema.UserGroup):
     )
 
     if not userGroup:
-        return
+        raise FileNotFoundError()
 
     group_dict = group.dict(exclude_unset=True)
     for key in ["name"]:
@@ -218,7 +218,7 @@ def update_permission(
     )
 
     if not permissionModel:
-        return
+        raise FileNotFoundError()
 
     permission_dict = permission.dict(exclude_unset=True)
     for key in ["type", "description"]:
