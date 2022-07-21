@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 import logging
 
+from sqlalchemy import exc
 from starlette.types import ASGIApp
 
 from ispyb import models
@@ -63,15 +64,23 @@ def update_options(options: Options) -> Options:
         try:
             # Requires unique constraint to be lifted on `username` to enable storing more than
             # just online stats
+            adminComment = ""
+            if not isinstance(option_value, dict) and not isinstance(
+                option_value, list
+            ):
+                adminComment = f" to `{str(option_value)[:80]}`"
+
             adminActivity = models.AdminActivity(
                 username=g.username,
                 action="db_options",
-                comments=f"changed `{option_key}` to `{option_value}`",
+                comments=f"changed `{option_key}`{adminComment}",
                 dateTime=datetime.now(),
             )
             db.session.add(adminActivity)
             db.session.commit()
-        except Exception:
+            db.session.flush()
+        except exc.SQLAlchemyError:
+            db.session.rollback()
             logger.exception("Could not log option change")
 
     return options
