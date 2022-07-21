@@ -21,7 +21,7 @@ def get_ui_options() -> UIOptions:
     "",
     response_model=Options,
 )
-def get_options(depends: bool = Depends(permission("admin_options"))) -> Options:
+def get_options(depends: bool = Depends(permission("manage_options"))) -> Options:
     """Get the available database options"""
     return crud.get_options(get_all=True)
 
@@ -31,7 +31,7 @@ def get_options(depends: bool = Depends(permission("admin_options"))) -> Options
     response_model=Options,
 )
 def update_options(
-    options: Options, request: Request, depends=Depends(permission("admin_options"))
+    options: Options, request: Request, depends=Depends(permission("manage_options"))
 ) -> Options:
     """Update the database options"""
     crud.update_options(options)

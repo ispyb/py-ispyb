@@ -19,7 +19,7 @@ from .base import router
 def get_activity(
     page: dict[str, int] = Depends(pagination),
     action_type: Optional[ActionType] = None,
-    depends=Depends(permission("admin_activity")),
+    depends=Depends(permission("view_activity")),
 ) -> Paged[models.AdminActivity]:
     """Get list of admin activity"""
     return crud.get_activity(action_type=action_type, **page)
