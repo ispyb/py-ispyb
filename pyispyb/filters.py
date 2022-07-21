@@ -51,6 +51,7 @@ def proteinId(
 ) -> Optional[int]:
     return proteinId
 
+
 def containerId(
     containerId: Optional[int] = Query(None, description="Container id to filter by")
 ) -> Optional[int]:
