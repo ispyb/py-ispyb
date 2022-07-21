@@ -43,15 +43,15 @@ experiments:
   # a shortname for this experiment (available via cli)
   energy_scan1:
     # the experimentType, must map to a valid type in DataCollectionGroup.experimentType
-    experimentType: Energy scan
+    experimentType: OSC
     # data will be split into its respective imageDirectory and fileTemplate columns
-    data: energy_scan/energy_scan1.h5
+    data: osc/oscillation.h5
     # which sample to link this data collection to (one of the keys in samples above)
     sample: samp1
 
     # columns to populate
     # thumbnails should have a trailing t, i.e. energy_scan/snapshott.png
-    xtalSnapshotFullPath1: energy_scan/snapshot1.png
+    xtalSnapshotFullPath1: osc/snapshot1.png
     numberOfImages: 4001
     exposureTime: 1
     #energy: 8.8143
@@ -59,11 +59,11 @@ experiments:
     imageContainerSubPath: 1.1/measurement
 
   xrf_map1:
-    experimentType: XRF map
-    data: xrf_map/xrf_map1.h5
+    experimentType: Mesh
+    data: mesh/mesh.h5
     sample: samp1
 
-    xtalSnapshotFullPath1: xrf_map/snapshot1.png
+    xtalSnapshotFullPath1: mesh/snapshot1.png
     numberOfImages: 1600
     exposureTime: 0.03
     #energy: 2.4817
