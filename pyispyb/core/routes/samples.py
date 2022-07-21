@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
 from ispyb import models
 
 from pyispyb.dependencies import pagination
@@ -16,11 +16,20 @@ router = AuthenticatedAPIRouter(prefix="/samples", tags=["Samples"])
 
 @router.get("/", response_model=paginated(schema.Sample))
 def get_samples(
+    request: Request,
     page: dict[str, int] = Depends(pagination),
     proteinId: int = Depends(filters.proteinId),
+    session: int = Depends(filters.session),
+    containerId: int = Depends(filters.containerId),
 ) -> Paged[models.BLSample]:
     """Get a list of samples"""
-    return crud.get_samples(proteinId=proteinId, **page)
+    return crud.get_samples(
+        proteinId=proteinId,
+        session=session,
+        containerId=containerId,
+        beamlineGroups=request.app.db_options.beamlineGroups,
+        **page
+    )
 
 
 @router.get(

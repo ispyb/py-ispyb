@@ -1,3 +1,4 @@
+import logging
 from typing import Optional, Any
 
 import sqlalchemy
@@ -7,6 +8,8 @@ from ispyb import models
 from pyispyb.app.globals import g
 from pyispyb.app.extensions.database.middleware import db
 from ...extensions.options.schema import BeamlineGroup
+
+logger = logging.getLogger(__name__)
 
 _session = sqlalchemy.func.concat(
     models.Proposal.proposalCode,
@@ -85,10 +88,11 @@ def with_beamline_groups(
     query: "sqlalchemy.orm.Query[Any]",
     beamlineGroups: list[BeamlineGroup],
     includeArchived: bool = False,
+    proposalColumn: "sqlalchemy.Column[Any]" = None,
 ) -> "sqlalchemy.orm.Query[Any]":
-    # super_admin can access all sessions
+    # `all_proposals`` can access all sessions
     if "all_proposals" in g.permissions:
-        print("user has `all_proposals`")
+        logger.info("user has `all_proposals`")
         return query
 
     # Iterate through users permissions and match them to the relevant groups
@@ -101,11 +105,19 @@ def with_beamline_groups(
                 if (beamline.archived and includeArchived) or not includeArchived:
                     beamlines.append(beamline.beamlineName)
 
+    if proposalColumn:
+        query = query.join(
+            models.Proposal, models.Proposal.proposalId == proposalColumn
+        ).join(
+            models.BLSession, models.BLSession.proposalId == models.Proposal.proposalId
+        )
+
     if beamlines:
-        print(
+        logger.info(
             f"filtered to beamlines `{beamlines}` with permissions `{permissions_applied}`"
         )
+
         return query.filter(models.BLSession.beamLineName.in_(beamlines))
     else:
-        print("No beamline groups, filtering by session_has_person")
+        logger.info("No beamline groups, filtering by `session_has_person`")
         return with_auth_to_session_has_person(query)

@@ -5,14 +5,14 @@ import sqlalchemy
 from sqlalchemy.orm import contains_eager
 from sqlalchemy.sql.expression import literal_column
 from ispyb import models
-from pyispyb.app.extensions.database.definitions import (
+
+from ...app.extensions.database.definitions import (
     with_beamline_groups,
     _session,
     _proposal,
 )
-
-from pyispyb.app.extensions.database.utils import Paged, page
-from pyispyb.app.extensions.database.middleware import db
+from ...app.extensions.database.utils import Paged, page
+from ...app.extensions.database.middleware import db
 from ..schemas import events as schema
 
 
