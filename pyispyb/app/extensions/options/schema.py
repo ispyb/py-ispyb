@@ -1,6 +1,22 @@
 from pydantic import BaseModel, Field
 
 
+class BeamlineGroupBeamline(BaseModel):
+    beamlineName: str = Field(title="Beamline Name")
+    archived: bool = Field(
+        False, title="Archived", description="Whether this beamline is archived"
+    )
+
+
+class BeamlineGroup(BaseModel):
+    groupName: str = Field(title="Group Name")
+    permission: str = Field(
+        title="Permission",
+        description="Permission required to view all proposals from these beamlines",
+    )
+    beamlines: list[BeamlineGroupBeamline] = Field([], title="Beamlines")
+
+
 class UIOptions(BaseModel):
     """Publicly available UI options"""
 
@@ -28,3 +44,4 @@ class Options(UIOptions):
         title="Create Missing Login",
         description="Automatically create a `Person` entry if the `login` is missing from the database. (!) Warning modifies the database",
     )
+    beamlineGroups: list[BeamlineGroup] = Field([], title="Beamline Groups")

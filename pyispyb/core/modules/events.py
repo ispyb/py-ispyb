@@ -5,6 +5,11 @@ import sqlalchemy
 from sqlalchemy.orm import contains_eager
 from sqlalchemy.sql.expression import literal_column
 from ispyb import models
+from pyispyb.app.extensions.database.definitions import (
+    with_beamline_groups,
+    _session,
+    _proposal,
+)
 
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
@@ -39,14 +44,18 @@ def with_sample(
 def get_events(
     skip: int,
     limit: int,
-    sessionId: Optional[int] = None,
+    session: Optional[str] = None,
+    proposal: Optional[str] = None,
+    beamlineName: Optional[str] = None,
+    dataCollectionId: Optional[int] = None,
     dataCollectionGroupId: Optional[int] = None,
     blSampleId: Optional[int] = None,
     proteinId: Optional[int] = None,
+    beamlineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.Event]:
     queries = {}
 
-    dataCollectionId = models.DataCollection.dataCollectionId
+    _dataCollectionId = models.DataCollection.dataCollectionId
     startTime = models.DataCollection.startTime
     endTime = models.DataCollection.endTime
     duration = sqlalchemy.func.time_to_sec(
@@ -60,44 +69,84 @@ def get_events(
     if dataCollectionGroupId is None:
         duration = sqlalchemy.func.sum(duration)
         # Return the first dataCollectionId in a group
-        dataCollectionId = sqlalchemy.func.min(models.DataCollection.dataCollectionId)  # type: ignore
+        _dataCollectionId = sqlalchemy.func.min(models.DataCollection.dataCollectionId)  # type: ignore
         startTime = sqlalchemy.func.min(models.DataCollection.startTime)  # type: ignore
         endTime = sqlalchemy.func.max(models.DataCollection.endTime)  # type: ignore
         dataCollectionCount = sqlalchemy.func.count(
             sqlalchemy.func.distinct(models.DataCollection.dataCollectionId)
         )  # type: ignore
 
-    queries["dc"] = db.session.query(
-        dataCollectionId.label("id"),
-        startTime.label("startTime"),
-        endTime.label("endTime"),
-        literal_column("'dc'").label("type"),
-        dataCollectionCount.label("count"),
-    ).join(
-        models.DataCollectionGroup,
-        models.DataCollectionGroup.dataCollectionGroupId
-        == models.DataCollection.dataCollectionGroupId,
+    queries["dc"] = (
+        db.session.query(
+            _dataCollectionId.label("id"),
+            startTime.label("startTime"),
+            endTime.label("endTime"),
+            literal_column("'dc'").label("type"),
+            dataCollectionCount.label("count"),
+            _session,
+        )
+        .join(
+            models.DataCollectionGroup,
+            models.DataCollectionGroup.dataCollectionGroupId
+            == models.DataCollection.dataCollectionGroupId,
+        )
+        .join(
+            models.BLSession,
+            models.BLSession.sessionId == models.DataCollectionGroup.sessionId,
+        )
+        .join(
+            models.Proposal, models.Proposal.proposalId == models.BLSession.proposalId
+        )
     )
-    queries["robot"] = db.session.query(
-        models.RobotAction.robotActionId.label("id"),
-        models.RobotAction.startTimestamp.label("startTime"),
-        models.RobotAction.endTimestamp.label("endTime"),
-        literal_column("'robot'").label("type"),
-        literal_column("1").label("count"),
+    queries["robot"] = (
+        db.session.query(
+            models.RobotAction.robotActionId.label("id"),
+            models.RobotAction.startTimestamp.label("startTime"),
+            models.RobotAction.endTimestamp.label("endTime"),
+            literal_column("'robot'").label("type"),
+            literal_column("1").label("count"),
+            _session,
+        )
+        .join(
+            models.BLSession,
+            models.BLSession.sessionId == models.RobotAction.blsessionId,
+        )
+        .join(
+            models.Proposal, models.Proposal.proposalId == models.BLSession.proposalId
+        )
     )
-    queries["xrf"] = db.session.query(
-        models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId.label("id"),
-        models.XFEFluorescenceSpectrum.startTime.label("startTime"),
-        models.XFEFluorescenceSpectrum.endTime.label("endTime"),
-        literal_column("'xrf'").label("type"),
-        literal_column("1").label("count"),
+    queries["xrf"] = (
+        db.session.query(
+            models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId.label("id"),
+            models.XFEFluorescenceSpectrum.startTime.label("startTime"),
+            models.XFEFluorescenceSpectrum.endTime.label("endTime"),
+            literal_column("'xrf'").label("type"),
+            literal_column("1").label("count"),
+            _session,
+        )
+        .join(
+            models.BLSession,
+            models.BLSession.sessionId == models.XFEFluorescenceSpectrum.sessionId,
+        )
+        .join(
+            models.Proposal, models.Proposal.proposalId == models.BLSession.proposalId
+        )
     )
-    queries["es"] = db.session.query(
-        models.EnergyScan.energyScanId.label("id"),
-        models.EnergyScan.startTime.label("startTime"),
-        models.EnergyScan.endTime.label("endTime"),
-        literal_column("'es'").label("type"),
-        literal_column("1").label("count"),
+    queries["es"] = (
+        db.session.query(
+            models.EnergyScan.energyScanId.label("id"),
+            models.EnergyScan.startTime.label("startTime"),
+            models.EnergyScan.endTime.label("endTime"),
+            literal_column("'es'").label("type"),
+            literal_column("1").label("count"),
+            _session,
+        )
+        .join(
+            models.BLSession, models.BLSession.sessionId == models.EnergyScan.sessionId
+        )
+        .join(
+            models.Proposal, models.Proposal.proposalId == models.BLSession.proposalId
+        )
     )
 
     # Join sample information
@@ -110,18 +159,36 @@ def get_events(
     for key, _query in queries.items():
         queries[key] = with_sample(_query, _mapper[key], blSampleId, proteinId)
 
-    # Filter by sessionid
-    if sessionId:
+        # Apply permissions
+        if beamlineGroups:
+            queries[key] = with_beamline_groups(queries[key], beamlineGroups)
+
+        # Filter by session
+        if session:
+            queries[key] = queries[key].filter(_session == session)
+
+        # Filter by proposal
+        if proposal:
+            queries[key] = queries[key].filter(_proposal == proposal)
+
+        # Filter by beamlineName
+        if beamlineName:
+            queries[key] = queries[key].filter(
+                models.BLSession.beamLineName == beamlineName
+            )
+
+    # Filter a single dataColleciton
+    if dataCollectionId:
         queries["dc"] = queries["dc"].filter(
-            models.DataCollectionGroup.sessionId == sessionId
+            models.DataCollection.dataCollectionId == dataCollectionId
         )
         queries["robot"] = queries["robot"].filter(
-            models.RobotAction.blsessionId == sessionId
+            models.RobotAction.robotActionId == 0
         )
         queries["xrf"] = queries["xrf"].filter(
-            models.XFEFluorescenceSpectrum.sessionId == sessionId
+            models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId == 0
         )
-        queries["es"] = queries["es"].filter(models.EnergyScan.sessionId == sessionId)
+        queries["es"] = queries["es"].filter(models.EnergyScan.energyScanId == 0)
 
     # Ungroup a dataCollectionGroup
     if dataCollectionGroupId:

@@ -10,12 +10,34 @@ def session(
     return session
 
 
+def proposal(
+    proposal: Optional[str] = Query(
+        None, description="Proposal name to filter by", regex=r"^\w+\d+$"
+    )
+) -> Optional[str]:
+    return proposal
+
+
+def beamlineName(
+    beamlineName: Optional[str] = Query(None, description="Beamline name to filter by")
+) -> Optional[str]:
+    return beamlineName
+
+
 def dataCollectionGroupId(
     dataCollectionGroupId: Optional[int] = Query(
         None, description="Data collection group id to filter by"
     )
 ) -> Optional[int]:
     return dataCollectionGroupId
+
+
+def dataCollectionId(
+    dataCollectionId: Optional[int] = Query(
+        None, description="Data collection id to filter by"
+    )
+) -> Optional[int]:
+    return dataCollectionId
 
 
 def blSampleId(

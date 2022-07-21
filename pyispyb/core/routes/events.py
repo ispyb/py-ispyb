@@ -1,8 +1,7 @@
-from fastapi import Depends, Query, HTTPException
+from fastapi import Depends, Query, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import conint
 
-from pyispyb.app.extensions.database.definitions import get_blsession
 from pyispyb.app.extensions.database.utils import Paged
 from pyispyb.dependencies import pagination
 from pyispyb import filters
@@ -21,26 +20,26 @@ router = AuthenticatedAPIRouter(prefix="/events", tags=["Events"])
     responses={404: {"description": "Entity not found"}},
 )
 def get_events(
+    request: Request,
     page: dict[str, int] = Depends(pagination),
     session: str = Depends(filters.session),
+    proposal: str = Depends(filters.proposal),
+    beamlineName: str = Depends(filters.beamlineName),
+    dataCollectionId: int = Depends(filters.dataCollectionId),
     dataCollectionGroupId: int = Depends(filters.dataCollectionGroupId),
     blSampleId: int = Depends(filters.blSampleId),
     proteinId: int = Depends(filters.proteinId),
 ) -> Paged[schema.Event]:
     """Get a list of events"""
-    sessionId = None
-    if session:
-        blSession = get_blsession(session)
-        if not blSession:
-            raise HTTPException(status_code=404, detail="Session not found")
-        sessionId = blSession.sessionId
-
     return crud.get_events(
-        # sessionId is an int
-        sessionId=sessionId,  # type: ignore
+        session=session,
+        proposal=proposal,
+        beamlineName=beamlineName,
+        dataCollectionId=dataCollectionId,
         dataCollectionGroupId=dataCollectionGroupId,
         blSampleId=blSampleId,
         proteinId=proteinId,
+        beamlineGroups=request.app.db_options.beamlineGroups,
         **page
     )
 

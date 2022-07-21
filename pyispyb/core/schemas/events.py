@@ -58,6 +58,7 @@ class EventBase(BaseModel):
     startTime: datetime
     endTime: Optional[datetime]
     count: int
+    session: str
     blSample: Optional[str] = Field(description="Sample name")
     blSampleId: Optional[int] = Field(description="Sample id")
 
