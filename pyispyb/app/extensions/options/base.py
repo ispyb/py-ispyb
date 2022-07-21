@@ -54,7 +54,7 @@ def update_options(options: Options) -> Options:
         if adminVar:
             adminVar.value = json.dumps(option_value)
         else:
-            adminVar = models.AdminVar(name=option_key, value=option_value)
+            adminVar = models.AdminVar(name=option_key, value=json.dumps(option_value))
             db.session.add(adminVar)
 
         db.session.commit()
