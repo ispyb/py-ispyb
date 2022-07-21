@@ -1,5 +1,6 @@
 from fastapi import Depends, Query, HTTPException
 from fastapi.responses import FileResponse
+from pydantic import conint
 
 from pyispyb.app.extensions.database.definitions import get_blsession
 from pyispyb.app.extensions.database.utils import Paged
@@ -47,11 +48,11 @@ def get_events(
 @router.get("/image/{dataCollectionId}", response_class=FileResponse)
 def get_datacollection_image(
     dataCollectionId: int,
-    imageId: int = Query(0, description="Image 1-4 to return"),
-    fullSize: bool = Query(False, description="Get full size image"),
+    imageId: conint(ge=1, le=4) = Query(0, description="Image 1-4 to return"),
+    snapshot: bool = Query(False, description="Get snapshot image"),
 ) -> str:
     """Get a data collection image"""
-    path = crud.get_datacollection_snapshot_path(dataCollectionId, imageId, fullSize)
+    path = crud.get_datacollection_snapshot_path(dataCollectionId, imageId, snapshot)
     if not path:
         raise HTTPException(status_code=404, detail="Image not found")
 
