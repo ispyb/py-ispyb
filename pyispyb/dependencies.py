@@ -39,7 +39,7 @@ def permission(permission: str):
 
     async def with_permission() -> bool:
         if permission not in g.permissions:
-            raise HTTPException(status_code=401, detail="Not Authorised")
+            raise HTTPException(status_code=403, detail="Not Authorised")
 
         return True
 
