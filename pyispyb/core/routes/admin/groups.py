@@ -4,6 +4,7 @@ from ....dependencies import pagination, permission
 from ....core.schemas.utils import paginated
 from ...modules.admin import groups as crud
 from ...schemas.admin import groups as schema
+from .... import filters
 from .base import router
 
 
@@ -16,14 +17,14 @@ def get_groups(
     page: dict[str, int] = Depends(pagination),
     depends=Depends(permission("manage_groups")),
 ):
-    pass
+    return crud.get_groups(**page)
 
 
 @router.post(
     "/groups",
     response_model=schema.UserGroup,
 )
-def add_group(group: schema.UserGroup, depends=Depends(permission("manage_groups"))):
+def add_group(group: schema.NewUserGroup, depends=Depends(permission("manage_groups"))):
     return crud.add_group(group)
 
 
@@ -91,15 +92,17 @@ def remove_person_from_group(depends=Depends(permission("manage_groups"))):
     response_model=paginated(schema.Permission),
 )
 def get_permissions(
+    userGroupId: int = Depends(filters.userGroupId),
+    search: int = Depends(filters.search),
     page: dict[str, int] = Depends(pagination),
     depends=Depends(permission("manage_perms")),
 ):
-    pass
+    return crud.get_permissions(userGroupId=userGroupId, search=search, **page)
 
 
 @router.post(
     "/permissions",
-    response_model=schema.Permission,
+    response_model=schema.NewPermission,
 )
 def add_permission(
     permission: schema.Permission, depends=Depends(permission("manage_perms"))

@@ -28,3 +28,15 @@ def proteinId(
     proteinId: Optional[int] = Query(None, description="Protein id to filter by")
 ) -> Optional[int]:
     return proteinId
+
+
+def search(
+    search: str = Query(None, description="Search string to filter by")
+) -> Optional[str]:
+    return search
+
+
+def userGroupId(
+    userGroupId: Optional[int] = Query(None, description="UserGroup id to filter by")
+) -> Optional[int]:
+    return userGroupId
