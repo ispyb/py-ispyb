@@ -50,7 +50,9 @@ experiments:
     sample: samp1
 
     # columns to populate
-    # thumbnails should have a trailing t, i.e. energy_scan/snapshott.png
+    # xtalSnapshot thumbnails should have a trailing t
+    #   Fullsize image: osc/snapshot1.png
+    #   Thumbnail: osc/snapshot1t.png
     xtalSnapshotFullPath1: osc/snapshot1.png
     numberOfImages: 4001
     exposureTime: 1
