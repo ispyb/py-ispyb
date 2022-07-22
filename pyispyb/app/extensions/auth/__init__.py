@@ -1,7 +1,10 @@
 import importlib
 import logging
+from typing import Optional
 
-from pyispyb.config import settings
+from ispyb import models
+
+from ....config import settings
 
 
 log = logging.getLogger(__name__)
@@ -32,8 +35,13 @@ class AuthProvider:
                     self.site_authentications[auth_name] = instance
 
     def get_auth(
-        self, plugin: str, username: str | None, password: str | None, token: str | None
-    ):
+        self,
+        *,
+        plugin: str,
+        username: str | None,
+        password: str | None,
+        token: str | None
+    ) -> Optional[models.Person]:
         """
         Check the user is authenticated and return the login.
 
@@ -46,7 +54,7 @@ class AuthProvider:
             token (str): auth token
 
         Returns:
-            login (str): The login
+            person (models.Person): The current `Person`
         """
         if plugin not in self.site_authentications:
             return None
