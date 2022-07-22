@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Literal, Optional
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 
@@ -53,16 +54,10 @@ class SSXSampleCreate(BaseModel):
 
     # Table Macromolecule
     acronym: Optional[str]
+    name: Optional[str]
 
     # Table Structure
     ligandName: Optional[str]
-
-
-class UntrustedRegionCreate(BaseModel):
-    x1: Optional[int]
-    x2: Optional[int]
-    y1: Optional[int]
-    y2: Optional[int]
 
 
 class SSXDataCollectionCreate(BaseModel):
@@ -84,12 +79,14 @@ class SSXDataCollectionCreate(BaseModel):
     xtalSnapshotFullPath3: Optional[str]
     xtalSnapshotFullPath4: Optional[str]
     imagePrefix: Optional[str]
-    numberOfPasses: Optional[str]
-    numberOfImages: Optional[str]
-    resolution: Optional[str]
-    resolutionAtCorner: Optional[str]
-    flux_end: Optional[str]
+    numberOfPasses: Optional[int]
+    numberOfImages: Optional[int]
+    resolution: Optional[float]
+    resolutionAtCorner: Optional[float]
+    flux_end: Optional[float]
     detectorId: Optional[int]
+    startTime: datetime
+    endTime: Optional[datetime]
 
     # Table DataCollectionGroup
     experimentType: Optional[Literal["SSXChip", "SSXInjector"]]
