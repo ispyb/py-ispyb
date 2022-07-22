@@ -5,7 +5,6 @@ from fastapi import status, HTTPException
 
 from ..extensions.auth import auth_provider
 from ..extensions.auth.token import generate_token
-from ..extensions.database.definitions import get_current_person
 from ..base import BaseRouter
 
 
@@ -34,23 +33,13 @@ router = BaseRouter(prefix="/auth", tags=["Authentication"])
 )
 def login(login_details: Login) -> TokenResponse:
     """Login a user"""
-    login = auth_provider.get_auth(**login_details.dict())
-
-    if not login:
-        raise HTTPException(status_code=401, detail="Could not verify")
-
-    person = get_current_person(login)
+    person = auth_provider.get_auth(**login_details.dict())
     if not person:
-        if False:  # request.app.db_options.create_person_on_missing:
-            pass
-        else:
-            raise HTTPException(
-                status_code=401, detail="User does not exist in database."
-            )
+        raise HTTPException(status_code=401, detail="Could not verify")
 
     else:
         token_info = generate_token(
-            login,
+            person.login,
             person.personId,
             person._metadata["permissions"],
             person.familyName,

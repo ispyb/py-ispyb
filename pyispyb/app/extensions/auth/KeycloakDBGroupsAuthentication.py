@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 from keycloak.exceptions import KeycloakAuthenticationError
 from keycloak.keycloak_openid import KeycloakOpenID
+from ispyb import models
 
 from .AbstractAuthentication import AbstractAuthentication, AuthType
 
@@ -43,10 +44,10 @@ class KeycloakAuthentication(AbstractAuthentication):
         except KeycloakAuthenticationError:
             logger.exception("Could not log user in via keycloak token")
 
-    def get_info(self) -> dict[str, Any]:
-        return {
-            "givenName": self._userinfo["given_name"],
-            "familyName": self._userinfo["family_name"],
-            "login": self._userinfo["preferred_username"],
-            "emailAddress": self._userinfo["email"],
-        }
+    def create_person(self) -> dict[str, Any]:
+        return models.Person(
+            givenName=self._userinfo["given_name"],
+            familyName=self._userinfo["family_name"],
+            login=self._userinfo["preferred_username"],
+            emailAddress=self._userinfo["email"],
+        )

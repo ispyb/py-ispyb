@@ -1,14 +1,21 @@
 from fastapi.testclient import TestClient
 import pytest
 
+from starlette.types import ASGIApp
+
 from pyispyb.config import settings
-from pyispyb.app.main import app
+from pyispyb.app.main import app as _app
 from tests.authclient import AuthClient
 
 
 @pytest.fixture()
 def client():
-    return TestClient(app)
+    return TestClient(_app)
+
+
+@pytest.fixture
+def app() -> ASGIApp:
+    yield _app
 
 
 @pytest.fixture

@@ -30,7 +30,7 @@ test_data_proposal_list = [
             permissions=[
                 "own_proposals",
             ],
-            username="i_dont_have_proposals",
+            username="efgh",
             route="/proposals",
         ),
         expected=ApiTestExpected(code=200, res=[]),
@@ -107,13 +107,13 @@ test_data_proposal_info = [
             permissions=[
                 "own_proposals",
             ],
-            username="i_dont_have_proposals",
+            username="efgh",
             route="/proposals/9096",
         ),
         expected=ApiTestExpected(
             code=403,
             res={
-                "detail": "User i_dont_have_proposals (permissions assigned: ['own_proposals']) is not authorized to access proposal 9096."
+                "detail": "User efgh (permissions assigned: ['own_proposals']) is not authorized to access proposal 9096."
             },
         ),
     ),

@@ -7,7 +7,7 @@ test_data_session = [
             permissions=[
                 "all_sessions",
             ],
-            username="admin",
+            username="efgh",
             route="/em/session/70566/stats",
         ),
         expected=ApiTestExpected(code=200),
@@ -15,8 +15,8 @@ test_data_session = [
     ApiTestElem(
         name="no all_sessions permission DENIED",
         input=ApiTestInput(
-            permissions=["none"],
-            username="admin",
+            permissions=[],
+            username="efgh",
             route="/em/session/70566/stats",
         ),
         expected=ApiTestExpected(code=403),
@@ -35,8 +35,8 @@ test_data_session = [
     ApiTestElem(
         name="no own_sessions permission DENIED (proposal.personId)",
         input=ApiTestInput(
-            permissions=["none"],
-            username="70565",
+            permissions=[],
+            username="abcd",
             route="/em/session/70566/stats",
         ),
         expected=ApiTestExpected(code=403),
@@ -55,9 +55,7 @@ test_data_session = [
     ApiTestElem(
         name="no own_sessions permission DENIED (Session_has_Person.personId)",
         input=ApiTestInput(
-            permissions=[
-                "none",
-            ],
+            permissions=[],
             username="darwin",
             route="/em/session/70565/stats",
         ),
@@ -69,7 +67,7 @@ test_data_session = [
             permissions=[
                 "own_sessions",
             ],
-            username="user",
+            username="abcd",
             route="/em/session/70566/stats",
         ),
         expected=ApiTestExpected(code=403),
@@ -83,7 +81,7 @@ test_data_proposal = [
             permissions=[
                 "all_proposals",
             ],
-            username="admin",
+            username="efgh",
             route="/proposals/MX1",
         ),
         expected=ApiTestExpected(code=200),
@@ -91,8 +89,8 @@ test_data_proposal = [
     ApiTestElem(
         name="no all_proposals permission DENIED",
         input=ApiTestInput(
-            permissions=["none"],
-            username="admin",
+            permissions=[],
+            username="efgh",
             route="/proposals/MX1",
         ),
         expected=ApiTestExpected(code=403),
@@ -111,7 +109,7 @@ test_data_proposal = [
     ApiTestElem(
         name="no own_proposals permission DENIED (proposal.personId)",
         input=ApiTestInput(
-            permissions=["none"],
+            permissions=[],
             username="pasteur",
             route="/proposals/MX1",
         ),
@@ -123,7 +121,7 @@ test_data_proposal = [
             permissions=[
                 "own_proposals",
             ],
-            username="user",
+            username="abcd",
             route="/proposals/MX1",
         ),
         expected=ApiTestExpected(code=403),

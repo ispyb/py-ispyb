@@ -4,7 +4,7 @@ from typing import Any
 
 from ispyb import models
 
-from pyispyb.config import settings
+from ....config import settings
 from ...globals import g
 
 
@@ -79,7 +79,7 @@ def set_token_data(token: dict[str, Any]) -> None:
     g.person = models.Person(
         personId=token["personId"],
         givenName=token["givenName"],
-        familyName=token["givenName"],
+        familyName=token["familyName"],
         login=token["login"],
     )
     g.permissions = token["permissions"]

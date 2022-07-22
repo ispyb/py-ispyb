@@ -3,7 +3,11 @@ import enum
 import logging
 from typing import Any, Optional
 
+from fastapi import HTTPException
 from ispyb import models
+
+from ...extensions.database.middleware import db
+from ...extensions.database.definitions import get_current_person
 
 
 logger = logging.getLogger(__name__)
@@ -33,13 +37,34 @@ class AbstractAuthentication(ABC):
 
     def authenticate(
         self, login: Optional[str], password: Optional[str], token: Optional[str]
-    ) -> Optional[str]:
+    ) -> Optional[models.Person]:
         if self.authentication_type == AuthType.token:
             logger.debug("Authenticating via token")
-            return self.authenticate_by_token(token)
+            login = self.authenticate_by_token(token)
         else:
             logger.debug("Authenticating via username")
-            return self.authenticate_by_login(login, password)
+            login = self.authenticate_by_login(login, password)
+
+        if not login:
+            return
+
+        person = get_current_person(login)
+        if not person:
+            if False:  # request.app.db_options.create_person_on_missing:
+                person = self.create_person()
+                if not person:
+                    logger.warning(
+                        "Could not create person from login `{login}` in `{self.__class__.__name__}`"
+                    )
+                    return
+                db.session.add(person)
+                db.session.commit()
+            else:
+                raise HTTPException(
+                    status_code=401, detail="User does not exist in database."
+                )
+
+        return person
 
     def authenticate_by_login(self, login: str, password: str) -> Optional[str]:
         """Child method if authenticating via login / password
@@ -70,6 +95,10 @@ class AbstractAuthentication(ABC):
         """
         pass
 
-    def get_info(self) -> models.Person:
-        """Child method to optionally return login info"""
+    def create_person(self) -> models.Person:
+        """Child method to optionally create a new Person model
+
+        Returns:
+            person (models.Person): The new person ready to be committed to the db
+        """
         pass
