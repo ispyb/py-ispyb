@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+from ...app.extensions.database.definitions import get_current_person
 from ...app.base import AuthenticatedAPIRouter
 from ...app.globals import g
 
@@ -18,10 +19,11 @@ class CurrentUser(BaseModel):
     response_model=CurrentUser,
 )
 def current_user() -> CurrentUser:
+    person = get_current_person(g.login)
+
     return {
-        "personId": g.person.personId,
-        "givenName": g.person.givenName,
-        "familyName": g.person.familyName,
-        "login": g.login,
+        "personId": person.personId,
+        "givenName": person.givenName,
+        "familyName": person.familyName,
         "Permissions": g.permissions,
     }

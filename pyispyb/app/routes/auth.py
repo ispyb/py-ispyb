@@ -42,8 +42,6 @@ def login(login_details: Login) -> TokenResponse:
             person.login,
             person.personId,
             person._metadata["permissions"],
-            person.familyName,
-            person.givenName,
         )
 
         return token_info

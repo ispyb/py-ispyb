@@ -12,8 +12,6 @@ def generate_token(
     login: str,
     personId: int,
     permissions: list[str],
-    givenName: str = None,
-    familyName: str = None,
 ):
     """
     Generate token.
@@ -35,8 +33,6 @@ def generate_token(
         {
             "login": login,
             "personId": personId,
-            "givenName": givenName,
-            "familyName": familyName,
             "permissions": permissions,
             "iat": iat,
             "exp": exp,
@@ -48,8 +44,6 @@ def generate_token(
     return {
         "login": login,
         "personId": personId,
-        "givenName": givenName,
-        "familyName": familyName,
         "token": token,
         "iat": iat.strftime("%Y-%m-%d %H:%M:%S"),
         "exp": exp.strftime("%Y-%m-%d %H:%M:%S"),
@@ -78,8 +72,6 @@ def set_token_data(token: dict[str, Any]) -> None:
     g.login = token["login"]
     g.person = models.Person(
         personId=token["personId"],
-        givenName=token["givenName"],
-        familyName=token["familyName"],
         login=token["login"],
     )
     g.permissions = token["permissions"]
