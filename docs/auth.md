@@ -171,8 +171,6 @@ class MyAuthentication(AbstractAuthentication):
             logger.exception("Something went wrong")
 ```
 
-> > > > > > > refactor and simplify auth classes
-
 ### Authorization dependencies
 
 The following dependencies can be used to manage authentication and authorization rules.
