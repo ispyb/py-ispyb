@@ -2,8 +2,6 @@ import datetime
 import jwt
 from typing import Any
 
-from ispyb import models
-
 from ....config import settings
 from ...globals import g
 
@@ -70,8 +68,5 @@ def decode_token(token: str) -> dict[str, Any]:
 
 def set_token_data(token: dict[str, Any]) -> None:
     g.login = token["login"]
-    g.person = models.Person(
-        personId=token["personId"],
-        login=token["login"],
-    )
+    g.personId = token["personId"]
     g.permissions = token["permissions"]
