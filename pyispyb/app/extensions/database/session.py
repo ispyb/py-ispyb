@@ -1,3 +1,4 @@
+import contextlib
 from typing import Generator, Any
 import os
 import sqlalchemy
@@ -27,6 +28,7 @@ _session = sqlalchemy.orm.sessionmaker(autocommit=False, autoflush=False, bind=e
 # Base.metadata.create_all(bind=engine)  # type: ignore
 
 
+@contextlib.contextmanager
 def get_session() -> Generator[sqlalchemy.orm.Session, Any, None]:
     session = _session()
     try:

@@ -9,11 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 def init_app(app: FastAPI, prefix: str = None, **kwargs):
-    """Init app routes."""
-    if not app.db_options.enable_legacy_routes:
-        logger.info("Legacy routes disabled")
-        return
-
     for module_name in os.listdir(os.path.dirname(__file__)):
         if not module_name.startswith("__") and module_name.endswith(".py"):
             try:

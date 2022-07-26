@@ -24,6 +24,6 @@ def init_app(app: FastAPI, prefix: str = None, **kwargs):
     """Init extension routes."""
     from importlib import import_module
 
-    for module_name in ["auth"]:
+    for module_name in ["auth", "options"]:
         module = import_module(".%s" % module_name, package=__name__)
         app.include_router(module.router, prefix=prefix)
