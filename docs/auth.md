@@ -115,12 +115,14 @@ AUTH:
 
 ## Implementing new plugins
 
-New plugins should inherit from `AbstractAuthentication` and override either `authenticate_by_login` or `authenticate_by_token` dependning on whether they accept a login / password combination or an authorisation token. Both functions return `login` on success.
+New plugins should inherit from `AbstractAuthentication` and override either `authenticate_by_login` or `authenticate_by_token` dependning on whether they accept a login / password combination or an authorisation token. Both functions return `Person` on success. This can be prepopulated with `familyName`, `givenName`, and `emailAddress`, which can be used to auto-create a new `Person` entry if the option is enabled (disabled by default)
 
 For example:
 
 ```python
 from typing import Optional
+
+from ispyb import models
 
 from .AbstractAuthentication import AbstractAuthentication
 
@@ -131,9 +133,13 @@ class MyAuthentication(AbstractAuthentication):
     def configure(self, config: dict[str, Any]):
       self._config = config
 
-    def authenticate_by_login(self, login: str, password: str) -> Optional[str]:
+    def authenticate_by_login(self, login: str, password: str) -> Optional[models.Person]:
         if ...
-          return login
+            return models.Person(
+                login=login,
+                familyName=...,
+                givenName=...,
+            )
         else:
           logger.exception("Something went wrong")
 ```
@@ -142,6 +148,8 @@ Or for token based authentication:
 
 ```python
 from typing import Optional
+
+from ispyb import models
 
 from .AbstractAuthentication import AbstractAuthentication, AuthType
 
@@ -154,11 +162,13 @@ class MyAuthentication(AbstractAuthentication):
     def configure(self, config: dict[str, Any]):
       self._config = config
 
-    def authenticate_by_token(self, token: str) -> Optional[str]:
+    def authenticate_by_token(self, token: str) -> Optional[models.Person]:
         if ...
-          return login
+            return models.Person(
+              login=login
+            )
         else:
-          logger.exception("Something went wrong")
+            logger.exception("Something went wrong")
 ```
 
 > > > > > > > refactor and simplify auth classes

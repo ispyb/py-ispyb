@@ -2,6 +2,8 @@ import ldap
 import logging
 from typing import Any, Optional
 
+from ispyb import models
+
 from .AbstractAuthentication import AbstractAuthentication
 
 
@@ -14,7 +16,9 @@ class LdapAuthentication(AbstractAuthentication):
         self.ldap_base_internal = config["LDAP_BASE_INTERNAL"]
         self.ldap_base_groups = config["LDAP_BASE_GROUPS"]
 
-    def authenticate_by_user(self, login: str, password: str) -> Optional[str]:
+    def authenticate_by_user(
+        self, login: str, password: str
+    ) -> Optional[models.Person]:
         try:
             logger.debug(
                 f"LDAP login: try to authenticate user `{login}` as internal user"
@@ -28,6 +32,6 @@ class LdapAuthentication(AbstractAuthentication):
                 f"(uid={login})",
                 ["*"],
             )
-            return login
+            return models.Person(login=login)
         except ldap.INVALID_CREDENTIALS:
             logger.exception(f"LDAP login: unable to authenticate user {login}")

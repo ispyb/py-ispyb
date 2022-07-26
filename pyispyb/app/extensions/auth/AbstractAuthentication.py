@@ -40,18 +40,17 @@ class AbstractAuthentication(ABC):
     ) -> Optional[models.Person]:
         if self.authentication_type == AuthType.token:
             logger.debug("Authenticating via token")
-            login = self.authenticate_by_token(token)
+            person = self.authenticate_by_token(token)
         else:
             logger.debug("Authenticating via login")
-            login = self.authenticate_by_login(login, password)
+            person = self.authenticate_by_login(login, password)
 
-        if not login:
+        if not person:
             return
 
-        person = get_current_person(login)
-        if not person:
+        person_check = get_current_person(person.login)
+        if not person_check:
             if False:  # request.app.db_options.create_person_on_missing:
-                person = self.create_person()
                 if not person:
                     logger.warning(
                         "Could not create person from login `{login}` in `{self.__class__.__name__}`"
@@ -59,14 +58,20 @@ class AbstractAuthentication(ABC):
                     return
                 db.session.add(person)
                 db.session.commit()
+                person_check = person
+                logger.info(
+                    "Created new Person `{person.personId}` for `{login}` from {self.__class__.__name__}"
+                )
             else:
                 raise HTTPException(
                     status_code=401, detail="User does not exist in database."
                 )
 
-        return person
+        return person_check
 
-    def authenticate_by_login(self, login: str, password: str) -> Optional[str]:
+    def authenticate_by_login(
+        self, login: str, password: str
+    ) -> Optional[models.Person]:
         """Child method if authenticating via login / password
 
         Returns the login if authentication succeeded
@@ -76,12 +81,12 @@ class AbstractAuthentication(ABC):
             password (str): The password
 
         Returns:
-            login (str): If authenticated, the login
+            person (models.Person): If authenticated, a prepopulated `Person`
 
         """
         pass
 
-    def authenticate_by_token(self, token: str) -> Optional[str]:
+    def authenticate_by_token(self, token: str) -> Optional[models.Person]:
         """Child method if authenticating via token
 
         Returns the login if authentication succeeded
@@ -90,15 +95,7 @@ class AbstractAuthentication(ABC):
             token (str): The token
 
         Returns:
-            login (str): If authenticated, the login
+            person (models.Person): If authenticated, a prepopulated `Person`
 
-        """
-        pass
-
-    def create_person(self) -> models.Person:
-        """Child method to optionally create a new Person model
-
-        Returns:
-            person (models.Person): The new person ready to be committed to the db
         """
         pass
