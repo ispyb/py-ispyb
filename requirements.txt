@@ -21,7 +21,7 @@ python_ldap==3.4.0
 sqlparse
 
 mysql-connector
-mysql-connector-python
+mysql-connector-python==8.0.29
 
 mkdocs
 mkdocs-material
