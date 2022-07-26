@@ -4,8 +4,8 @@ import os
 import sqlalchemy
 from sqlalchemy.orm import contains_eager
 from sqlalchemy.sql.expression import literal_column
+from ispyb import models
 
-from pyispyb.core import models
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
 from ..schemas import events as schema
@@ -231,7 +231,7 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
 
 
 def get_datacollection_snapshot_path(
-    dataCollectionId: int, imageId: int = 0, fullSize: bool = False
+    dataCollectionId: int, imageId: int = 1, snapshot: bool = False
 ) -> Optional[str]:
     dc = get_datacollection(dataCollectionId)
     if not dc:
@@ -244,15 +244,14 @@ def get_datacollection_snapshot_path(
         "xtalSnapshotFullPath4",
     ]
 
-    image_path: str = getattr(dc, images[imageId])
+    image_path: str = getattr(dc, images[imageId - 1])
     if image_path is None:
         return None
 
-    if not fullSize:
+    if snapshot:
         ext = os.path.splitext(image_path)[1][1:].strip()
         image_path = image_path.replace(f".{ext}", f"t.{ext}")
 
-    # image_path = image_path.replace("/data", "/Users/Shared/data")
     if os.path.exists(image_path):
         return image_path
 

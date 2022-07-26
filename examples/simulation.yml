@@ -1,0 +1,91 @@
+# Whether to link or copy data
+copy_method: copy
+
+# Map each beamline to a session
+sessions:
+  bl: blc00001-1
+
+# Where to copy raw data from
+raw_data: /data/ispyb-test
+
+# Where to write simulated data to, can use {beamline} placeholder
+data_dir: /data/tests/{beamline}/simulation
+
+ispyb_url: https://ispyb.esrf.fr
+
+# Define Components (Proteins)
+components:
+  # an internal reference for the component
+  comp1:
+    # columns to populate for this component
+    acronym: Component1
+    sequence: SiSP
+    molecularMass: 12.5
+
+  comp2:
+    acronym: Component2
+
+# Define BLSamples
+samples:
+  # an internal reference for this sample
+  samp1:
+    # columns to populate for this sample
+    name: Sample1
+    # which component this sample is an instance of (one of the keys in components above)
+    component: comp1
+
+  samp2:
+    name: Sample2
+    component: comp2
+
+# Define Experiments (DataCollections)
+experiments:
+  # a shortname for this experiment (available via cli)
+  energy_scan1:
+    # the experimentType, must map to a valid type in DataCollectionGroup.experimentType
+    experimentType: OSC
+    # data will be split into its respective imageDirectory and fileTemplate columns
+    data: osc/oscillation.h5
+    # which sample to link this data collection to (one of the keys in samples above)
+    sample: samp1
+
+    # columns to populate
+    # xtalSnapshot thumbnails should have a trailing t
+    #   Fullsize image: osc/snapshot1.png
+    #   Thumbnail: osc/snapshot1t.png
+    xtalSnapshotFullPath1: osc/snapshot1.png
+    numberOfImages: 4001
+    exposureTime: 1
+    #energy: 8.8143
+    wavelength: 1.4065
+    imageContainerSubPath: 1.1/measurement
+
+  xrf_map1:
+    experimentType: Mesh
+    data: mesh/mesh.h5
+    sample: samp1
+
+    xtalSnapshotFullPath1: mesh/snapshot1.png
+    numberOfImages: 1600
+    exposureTime: 0.03
+    #energy: 2.4817
+    wavelength: 4.9959
+
+    # additionally populate GridInfo
+    grid:
+      steps_x: 40
+      steps_y: 40
+      dx_mm: 0.001
+      dy_mm: 0.001
+      pixelsPerMicronX: -0.44994
+      pixelsPerMicronY: -0.46537
+      snapshot_offsetXPixel: 682.16
+      snapshot_offsetYPixel: 554
+
+    # additionally populate BlSubSample
+    subsample:
+      x: 9038007
+      y: 24467003
+      x2: 9078007
+      y2: 24507003
+      type: roi

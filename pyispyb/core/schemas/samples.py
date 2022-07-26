@@ -1,8 +1,9 @@
 # import datetime
 
 from typing import Optional
+
 from pydantic import BaseModel, Field
-from pyispyb.core import models
+from ispyb import models
 
 from .crystal import Crystal
 

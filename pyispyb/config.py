@@ -65,6 +65,8 @@ class Settings(BaseSettings):
 
     cors: bool = False
 
+    simulation_config: str = None
+
     class Config:
         env_file = get_env_file()
 
@@ -89,8 +91,8 @@ except IOError:
 class LogConfig(BaseModel):
     """Logging configuration to be set for the server"""
 
-    LOGGER_NAME: str = "mycoolapp"
-    LOG_FORMAT: str = "%(levelprefix)s | %(asctime)s | %(message)s"
+    LOGGER_NAME: str = "pyispyb"
+    LOG_FORMAT: str = "%(levelprefix)s | %(asctime)s | %(name)s | %(message)s"
     LOG_LEVEL: str = "INFO"
 
     version = 1
@@ -110,6 +112,7 @@ class LogConfig(BaseModel):
         },
     }
     loggers = {
+        "root": {"handlers": ["default"], "level": LOG_LEVEL},
         "ispyb": {"handlers": ["default"], "level": LOG_LEVEL},
         "db": {"handlers": ["default"], "level": "DEBUG"},
     }

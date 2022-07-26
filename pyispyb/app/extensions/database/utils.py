@@ -101,14 +101,6 @@ def with_metadata(
     return parsed
 
 
-class CustomBase:
-    @property
-    def _metadata(self) -> dict[str, Any]:
-        if not hasattr(self, "_additional_metadata"):
-            self._additional_metadata: dict[str, Any] = {}
-        return self._additional_metadata
-
-
 ENABLE_DEBUG_LOGGING = False
 
 

@@ -2,9 +2,9 @@
 
 from typing import Union, Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
 
-from pyispyb.core import models
+from pydantic import BaseModel, Field
+from ispyb import models
 
 d = models.DataCollection
 g = models.DataCollectionGroup

@@ -1,7 +1,8 @@
 from typing import Optional
-from sqlalchemy.orm import joinedload
 
-from pyispyb.core import models
+from sqlalchemy.orm import joinedload
+from ispyb import models
+
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
 from ..schemas import labcontacts as schema
