@@ -3,11 +3,7 @@ import enum
 import logging
 from typing import Any, Optional
 
-from fastapi import HTTPException
 from ispyb import models
-
-from ...extensions.database.middleware import db
-from ...extensions.database.definitions import get_current_person
 
 
 logger = logging.getLogger(__name__)
@@ -45,29 +41,7 @@ class AbstractAuthentication(ABC):
             logger.debug("Authenticating via login")
             person = self.authenticate_by_login(login, password)
 
-        if not person:
-            return
-
-        person_check = get_current_person(person.login)
-        if not person_check:
-            if False:  # request.app.db_options.create_person_on_missing:
-                if not person:
-                    logger.warning(
-                        "Could not create person from login `{login}` in `{self.__class__.__name__}`"
-                    )
-                    return
-                db.session.add(person)
-                db.session.commit()
-                person_check = person
-                logger.info(
-                    "Created new Person `{person.personId}` for `{login}` from {self.__class__.__name__}"
-                )
-            else:
-                raise HTTPException(
-                    status_code=401, detail="User does not exist in database."
-                )
-
-        return person_check
+        return person
 
     def authenticate_by_login(
         self, login: str, password: str
