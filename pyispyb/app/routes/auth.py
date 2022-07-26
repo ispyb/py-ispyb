@@ -39,6 +39,9 @@ def login(login_details: Login, request: Request) -> TokenResponse:
     """Login a user"""
     person = auth_provider.get_auth(**login_details.dict())
     if not person:
+        logger.warning(
+            f"Failed login attempt from `{login_details.login}` with ip `{request.client.host}`"
+        )
         raise HTTPException(status_code=401, detail="Could not verify")
 
     person_check = get_current_person(person.login)
@@ -55,6 +58,9 @@ def login(login_details: Login, request: Request) -> TokenResponse:
             person_check = person
             logger.info("Created new Person `{person.personId}` for `{login}`")
         else:
+            logger.warning(
+                f"Login attempt for unknown user `{login_details.login}` with ip `{request.client.host}`"
+            )
             raise HTTPException(
                 status_code=401, detail="User does not exist in database."
             )
@@ -63,6 +69,10 @@ def login(login_details: Login, request: Request) -> TokenResponse:
         person_check.login,
         person_check.personId,
         person_check._metadata["permissions"],
+    )
+
+    logger.info(
+        f"Successful login attempt from `{login_details.login}` with ip `{request.client.host}`"
     )
 
     return token_info
