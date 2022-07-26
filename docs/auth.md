@@ -115,7 +115,7 @@ AUTH:
 
 ## Implementing new plugins
 
-New plugins should inerit from `AbstractAuthentication` and override either `authenticate_by_login` or `authenticate_by_token` dependning on whether they accept a username / password combination or an authorisation token. Both functions return `login` on success.
+New plugins should inherit from `AbstractAuthentication` and override either `authenticate_by_login` or `authenticate_by_token` dependning on whether they accept a username / password combination or an authorisation token. Both functions return `login` on success.
 
 For example:
 
@@ -160,7 +160,8 @@ class MyAuthentication(AbstractAuthentication):
         else:
           logger.exception("Something went wrong")
 ```
->>>>>>> refactor and simplify auth classes
+
+> > > > > > > refactor and simplify auth classes
 
 ### Authorization dependencies
 
