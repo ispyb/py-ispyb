@@ -35,12 +35,7 @@ class AuthProvider:
                     self.site_authentications[auth_name] = instance
 
     def get_auth(
-        self,
-        *,
-        plugin: str,
-        login: str | None,
-        password: str | None,
-        token: str | None
+        self, *, plugin: str, login: str | None, password: str | None, token: str | None
     ) -> Optional[models.Person]:
         """
         Check the user is authenticated and return the login.
