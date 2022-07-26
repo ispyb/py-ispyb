@@ -6,7 +6,7 @@ test_data_events = [
         name="list events",
         input=ApiTestInput(
             permissions=[],
-            username="abcd",
+            login="abcd",
             route="/events",
         ),
         expected=ApiTestExpected(

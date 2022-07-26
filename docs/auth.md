@@ -7,7 +7,7 @@
 There's a dedicated endpoint that allows to use the different plugins that are installed. This endpoint receives as parameters:
 
 - **plugin** - name of the plugin to be used for authentication, as specified in configuration
-- **username** _(optional)_
+- **login** _(optional)_
 - **password** _(optional)_
 - **token** _(optional)_
 
@@ -20,7 +20,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{
   "plugin": "dummy",
-  "username": "test",
+  "login": "test",
   "password": "Admin",
   "token": "Admin"
 
@@ -31,7 +31,7 @@ If the authentication is successful the response will be a json with the followi
 
 ```json
 {
-  "username": "test",
+  "login": "test",
   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJncm91cHMiOlsiQWRtaW4iXSwicGVybWlzc2lvbnMiOlsiQWRtaW4iXSwiaWF0IjoxNjUwOTgxNjA5LCJleHAiOjE2NTA5OTk2MDl9.3Iq2lGG5RR6Gebss5qEDdASrEMwCIne2jFhaVqp91m0",
   "permissions": ["Admin"]
 }
@@ -115,7 +115,7 @@ AUTH:
 
 ## Implementing new plugins
 
-New plugins should inherit from `AbstractAuthentication` and override either `authenticate_by_login` or `authenticate_by_token` dependning on whether they accept a username / password combination or an authorisation token. Both functions return `login` on success.
+New plugins should inherit from `AbstractAuthentication` and override either `authenticate_by_login` or `authenticate_by_token` dependning on whether they accept a login / password combination or an authorisation token. Both functions return `login` on success.
 
 For example:
 
@@ -131,7 +131,7 @@ class MyAuthentication(AbstractAuthentication):
     def configure(self, config: dict[str, Any]):
       self._config = config
 
-    def authenticate_by_login(self, username: str, password: str) -> Optional[str]:
+    def authenticate_by_login(self, login: str, password: str) -> Optional[str]:
         if ...
           return login
         else:

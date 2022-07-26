@@ -42,7 +42,7 @@ class AbstractAuthentication(ABC):
             logger.debug("Authenticating via token")
             login = self.authenticate_by_token(token)
         else:
-            logger.debug("Authenticating via username")
+            logger.debug("Authenticating via login")
             login = self.authenticate_by_login(login, password)
 
         if not login:

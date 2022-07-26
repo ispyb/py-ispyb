@@ -9,8 +9,8 @@ from tests.core.api.utils.permissions import mock_permissions
 
 
 class ApiTestInput:
-    def __init__(self, username: str, permissions: list[str], route: str) -> None:
-        self.username = username
+    def __init__(self, login: str, permissions: list[str], route: str) -> None:
+        self.login = login
         self.permissions = permissions
         self.route = route
 
@@ -38,7 +38,7 @@ def get_elem_name(test_elem: ApiTestElem):
 
 def run_test(auth_client: AuthClient, test_elem: ApiTestElem, app: ASGIApp):
     with mock_permissions(test_elem.input.permissions, app):
-        auth_client.login(test_elem.input.username, "password")
+        auth_client.login(test_elem.input.login, "password")
 
         response = auth_client.get(test_elem.input.route)
 

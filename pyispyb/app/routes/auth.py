@@ -10,7 +10,7 @@ from ..base import BaseRouter
 
 class Login(BaseModel):
     plugin: Optional[str]
-    username: Optional[str]
+    login: Optional[str]
     password: Optional[str]
     # keycloak token, not jwt (!)
     token: Optional[str]

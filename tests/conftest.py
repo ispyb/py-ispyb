@@ -21,14 +21,14 @@ def app() -> ASGIApp:
 @pytest.fixture
 def auth_client_abcd(client: TestClient):
     auth = AuthClient(client, settings.api_root)
-    auth.login(username="abcd", permissions="abcd")
+    auth.login(login="abcd", permissions="abcd")
     yield auth
 
 
 @pytest.fixture
 def auth_client_efgh(client: TestClient):
     auth = AuthClient(client, settings.api_root)
-    auth.login(username="efgh", permissions="efgh")
+    auth.login(login="efgh", permissions="efgh")
     yield auth
 
 

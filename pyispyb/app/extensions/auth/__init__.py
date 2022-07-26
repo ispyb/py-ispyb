@@ -38,7 +38,7 @@ class AuthProvider:
         self,
         *,
         plugin: str,
-        username: str | None,
+        login: str | None,
         password: str | None,
         token: str | None
     ) -> Optional[models.Person]:
@@ -49,7 +49,7 @@ class AuthProvider:
 
         Args:
             plugin (str): plugin to be used
-            username (str): auth username
+            login (str): auth login
             password (str): auth password
             token (str): auth token
 
@@ -59,7 +59,7 @@ class AuthProvider:
         if plugin not in self.site_authentications:
             return None
 
-        return self.site_authentications[plugin].authenticate(username, password, token)
+        return self.site_authentications[plugin].authenticate(login, password, token)
 
 
 auth_provider = AuthProvider()

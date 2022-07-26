@@ -7,7 +7,7 @@ test_data_session = [
             permissions=[
                 "all_sessions",
             ],
-            username="efgh",
+            login="efgh",
             route="/em/session/70566/stats",
         ),
         expected=ApiTestExpected(code=200),
@@ -16,7 +16,7 @@ test_data_session = [
         name="no all_sessions permission DENIED",
         input=ApiTestInput(
             permissions=[],
-            username="efgh",
+            login="efgh",
             route="/em/session/70566/stats",
         ),
         expected=ApiTestExpected(code=403),
@@ -27,7 +27,7 @@ test_data_session = [
             permissions=[
                 "own_sessions",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/em/session/70566/stats",
         ),
         expected=ApiTestExpected(code=200),
@@ -36,7 +36,7 @@ test_data_session = [
         name="no own_sessions permission DENIED (proposal.personId)",
         input=ApiTestInput(
             permissions=[],
-            username="abcd",
+            login="abcd",
             route="/em/session/70566/stats",
         ),
         expected=ApiTestExpected(code=403),
@@ -47,7 +47,7 @@ test_data_session = [
             permissions=[
                 "own_sessions",
             ],
-            username="darwin",
+            login="darwin",
             route="/em/session/70565/stats",
         ),
         expected=ApiTestExpected(code=200),
@@ -56,7 +56,7 @@ test_data_session = [
         name="no own_sessions permission DENIED (Session_has_Person.personId)",
         input=ApiTestInput(
             permissions=[],
-            username="darwin",
+            login="darwin",
             route="/em/session/70565/stats",
         ),
         expected=ApiTestExpected(code=403),
@@ -67,7 +67,7 @@ test_data_session = [
             permissions=[
                 "own_sessions",
             ],
-            username="abcd",
+            login="abcd",
             route="/em/session/70566/stats",
         ),
         expected=ApiTestExpected(code=403),
@@ -81,7 +81,7 @@ test_data_proposal = [
             permissions=[
                 "all_proposals",
             ],
-            username="efgh",
+            login="efgh",
             route="/proposals/MX1",
         ),
         expected=ApiTestExpected(code=200),
@@ -90,7 +90,7 @@ test_data_proposal = [
         name="no all_proposals permission DENIED",
         input=ApiTestInput(
             permissions=[],
-            username="efgh",
+            login="efgh",
             route="/proposals/MX1",
         ),
         expected=ApiTestExpected(code=403),
@@ -101,7 +101,7 @@ test_data_proposal = [
             permissions=[
                 "own_proposals",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/proposals/MX1",
         ),
         expected=ApiTestExpected(code=200),
@@ -110,7 +110,7 @@ test_data_proposal = [
         name="no own_proposals permission DENIED (proposal.personId)",
         input=ApiTestInput(
             permissions=[],
-            username="pasteur",
+            login="pasteur",
             route="/proposals/MX1",
         ),
         expected=ApiTestExpected(code=403),
@@ -121,7 +121,7 @@ test_data_proposal = [
             permissions=[
                 "own_proposals",
             ],
-            username="abcd",
+            login="abcd",
             route="/proposals/MX1",
         ),
         expected=ApiTestExpected(code=403),
