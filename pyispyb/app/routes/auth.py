@@ -44,11 +44,14 @@ def login(login_details: Login, request: Request) -> TokenResponse:
     person_check = get_current_person(person.login)
     if not person_check:
         if request.app.db_options.create_person_on_missing:
-            if not person:
-                logger.warning("Could not create person from login `{login}`")
-                return
             db.session.add(person)
             db.session.commit()
+            if not person.personId:
+                logger.warning("Could not create person from login `{login}`")
+                raise HTTPException(
+                    status_code=401, detail="User does not exist in database."
+                )
+
             person_check = person
             logger.info("Created new Person `{person.personId}` for `{login}`")
         else:
