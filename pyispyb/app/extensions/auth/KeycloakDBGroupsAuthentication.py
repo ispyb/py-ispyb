@@ -37,12 +37,12 @@ class KeycloakAuthentication(AbstractAuthentication):
 
     def authenticate_by_token(self, token: str) -> Optional[models.Person]:
         try:
-            self._userinfo = self.keycloak_openid.userinfo(token)
+            userinfo = self.keycloak_openid.userinfo(token)
             return models.Person(
-                givenName=self._userinfo["given_name"],
-                familyName=self._userinfo["family_name"],
-                login=self._userinfo["preferred_username"],
-                emailAddress=self._userinfo["email"],
+                givenName=userinfo["given_name"],
+                familyName=userinfo["family_name"],
+                login=userinfo["preferred_username"],
+                emailAddress=userinfo["email"],
             )
         except KeycloakAuthenticationError:
             logger.exception("Could not log user in via keycloak token")
