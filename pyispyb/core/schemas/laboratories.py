@@ -1,5 +1,5 @@
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
-from pyispyb.core import models
+from ispyb import models
 from pyispyb.core.schemas.validators import WordDashSpace
 
 

@@ -2,7 +2,7 @@ from typing import List, Optional, Literal
 from pydantic import BaseModel, conlist, root_validator
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 from pyispyb.core.schemas.laboratories import Laboratory
-from pyispyb.core import models
+from ispyb import models
 from datetime import datetime
 
 PydanticPerson = sqlalchemy_to_pydantic(

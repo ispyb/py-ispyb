@@ -1,5 +1,5 @@
 from typing import Optional
-from pyispyb.core import models
+from ispyb import models
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
 from pyispyb.core.schemas import laboratories as schema

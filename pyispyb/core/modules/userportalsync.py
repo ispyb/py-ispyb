@@ -5,9 +5,9 @@ from typing import Any
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.sql.expression import cast
-from pyispyb.core import models
+from ispyb import models
 from pyispyb.app.extensions.database.session import engine
-from pyispyb.core.modules.persons import get_persons
+from ..modules.persons import get_persons
 from ..schemas import userportalsync as schema
 from pyispyb.app.utils import timed
 from sqlalchemy import (

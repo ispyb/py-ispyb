@@ -1,6 +1,6 @@
 from typing import Optional
 from sqlalchemy.orm import contains_eager
-from pyispyb.core import models
+from ispyb import models
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
 
