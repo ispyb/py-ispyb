@@ -1,6 +1,6 @@
 from typing import Optional
-from sqlalchemy.orm import contains_eager
 from ispyb import models
+from sqlalchemy.orm import joinedload
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
 
@@ -12,20 +12,9 @@ def get_sessions(
     externalId: Optional[int] = None,
     expSessionPk: Optional[int] = None,
     proposalId: Optional[int] = None,
-    sessionHasPerson: Optional[bool] = False,
 ) -> Paged[models.Proposal]:
 
-    if sessionHasPerson:
-        query = (
-            db.session.query(models.BLSession)
-            .join(models.BLSession.session_has_people)
-            .options(
-                contains_eager(models.BLSession.session_has_people),
-            )
-            .populate_existing()
-        )
-    else:
-        query = db.session.query(models.BLSession)
+    query = db.session.query(models.BLSession)
 
     if sessionId:
         query = query.filter(models.BLSession.sessionId == sessionId)
@@ -43,6 +32,27 @@ def get_sessions(
     # https://github.com/aiidateam/aiida-core/issues/1600
     query_distinct = query.distinct()
     total = query_distinct.count()
+    query = page(query_distinct, skip=skip, limit=limit)
+
+    return Paged(total=total, results=query.all(), skip=skip, limit=limit)
+
+
+def get_sessionHasPerson(
+    skip: int,
+    limit: int,
+    sessionId: Optional[int] = None,
+) -> Paged[models.SessionHasPerson]:
+
+    query = db.session.query(models.SessionHasPerson).options(
+        joinedload(models.SessionHasPerson.Person)
+    )
+
+    if sessionId:
+        query = query.filter(models.SessionHasPerson.sessionId == sessionId)
+
+    query_distinct = query.distinct()
+    total = query_distinct.count()
+
     query = page(query_distinct, skip=skip, limit=limit)
 
     return Paged(total=total, results=query.all(), skip=skip, limit=limit)

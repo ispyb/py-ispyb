@@ -102,7 +102,6 @@ def test_session_beamline_name_update():
         externalId=test_data_proposal_userportalsync_update["sessions"][0][
             "externalId"
         ],
-        sessionHasPerson=False,
     )
     # Check the laboratory name was updated as expected
     assert (
