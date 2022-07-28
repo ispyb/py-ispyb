@@ -21,6 +21,14 @@ class UserGroup(NewUserGroup):
         orm_mode = True
 
 
+class NewUserGroupPermission(BaseModel):
+    permissionId: int = Field(title="Permission")
+
+
+class NewUserGroupPerson(BaseModel):
+    personId: int = Field(title="Person")
+
+
 class NewPermission(BaseModel):
     type: constr(max_length=15) = Field(
         title="Permission", description="The permission identifier"
