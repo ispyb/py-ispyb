@@ -63,7 +63,7 @@ def update_group(
 
 # Group Permissions
 @router.post(
-    "/groups/{userGroupId}/permission/{permissionId}",
+    "/groups/{userGroupId}/permission",
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         204: {"description": "Added permission to group"},
@@ -71,16 +71,18 @@ def update_group(
     },
 )
 def add_permission_to_group(
-    userGroupId: int, permissionId: int, depends=Depends(permission("manage_groups"))
+    userGroupId: int,
+    permission_info: schema.NewUserGroupPermission,
+    depends=Depends(permission("manage_groups")),
 ):
     """Add a Permission to a UserGroup"""
     try:
-        crud.add_permission_to_group(permissionId, userGroupId)
+        crud.add_permission_to_group(permission_info.permissionId, userGroupId)
         return status.HTTP_204_NO_CONTENT
     except Exception as e:
         raise HTTPException(
             status_code=400,
-            detail=f"Could not add permission `{permissionId}` to group `{userGroupId}`: `{str(e)}`",
+            detail=f"Could not add permission `{permission_info.permissionId}` to group `{userGroupId}`: `{str(e)}`",
         )
 
 
@@ -108,7 +110,7 @@ def remove_permission_from_group(
 
 # Group People
 @router.post(
-    "/groups/{userGroupId}/person/{personId}",
+    "/groups/{userGroupId}/person",
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         204: {"description": "Added person to group"},
@@ -116,16 +118,18 @@ def remove_permission_from_group(
     },
 )
 def add_person_to_group(
-    userGroupId: int, personId: int, depends=Depends(permission("manage_groups"))
+    userGroupId: int,
+    person_info: schema.NewUserGroupPerson,
+    depends=Depends(permission("manage_groups")),
 ):
     """Add a Person to a UserGroup"""
     try:
-        crud.add_person_to_group(personId, userGroupId)
+        crud.add_person_to_group(person_info.personId, userGroupId)
         return status.HTTP_204_NO_CONTENT
     except Exception as e:
         raise HTTPException(
             status_code=400,
-            detail=f"Could not add person `{personId}` to group `{userGroupId}`: `{str(e)}`",
+            detail=f"Could not add person `{person_info.personId}` to group `{userGroupId}`: `{str(e)}`",
         )
 
 
