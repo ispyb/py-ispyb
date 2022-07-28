@@ -93,6 +93,11 @@ def add_person_to_group(personId: int, userGroupId: int) -> None:
     if not userGroup:
         raise AttributeError("UserGroup `{userGroupId}` does not exist")
 
+    if person in userGroup.Person:
+        raise AttributeError(
+            f"UserGroup `{userGroupId}` already contains person `{personId}`"
+        )
+
     userGroup.Person.append(person)
     db.session.commit()
 
@@ -123,7 +128,7 @@ def remove_person_from_group(personId: int, userGroupId: int) -> None:
 def add_permission_to_group(permissionId: int, userGroupId: int) -> None:
     permission = (
         db.session.query(models.Permission)
-        .filter(models.Person.permissionId == permissionId)
+        .filter(models.Permission.permissionId == permissionId)
         .first()
     )
     userGroup = (
@@ -138,6 +143,11 @@ def add_permission_to_group(permissionId: int, userGroupId: int) -> None:
 
     if not userGroup:
         raise AttributeError("UserGroup `{userGroupId}` does not exist")
+
+    if permission in userGroup.Permission:
+        raise AttributeError(
+            f"UserGroup `{userGroupId}` already contains permission `{permissionId}`"
+        )
 
     userGroup.Permission.append(permission)
     db.session.commit()
