@@ -16,7 +16,7 @@ class LdapAuthentication(AbstractAuthentication):
         self.ldap_base_internal = config["LDAP_BASE_INTERNAL"]
         self.ldap_base_groups = config["LDAP_BASE_GROUPS"]
 
-    def authenticate_by_user(
+    def authenticate_by_login(
         self, login: str, password: str
     ) -> Optional[models.Person]:
         try:
@@ -26,12 +26,19 @@ class LdapAuthentication(AbstractAuthentication):
             self.ldap_conn.simple_bind_s(
                 f"uid={login},{self.ldap_base_internal}", password
             )
-            self.ldap_conn.search_s(
+            res = self.ldap_conn.search_s(
                 self.ldap_base_internal,
                 ldap.SCOPE_ONELEVEL,
                 f"(uid={login})",
                 ["*"],
+            )[0][1]
+            return models.Person(
+                login=login,
+                emailAddress=res["mail"][0],
+                siteId=res["uidNumber"][0],
+                familyName=res["sn"][0],
+                givenName=res["givenName"][0],
+                phoneNumber=res["telephoneNumber"][0],
             )
-            return models.Person(login=login)
         except ldap.INVALID_CREDENTIALS:
             logger.exception(f"LDAP login: unable to authenticate user {login}")
