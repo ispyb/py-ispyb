@@ -12,52 +12,44 @@ class DataCollectionResponse(sqlalchemy_to_pydantic(models.DataCollection)):
     Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
 
 
-class MacromoleculeResponse(sqlalchemy_to_pydantic(models.Macromolecule)):
-    pass
+class CrystalResponse(sqlalchemy_to_pydantic(models.Crystal)):
+    Protein: sqlalchemy_to_pydantic(models.Protein)
 
 
-class BufferResponse(sqlalchemy_to_pydantic(models.Buffer)):
-    pass
-
-
-class StructureResponse(sqlalchemy_to_pydantic(models.Structure)):
-    pass
-
-
-class SpecimenResponse(sqlalchemy_to_pydantic(models.Specimen)):
-    Macromolecule: MacromoleculeResponse
-    Buffer: BufferResponse
-    Structures: list[StructureResponse] = []
-
-
-class SSXSpecimenResponse(sqlalchemy_to_pydantic(models.SSXSpecimen)):
-    Specimen: SpecimenResponse
+class SSXSampleResponse(sqlalchemy_to_pydantic(models.BLSample)):
+    Crystal: CrystalResponse
+    sample_components: list[sqlalchemy_to_pydantic(models.SampleComponent)]
 
 
 class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)):
     DataCollection: DataCollectionResponse
 
 
-class SSXSampleCreate(BaseModel):
-    # Table SSXSpecimen
-    avgXtalSize: Optional[float]
-    ligandConcentration: Optional[float]
-    sampleSupport: Optional[str]
-    jetMaterial: Optional[str]
-
-    # Table Specimen
-    crystalConcentration: Optional[float]
-
-    # Table Buffer
-    bufferName: Optional[str]
-    bufferComposition: Optional[str]
-
-    # Table Macromolecule
-    acronym: Optional[str]
+class SSXProteinCreate(BaseModel):
     name: Optional[str]
+    acronym: Optional[str]
 
-    # Table Structure
-    ligandName: Optional[str]
+
+class SSXSampleComponentCreate(BaseModel):
+    name: Optional[str]
+    componentType: Optional[Literal["Ligand", "Buffer", "JetMaterial"]]
+    composition: Optional[str]
+    concentration: Optional[float]
+
+
+class SSXCrystalCreate(BaseModel):
+    size_X: Optional[float]
+    size_X: Optional[float]
+    size_X: Optional[float]
+    abundance: Optional[float]
+    protein: SSXProteinCreate
+
+
+class SSXSampleCreate(BaseModel):
+    name: Optional[str]
+    support: Optional[str]
+    crystal: SSXCrystalCreate
+    components: list[SSXSampleComponentCreate]
 
 
 class SSXDataCollectionCreate(BaseModel):

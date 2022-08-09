@@ -1,4 +1,3 @@
-
 from pyispyb.app.base import AuthenticatedAPIRouter
 from pyispyb.core import models
 import pyispyb.core.modules.ssx as crud
@@ -19,21 +18,21 @@ def get_datacollections(sessionId: int) -> list[models.SSXDataCollection]:
 
 
 @router.get(
-    "/datacollection/{ssxDataCollectionId:int}",
+    "/datacollection/{dataCollectionId:int}",
     response_model=schema.SSXDataCollectionResponse,
     responses={404: {"description": "Entity not found"}},
 )
-def get_datacollection(ssxDataCollectionId: int) -> models.SSXDataCollection:
-    return crud.get_ssx_datacollection(ssxDataCollectionId)
+def get_datacollection(dataCollectionId: int) -> models.SSXDataCollection:
+    return crud.get_ssx_datacollection(dataCollectionId)
 
 
 @router.get(
-    "/datacollection/{ssxDataCollectionId:int}/sample",
-    response_model=schema.SSXSpecimenResponse,
+    "/datacollection/{dataCollectionId:int}/sample",
+    response_model=schema.SSXSampleResponse,
     responses={404: {"description": "Entity not found"}},
 )
-def get_datacollection_sample(ssxDataCollectionId: int) -> models.SSXDataCollection:
-    return crud.get_ssx_datacollection_sample(ssxDataCollectionId)
+def get_datacollection_sample(dataCollectionId: int) -> models.BLSample:
+    return crud.get_ssx_datacollection_sample(dataCollectionId)
 
 
 @router.post(
