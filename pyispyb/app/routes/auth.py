@@ -50,14 +50,14 @@ def login(login_details: Login, request: Request) -> TokenResponse:
             db.session.add(person)
             db.session.commit()
             if not person.personId:
-                logger.warning("Could not create person from login `{login}`")
+                logger.warning(f"Could not create person from login `{login}`")
                 raise HTTPException(
                     status_code=401, detail="User does not exist in database."
                 )
             # New user should have empty permission list
             person._metadata["permissions"] = []
             person_check = person
-            logger.info("Created new Person `{person.personId}` for `{login}`")
+            logger.info(f"Created new Person `{person.personId}` for `{login}`")
         else:
             logger.warning(
                 f"Login attempt for unknown user `{login_details.login}` with ip `{request.client.host}`"
