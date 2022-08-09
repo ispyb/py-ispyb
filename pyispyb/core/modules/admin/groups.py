@@ -88,10 +88,10 @@ def add_person_to_group(personId: int, userGroupId: int) -> None:
     )
 
     if not person:
-        raise AttributeError("Person `{personId}` does not exist")
+        raise AttributeError(f"Person `{personId}` does not exist")
 
     if not userGroup:
-        raise AttributeError("UserGroup `{userGroupId}` does not exist")
+        raise AttributeError(f"UserGroup `{userGroupId}` does not exist")
 
     if person in userGroup.Person:
         raise AttributeError(
@@ -116,10 +116,10 @@ def remove_person_from_group(personId: int, userGroupId: int) -> None:
     )
 
     if not person:
-        raise AttributeError("Person `{personId}` does not exist")
+        raise AttributeError(f"Person `{personId}` does not exist")
 
     if not userGroup:
-        raise AttributeError("UserGroup `{userGroupId}` does not exist")
+        raise AttributeError(f"UserGroup `{userGroupId}` does not exist")
 
     userGroup.Person.remove(person)
     db.session.commit()
@@ -139,10 +139,10 @@ def add_permission_to_group(permissionId: int, userGroupId: int) -> None:
     )
 
     if not permission:
-        raise AttributeError("Permission `{permissionId}` does not exist")
+        raise AttributeError(f"Permission `{permissionId}` does not exist")
 
     if not userGroup:
-        raise AttributeError("UserGroup `{userGroupId}` does not exist")
+        raise AttributeError(f"UserGroup `{userGroupId}` does not exist")
 
     if permission in userGroup.Permission:
         raise AttributeError(
@@ -167,10 +167,10 @@ def remove_permission_from_group(permissionId: int, userGroupId: int) -> None:
     )
 
     if not permission:
-        raise AttributeError("Permission `{permissionId}` does not exist")
+        raise AttributeError(f"Permission `{permissionId}` does not exist")
 
     if not userGroup:
-        raise AttributeError("UserGroup `{userGroupId}` does not exist")
+        raise AttributeError(f"UserGroup `{userGroupId}` does not exist")
 
     userGroup.Person.remove(permission)
     db.session.commit()
