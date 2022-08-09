@@ -54,8 +54,9 @@ def login(login_details: Login, request: Request) -> TokenResponse:
                 raise HTTPException(
                     status_code=401, detail="User does not exist in database."
                 )
-
+            # New user should have empty permission list
             person._metadata["permissions"] = []
+            person_check = person
             logger.info("Created new Person `{person.personId}` for `{login}`")
         else:
             logger.warning(
