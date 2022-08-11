@@ -34,6 +34,14 @@ def get_datacollection(dataCollectionId: int) -> models.SSXDataCollection:
 def get_datacollection_sample(dataCollectionId: int) -> models.BLSample:
     return crud.get_ssx_datacollection_sample(dataCollectionId)
 
+    
+@router.get(
+    "/datacollection/{dataCollectionId:int}/sequences",
+    response_model=list[schema.SSXSequenceResponse],
+    responses={404: {"description": "Entity not found"}},
+)
+def get_datacollection_sequences(dataCollectionId: int) -> list[models.Sequence]:
+    return crud.get_ssx_datacollection_sequences(dataCollectionId)
 
 @router.post(
     "/datacollection",

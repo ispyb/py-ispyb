@@ -24,6 +24,8 @@ class SSXSampleResponse(sqlalchemy_to_pydantic(models.BLSample)):
 class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)):
     DataCollection: DataCollectionResponse
 
+class SSXSequenceResponse(sqlalchemy_to_pydantic(models.Sequence)):
+    sequence_events: list[sqlalchemy_to_pydantic(models.SequenceEvent)]
 
 class SSXProteinCreate(BaseModel):
     name: Optional[str]
@@ -32,7 +34,7 @@ class SSXProteinCreate(BaseModel):
 
 class SSXSampleComponentCreate(BaseModel):
     name: Optional[str]
-    componentType: Optional[Literal["Ligand", "Buffer", "JetMaterial"]]
+    componentType: Literal["Ligand", "Buffer", "JetMaterial"]
     composition: Optional[str]
     concentration: Optional[float]
 
@@ -50,6 +52,20 @@ class SSXSampleCreate(BaseModel):
     support: Optional[str]
     crystal: SSXCrystalCreate
     components: list[SSXSampleComponentCreate]
+
+
+class SSXSequenceEventCreate(BaseModel):
+    type: Literal["XrayDetection", "XrayExposure", "LaserExcitation","ReactionTrigger"]
+    name: Optional[str]
+    time: datetime
+    duration:Optional[float]
+    period:Optional[float]
+    repetition:Optional[float]
+
+
+class SSXSequenceCreate(BaseModel):
+    name:Optional[str]
+    events:list[SSXSequenceEventCreate]
 
 
 class SSXDataCollectionCreate(BaseModel):
@@ -89,3 +105,4 @@ class SSXDataCollectionCreate(BaseModel):
     monoStripe: Optional[str]
 
     sample: SSXSampleCreate
+    sequences:list[SSXSequenceCreate]

@@ -11,6 +11,14 @@ from sqlalchemy.orm import joinedload
 from pyispyb.core.modules.session import get_session
 from pyispyb.core.schemas import ssx as schema
 
+def get_ssx_datacollection_sequences(dataCollectionId: int)-> list[models.Sequence]:
+    res = (
+        db.session.query(models.Sequence)
+        .filter(models.Sequence.dataCollectionId == dataCollectionId)
+        .options(joinedload(models.Sequence.sequence_events))
+        .all()
+    )
+    return res
 
 def get_ssx_datacollection_sample(
     dataCollectionId: int,
@@ -94,6 +102,7 @@ def create_ssx_datacollection(
     crystal_dict = sample_dict.pop("crystal")
     protein_dict = crystal_dict.pop("protein")
     components_list = sample_dict.pop("components")
+    sequences_list = data_collection_dict.pop("sequences")
 
     try:
 
@@ -171,6 +180,30 @@ def create_ssx_datacollection(
         )
         db.session.add(ssx_data_collection)
         db.session.flush()
+
+        # SEQUENCES
+
+        for sequence_dict in sequences_list:
+            events_list = sequence_dict.pop("events")
+            sequence = model_from_json(
+                models.Sequence,
+                {
+                    **sequence_dict,
+                    "dataCollectionId": data_collection.dataCollectionId,
+                },
+            )
+            db.session.add(sequence)
+            db.session.flush()
+            for event_dict in events_list:
+                event = model_from_json(
+                    models.SequenceEvent,
+                    {
+                        **event_dict,
+                        "sequenceId": sequence.sequenceId,
+                    },
+                )
+                db.session.add(event)
+            db.session.flush()
 
         db.session.commit()
         return get_ssx_datacollection(ssx_data_collection.ssxDataCollectionId)
