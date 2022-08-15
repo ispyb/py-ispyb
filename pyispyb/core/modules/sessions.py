@@ -1,6 +1,6 @@
 from typing import Optional
 from ispyb import models
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, contains_eager
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
 
@@ -12,9 +12,24 @@ def get_sessions(
     externalId: Optional[int] = None,
     expSessionPk: Optional[int] = None,
     proposalId: Optional[int] = None,
+    sessionHasPerson: Optional[bool] = False,
 ) -> Paged[models.Proposal]:
 
     query = db.session.query(models.BLSession)
+
+    if sessionHasPerson:
+        query = (
+            query.outerjoin(
+                models.SessionHasPerson,
+                models.BLSession.sessionId == models.SessionHasPerson.sessionId,
+            )
+            .options(contains_eager("SessionHasPerson"))
+            .outerjoin(
+                models.Person,
+                models.SessionHasPerson.personId == models.Person.personId,
+            )
+            .options(contains_eager("SessionHasPerson.Person"))
+        )
 
     if sessionId:
         query = query.filter(models.BLSession.sessionId == sessionId)

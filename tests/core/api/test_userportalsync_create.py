@@ -4,11 +4,11 @@ from pyispyb.app.extensions.database.middleware import Database
 from pyispyb.app.main import app
 from pyispyb.config import settings
 from pyispyb.app.extensions.database.session import engine
-from pyispyb.core.modules.proposals import get_proposals, get_proposalHasPerson
+from pyispyb.core.modules.proposals import get_proposals
 from pyispyb.core.modules.persons import get_persons
 from pyispyb.core.modules.laboratories import get_laboratories
 from pyispyb.core.modules.proteins import get_proteins
-from pyispyb.core.modules.sessions import get_sessions, get_sessionHasPerson
+from pyispyb.core.modules.sessions import get_sessions
 from pyispyb.core.modules.labcontacts import get_labcontacts
 from tests.core.api.data.userportalsync_create import (
     test_data_proposal_userportalsync_create,
@@ -52,6 +52,7 @@ def test_proposal_persons_sync():
         proposalNumber=test_data_proposal_userportalsync_create["proposal"][
             "proposalNumber"
         ],
+        proposalHasPerson=True,
     )
 
     assert proposals.total == 1
@@ -84,15 +85,9 @@ def test_proposal_persons_sync():
     # should be the one having the relation with the Proposal table in DB (foreign constraint)
     assert first_person_id == proposals.results[0].personId
 
-    proposalhasperson = get_proposalHasPerson(
-        skip=0,
-        limit=10,
-        proposalId=proposals.results[0].proposalId,
-    )
-
     # Check the number of persons within the ProposalHasPerson table
     assert len(test_data_proposal_userportalsync_create["proposal"]["persons"]) == len(
-        proposalhasperson.results
+        proposals.results[0].ProposalHasPerson
     )
 
 
@@ -137,6 +132,7 @@ def test_session_persons_sync():
                     skip=0,
                     limit=10,
                     externalId=json_session["externalId"],
+                    sessionHasPerson=True,
                 )
         except KeyError:
             pass
@@ -156,13 +152,10 @@ def test_session_persons_sync():
         if sessions.total == 1:
             sessions_in_db += 1
 
-            sessionhasperson = get_sessionHasPerson(
-                skip=0,
-                limit=10,
-                sessionId=sessions.results[0].sessionId,
-            )
             # Check the number of persons within the Session_has_Person table
-            assert len(json_session["persons"]) == len(sessionhasperson.results)
+            assert len(json_session["persons"]) == len(
+                sessions.results[0].SessionHasPerson
+            )
 
     # Check the amount of sessions corresponds with the entries in the DB
     assert len(test_data_proposal_userportalsync_create["sessions"]) == sessions_in_db
