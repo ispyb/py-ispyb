@@ -1,9 +1,10 @@
 import logging
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from fastapi.responses import Response, JSONResponse
 from pyispyb.app.base import AuthenticatedAPIRouter
 from ..modules import userportalsync as crud
 from ..schemas import userportalsync as schema
+from ...dependencies import permission
 
 logger = logging.getLogger("ispyb")
 
@@ -14,7 +15,10 @@ router = AuthenticatedAPIRouter(prefix="/userportalsync", tags=["User Portal Syn
     "/sync_proposal",
     response_model=schema.UserPortalProposalSync,
 )
-def sync_proposal(proposal: schema.UserPortalProposalSync):
+def sync_proposal(
+    proposal: schema.UserPortalProposalSync,
+    depends: bool = Depends(permission("uportal_sync")),
+):
     """Create/Update a proposal from the User Portal and all its related entities"""
     try:
         execution_time = crud.sync_proposal(proposal=proposal)

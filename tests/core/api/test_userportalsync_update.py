@@ -24,7 +24,7 @@ client = TestClient(app)
 def test_call_sync_proposal_update():
     res = client.post(
         f"{settings.api_root}/auth/login",
-        json={"username": "efgh", "password": "efgh", "plugin": "dummy"},
+        json={"username": "user", "password": "uportal_sync", "plugin": "dummy"},
     )
     assert res.status_code == 201
 
