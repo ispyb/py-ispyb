@@ -15,6 +15,7 @@ class KeycloakAuthentication(AbstractAuthentication):
     """Keycloak authentication class."""
 
     authentication_type = AuthType.token
+    config_export = ["KEYCLOAK_SERVER_URL", "KEYCLOAK_CLIENT_ID", "KEYCLOAK_REALM_NAME"]
 
     def configure(self, config: dict[str, Any]):
         """Configure auth plugin.

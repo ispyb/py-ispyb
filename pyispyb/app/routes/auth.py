@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel
 from fastapi import Request, status, HTTPException
@@ -25,8 +25,22 @@ class TokenResponse(BaseModel):
     permissions: list[str]
 
 
+class PluginConfig(BaseModel):
+    name: str
+    config: dict[str, Any]
+
+
+class AuthConfig(BaseModel):
+    plugins: list[PluginConfig]
+
+
 logger = logging.getLogger(__name__)
 router = BaseRouter(prefix="/auth", tags=["Authentication"])
+
+
+@router.get("/config", response_model=AuthConfig)
+def config() -> AuthConfig:
+    return {"plugins": auth_provider.get_export_config()}
 
 
 @router.post(

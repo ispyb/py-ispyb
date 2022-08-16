@@ -171,6 +171,25 @@ class MyAuthentication(AbstractAuthentication):
             logger.exception("Something went wrong")
 ```
 
+Plugins can export specific config variables to the UI as well by defining `config_export`, these properties are made available to the `/auth/config` endpoint:
+
+```python
+from typing import Optional
+
+from ispyb import models
+
+from .AbstractAuthentication import AbstractAuthentication, AuthType
+
+
+class MyAuthentication(AbstractAuthentication):
+    """My authentication class."""
+
+    authentication_type = AuthType.token
+    config_export = ["MY_CONFIG_PROPERTY"]
+
+    ...
+```
+
 ### Authorization dependencies
 
 The following dependencies can be used to manage authentication and authorization rules.

@@ -22,6 +22,7 @@ class AbstractAuthentication(ABC):
     """
 
     authentication_type: AuthType = AuthType.login
+    config_export = []
 
     def configure(self, config: dict[str, Any]) -> None:
         """Configure auth plugin.

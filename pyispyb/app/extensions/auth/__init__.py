@@ -1,6 +1,6 @@
 import importlib
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 from ispyb import models
 
@@ -19,6 +19,7 @@ class AuthProvider:
     def init_app(self, app):
         """Init extension."""
 
+        self._config = {}
         auth_list = settings.auth
         for auth_plugin in auth_list:
             for auth_name in auth_plugin:
@@ -32,6 +33,7 @@ class AuthProvider:
                     cls = getattr(importlib.import_module(module_name), class_name)
                     instance = cls()
                     instance.configure(config)
+                    self._config[auth_name] = config
                     self.site_authentications[auth_name] = instance
 
     def get_auth(
@@ -55,6 +57,21 @@ class AuthProvider:
             return None
 
         return self.site_authentications[plugin].authenticate(login, password, token)
+
+    def get_export_config(self) -> list[dict[str, Any]]:
+        """Return auth config that should be provided to the UI"""
+        export_config = []
+        for plugin, instance in self.site_authentications.items():
+            export_config.append(
+                {
+                    "name": plugin,
+                    "config": {
+                        key: self._config[plugin][key] for key in instance.config_export
+                    },
+                }
+            )
+
+        return export_config
 
 
 auth_provider = AuthProvider()
