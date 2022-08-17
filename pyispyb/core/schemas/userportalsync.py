@@ -12,7 +12,7 @@ PydanticProposal = sqlalchemy_to_pydantic(
     models.Proposal, exclude={"proposalId", "personId", "bltimeStamp"}
 )
 PydanticSession = sqlalchemy_to_pydantic(
-    models.BLSession, exclude={"sessionId", "proposalId", "bltimeStamp"}
+    models.BLSession, exclude={"sessionId", "proposalId", "bltimeStamp", "comments"}
 )
 PydanticProtein = sqlalchemy_to_pydantic(
     models.Protein, exclude={"proteinId", "proposalId", "personId", "bltimeStamp"}
