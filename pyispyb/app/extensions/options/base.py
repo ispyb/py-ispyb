@@ -40,7 +40,7 @@ def get_options(get_all: bool = False, session=None) -> Options:
 
 
 def update_options(options: Options) -> Options:
-    options_dict = options.dict()
+    options_dict = options.dict(exclude_unset=True)
     current_options_dict = get_options(get_all=True).dict()
 
     for option_key, option_value in options_dict.items():
