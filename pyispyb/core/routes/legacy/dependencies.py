@@ -11,7 +11,7 @@ def proposal_authorisation(proposal_id: str):
     proposal_id = find_proposal_id(proposal_id)
 
     permissions = g.permissions
-    login = g.username
+    login = g.login
 
     msg = ""
 
@@ -46,7 +46,7 @@ def proposal_authorisation(proposal_id: str):
 def session_authorisation(session_id: str):
 
     permissions = g.permissions
-    login = g.username
+    login = g.login
 
     msg = ""
 

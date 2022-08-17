@@ -1,28 +1,10 @@
-# Project: py-ispyb
-# https://github.com/ispyb/py-ispyb
-
-# This file is part of py-ispyb software.
-
-# py-ispyb is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# py-ispyb is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-
-# You should have received a copy of the GNU Lesser General Public License
-# along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-
-
-import logging
 import importlib
+import logging
+from typing import Any, Optional
 
-from pyispyb.config import settings
+from ispyb import models
 
-__license__ = "LGPLv3+"
+from ....config import settings
 
 
 log = logging.getLogger(__name__)
@@ -37,6 +19,7 @@ class AuthProvider:
     def init_app(self, app):
         """Init extension."""
 
+        self._config = {}
         auth_list = settings.auth
         for auth_plugin in auth_list:
             for auth_name in auth_plugin:
@@ -50,31 +33,45 @@ class AuthProvider:
                     cls = getattr(importlib.import_module(module_name), class_name)
                     instance = cls()
                     instance.configure(config)
+                    self._config[auth_name] = config
                     self.site_authentications[auth_name] = instance
 
-    def get_auth(self, plugin, username, password, token):
+    def get_auth(
+        self, *, plugin: str, login: str | None, password: str | None, token: str | None
+    ) -> Optional[models.Person]:
         """
-        Return username, groups, permissions associated to user.
+        Check the user is authenticated and return the login.
 
         Basically this is the main authentification method where site_auth is site specific authentication class.
 
         Args:
             plugin (str): plugin to be used
-            username (str): auth username
+            login (str): auth login
             password (str): auth password
             token (str): auth token
 
         Returns:
-            username, groups, permissions
+            person (models.Person): The current `Person`
         """
         if plugin not in self.site_authentications:
-            return None, None, None
-        username, groups, permissions = self.site_authentications[plugin].get_auth(
-            username, password, token
-        )
-        if username is not None and groups is not None and permissions is not None:
-            return username, groups, permissions
-        return None, None, None
+            return None
+
+        return self.site_authentications[plugin].authenticate(login, password, token)
+
+    def get_export_config(self) -> list[dict[str, Any]]:
+        """Return auth config that should be provided to the UI"""
+        export_config = []
+        for plugin, instance in self.site_authentications.items():
+            export_config.append(
+                {
+                    "name": plugin,
+                    "config": {
+                        key: self._config[plugin][key] for key in instance.config_export
+                    },
+                }
+            )
+
+        return export_config
 
 
 auth_provider = AuthProvider()

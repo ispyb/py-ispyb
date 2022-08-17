@@ -7,7 +7,7 @@ test_data_proposal_list = [
             permissions=[
                 "own_proposals",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/proposals",
         ),
         expected=ApiTestExpected(
@@ -30,7 +30,7 @@ test_data_proposal_list = [
             permissions=[
                 "own_proposals",
             ],
-            username="i_dont_have_proposals",
+            login="efgh",
             route="/proposals",
         ),
         expected=ApiTestExpected(code=200, res=[]),
@@ -41,7 +41,7 @@ test_data_proposal_list = [
             permissions=[
                 "all_proposals",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/proposals",
         ),
         expected=ApiTestExpected(code=200),
@@ -55,7 +55,7 @@ test_data_proposal_info = [
             permissions=[
                 "own_proposals",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/proposals/MX1",
         ),
         expected=ApiTestExpected(
@@ -81,7 +81,7 @@ test_data_proposal_info = [
             permissions=[
                 "own_proposals",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/proposals/9096",
         ),
         expected=ApiTestExpected(
@@ -107,13 +107,13 @@ test_data_proposal_info = [
             permissions=[
                 "own_proposals",
             ],
-            username="i_dont_have_proposals",
+            login="efgh",
             route="/proposals/9096",
         ),
         expected=ApiTestExpected(
             code=403,
             res={
-                "detail": "User i_dont_have_proposals (permissions assigned: ['own_proposals']) is not authorized to access proposal 9096."
+                "detail": "User efgh (permissions assigned: ['own_proposals']) is not authorized to access proposal 9096."
             },
         ),
     ),
@@ -123,7 +123,7 @@ test_data_proposal_info = [
             permissions=[
                 "all_proposals",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/proposals/NOT_A_VALID_PROPOSAL",
         ),
         expected=ApiTestExpected(

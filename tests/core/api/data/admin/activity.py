@@ -6,11 +6,22 @@ test_data_admin_activity = [
         name="list admin activity",
         input=ApiTestInput(
             permissions=[],
-            username="abcd",
+            login="abcd",
             route="/admin/activity",
         ),
         expected=ApiTestExpected(
             code=403,
+        ),
+    ),
+    ApiTestElem(
+        name="list admin activity",
+        input=ApiTestInput(
+            permissions=["view_activity"],
+            login="abcd",
+            route="/admin/activity",
+        ),
+        expected=ApiTestExpected(
+            code=200,
         ),
     ),
 ]

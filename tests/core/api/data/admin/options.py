@@ -6,7 +6,7 @@ test_data_options = [
         name="list ui options",
         input=ApiTestInput(
             permissions=[],
-            username="abcd",
+            login="abcd",
             route="/options/ui",
         ),
         expected=ApiTestExpected(
@@ -17,11 +17,22 @@ test_data_options = [
         name="list all options",
         input=ApiTestInput(
             permissions=[],
-            username="abcd",
+            login="abcd",
             route="/options",
         ),
         expected=ApiTestExpected(
             code=403,
+        ),
+    ),
+    ApiTestElem(
+        name="list all options",
+        input=ApiTestInput(
+            permissions=["manage_options"],
+            login="abcd",
+            route="/options",
+        ),
+        expected=ApiTestExpected(
+            code=200,
         ),
     ),
 ]

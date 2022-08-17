@@ -7,10 +7,10 @@ class AuthClient:
         self._client = client
         self._base_url = base_url
 
-    def login(self, username: str, permissions: str):
+    def login(self, login: str, permissions: str):
         res = self._client.post(
             f"{self._base_url}/auth/login",
-            json={"username": username, "password": permissions, "plugin": "dummy"},
+            json={"login": login, "password": permissions, "plugin": "dummy"},
         )
 
         assert res.status_code == 201

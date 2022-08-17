@@ -1,12 +1,16 @@
 from typing import Any
 
+from starlette.types import ASGIApp
+
 from tests.authclient import AuthClient
 from jsondiff import diff
 
+from tests.core.api.utils.permissions import mock_permissions
+
 
 class ApiTestInput:
-    def __init__(self, username: str, permissions: list[str], route: str) -> None:
-        self.username = username
+    def __init__(self, login: str, permissions: list[str], route: str) -> None:
+        self.login = login
         self.permissions = permissions
         self.route = route
 
@@ -32,39 +36,39 @@ def get_elem_name(test_elem: ApiTestElem):
     return test_elem.name
 
 
-def run_test(auth_client: AuthClient, test_elem: ApiTestElem):
+def run_test(auth_client: AuthClient, test_elem: ApiTestElem, app: ASGIApp):
+    with mock_permissions(test_elem.input.permissions, app):
+        auth_client.login(test_elem.input.login, "password")
 
-    auth_client.login(test_elem.input.username, ",".join(test_elem.input.permissions))
+        response = auth_client.get(test_elem.input.route)
 
-    response = auth_client.get(test_elem.input.route)
+        if test_elem.expected.code is not None:
+            assert (
+                response.status_code == test_elem.expected.code
+            ), f"""
+            TEST { test_elem.name }
+            EXPECTED code { test_elem.expected.code }
+            GOT code { response.status_code }
+            """
 
-    if test_elem.expected.code is not None:
-        assert (
-            response.status_code == test_elem.expected.code
-        ), f"""
-        TEST { test_elem.name }
-        EXPECTED code { test_elem.expected.code }
-        GOT code { response.status_code }
-        """
+        if test_elem.expected.res is not None:
+            assert (
+                response.json() == test_elem.expected.res
+            ), f"""
+            TEST { test_elem.name }
 
-    if test_elem.expected.res is not None:
-        assert (
-            response.json() == test_elem.expected.res
-        ), f"""
-        TEST { test_elem.name }
+            EXPECTED json
+            =============================
+            { test_elem.expected.res }
+            =============================
 
-        EXPECTED json
-        =============================
-        { test_elem.expected.res }
-        =============================
-
-        GOT json
-        =============================
-        { response.json() }
-        =============================
-        
-        DIFF
-        =============================
-        { diff(test_elem.expected.res, response.json()) }
-        =============================
-        """
+            GOT json
+            =============================
+            { response.json() }
+            =============================
+            
+            DIFF
+            =============================
+            { diff(test_elem.expected.res, response.json()) }
+            =============================
+            """

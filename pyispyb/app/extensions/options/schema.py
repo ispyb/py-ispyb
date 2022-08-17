@@ -18,3 +18,8 @@ class Options(UIOptions):
     enable_legacy_routes: bool = Field(
         True, title="Legacy Routes", description="Enable legacy routes"
     )
+    create_person_on_missing: bool = Field(
+        False,
+        title="Create Missing Login",
+        description="Automatically create a `Person` entry if the `login` is missing from the database. (!) Warning modifies the database",
+    )

@@ -47,26 +47,23 @@ def with_auth_to_session(
             models.Person,
             models.SessionHasPerson.personId == models.Person.personId,
         )
-        .filter(models.Person.login == g.username)
+        .filter(models.Person.login == g.login)
     )
 
 
-def get_current_person() -> Optional[models.Person]:
+def get_current_person(login: str) -> Optional[models.Person]:
     person = (
         db.session.query(models.Person)
         .options(joinedload(models.Person.UserGroup))
         .options(joinedload(models.Person.UserGroup, models.UserGroup.Permission))
-        .filter(models.Person.login == g.username)
+        .filter(models.Person.login == login)
         .first()
     )
 
     if not person:
         return
 
-    print(person.personId)
-
     permissions = []
-    print(person.UserGroup)
     for group in person.UserGroup:
         for permission in group.Permission:
             permissions.append(permission.type)

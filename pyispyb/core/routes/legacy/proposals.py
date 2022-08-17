@@ -48,7 +48,7 @@ def get_proposals(
     """Get all proposal that user is allowed to access."""
     if "all_proposals" in permissions:
         return proposal.get_proposals_infos_all()
-    return proposal.get_proposals_infos_login(g.username)
+    return proposal.get_proposals_infos_login(g.login)
 
 
 @legacy_router.get(
