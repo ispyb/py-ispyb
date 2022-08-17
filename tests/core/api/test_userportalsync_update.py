@@ -4,6 +4,7 @@ from pyispyb.app.extensions.database.middleware import Database
 from pyispyb.app.main import app
 from pyispyb.config import settings
 from pyispyb.app.extensions.database.session import engine
+from tests.core.api.utils.permissions import mock_permissions
 from pyispyb.core.modules.proposals import get_proposals
 from pyispyb.core.modules.persons import get_persons
 from pyispyb.core.modules.sessions import get_sessions
@@ -22,20 +23,23 @@ client = TestClient(app)
 
 
 def test_call_sync_proposal_update():
-    res = client.post(
-        f"{settings.api_root}/auth/login",
-        json={"username": "user", "password": "uportal_sync", "plugin": "dummy"},
-    )
-    assert res.status_code == 201
+    with mock_permissions(["uportal_sync"], app):
+        res = client.post(
+            f"{settings.api_root}/auth/login",
+            json={"login": "efgh", "password": "efgh", "plugin": "dummy"},
+        )
+        assert res.status_code == 201
 
-    data = test_data_proposal_userportalsync_update
-    headers = {"Authorization": f"Bearer {res.json()['token']}"}
-    res2 = client.post(
-        f"{settings.api_root}/userportalsync/sync_proposal", headers=headers, json=data
-    )
+        data = test_data_proposal_userportalsync_update
+        headers = {"Authorization": f"Bearer {res.json()['token']}"}
+        res2 = client.post(
+            f"{settings.api_root}/userportalsync/sync_proposal",
+            headers=headers,
+            json=data,
+        )
 
-    # No errors running the sync_proposal endpoint passing the test_data_proposal_userportalsync_update JSON data
-    assert res2.status_code == 200
+        # No errors running the sync_proposal endpoint passing the test_data_proposal_userportalsync_update JSON data
+        assert res2.status_code == 200
 
 
 def test_proposal_title_update():
