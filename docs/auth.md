@@ -7,7 +7,7 @@
 There's a dedicated endpoint that allows to use the different plugins that are installed. This endpoint receives as parameters:
 
 - **plugin** - name of the plugin to be used for authentication, as specified in configuration
-- **username** _(optional)_
+- **login** _(optional)_
 - **password** _(optional)_
 - **token** _(optional)_
 
@@ -20,7 +20,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{
   "plugin": "dummy",
-  "username": "test",
+  "login": "test",
   "password": "Admin",
   "token": "Admin"
 
@@ -31,10 +31,9 @@ If the authentication is successful the response will be a json with the followi
 
 ```json
 {
-  "username": "test",
+  "login": "test",
   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJncm91cHMiOlsiQWRtaW4iXSwicGVybWlzc2lvbnMiOlsiQWRtaW4iXSwiaWF0IjoxNjUwOTgxNjA5LCJleHAiOjE2NTA5OTk2MDl9.3Iq2lGG5RR6Gebss5qEDdASrEMwCIne2jFhaVqp91m0",
-  "permissions": ["Admin"],
-  "groups": ["Admin"]
+  "permissions": ["Admin"]
 }
 ```
 
@@ -116,10 +115,80 @@ AUTH:
 
 ## Implementing new plugins
 
-New plugins should implement one of the two following classes :
+New plugins should inherit from `AbstractAuthentication` and override either `authenticate_by_login` or `authenticate_by_token` dependning on whether they accept a login / password combination or an authorisation token. Both functions return `Person` on success. This can be prepopulated with `familyName`, `givenName`, and `emailAddress`, which can be used to auto-create a new `Person` entry if the option is enabled (disabled by default)
 
-- **AbstractAuthentication** : plugin should override `get_user_and_groups(self, username, password, token)` method and return a tuple `(username, groups[])`
-- **AbstractDBGroupsAuthentication** : plugin should override `get_person(self, username, password, token)` method and return a `ispyb.models.Person` object. Groups management is delegated to ISPyB database.
+For example:
+
+```python
+from typing import Optional
+
+from ispyb import models
+
+from .AbstractAuthentication import AbstractAuthentication
+
+
+class MyAuthentication(AbstractAuthentication):
+    """My authentication class."""
+
+    def configure(self, config: dict[str, Any]):
+      self._config = config
+
+    def authenticate_by_login(self, login: str, password: str) -> Optional[models.Person]:
+        if ...
+            return models.Person(
+                login=login,
+                familyName=...,
+                givenName=...,
+            )
+        else:
+          logger.exception("Something went wrong")
+```
+
+Or for token based authentication:
+
+```python
+from typing import Optional
+
+from ispyb import models
+
+from .AbstractAuthentication import AbstractAuthentication, AuthType
+
+
+class MyAuthentication(AbstractAuthentication):
+    """My authentication class."""
+
+    authentication_type = AuthType.token
+
+    def configure(self, config: dict[str, Any]):
+      self._config = config
+
+    def authenticate_by_token(self, token: str) -> Optional[models.Person]:
+        if ...
+            return models.Person(
+              login=login
+            )
+        else:
+            logger.exception("Something went wrong")
+```
+
+Plugins can export specific config variables to the UI as well by defining `config_export`, these properties are made available to the `/auth/config` endpoint:
+
+```python
+from typing import Optional
+
+from ispyb import models
+
+from .AbstractAuthentication import AbstractAuthentication, AuthType
+
+
+class MyAuthentication(AbstractAuthentication):
+    """My authentication class."""
+
+    authentication_type = AuthType.token
+    config_export = ["MY_CONFIG_PROPERTY"]
+
+    ...
+```
 
 ### Authorization dependencies
 

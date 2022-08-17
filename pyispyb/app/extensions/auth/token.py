@@ -1,16 +1,22 @@
 import datetime
 import jwt
+from typing import Any
 
-from pyispyb.config import settings
+from ....config import settings
+from ...globals import g
 
 
-def generate_token(username, groups, permissions):
+def generate_token(
+    login: str,
+    personId: int,
+    permissions: list[str],
+):
     """
     Generate token.
 
     Args:
-        username (string): username
-        groups (list): list of groups associated to the user
+        login (string): login
+        personid: (int): Person.personid
         permissions (list): list of permissions associated to the user
 
     Returns:
@@ -23,8 +29,8 @@ def generate_token(username, groups, permissions):
 
     token = jwt.encode(
         {
-            "username": username,
-            "groups": groups,
+            "login": login,
+            "personId": personId,
             "permissions": permissions,
             "iat": iat,
             "exp": exp,
@@ -34,16 +40,16 @@ def generate_token(username, groups, permissions):
     )
 
     return {
-        "username": username,
+        "login": login,
+        "personId": personId,
         "token": token,
         "iat": iat.strftime("%Y-%m-%d %H:%M:%S"),
         "exp": exp.strftime("%Y-%m-%d %H:%M:%S"),
-        "groups": groups,
         "permissions": permissions,
     }
 
 
-def decode_token(token):
+def decode_token(token: str) -> dict[str, Any]:
     """Decode authentication token.
 
     Args:
@@ -58,3 +64,9 @@ def decode_token(token):
         settings.secret_key,
         algorithms=settings.jwt_coding_algorithm,
     )
+
+
+def set_token_data(token: dict[str, Any]) -> None:
+    g.login = token["login"]
+    g.personId = token["personId"]
+    g.permissions = token["permissions"]

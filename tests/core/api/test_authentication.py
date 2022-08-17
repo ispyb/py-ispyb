@@ -6,7 +6,7 @@ from pyispyb.config import settings
 def test_token_create_decode(client: TestClient):
     res = client.post(
         f"{settings.api_root}/auth/login",
-        json={"username": "abcd", "password": "abcd", "plugin": "dummy"},
+        json={"login": "abcd", "password": "abcd", "plugin": "dummy"},
     )
     assert res.status_code == 201
 
@@ -18,7 +18,7 @@ def test_token_create_decode(client: TestClient):
 def test_token_expired(client: TestClient, short_session: float):
     res = client.post(
         f"{settings.api_root}/auth/login",
-        json={"username": "abcd", "password": "abcd", "plugin": "dummy"},
+        json={"login": "abcd", "password": "abcd", "plugin": "dummy"},
     )
     assert res.status_code == 201
 
