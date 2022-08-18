@@ -1,7 +1,7 @@
 from typing import List, Optional, Literal
 from pydantic import BaseModel, conlist, root_validator
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
-from pyispyb.core.schemas.laboratories import Laboratory
+from pyispyb.core.schemas.laboratories import LaboratoryCreate
 from ispyb import models
 from datetime import datetime
 
@@ -65,11 +65,11 @@ class PersonSessionOptions(PydanticSessionHasPerson):
 
 
 class PersonProposalLaboratory(Person):
-    laboratory: Laboratory
+    laboratory: LaboratoryCreate
 
 
 class PersonSessionLaboratory(Person):
-    laboratory: Laboratory
+    laboratory: LaboratoryCreate
     # Optional section to be used in Session_has_Person
     session_options: Optional[PersonSessionOptions]
 
