@@ -14,8 +14,14 @@ PydanticProposal = sqlalchemy_to_pydantic(
 PydanticSession = sqlalchemy_to_pydantic(
     models.BLSession, exclude={"sessionId", "proposalId", "bltimeStamp", "comments"}
 )
+
+"""
+Excluding _global field to avoid a Pydantic RuntimeWarning
+RuntimeWarning: fields may not start with an underscore, ignoring "_global"
+"""
 PydanticProtein = sqlalchemy_to_pydantic(
-    models.Protein, exclude={"proteinId", "proposalId", "personId", "bltimeStamp"}
+    models.Protein,
+    exclude={"proteinId", "proposalId", "personId", "bltimeStamp", "_global"},
 )
 PydanticSessionHasPerson = sqlalchemy_to_pydantic(
     models.SessionHasPerson, exclude={"sessionId", "personId"}
