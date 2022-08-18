@@ -13,7 +13,7 @@ def get_sessions(
     expSessionPk: Optional[int] = None,
     proposalId: Optional[int] = None,
     sessionHasPerson: Optional[bool] = False,
-) -> Paged[models.Proposal]:
+) -> Paged[models.BLSession]:
 
     query = db.session.query(models.BLSession)
 
