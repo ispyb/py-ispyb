@@ -3,6 +3,7 @@ from ispyb import models
 from sqlalchemy.orm import joinedload, contains_eager
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
+from pyispyb.core.modules.utils import encode_external_id
 
 
 def get_sessions(
@@ -35,7 +36,7 @@ def get_sessions(
         query = query.filter(models.BLSession.sessionId == sessionId)
 
     if externalId:
-        externalId = externalId.to_bytes(16, byteorder="big")
+        externalId = encode_external_id(externalId)
         query = query.filter(models.BLSession.externalId == externalId)
 
     if expSessionPk:

@@ -3,6 +3,7 @@ from sqlalchemy.orm import joinedload
 from ispyb import models
 from pyispyb.app.extensions.database.utils import Paged, page
 from pyispyb.app.extensions.database.middleware import db
+from pyispyb.core.modules.utils import encode_external_id
 
 
 def get_proteins(
@@ -31,7 +32,7 @@ def get_proteins(
         query = query.filter(models.Protein.proposalId == proposalId)
 
     if externalId:
-        externalId = externalId.to_bytes(16, byteorder="big")
+        externalId = encode_external_id(externalId)
         query = query.filter(models.Protein.externalId == externalId)
 
     total = query.count()

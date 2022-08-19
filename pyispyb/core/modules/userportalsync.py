@@ -4,16 +4,12 @@ import time
 from typing import Any
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.sql.expression import cast
 from ispyb import models
 from pyispyb.app.extensions.database.session import engine
 from ..modules.persons import get_persons
 from ..schemas import userportalsync as schema
 from pyispyb.app.utils import timed
-from sqlalchemy import (
-    func,
-    Integer,
-)
+from pyispyb.core.modules.utils import encode_external_id, decode_external_id
 
 
 logger = logging.getLogger("ispyb")
@@ -87,10 +83,6 @@ class UserPortalSync(object):
         # Dict of sessionIds with related personIds to be checked/added to Session_has_Person table
         self.session_ids = {}
 
-    # Taken from https://gitlab.esrf.fr/ui/replicator/-/blob/master/replicator/impl/ispyb.py#L116
-    def decode(self, column):
-        return cast(func.CONV(func.HEX(column), 16, 10), Integer)
-
     def get_ispyb_proposals(self):
         proposals = self.session.query(
             models.Proposal.proposalId,
@@ -99,7 +91,7 @@ class UserPortalSync(object):
             models.Proposal.proposalNumber,
             models.Proposal.proposalType,
             # Decode binary 16 externalId field so it can be compared against Integer
-            self.decode(models.Proposal.externalId).label("externalId"),
+            decode_external_id(models.Proposal.externalId).label("externalId"),
         )
         ispyb_proposals = [p._asdict() for p in proposals.all()]
         return ispyb_proposals
@@ -112,7 +104,7 @@ class UserPortalSync(object):
             models.Person.emailAddress,
             models.Person.phoneNumber,
             models.Person.login,
-            self.decode(models.Person.externalId).label("externalId"),
+            decode_external_id(models.Person.externalId).label("externalId"),
         )
         ispyb_persons = [p._asdict() for p in persons.all()]
         return ispyb_persons
@@ -228,8 +220,8 @@ class UserPortalSync(object):
         if "externalId" in sourceProposal:
             if sourceProposal["externalId"] is not None:
                 # Encode the externalId
-                sourceProposal["externalId"] = sourceProposal["externalId"].to_bytes(
-                    16, byteorder="big"
+                sourceProposal["externalId"] = encode_external_id(
+                    sourceProposal["externalId"]
                 )
         proposal = models.Proposal(**sourceProposal)
         proposal.personId = pers.personId
@@ -281,8 +273,8 @@ class UserPortalSync(object):
         if "externalId" in sourcePerson:
             if sourcePerson["externalId"] is not None:
                 # Encode the externalId
-                copy_source_person["externalId"] = sourcePerson["externalId"].to_bytes(
-                    16, byteorder="big"
+                copy_source_person["externalId"] = encode_external_id(
+                    sourcePerson["externalId"]
                 )
         person = models.Person(**copy_source_person)
         self.session.add(person)
@@ -560,9 +552,7 @@ class UserPortalSync(object):
             if protein["externalId"] is not None:
                 logger.debug("Finding protein by Externalid")
                 externalId = protein["externalId"]
-                protein["externalId"] = protein["externalId"].to_bytes(
-                    16, byteorder="big"
-                )
+                protein["externalId"] = encode_external_id(protein["externalId"])
                 prot = (
                     self.session.query(models.Protein)
                     .filter(models.Protein.proposalId == self.proposalId)
@@ -715,9 +705,7 @@ class UserPortalSync(object):
             # If externalId is present encode it for comparison in DB
             if session["externalId"] is not None:
                 externalId = session["externalId"]
-                session["externalId"] = session["externalId"].to_bytes(
-                    16, byteorder="big"
-                )
+                session["externalId"] = encode_external_id(session["externalId"])
                 # Check if session is already on DB by using externalId.
                 sess = (
                     self.session.query(models.BLSession)
