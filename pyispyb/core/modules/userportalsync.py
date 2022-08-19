@@ -366,38 +366,40 @@ class UserPortalSync(object):
         """Process the creation of Persons"""
         for new_person in sourcePersons:
             # Add a new person
+            laboratory_id = None
             src_lab = new_person.pop("laboratory")
-            target_laboratories = self.get_ispyb_laboratories()
-            # Check if the laboratory attached to the Person is in ISPyB
-            for tar_lab in target_laboratories:
-                if (
-                    tar_lab["laboratoryExtPk"] is not None
-                    and tar_lab["laboratoryExtPk"] == src_lab["laboratoryExtPk"]
-                ) or (
-                    tar_lab["name"] == src_lab["name"]
-                    and tar_lab["city"] == src_lab["city"]
-                    and tar_lab["country"] == src_lab["country"]
-                ):
-                    update = False
-                    laboratory_id = tar_lab["laboratoryId"]
-                    # Check which laboratory values should we check to see if they changed
-                    for k in ["name", "address", "city", "country"]:
-                        if tar_lab[k] != src_lab[k]:
-                            logger.debug(
-                                f"Field {k} to update for laboratory {laboratory_id}"
-                            )
-                            update = True
+            if src_lab:
+                target_laboratories = self.get_ispyb_laboratories()
+                # Check if the laboratory attached to the Person is in ISPyB
+                for tar_lab in target_laboratories:
+                    if (
+                        tar_lab["laboratoryExtPk"] is not None
+                        and tar_lab["laboratoryExtPk"] == src_lab["laboratoryExtPk"]
+                    ) or (
+                        tar_lab["name"] == src_lab["name"]
+                        and tar_lab["city"] == src_lab["city"]
+                        and tar_lab["country"] == src_lab["country"]
+                    ):
+                        update = False
+                        laboratory_id = tar_lab["laboratoryId"]
+                        # Check which laboratory values should we check to see if they changed
+                        for k in ["name", "address", "city", "country"]:
+                            if tar_lab[k] != src_lab[k]:
+                                logger.debug(
+                                    f"Field {k} to update for laboratory {laboratory_id}"
+                                )
+                                update = True
 
-                    if update:
-                        # Update the existing laboratory with new values
-                        logger.debug(f"Updating {tar_lab['laboratoryId']}")
-                        self.update_laboratory(tar_lab["laboratoryId"], src_lab)
+                        if update:
+                            # Update the existing laboratory with new values
+                            logger.debug(f"Updating {tar_lab['laboratoryId']}")
+                            self.update_laboratory(tar_lab["laboratoryId"], src_lab)
 
-                    break
+                        break
 
-            else:
-                # New laboratory to add
-                laboratory_id = self.add_laboratory(src_lab)
+                else:
+                    # New laboratory to add if not found in ISPyB DB
+                    laboratory_id = self.add_laboratory(src_lab)
 
             self.add_person(new_person, laboratory_id, person_type)
 
@@ -462,35 +464,47 @@ class UserPortalSync(object):
             .first()
         )
         src_lab = sourcePerson.pop("laboratory")
-        # If the relation to a laboratory changed
-        if person.Laboratory.laboratoryExtPk != src_lab["laboratoryExtPk"]:
-            logger.debug(f"Updating Laboratory relation for {personId}")
-            # Check if source laboratoryExtPk exists already in ISPyB
-            laboratory = (
-                self.session.query(models.Laboratory)
-                .filter(models.Laboratory.laboratoryExtPk == src_lab["laboratoryExtPk"])
-                .first()
-            )
-            if laboratory:
-                # Update person link to laboratory
-                logger.debug(f"Updating LaboratoryId for {personId}")
-                person.laboratoryId = laboratory.laboratoryId
-                self.session.flush()
-            else:
-                # Add a new laboratory and link it to person
-                logger.debug(f"Creating and linking a new Laboratory for {personId}")
-                laboratory_id = self.add_laboratory(src_lab)
-                person.laboratoryId = laboratory_id
-                self.session.flush()
-        else:
-            # The relation to laboratory has not changed but other laboratory fields might have changed
-            # Check which Laboratory values should we inspect to see if they changed
-            for k in ["name", "address", "city", "country"]:
-                if getattr(person.Laboratory, k) != src_lab[k]:
-                    logger.debug(
-                        f"Field {k} to update for Laboratory with laboratoryId {person.Laboratory.laboratoryId}"
+        # If the person has a Laboratory
+        if src_lab:
+            try:
+                # Check if the Person has a related laboratory already
+                person_laboratoryExtPk = person.Laboratory.laboratoryExtPk
+            except AttributeError:
+                person_laboratoryExtPk = None
+
+            # If the relation to a laboratory changed
+            if person_laboratoryExtPk != src_lab["laboratoryExtPk"]:
+                logger.debug(f"Updating Laboratory relation for {personId}")
+                # Check if source laboratoryExtPk exists already in ISPyB
+                laboratory = (
+                    self.session.query(models.Laboratory)
+                    .filter(
+                        models.Laboratory.laboratoryExtPk == src_lab["laboratoryExtPk"]
                     )
-                    self.update_laboratory(person.Laboratory.laboratoryId, src_lab)
+                    .first()
+                )
+                if laboratory:
+                    # Update person link to laboratory
+                    logger.debug(f"Updating LaboratoryId for {personId}")
+                    person.laboratoryId = laboratory.laboratoryId
+                    self.session.flush()
+                else:
+                    # Add a new laboratory and link it to person
+                    logger.debug(
+                        f"Creating and linking a new Laboratory for {personId}"
+                    )
+                    laboratory_id = self.add_laboratory(src_lab)
+                    person.laboratoryId = laboratory_id
+                    self.session.flush()
+            else:
+                # The relation to laboratory has not changed but other laboratory fields might have changed
+                # Check which Laboratory values should we inspect to see if they changed
+                for k in ["name", "address", "city", "country"]:
+                    if getattr(person.Laboratory, k) != src_lab[k]:
+                        logger.debug(
+                            f"Field {k} to update for Laboratory with laboratoryId {person.Laboratory.laboratoryId}"
+                        )
+                        self.update_laboratory(person.Laboratory.laboratoryId, src_lab)
 
     @timed
     def process_labcontacts(self, sourceLabContacts: dict[str, Any]):

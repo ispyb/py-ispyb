@@ -104,7 +104,12 @@ def test_proposal_persons_laboratories_sync():
     for i, person in enumerate(
         test_data_proposal_userportalsync_create["proposal"]["persons"]
     ):
-        if person["laboratory"] not in unique_laboratories:
+        try:
+            laboratory = person["laboratory"]
+        except KeyError:
+            laboratory = None
+
+        if laboratory and laboratory not in unique_laboratories:
             # Make a list of unique laboratories
             unique_laboratories.append(person["laboratory"])
 

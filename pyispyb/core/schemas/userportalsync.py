@@ -65,11 +65,11 @@ class PersonSessionOptions(PydanticSessionHasPerson):
 
 
 class PersonProposalLaboratory(Person):
-    laboratory: LaboratoryCreate
+    laboratory: Optional[LaboratoryCreate]
 
 
 class PersonSessionLaboratory(Person):
-    laboratory: LaboratoryCreate
+    laboratory: Optional[LaboratoryCreate]
     # Optional section to be used in Session_has_Person
     session_options: Optional[PersonSessionOptions]
 
