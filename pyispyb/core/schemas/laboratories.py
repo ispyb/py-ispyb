@@ -1,26 +1,26 @@
-from pydantic_sqlalchemy import sqlalchemy_to_pydantic
-from ispyb import models
+import datetime
+from typing import Optional
 from pyispyb.core.schemas.validators import WordDashSpace
+from pydantic import BaseModel, Field
 
 
-PydanticLaboratoryCreate = sqlalchemy_to_pydantic(
-    models.Laboratory, exclude={"laboratoryId", "recordTimeStamp"}
-)
+class LaboratoryCreate(BaseModel):
+    name: str = WordDashSpace(
+        title="Laboratory Name", description="The Laboratory name"
+    )
+    address: str = Field(title="Address", description="The Laboratory Address")
+    city: str = Field(title="City", description="The Laboratory City")
+    country: str = Field(title="Country", description="The Laboratory Country")
+    url: Optional[str] = Field(title="URL", description="The Laboratory optional URL")
+    laboratoryExtPk: Optional[int] = Field(
+        title="laboratoryExtPk", description="External Id from the User Portal"
+    )
+    recordTimeStamp: Optional[datetime.datetime] = Field(
+        title="recordTimeStamp", description="Time Laboratory was created"
+    )
 
-PydanticLaboratory = sqlalchemy_to_pydantic(models.Laboratory)
 
-
-class LaboratoryCreate(PydanticLaboratoryCreate):
-
-    # name, city and country required to be able to check for existing Laboratory in DB (to update or create)
-    # Optionally the system will check also against laboratoryExtPk (User Portal Sync)
-    name: str = WordDashSpace(title="Laboratory Name")
-    address: str
-    city: str
-    country: str
-
-
-class Laboratory(PydanticLaboratory):
+class Laboratory(LaboratoryCreate):
     laboratoryId: int
 
     class Config:
