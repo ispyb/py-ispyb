@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 import pytest
 
 from starlette.types import ASGIApp
-
+from pyispyb.app.extensions.database.middleware import get_session
 from pyispyb.config import settings
 from pyispyb.app.main import app as _app
 from tests.authclient import AuthClient
@@ -16,6 +16,12 @@ def client():
 @pytest.fixture
 def app() -> ASGIApp:
     yield _app
+
+
+@pytest.fixture
+def with_db_session():
+    with get_session() as db_session:
+        yield db_session
 
 
 @pytest.fixture

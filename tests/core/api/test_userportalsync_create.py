@@ -1,9 +1,5 @@
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import sessionmaker
-from pyispyb.app.extensions.database.middleware import Database
 from pyispyb.app.main import app
 from pyispyb.config import settings
-from pyispyb.app.extensions.database.session import engine
 from pyispyb.core.modules.proposals import get_proposals
 from pyispyb.core.modules.persons import get_persons
 from pyispyb.core.modules.laboratories import get_laboratories
@@ -16,16 +12,7 @@ from tests.core.api.data.userportalsync_create import (
 )
 
 
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-session = TestingSessionLocal()
-db = Database()
-db.set_session(session)
-
-
-client = TestClient(app)
-
-
-def test_call_sync_proposal_create():
+def test_call_sync_proposal_create(client):
     with mock_permissions(["uportal_sync"], app):
         res = client.post(
             f"{settings.api_root}/auth/login",
@@ -45,7 +32,7 @@ def test_call_sync_proposal_create():
         assert res2.status_code == 200
 
 
-def test_proposal_persons_sync():
+def test_proposal_persons_sync(with_db_session):
     # Only one proposal with proposalCode and proposalNumber should have been created in DB
     proposals = get_proposals(
         skip=0,
@@ -98,7 +85,7 @@ def test_proposal_persons_sync():
 # We could check also if the right persons where added within the ProposalHasPerson table
 
 
-def test_proposal_persons_laboratories_sync():
+def test_proposal_persons_laboratories_sync(with_db_session):
     # Get a list of unique laboratories from proposal persons
     unique_laboratories = []
     for i, person in enumerate(
@@ -130,7 +117,7 @@ def test_proposal_persons_laboratories_sync():
     assert len(unique_laboratories) == labs_in_db
 
 
-def test_session_persons_sync():
+def test_session_persons_sync(with_db_session):
     # Iterate over the session
     sessions_in_db = 0
     for json_session in test_data_proposal_userportalsync_create["sessions"]:
@@ -170,7 +157,7 @@ def test_session_persons_sync():
     assert len(test_data_proposal_userportalsync_create["sessions"]) == sessions_in_db
 
 
-def test_lab_contacts_sync():
+def test_lab_contacts_sync(with_db_session):
     # Get the proposal from the DB
     proposals = get_proposals(
         skip=0,
@@ -198,7 +185,7 @@ def test_lab_contacts_sync():
     # Later we can add more automatic testings to see if the right persons were added, etc
 
 
-def test_proteins_sync():
+def test_proteins_sync(with_db_session):
     # Get the proposal from the DB
     proposals = get_proposals(
         skip=0,

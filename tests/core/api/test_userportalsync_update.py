@@ -1,9 +1,5 @@
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import sessionmaker
-from pyispyb.app.extensions.database.middleware import Database
 from pyispyb.app.main import app
 from pyispyb.config import settings
-from pyispyb.app.extensions.database.session import engine
 from tests.core.api.utils.permissions import mock_permissions
 from pyispyb.core.modules.proposals import get_proposals
 from pyispyb.core.modules.persons import get_persons
@@ -13,16 +9,7 @@ from tests.core.api.data.userportalsync_update import (
 )
 
 
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-session = TestingSessionLocal()
-db = Database()
-db.set_session(session)
-
-
-client = TestClient(app)
-
-
-def test_call_sync_proposal_update():
+def test_call_sync_proposal_update(client):
     with mock_permissions(["uportal_sync"], app):
         res = client.post(
             f"{settings.api_root}/auth/login",
@@ -42,7 +29,7 @@ def test_call_sync_proposal_update():
         assert res2.status_code == 200
 
 
-def test_proposal_title_update():
+def test_proposal_title_update(with_db_session):
     # Get the proposal from the DB
     proposals = get_proposals(
         skip=0,
@@ -61,7 +48,7 @@ def test_proposal_title_update():
     )
 
 
-def test_person_email_update():
+def test_person_email_update(with_db_session):
     # Get the person from the DB
     persons = get_persons(
         skip=0,
@@ -79,7 +66,7 @@ def test_person_email_update():
     )
 
 
-def test_person_laboratory_name_update():
+def test_person_laboratory_name_update(with_db_session):
     # Get the person from the DB
     persons = get_persons(
         skip=0,
@@ -98,7 +85,7 @@ def test_person_laboratory_name_update():
     )
 
 
-def test_session_beamline_name_update():
+def test_session_beamline_name_update(with_db_session):
     # Get the session from the DB
     sessions = get_sessions(
         skip=0,
