@@ -18,6 +18,13 @@ def get_proposals(
         joinedload(models.Proposal.Person)
     )
 
+    if proposalId:
+        query = query.filter(models.Proposal.proposalId == proposalId)
+
+    if proposalCode and proposalNumber:
+        query = query.filter(models.Proposal.proposalCode == proposalCode)
+        query = query.filter(models.Proposal.proposalNumber == proposalNumber)
+
     if proposalHasPerson:
         query = (
             query.outerjoin(
@@ -30,19 +37,11 @@ def get_proposals(
                 models.ProposalHasPerson.personId == models.Person.personId,
             )
             .options(contains_eager("ProposalHasPerson.Person"))
+            .distinct()
         )
 
-    if proposalId:
-        query = query.filter(models.Proposal.proposalId == proposalId)
-
-    if proposalCode and proposalNumber:
-        query = query.filter(models.Proposal.proposalCode == proposalCode)
-        query = query.filter(models.Proposal.proposalNumber == proposalNumber)
-
-    # https://github.com/aiidateam/aiida-core/issues/1600
-    query_distinct = query.distinct()
-    total = query_distinct.count()
-    query = page(query_distinct, skip=skip, limit=limit)
+    total = query.count()
+    query = page(query, skip=skip, limit=limit)
 
     return Paged(total=total, results=query.all(), skip=skip, limit=limit)
 

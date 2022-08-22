@@ -30,6 +30,7 @@ def get_sessions(
                 models.SessionHasPerson.personId == models.Person.personId,
             )
             .options(contains_eager("SessionHasPerson.Person"))
+            .distinct()
         )
 
     if sessionId:
@@ -45,10 +46,8 @@ def get_sessions(
     if proposalId:
         query = query.filter(models.BLSession.proposalId == proposalId)
 
-    # https://github.com/aiidateam/aiida-core/issues/1600
-    query_distinct = query.distinct()
-    total = query_distinct.count()
-    query = page(query_distinct, skip=skip, limit=limit)
+    total = query.count()
+    query = page(query, skip=skip, limit=limit)
 
     return Paged(total=total, results=query.all(), skip=skip, limit=limit)
 
