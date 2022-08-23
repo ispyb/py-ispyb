@@ -34,7 +34,7 @@ def get_datacollection(dataCollectionId: int) -> models.SSXDataCollection:
 def get_datacollection_sample(dataCollectionId: int) -> models.BLSample:
     return crud.get_ssx_datacollection_sample(dataCollectionId)
 
-    
+
 @router.get(
     "/datacollection/{dataCollectionId:int}/sequences",
     response_model=list[schema.SSXSequenceResponse],
@@ -43,12 +43,56 @@ def get_datacollection_sample(dataCollectionId: int) -> models.BLSample:
 def get_datacollection_sequences(dataCollectionId: int) -> list[models.Sequence]:
     return crud.get_ssx_datacollection_sequences(dataCollectionId)
 
+
 @router.post(
     "/datacollection",
     response_model=schema.SSXDataCollectionResponse,
-    responses={404: {"description": "Entity not found"}},
 )
 def create_datacollection(
-    ssx_data_collection_create: schema.SSXDataCollectionCreate,
+    ssx_datacollection_create: schema.SSXDataCollectionCreate,
 ) -> models.SSXDataCollection:
-    return crud.create_ssx_datacollection(ssx_data_collection_create)
+    return crud.create_ssx_datacollection(ssx_datacollection_create)
+
+
+@router.post(
+    "/datacollectiongroup",
+    response_model=schema.DataCollectionGroupResponse,
+)
+def create_datacollectiongroup(
+    ssx_datacollectiongroup_create: schema.SSXDataCollectionGroupCreate,
+) -> models.DataCollectionGroup:
+    return crud.create_ssx_datacollectiongroup(ssx_datacollectiongroup_create)
+
+
+@router.post(
+    "/datacollection/{dataCollectionId:int}/hits",
+    response_model=schema.SSXHitsResponse,
+)
+def create_ssx_hits(
+    ssx_hits_create: schema.SSXHitsCreate, dataCollectionId: int
+) -> models.SSXHits:
+    return crud.create_ssx_hits(dataCollectionId, ssx_hits_create)
+
+
+@router.get(
+    "/datacollection/{dataCollectionId:int}/hits",
+    response_model=schema.SSXHitsResponse,
+)
+def get_ssx_hits(dataCollectionId: int) -> models.SSXHits:
+    return crud.get_ssx_hits(dataCollectionId)
+
+
+@router.get(
+    "/datacollection/{dataCollectionId:int}/graphs",
+    response_model=list[schema.GraphResponse],
+)
+def get_graphs(dataCollectionId: int) -> list[models.Graph]:
+    return crud.get_graphs(dataCollectionId)
+
+
+@router.get(
+    "/graph/{graphId:int}/data",
+    response_model=list[schema.GraphDataResponse],
+)
+def get_graph_data(graphId: int) -> list[models.GraphData]:
+    return crud.get_graph_data(graphId)

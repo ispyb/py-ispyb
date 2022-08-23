@@ -12,20 +12,55 @@ class DataCollectionResponse(sqlalchemy_to_pydantic(models.DataCollection)):
     Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
 
 
+class CrystalCompositionResponse(sqlalchemy_to_pydantic(models.CrystalComposition)):
+    Component: sqlalchemy_to_pydantic(models.Component)
+
+
 class CrystalResponse(sqlalchemy_to_pydantic(models.Crystal)):
     Protein: sqlalchemy_to_pydantic(models.Protein)
+    crystal_compositions: list[CrystalCompositionResponse]
+
+
+class SampleCompositionResponse(sqlalchemy_to_pydantic(models.SampleComposition)):
+    Component: sqlalchemy_to_pydantic(models.Component)
 
 
 class SSXSampleResponse(sqlalchemy_to_pydantic(models.BLSample)):
     Crystal: CrystalResponse
-    sample_components: list[sqlalchemy_to_pydantic(models.SampleComponent)]
+    sample_compositions: list[SampleCompositionResponse]
 
 
 class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)):
     DataCollection: DataCollectionResponse
 
+
+class DataCollectionGroupResponse(sqlalchemy_to_pydantic(models.DataCollectionGroup)):
+    pass
+
+
+class SSXHitsResponse(sqlalchemy_to_pydantic(models.SSXHits)):
+    pass
+
+
+class GraphResponse(sqlalchemy_to_pydantic(models.Graph)):
+    pass
+
+
+class GraphDataResponse(sqlalchemy_to_pydantic(models.GraphData)):
+    pass
+
+
+class SSXHitsCreate(BaseModel):
+    nbHits: int
+    nbIndexed: int
+    laticeType: Optional[str]
+    estimatedResolution: Optional[float]
+    unit_cells: Optional[list[list[float]]]
+
+
 class SSXSequenceResponse(sqlalchemy_to_pydantic(models.Sequence)):
     sequence_events: list[sqlalchemy_to_pydantic(models.SequenceEvent)]
+
 
 class SSXProteinCreate(BaseModel):
     name: Optional[str]
@@ -36,15 +71,16 @@ class SSXSampleComponentCreate(BaseModel):
     name: Optional[str]
     componentType: Literal["Ligand", "Buffer", "JetMaterial"]
     composition: Optional[str]
-    concentration: Optional[float]
+    abundance: Optional[float]
 
 
 class SSXCrystalCreate(BaseModel):
     size_X: Optional[float]
-    size_X: Optional[float]
-    size_X: Optional[float]
+    size_Y: Optional[float]
+    size_Z: Optional[float]
     abundance: Optional[float]
     protein: SSXProteinCreate
+    components: list[SSXSampleComponentCreate]
 
 
 class SSXSampleCreate(BaseModel):
@@ -55,21 +91,22 @@ class SSXSampleCreate(BaseModel):
 
 
 class SSXSequenceEventCreate(BaseModel):
-    type: Literal["XrayDetection", "XrayExposure", "LaserExcitation","ReactionTrigger"]
+    type: Literal["XrayDetection", "XrayExposure", "LaserExcitation", "ReactionTrigger"]
     name: Optional[str]
     time: datetime
-    duration:Optional[float]
-    period:Optional[float]
-    repetition:Optional[float]
+    duration: Optional[float]
+    period: Optional[float]
+    repetition: Optional[float]
 
 
 class SSXSequenceCreate(BaseModel):
-    name:Optional[str]
-    events:list[SSXSequenceEventCreate]
+    name: Optional[str]
+    events: list[SSXSequenceEventCreate]
 
 
 class SSXDataCollectionCreate(BaseModel):
     sessionId: int
+    dataCollectionGroupId: int
 
     # Table DataCollection
     exposureTime: Optional[float]
@@ -96,13 +133,20 @@ class SSXDataCollectionCreate(BaseModel):
     startTime: datetime
     endTime: Optional[datetime]
 
-    # Table DataCollectionGroup
-    experimentType: Optional[Literal["SSXChip", "SSXInjector"]]
-
     # Table SSXDataCollection
     repetitionRate: Optional[float]
     energyBandwidth: Optional[float]
     monoStripe: Optional[str]
 
+    sequences: list[SSXSequenceCreate]
+
+
+class SSXDataCollectionGroupCreate(BaseModel):
+    # Table DataCollectionGroup
+    sessionId: int
+    startTime: datetime
+    endTime: Optional[datetime]
+    experimentType: Optional[Literal["SSXChip", "SSXInjector"]]
+    comments: Optional[str]
+
     sample: SSXSampleCreate
-    sequences:list[SSXSequenceCreate]
