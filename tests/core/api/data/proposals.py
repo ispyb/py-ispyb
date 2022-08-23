@@ -9,6 +9,8 @@ test_data_proposal_list = [
             ],
             login="pasteur",
             route="/proposals",
+            method="get",
+            payload=None,
         ),
         expected=ApiTestExpected(
             code=200,
@@ -32,6 +34,8 @@ test_data_proposal_list = [
             ],
             login="efgh",
             route="/proposals",
+            method="get",
+            payload=None,
         ),
         expected=ApiTestExpected(code=200, res=[]),
     ),
@@ -43,6 +47,8 @@ test_data_proposal_list = [
             ],
             login="pasteur",
             route="/proposals",
+            method="get",
+            payload=None,
         ),
         expected=ApiTestExpected(code=200),
     ),
@@ -57,6 +63,8 @@ test_data_proposal_info = [
             ],
             login="pasteur",
             route="/proposals/MX1",
+            method="get",
+            payload=None,
         ),
         expected=ApiTestExpected(
             code=200,
@@ -83,6 +91,8 @@ test_data_proposal_info = [
             ],
             login="pasteur",
             route="/proposals/9096",
+            method="get",
+            payload=None,
         ),
         expected=ApiTestExpected(
             code=200,
@@ -109,6 +119,8 @@ test_data_proposal_info = [
             ],
             login="efgh",
             route="/proposals/9096",
+            method="get",
+            payload=None,
         ),
         expected=ApiTestExpected(
             code=403,
@@ -125,6 +137,8 @@ test_data_proposal_info = [
             ],
             login="pasteur",
             route="/proposals/NOT_A_VALID_PROPOSAL",
+            method="get",
+            payload=None,
         ),
         expected=ApiTestExpected(
             code=200,

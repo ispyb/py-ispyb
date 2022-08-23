@@ -1,35 +1,24 @@
-from pyispyb.app.main import app
-from pyispyb.config import settings
+import pytest
+from tests.conftest import AuthClient
+from tests.core.api.utils.apitest import get_elem_name, run_test, ApiTestElem
+from starlette.types import ASGIApp
 from pyispyb.core.modules.proposals import get_proposals
 from pyispyb.core.modules.persons import get_persons
 from pyispyb.core.modules.laboratories import get_laboratories
 from pyispyb.core.modules.proteins import get_proteins
 from pyispyb.core.modules.sessions import get_sessions
 from pyispyb.core.modules.labcontacts import get_labcontacts
-from tests.core.api.utils.permissions import mock_permissions
 from tests.core.api.data.userportalsync_create import (
     test_data_proposal_userportalsync_create,
+    test_route_uportal_sync_create,
 )
 
 
-def test_call_sync_proposal_create(client):
-    with mock_permissions(["uportal_sync"], app):
-        res = client.post(
-            f"{settings.api_root}/auth/login",
-            json={"login": "efgh", "password": "efgh", "plugin": "dummy"},
-        )
-        assert res.status_code == 201
-
-        data = test_data_proposal_userportalsync_create
-        headers = {"Authorization": f"Bearer {res.json()['token']}"}
-        res2 = client.post(
-            f"{settings.api_root}/userportalsync/sync_proposal",
-            headers=headers,
-            json=data,
-        )
-
-        # No errors running the sync_proposal endpoint passing the test_data_proposal_userportalsync_create JSON data
-        assert res2.status_code == 200
+@pytest.mark.parametrize("test_elem", test_route_uportal_sync_create, ids=get_elem_name)
+def test_call_sync_proposal_create(
+    auth_client: AuthClient, test_elem: ApiTestElem, app: ASGIApp
+):
+    run_test(auth_client, test_elem, app)
 
 
 def test_proposal_persons_sync(with_db_session):

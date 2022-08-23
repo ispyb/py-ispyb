@@ -1,3 +1,5 @@
+from tests.core.api.utils.apitest import ApiTestElem, ApiTestExpected, ApiTestInput
+
 test_data_proposal_userportalsync_update = {
     "proposal": {
         "title": "Proposal title updated",
@@ -238,3 +240,19 @@ test_data_proposal_userportalsync_update = {
         },
     ],
 }
+
+test_route_uportal_sync_update = [
+    ApiTestElem(
+        name="Run User Portal Sync - Update",
+        input=ApiTestInput(
+            permissions=["uportal_sync"],
+            login="efgh",
+            route="/userportalsync/sync_proposal",
+            method="post",
+            payload=test_data_proposal_userportalsync_update,
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+]

@@ -1,3 +1,5 @@
+from tests.core.api.utils.apitest import ApiTestElem, ApiTestExpected, ApiTestInput
+
 test_data_proposal_userportalsync_create = {
     "proposal": {
         "title": "Proposal title",
@@ -217,3 +219,19 @@ test_data_proposal_userportalsync_create = {
         },
     ],
 }
+
+test_route_uportal_sync_create = [
+    ApiTestElem(
+        name="Run User Portal Sync - Create",
+        input=ApiTestInput(
+            permissions=["uportal_sync"],
+            login="efgh",
+            route="/userportalsync/sync_proposal",
+            method="post",
+            payload=test_data_proposal_userportalsync_create,
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+]

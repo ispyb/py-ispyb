@@ -1,32 +1,21 @@
-from pyispyb.app.main import app
-from pyispyb.config import settings
-from tests.core.api.utils.permissions import mock_permissions
+import pytest
+from tests.conftest import AuthClient
+from tests.core.api.utils.apitest import get_elem_name, run_test, ApiTestElem
+from starlette.types import ASGIApp
 from pyispyb.core.modules.proposals import get_proposals
 from pyispyb.core.modules.persons import get_persons
 from pyispyb.core.modules.sessions import get_sessions
 from tests.core.api.data.userportalsync_update import (
     test_data_proposal_userportalsync_update,
+    test_route_uportal_sync_update,
 )
 
 
-def test_call_sync_proposal_update(client):
-    with mock_permissions(["uportal_sync"], app):
-        res = client.post(
-            f"{settings.api_root}/auth/login",
-            json={"login": "efgh", "password": "efgh", "plugin": "dummy"},
-        )
-        assert res.status_code == 201
-
-        data = test_data_proposal_userportalsync_update
-        headers = {"Authorization": f"Bearer {res.json()['token']}"}
-        res2 = client.post(
-            f"{settings.api_root}/userportalsync/sync_proposal",
-            headers=headers,
-            json=data,
-        )
-
-        # No errors running the sync_proposal endpoint passing the test_data_proposal_userportalsync_update JSON data
-        assert res2.status_code == 200
+@pytest.mark.parametrize("test_elem", test_route_uportal_sync_update, ids=get_elem_name)
+def test_call_sync_proposal_create(
+    auth_client: AuthClient, test_elem: ApiTestElem, app: ASGIApp
+):
+    run_test(auth_client, test_elem, app)
 
 
 def test_proposal_title_update(with_db_session):

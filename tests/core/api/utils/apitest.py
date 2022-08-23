@@ -9,10 +9,19 @@ from tests.core.api.utils.permissions import mock_permissions
 
 
 class ApiTestInput:
-    def __init__(self, login: str, permissions: list[str], route: str) -> None:
+    def __init__(
+        self,
+        login: str,
+        permissions: list[str],
+        route: str,
+        method: str,
+        payload: str | None,
+    ) -> None:
         self.login = login
         self.permissions = permissions
         self.route = route
+        self.method = method
+        self.payload = payload
 
 
 class ApiTestExpected:
@@ -40,7 +49,12 @@ def run_test(auth_client: AuthClient, test_elem: ApiTestElem, app: ASGIApp):
     with mock_permissions(test_elem.input.permissions, app):
         auth_client.login(test_elem.input.login, "password")
 
-        response = auth_client.get(test_elem.input.route)
+        if test_elem.input.method == "get":
+            response = auth_client.get(test_elem.input.route)
+        elif test_elem.input.method == "post":
+            response = auth_client.post(
+                test_elem.input.route, payload=test_elem.input.payload
+            )
 
         if test_elem.expected.code is not None:
             assert (
