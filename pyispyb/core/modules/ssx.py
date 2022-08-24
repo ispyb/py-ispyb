@@ -353,25 +353,27 @@ def create_ssx_hits(
 
         # UNIT CELLS
 
-        for i in range(0, 6):
-            d = list(map(lambda a: a[i], unit_cells_array))
+        if hits_dict["nbIndexed"] >= 1000:
 
-            hist, bins = np.histogram(d, bins=100)
+            names = ["a", "b", "c", "alpha", "beta", "gamma"]
 
-            graph = models.Graph(
-                name=f"Unit cell {i}", dataCollectionId=dataCollectionId
-            )
-            db.session.add(graph)
-            db.session.flush()
+            for i in range(0, 6):
+                d = list(map(lambda a: a[i], unit_cells_array))
 
-            for n in range(0, hist.size):
-                y = hist[n]
-                x = round((bins[n] + bins[n + 1]) / 2, 2)
-                graphData = models.GraphData(
-                    graphId=graph.graphId, x=float(x), y=float(y)
-                )
-                db.session.add(graphData)
+                hist, bins = np.histogram(d, bins=100)
+
+                graph = models.Graph(name=names[i], dataCollectionId=dataCollectionId)
+                db.session.add(graph)
                 db.session.flush()
+
+                for n in range(0, hist.size):
+                    y = hist[n]
+                    x = round((bins[n] + bins[n + 1]) / 2, 2)
+                    graphData = models.GraphData(
+                        graphId=graph.graphId, x=float(x), y=float(y)
+                    )
+                    db.session.add(graphData)
+                    db.session.flush()
 
         db.session.commit()
         return get_ssx_hits(dataCollectionId)
