@@ -8,8 +8,6 @@ test_data_events = [
             permissions=[],
             login="abcd",
             route="/events",
-            method="get",
-            payload=None,
         ),
         expected=ApiTestExpected(
             code=200,

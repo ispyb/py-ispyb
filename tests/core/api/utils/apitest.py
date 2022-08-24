@@ -14,8 +14,8 @@ class ApiTestInput:
         login: str,
         permissions: list[str],
         route: str,
-        method: str,
-        payload: str | None,
+        method: str = "get",
+        payload: str | None = None,
     ) -> None:
         self.login = login
         self.permissions = permissions

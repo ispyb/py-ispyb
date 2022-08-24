@@ -8,8 +8,6 @@ test_data_options = [
             permissions=[],
             login="abcd",
             route="/options/ui",
-            method="get",
-            payload=None,
         ),
         expected=ApiTestExpected(
             code=200,
@@ -21,8 +19,6 @@ test_data_options = [
             permissions=[],
             login="abcd",
             route="/options",
-            method="get",
-            payload=None,
         ),
         expected=ApiTestExpected(
             code=403,
@@ -34,8 +30,6 @@ test_data_options = [
             permissions=["manage_options"],
             login="abcd",
             route="/options",
-            method="get",
-            payload=None,
         ),
         expected=ApiTestExpected(
             code=200,

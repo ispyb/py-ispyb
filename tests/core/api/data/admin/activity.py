@@ -8,7 +8,6 @@ test_data_admin_activity = [
             permissions=[],
             login="abcd",
             route="/admin/activity",
-            method="get",
             payload=None,
         ),
         expected=ApiTestExpected(
@@ -21,7 +20,6 @@ test_data_admin_activity = [
             permissions=["view_activity"],
             login="abcd",
             route="/admin/activity",
-            method="get",
             payload=None,
         ),
         expected=ApiTestExpected(
