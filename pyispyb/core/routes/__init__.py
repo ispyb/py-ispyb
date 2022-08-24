@@ -47,3 +47,7 @@ def init_app(app: FastAPI, prefix: str = None, **kwargs):
     from .admin import init_app
 
     init_app(app, prefix=prefix)
+
+    from .webservices import init_app
+
+    init_app(app, prefix=prefix)

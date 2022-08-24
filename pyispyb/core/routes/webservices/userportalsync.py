@@ -2,9 +2,10 @@ import logging
 from fastapi import HTTPException, status, Depends
 from fastapi.responses import Response, JSONResponse
 from pyispyb.app.base import AuthenticatedAPIRouter
-from ..modules import userportalsync as crud
-from ..schemas import userportalsync as schema
-from ...dependencies import permission
+from ...modules import userportalsync as crud
+from ...schemas import userportalsync as schema
+from ....dependencies import permission
+
 
 logger = logging.getLogger("ispyb")
 
