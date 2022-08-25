@@ -12,8 +12,12 @@ class DataCollectionResponse(sqlalchemy_to_pydantic(models.DataCollection)):
     Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
 
 
+class ComponentResponse(sqlalchemy_to_pydantic(models.Component)):
+    ComponentType: sqlalchemy_to_pydantic(models.ComponentType)
+
+
 class CrystalCompositionResponse(sqlalchemy_to_pydantic(models.CrystalComposition)):
-    Component: sqlalchemy_to_pydantic(models.Component)
+    Component: ComponentResponse
 
 
 class CrystalResponse(sqlalchemy_to_pydantic(models.Crystal)):
@@ -22,7 +26,7 @@ class CrystalResponse(sqlalchemy_to_pydantic(models.Crystal)):
 
 
 class SampleCompositionResponse(sqlalchemy_to_pydantic(models.SampleComposition)):
-    Component: sqlalchemy_to_pydantic(models.Component)
+    Component: ComponentResponse
 
 
 class SSXSampleResponse(sqlalchemy_to_pydantic(models.BLSample)):
@@ -58,8 +62,12 @@ class SSXHitsCreate(BaseModel):
     unit_cells: Optional[list[list[float]]]
 
 
+class SSXSequenceEventResponse(sqlalchemy_to_pydantic(models.SequenceEvent)):
+    SequenceEventType: sqlalchemy_to_pydantic(models.SequenceEventType)
+
+
 class SSXSequenceResponse(sqlalchemy_to_pydantic(models.Sequence)):
-    sequence_events: list[sqlalchemy_to_pydantic(models.SequenceEvent)]
+    sequence_events: list[SSXSequenceEventResponse]
 
 
 class SSXProteinCreate(BaseModel):

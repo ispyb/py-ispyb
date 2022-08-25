@@ -18,7 +18,12 @@ def get_ssx_datacollection_sequences(dataCollectionId: int) -> list[models.Seque
     res = (
         db.session.query(models.Sequence)
         .filter(models.Sequence.dataCollectionId == dataCollectionId)
-        .options(joinedload(models.Sequence.sequence_events))
+        .options(
+            joinedload(
+                models.Sequence.sequence_events,
+                models.SequenceEvent.SequenceEventType,
+            )
+        )
         .all()
     )
     return res
@@ -43,6 +48,7 @@ def get_ssx_datacollection_sample(
             joinedload(
                 models.BLSample.sample_compositions,
                 models.SampleComposition.Component,
+                models.Component.ComponentType,
             )
         )
         .options(
@@ -56,6 +62,45 @@ def get_ssx_datacollection_sample(
                 models.BLSample.Crystal,
                 models.Crystal.crystal_compositions,
                 models.CrystalComposition.Component,
+                models.Component.ComponentType,
+            )
+        )
+        .first()
+    )
+    return res
+
+
+def get_ssx_datacollectiongroup_sample(
+    dataCollectionGroupId: int,
+) -> Optional[models.BLSample]:
+    res = (
+        db.session.query(models.BLSample)
+        .join(
+            models.DataCollectionGroup,
+            models.DataCollectionGroup.blSampleId == models.BLSample.blSampleId,
+        )
+        .filter(
+            models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
+        )
+        .options(
+            joinedload(
+                models.BLSample.sample_compositions,
+                models.SampleComposition.Component,
+                models.Component.ComponentType,
+            )
+        )
+        .options(
+            joinedload(
+                models.BLSample.Crystal,
+                models.Crystal.Protein,
+            )
+        )
+        .options(
+            joinedload(
+                models.BLSample.Crystal,
+                models.Crystal.crystal_compositions,
+                models.CrystalComposition.Component,
+                models.Component.ComponentType,
             )
         )
         .first()
@@ -101,7 +146,7 @@ def get_ssx_datacollectiongroup(
 
 
 def get_ssx_datacollections(
-    sessionId: int,
+    sessionId: int, dataCollectionGroupId: int
 ) -> list[models.SSXDataCollection]:
     dc = (
         _ssx_datacollection_query()
@@ -115,6 +160,21 @@ def get_ssx_datacollections(
             models.DataCollectionGroup.dataCollectionGroupId
             == models.DataCollection.dataCollectionGroupId,
         )
+        .filter(models.DataCollectionGroup.sessionId == sessionId)
+        .filter(
+            models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
+        )
+        .all()
+    )
+
+    return dc
+
+
+def get_ssx_datacollectiongroups(
+    sessionId: int,
+) -> list[models.DataCollectionGroup]:
+    dc = (
+        db.session.query(models.DataCollectionGroup)
         .filter(models.DataCollectionGroup.sessionId == sessionId)
         .all()
     )

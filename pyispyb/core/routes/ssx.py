@@ -13,8 +13,19 @@ router = AuthenticatedAPIRouter(prefix="/ssx", tags=["Serial crystallography"])
     response_model=list[schema.SSXDataCollectionResponse],
     responses={404: {"description": "Entity not found"}},
 )
-def get_datacollections(sessionId: int) -> list[models.SSXDataCollection]:
-    return crud.get_ssx_datacollections(sessionId)
+def get_datacollections(
+    sessionId: int, dataCollectionGroupId: int
+) -> list[models.SSXDataCollection]:
+    return crud.get_ssx_datacollections(sessionId, dataCollectionGroupId)
+
+
+@router.get(
+    "/datacollectiongroup",
+    response_model=list[schema.DataCollectionGroupResponse],
+    responses={404: {"description": "Entity not found"}},
+)
+def get_datacollectiongroups(sessionId: int) -> list[models.DataCollectionGroup]:
+    return crud.get_ssx_datacollectiongroups(sessionId)
 
 
 @router.get(
@@ -62,6 +73,25 @@ def create_datacollectiongroup(
     ssx_datacollectiongroup_create: schema.SSXDataCollectionGroupCreate,
 ) -> models.DataCollectionGroup:
     return crud.create_ssx_datacollectiongroup(ssx_datacollectiongroup_create)
+
+
+@router.get(
+    "/datacollectiongroup/{dataCollectionGroupId:int}",
+    response_model=schema.DataCollectionGroupResponse,
+)
+def get_datacollectiongroup(
+    dataCollectionGroupId: int,
+) -> models.DataCollectionGroup:
+    return crud.get_ssx_datacollectiongroup(dataCollectionGroupId)
+
+
+@router.get(
+    "/datacollectiongroup/{dataCollectionGroupId:int}/sample",
+    response_model=schema.SSXSampleResponse,
+    responses={404: {"description": "Entity not found"}},
+)
+def get_datacollectiongroup_sample(dataCollectionGroupId: int) -> models.BLSample:
+    return crud.get_ssx_datacollectiongroup_sample(dataCollectionGroupId)
 
 
 @router.post(
