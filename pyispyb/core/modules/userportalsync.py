@@ -15,7 +15,7 @@ from pyispyb.core.modules.utils import encode_external_id, decode_external_id
 logger = logging.getLogger("ispyb")
 
 
-def sync_proposal(proposal: schema.UserPortalProposalSync) -> time:
+def sync_proposal(proposal: schema.UserPortalProposalSync) -> float:
     """
     Initialize a transactional session to be able to rollback if something goes wrong
     https://docs.sqlalchemy.org/en/14/orm/session_transaction.html
