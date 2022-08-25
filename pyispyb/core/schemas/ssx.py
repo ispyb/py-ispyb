@@ -39,7 +39,7 @@ class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)
 
 
 class DataCollectionGroupResponse(sqlalchemy_to_pydantic(models.DataCollectionGroup)):
-    pass
+    nbDataCollection: Optional[int]
 
 
 class SSXHitsResponse(sqlalchemy_to_pydantic(models.SSXHits)):

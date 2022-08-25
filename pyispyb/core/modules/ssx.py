@@ -145,6 +145,23 @@ def get_ssx_datacollectiongroup(
     )
 
 
+def count_datacollections(dataCollectionGroupId: int) -> int:
+    dc = (
+        db.session.query(models.DataCollection)
+        .join(
+            models.DataCollectionGroup,
+            models.DataCollectionGroup.dataCollectionGroupId
+            == models.DataCollection.dataCollectionGroupId,
+        )
+        .filter(
+            models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
+        )
+        .count()
+    )
+
+    return dc
+
+
 def get_ssx_datacollections(
     sessionId: int, dataCollectionGroupId: int
 ) -> list[models.SSXDataCollection]:

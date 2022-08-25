@@ -25,7 +25,11 @@ def get_datacollections(
     responses={404: {"description": "Entity not found"}},
 )
 def get_datacollectiongroups(sessionId: int) -> list[models.DataCollectionGroup]:
-    return crud.get_ssx_datacollectiongroups(sessionId)
+    results = crud.get_ssx_datacollectiongroups(sessionId)
+    results = [r.__dict__ for r in results]
+    for r in results:
+        r["nbDataCollection"] = crud.count_datacollections(r["dataCollectionGroupId"])
+    return results
 
 
 @router.get(
@@ -82,7 +86,9 @@ def create_datacollectiongroup(
 def get_datacollectiongroup(
     dataCollectionGroupId: int,
 ) -> models.DataCollectionGroup:
-    return crud.get_ssx_datacollectiongroup(dataCollectionGroupId)
+    r = crud.get_ssx_datacollectiongroup(dataCollectionGroupId).__dict__
+    r["nbDataCollection"] = crud.count_datacollections(r["dataCollectionGroupId"])
+    return r
 
 
 @router.get(
