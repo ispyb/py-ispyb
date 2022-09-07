@@ -4,13 +4,15 @@ To import/sync User Portal data into py-ISPyB each facility needs to create a sp
 
 Currently, there is a single API route to import a proposal including: sessions, lab contacts, proteins, etc.
 
-The API endpoint is using a JSON schema to validate the incoming data.
+The API endpoint uses a JSON schema to validate the incoming data.
 
 ## JSON schema
 
-To get the current User Portal Sync JSON schema just use the following API route: `/ispyb/api/v1/webservices/userportalsync/sync_proposal/schema`
+To get the current User Portal Sync JSON schema just use the following API route: `ispyb/api/v1/openapi.json`
 
-Your User Portal application may use this route to test/validate the input data.
+You may find the schema under **components -> schemas -> UserPortalProposalSync**.
+
+Your User Portal application may use the schema to test/validate the input data.
 
 ## Syncronize a proposal
 
