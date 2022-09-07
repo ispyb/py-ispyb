@@ -37,11 +37,14 @@ def sync_proposal(
 
 
 @router.get(
-    "/sync_proposal_json_schema",
+    "/sync_proposal/schema",
     status_code=status.HTTP_200_OK,
 )
 def get_user_portal_sync_schema() -> str:
-    """Return the User Portal Sync JSON schema"""
+    """
+        Return the User Portal Sync JSON schema
+        It may be called by external User Portal applications to test/validate data
+    """
     return Response(
         schema.UserPortalProposalSync.schema_json(indent=2),
         media_type="application/json",
