@@ -8,11 +8,13 @@ The API endpoint is using a JSON schema to validate the incoming data.
 
 ## JSON schema
 
-To get the current User Portal Sync JSON schema just use the following API route: `/ispyb/api/v1/userportalsync/sync_proposal_json_schema`
+To get the current User Portal Sync JSON schema just use the following API route: `/ispyb/api/v1/webservices/userportalsync/sync_proposal/schema`
+
+Your User Portal application may use this route to test/validate the input data.
 
 ## Syncronize a proposal
 
-To sync a proposal just use the following route: `/ispyb/api/v1/userportalsync/userportalsync/sync_proposal`
+To sync a proposal just use the following route: `/ispyb/api/v1/webservices/userportalsync/sync_proposal`
 
 You may check more information about the User Portal Sync routes/endpoints at:
 [https://ispyb.github.io/py-ispyb/api/](https://ispyb.github.io/py-ispyb/api/)

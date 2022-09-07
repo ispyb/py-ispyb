@@ -1,19 +1,17 @@
 import logging
 from fastapi import HTTPException, status, Depends
 from fastapi.responses import Response, JSONResponse
-from pyispyb.app.base import AuthenticatedAPIRouter
 from ...modules import userportalsync as crud
 from ...schemas import userportalsync as schema
 from ....dependencies import permission
+from .base import router
 
 
 logger = logging.getLogger("ispyb")
 
-router = AuthenticatedAPIRouter(prefix="/userportalsync", tags=["User Portal Sync"])
-
 
 @router.post(
-    "/sync_proposal",
+    "/userportalsync/sync_proposal",
     response_model=schema.UserPortalProposalSync,
 )
 def sync_proposal(
@@ -37,13 +35,13 @@ def sync_proposal(
 
 
 @router.get(
-    "/sync_proposal/schema",
+    "/userportalsync/sync_proposal/schema",
     status_code=status.HTTP_200_OK,
 )
 def get_user_portal_sync_schema() -> str:
     """
-        Return the User Portal Sync JSON schema
-        It may be called by external User Portal applications to test/validate data
+    Return the User Portal Sync JSON schema
+    It may be called by external User Portal applications to test/validate data
     """
     return Response(
         schema.UserPortalProposalSync.schema_json(indent=2),

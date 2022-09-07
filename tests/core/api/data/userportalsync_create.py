@@ -226,7 +226,7 @@ test_route_uportal_sync_create = [
         input=ApiTestInput(
             permissions=["uportal_sync"],
             login="efgh",
-            route="/userportalsync/sync_proposal",
+            route="/webservices/userportalsync/sync_proposal",
             method="post",
             payload=test_data_proposal_userportalsync_create,
         ),

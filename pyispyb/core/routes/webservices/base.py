@@ -2,5 +2,5 @@ from ....app.base import AuthenticatedAPIRouter
 
 
 router = AuthenticatedAPIRouter(
-    prefix="/webservices", tags=["To be used by external applications"]
+    prefix="/webservices", tags=["Webservices - Used by external applications"]
 )
