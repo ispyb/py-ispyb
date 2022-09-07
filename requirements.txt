@@ -1,7 +1,8 @@
-ispyb-models==1.0.0
+ispyb-models==1.0.2
 
 fastapi
 pydantic[dotenv]
+pydantic-sqlalchemy
 uvicorn
 
 SQLAlchemy

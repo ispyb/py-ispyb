@@ -18,6 +18,11 @@ class Options(UIOptions):
     enable_legacy_routes: bool = Field(
         True, title="Legacy Routes", description="Enable legacy routes"
     )
+    enable_webservice_routes: bool = Field(
+        True,
+        title="Webservice Routes",
+        description="Enable webservices called from external applications",
+    )
     create_person_on_missing: bool = Field(
         False,
         title="Create Missing Login",

@@ -2,23 +2,7 @@ from typing import Optional
 import datetime
 
 from pydantic import BaseModel, Field
-
-from pyispyb.core.schemas.validators import WordDashSpace
-
-
-class LaboratoryBase(BaseModel):
-    name: str = WordDashSpace(title="Laboratory Name")
-    address: str = Field(title="Address")
-    city: str = Field(title="City")
-    postcode: str = Field(title="Post Code")
-    country: str = Field(title="Country")
-
-
-class Laboratory(LaboratoryBase):
-    # laboratoryId: int
-
-    class Config:
-        orm_mode = True
+from pyispyb.core.schemas.laboratories import Laboratory
 
 
 class PersonBase(BaseModel):
