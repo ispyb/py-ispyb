@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal, Optional
+from typing import Any, Dict, Literal, Optional
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 
 from pyispyb.core import models
@@ -11,47 +11,85 @@ class DataCollectionResponse(sqlalchemy_to_pydantic(models.DataCollection)):
     DataCollectionGroup: sqlalchemy_to_pydantic(models.DataCollectionGroup)
     Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
 
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
+
 
 class ComponentResponse(sqlalchemy_to_pydantic(models.Component)):
     ComponentType: sqlalchemy_to_pydantic(models.ComponentType)
 
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
+
 
 class CrystalCompositionResponse(sqlalchemy_to_pydantic(models.CrystalComposition)):
     Component: ComponentResponse
+
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
 
 
 class CrystalResponse(sqlalchemy_to_pydantic(models.Crystal)):
     Protein: sqlalchemy_to_pydantic(models.Protein)
     crystal_compositions: list[CrystalCompositionResponse]
 
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
+
 
 class SampleCompositionResponse(sqlalchemy_to_pydantic(models.SampleComposition)):
     Component: ComponentResponse
+
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
 
 
 class SSXSampleResponse(sqlalchemy_to_pydantic(models.BLSample)):
     Crystal: CrystalResponse
     sample_compositions: list[SampleCompositionResponse]
 
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
+
 
 class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)):
     DataCollection: DataCollectionResponse
+
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
 
 
 class DataCollectionGroupResponse(sqlalchemy_to_pydantic(models.DataCollectionGroup)):
     nbDataCollection: Optional[int]
 
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
+
 
 class SSXHitsResponse(sqlalchemy_to_pydantic(models.SSXHits)):
-    pass
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
 
 
 class GraphResponse(sqlalchemy_to_pydantic(models.Graph)):
-    pass
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
 
 
 class GraphDataResponse(sqlalchemy_to_pydantic(models.GraphData)):
-    pass
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
 
 
 class SSXHitsCreate(BaseModel):
@@ -65,9 +103,17 @@ class SSXHitsCreate(BaseModel):
 class SSXSequenceEventResponse(sqlalchemy_to_pydantic(models.SequenceEvent)):
     SequenceEventType: sqlalchemy_to_pydantic(models.SequenceEventType)
 
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
+
 
 class SSXSequenceResponse(sqlalchemy_to_pydantic(models.Sequence)):
     sequence_events: list[SSXSequenceEventResponse]
+
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        kwargs.pop("exclude_none")
+        return super().dict(*args, exclude_none=True, **kwargs)
 
 
 class SSXProteinCreate(BaseModel):
