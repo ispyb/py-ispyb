@@ -11,6 +11,7 @@ nav:
       - About: routes.md
       - ⧉ Endpoint documentation: https://ispyb.github.io/py-ispyb/api/
   - Simulator: simulator.md
+  - User Portal Sync: upsync.md
   - Developers:
       - ⧉ Test coverage: https://app.codecov.io/gh/ispyb/py-ispyb/
 
