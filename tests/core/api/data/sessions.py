@@ -8,7 +8,7 @@ test_data_session_list = [
             permissions=[
                 "own_sessions",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/sessions",
         ),
         expected=ApiTestExpected(
@@ -203,7 +203,7 @@ test_data_session_list = [
             permissions=[
                 "own_sessions",
             ],
-            username="i_dont_have_sessions",
+            login="efgh",
             route="/sessions",
         ),
         expected=ApiTestExpected(code=200, res=[]),
@@ -214,7 +214,7 @@ test_data_session_list = [
             permissions=[
                 "all_sessions",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/sessions",
         ),
         expected=ApiTestExpected(code=200),
@@ -229,7 +229,7 @@ test_data_session_dates_list = [
             permissions=[
                 "own_sessions",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/sessions/date/20170512/20170513",
         ),
         expected=ApiTestExpected(
@@ -289,7 +289,7 @@ test_data_session_dates_list = [
             permissions=[
                 "own_sessions",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/sessions/date/20000101/20000102",
         ),
         expected=ApiTestExpected(code=200, res=[]),
@@ -300,7 +300,7 @@ test_data_session_dates_list = [
             permissions=[
                 "all_sessions",
             ],
-            username="johndoe",
+            login="efgh",
             route="/sessions/date/20170512/20170513",
         ),
         expected=ApiTestExpected(
@@ -364,7 +364,7 @@ test_data_session_proposal_list = [
             permissions=[
                 "own_sessions",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/sessions/proposal/MX1",
         ),
         expected=ApiTestExpected(
@@ -559,7 +559,7 @@ test_data_session_proposal_list = [
             permissions=[
                 "own_sessions",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/sessions/proposal/9096",
         ),
         expected=ApiTestExpected(
@@ -754,7 +754,7 @@ test_data_session_proposal_list = [
             permissions=[
                 "own_sessions",
             ],
-            username="johndoe",
+            login="efgh",
             route="/sessions/proposal/MX1",
         ),
         expected=ApiTestExpected(code=200, res=[]),
@@ -762,16 +762,14 @@ test_data_session_proposal_list = [
     ApiTestElem(
         name="no rights",
         input=ApiTestInput(
-            permissions=[
-                "none",
-            ],
-            username="pasteur",
+            permissions=[],
+            login="pasteur",
             route="/sessions/proposal/MX1",
         ),
         expected=ApiTestExpected(
             code=401,
             res={
-                "detail": "User pasteur (permissions assigned: ['none']) has no appropriate permission (any: ['own_sessions', 'all_sessions'])  to execute method."
+                "detail": "User pasteur (permissions assigned: []) has no appropriate permission (any: ['own_sessions', 'all_sessions'])  to execute method."
             },
         ),
     ),
@@ -781,7 +779,7 @@ test_data_session_proposal_list = [
             permissions=[
                 "own_sessions",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/sessions/proposal/UNKN",
         ),
         expected=ApiTestExpected(code=200, res=[]),
@@ -792,7 +790,7 @@ test_data_session_proposal_list = [
             permissions=[
                 "all_sessions",
             ],
-            username="pasteur",
+            login="pasteur",
             route="/sessions/proposal/MX1",
         ),
         expected=ApiTestExpected(code=200),

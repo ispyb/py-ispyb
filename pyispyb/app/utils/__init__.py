@@ -20,9 +20,13 @@ along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime
 from decimal import Decimal
 import os
+import time
+import logging
 from sqlalchemy import text
-
+from functools import wraps
 from pyispyb.config import settings
+
+logger = logging.getLogger("ispyb")
 
 
 def get_sql_query(name, append=""):
@@ -66,3 +70,20 @@ def queryresult_to_dict(result):
         res.append(row_dict)
 
     return res
+
+
+def timed(fn):
+    """
+    Decorator to log the time that a class function takes to execute
+    """
+
+    @wraps(fn)
+    def wrapper(self, *args, **kwargs):
+        start = time.time()
+        result = fn(self, *args, **kwargs)
+        took = round(time.time() - start, 3)
+        logger.debug(f"Class {self.__class__} - Function {fn.__name__}  took {took}")
+
+        return result
+
+    return wrapper

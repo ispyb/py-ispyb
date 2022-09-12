@@ -1,67 +1,30 @@
-"""Project: py-ispyb.
-
-https://github.com/ispyb/py-ispyb
-
-This file is part of py-ispyb software.
-
-py-ispyb is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-py-ispyb is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-"""
-
-
-__license__ = "LGPLv3+"
-
-import abc
-from typing import Any
+from abc import ABC
+import enum
+import logging
+from typing import Any, Optional
 
 from ispyb import models
-from pyispyb.app.extensions.database.middleware import db
-from sqlalchemy.orm import joinedload
 
 
-def get_groups_permissions(groups: list[str]) -> list[str]:
-    """Get permission list from group list.
-
-    Args:
-        groups (string[]): list of groups
-
-    Returns:
-        string[]: list of permissions
-    """
-    permissions: list[str] = []
-    for group_name in groups:
-        db_group: models.UserGroup | None = (
-            db.session.query(models.UserGroup)
-            .options(joinedload(models.UserGroup.permissions))
-            .filter_by(name=group_name)
-            .first()
-        )
-        if db_group is not None:
-            for permission in db_group.permissions:
-                permissions.append(permission.type)
-    return permissions
+logger = logging.getLogger(__name__)
 
 
-class AbstractAuthentication(object):
+class AuthType(str, enum.Enum):
+    login = "login"
+    token = "token"  # nosec
+
+
+class AbstractAuthentication(ABC):
     """
     Abstract authentication class.
 
     Base class for all site specific authentication classes
     """
 
-    __metaclass__ = abc.ABCMeta
+    authentication_type: AuthType = AuthType.login
+    config_export = []
 
-    def configure(self, config: dict[str, Any]):
+    def configure(self, config: dict[str, Any]) -> None:
         """Configure auth plugin.
 
         Args:
@@ -69,33 +32,45 @@ class AbstractAuthentication(object):
         """
         return
 
-    def get_auth(
-        self, username: str | None, password: str | None, token: str | None
-    ) -> tuple[str | None, list[str] | None, list[str] | None]:
-        """Return username, groups and permissions associated to the user.
+    def authenticate(
+        self, login: Optional[str], password: Optional[str], token: Optional[str]
+    ) -> Optional[models.Person]:
+        if self.authentication_type == AuthType.token:
+            logger.debug("Authenticating via token")
+            person = self.authenticate_by_token(token)
+        else:
+            logger.debug("Authenticating via login")
+            person = self.authenticate_by_login(login, password)
+
+        return person
+
+    def authenticate_by_login(
+        self, login: str, password: str
+    ) -> Optional[models.Person]:
+        """Child method if authenticating via login / password
+
+        Returns the login if authentication succeeded
 
         Args:
-            username (string): auth username
-            password (string): auth password
-            token (string): auth token
-        Returns:
-            username, groups, permissions
-        """
-        username, groups = self.get_user_and_groups(username, password, token)
-        if username is None or groups is None:
-            return None, None, None
-        return username, groups, get_groups_permissions(groups)
+            login (str): The login
+            password (str): The password
 
-    @abc.abstractmethod
-    def get_user_and_groups(
-        self, username: str | None, password: str | None, token: str | None
-    ) -> tuple[str | None, list[str] | None]:
-        """Return username and groups associated to the user.
+        Returns:
+            person (models.Person): If authenticated, a prepopulated `Person`
+
+        """
+        pass
+
+    def authenticate_by_token(self, token: str) -> Optional[models.Person]:
+        """Child method if authenticating via token
+
+        Returns the login if authentication succeeded
 
         Args:
-            username (string): auth username
-            password (string): auth password
-            token (string): auth token
+            token (str): The token
+
         Returns:
-            username, groups
+            person (models.Person): If authenticated, a prepopulated `Person`
+
         """
+        pass
