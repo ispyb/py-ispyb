@@ -59,7 +59,7 @@ def with_auth_to_session_has_person(
             models.Person,
             models.SessionHasPerson.personId == models.Person.personId,
         )
-        .filter(models.Person.login == g.username)
+        .filter(models.Person.login == g.login)
     )
 
 
