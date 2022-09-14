@@ -14,7 +14,7 @@ def get_samples(
     limit: int,
     blSampleId: Optional[int] = None,
     proteinId: Optional[int] = None,
-    session: Optional[str] = None,
+    proposal: Optional[str] = None,
     containerId: Optional[int] = None,
     beamlineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSample]:
@@ -76,8 +76,8 @@ def get_samples(
     if containerId:
         query = query.filter(models.Container.containerId == containerId)
 
-    if session:
-        query = query.filter(_session == session)
+    if proposal:
+        query = query.filter(models.Proposal.proposal == proposal)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

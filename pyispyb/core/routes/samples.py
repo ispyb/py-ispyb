@@ -19,13 +19,13 @@ def get_samples(
     request: Request,
     page: dict[str, int] = Depends(pagination),
     proteinId: int = Depends(filters.proteinId),
-    session: int = Depends(filters.session),
+    proposal: str = Depends(filters.proposal),
     containerId: int = Depends(filters.containerId),
 ) -> Paged[models.BLSample]:
     """Get a list of samples"""
     return crud.get_samples(
         proteinId=proteinId,
-        session=session,
+        proposal=proposal,
         containerId=containerId,
         beamlineGroups=request.app.db_options.beamlineGroups,
         **page
@@ -38,10 +38,16 @@ def get_samples(
     responses={404: {"description": "No such sample"}},
 )
 def get_sample(
+    request: Request,
     blSampleId: int = Depends(filters.blSampleId),
 ) -> models.BLSample:
-    """Get a samples"""
-    samples = crud.get_samples(blSampleId=blSampleId, skip=0, limit=1)
+    """Get a sample"""
+    samples = crud.get_samples(
+        blSampleId=blSampleId,
+        beamlineGroups=request.app.db_options.beamlineGroups,
+        skip=0,
+        limit=1,
+    )
 
     try:
         return samples.first
