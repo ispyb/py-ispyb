@@ -5,7 +5,7 @@ from starlette.types import ASGIApp
 from tests.conftest import AuthClient
 from tests.core.api.utils.apitest import get_elem_name, run_test, ApiTestElem
 
-from tests.core.api.data.sessions import (
+from tests.core.api.data.legacy.sessions import (
     test_data_session_proposal_list,
     test_data_session_list,
     test_data_session_dates_list,

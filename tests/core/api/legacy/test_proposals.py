@@ -5,7 +5,7 @@ from starlette.types import ASGIApp
 from tests.conftest import AuthClient
 from tests.core.api.utils.apitest import get_elem_name, run_test, ApiTestElem
 
-from tests.core.api.data.proposals import (
+from tests.core.api.data.legacy.proposals import (
     test_data_proposal_list,
     test_data_proposal_info,
 )
