@@ -11,7 +11,7 @@ s = models.BLSession
 
 class SessionMetaData(BaseModel):
     datacollections: Optional[int] = Field(description="Number of datacollections")
-    groups: list[str] = Field(description="Beamline group for this session")
+    groups: Optional[list[str]] = Field(description="Beamline group for this session")
     persons: int = Field(description="Number of people registered on this session")
     active: bool = Field(description="Whether this session is active")
     active_soon: bool = Field(
