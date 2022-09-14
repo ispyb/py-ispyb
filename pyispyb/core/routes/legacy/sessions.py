@@ -32,7 +32,7 @@ __license__ = "LGPLv3+"
 from .base import router as legacy_router
 
 router = AuthenticatedAPIRouter(
-    prefix="/sessions", tags=["Sessions - legacy with header token"]
+    prefix="/legacy/sessions", tags=["Sessions - legacy with header token"]
 )
 
 

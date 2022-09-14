@@ -13,7 +13,9 @@ from pyispyb.core.routes.legacy.dependencies import (
 
 from .base import router as legacy_router
 
-router = AuthenticatedAPIRouter(prefix="/em", tags=["EM - legacy with header token"])
+router = AuthenticatedAPIRouter(
+    prefix="/legacy/em", tags=["EM - legacy with header token"]
+)
 
 
 ############################
