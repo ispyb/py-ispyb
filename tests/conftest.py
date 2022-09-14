@@ -6,6 +6,7 @@ from pyispyb.app.extensions.database.middleware import get_session
 from pyispyb.config import settings
 from pyispyb.app.main import app as _app
 from tests.authclient import AuthClient
+from tests.core.api.utils.permissions import mock_permissions
 
 
 @pytest.fixture()
@@ -53,3 +54,24 @@ def short_session():
 
     yield new_token_exp_time
     settings.token_exp_time = old_token_exp_time
+
+
+@pytest.fixture
+def with_beamline_groups(auth_client_efgh: AuthClient, app: ASGIApp):
+    with mock_permissions(["manage_options"], app):
+        resp = auth_client_efgh.post(
+            "/options",
+            payload={
+                "beamlineGroups": [
+                    {
+                        "groupName": "id00",
+                        "permission": "bl_admin",
+                        "beamlines": [{"beamlineName": "id00"}],
+                    },
+                ]
+            },
+        )
+
+        assert resp.status_code == 200
+
+        yield
