@@ -1,6 +1,6 @@
 # import datetime
 import enum
-from typing import Optional, Any
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
