@@ -80,9 +80,10 @@ def get_proposals(
         result._metadata["beamlines"] = list(
             set([session.beamLineName for session in result.BLSession])
         )
-        result._metadata["groups"] = groups_from_beamlines(
-            beamlineGroups, result._metadata["beamlines"]
-        )
+        if beamlineGroups:
+            result._metadata["groups"] = groups_from_beamlines(
+                beamlineGroups, result._metadata["beamlines"]
+            )
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
 

@@ -96,9 +96,10 @@ def get_sessions(
     results = query.all()
     results = with_metadata(query.all(), list(metadata.keys()))
     for result in results:
-        result._metadata["groups"] = groups_from_beamlines(
-            beamlineGroups, [result.beamLineName]
-        )
+        if beamlineGroups:
+            result._metadata["groups"] = groups_from_beamlines(
+                beamlineGroups, [result.beamLineName]
+            )
         result._metadata["persons"] = len(result.SessionHasPerson)
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
