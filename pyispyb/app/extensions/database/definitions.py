@@ -90,6 +90,10 @@ def with_beamline_groups(
     includeArchived: bool = False,
     proposalColumn: "sqlalchemy.Column[Any]" = None,
 ) -> "sqlalchemy.orm.Query[Any]":
+    """Apply beamline group based permissions
+
+    If the user is not a beamline group admin this will fallback to SessionHasPerson
+    """
     # `all_proposals`` can access all sessions
     if "all_proposals" in g.permissions:
         logger.info("user has `all_proposals`")
@@ -121,3 +125,16 @@ def with_beamline_groups(
     else:
         logger.info("No beamline groups, filtering by `session_has_person`")
         return with_auth_to_session_has_person(query)
+
+
+def groups_from_beamlines(
+    beamlineGroups: list[BeamlineGroup], beamlines: list[str]
+) -> list[list]:
+    groups = []
+    for beamline in beamlines:
+        for group in beamlineGroups:
+            for groupBeamline in group.beamlines:
+                if beamline == groupBeamline.beamlineName:
+                    groups.append(group.groupName)
+
+    return groups

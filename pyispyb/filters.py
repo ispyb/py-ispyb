@@ -52,6 +52,12 @@ def proteinId(
     return proteinId
 
 
+def search(
+    search: str = Query(None, description="Search string to filter by")
+) -> Optional[str]:
+    return search
+
+
 def containerId(
     containerId: Optional[int] = Query(None, description="Container id to filter by")
 ) -> Optional[int]:

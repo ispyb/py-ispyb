@@ -1,8 +1,15 @@
-from typing import Optional
+from typing import Any, Optional
+
+from sqlalchemy import or_
 from sqlalchemy.orm import joinedload, contains_eager
 from ispyb import models
-from pyispyb.app.extensions.database.utils import Paged, page
-from pyispyb.app.extensions.database.middleware import db
+
+from ...app.extensions.database.utils import Paged, page
+from ...app.extensions.database.middleware import db
+from ...app.extensions.database.definitions import (
+    groups_from_beamlines,
+    with_beamline_groups,
+)
 
 
 def get_proposals(
@@ -12,18 +19,39 @@ def get_proposals(
     proposalCode: Optional[str] = None,
     proposalNumber: Optional[str] = None,
     proposalHasPerson: Optional[bool] = False,
+    proposal: Optional[str] = None,
+    search: Optional[str] = None,
+    beamlineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.Proposal]:
-
-    query = db.session.query(models.Proposal).options(
-        joinedload(models.Proposal.Person)
+    query = (
+        db.session.query(models.Proposal)
+        .options(joinedload(models.Proposal.Person))
+        .outerjoin(models.BLSession)
+        .options(
+            contains_eager(models.Proposal.BLSession).load_only(
+                models.BLSession.beamLineName
+            )
+        )
     )
 
     if proposalId:
         query = query.filter(models.Proposal.proposalId == proposalId)
 
+    if proposal:
+        query = query.filter(models.Proposal.proposal == proposal)
+
     if proposalCode and proposalNumber:
         query = query.filter(models.Proposal.proposalCode == proposalCode)
         query = query.filter(models.Proposal.proposalNumber == proposalNumber)
+
+    if search:
+        query = query.filter(
+            or_(
+                models.Proposal.title.like(f"%{search}%"),
+                models.BLSession.beamLineName.like(search),
+                models.Proposal.proposal.like(f"%{search}%"),
+            )
+        )
 
     if proposalHasPerson:
         query = (
@@ -40,10 +68,23 @@ def get_proposals(
             .distinct()
         )
 
+    if beamlineGroups:
+        query = with_beamline_groups(query, beamlineGroups)
+
     total = query.count()
     query = page(query, skip=skip, limit=limit)
+    results = query.all()
 
-    return Paged(total=total, results=query.all(), skip=skip, limit=limit)
+    for result in results:
+        result._metadata["sessions"] = len(result.BLSession)
+        result._metadata["beamlines"] = list(
+            set([session.beamLineName for session in result.BLSession])
+        )
+        result._metadata["groups"] = groups_from_beamlines(
+            beamlineGroups, result._metadata["beamlines"]
+        )
+
+    return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
 def get_proposalHasPerson(
