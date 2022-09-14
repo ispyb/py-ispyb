@@ -4,7 +4,7 @@ from sqlalchemy.orm import contains_eager
 from sqlalchemy.sql.expression import func, distinct
 from ispyb import models
 
-from ...app.extensions.database.definitions import with_beamline_groups, _session
+from ...app.extensions.database.definitions import with_beamline_groups
 from ...app.extensions.database.middleware import db
 from ...app.extensions.database.utils import Paged, page, with_metadata
 
