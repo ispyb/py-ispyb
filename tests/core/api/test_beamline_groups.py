@@ -22,7 +22,9 @@ def test_bl_admin(auth_client_efgh: AuthClient, app: ASGIApp, with_beamline_grou
         json = resp.json()
 
         assert len(json["results"]) == 1
-        assert json["results"][0]["_metadata"]["beamlines"] == ["BL01", "BL02"]
+        assert set(json["results"][0]["_metadata"]["beamlines"]) == set(
+            ["BL01", "BL02"]
+        )
 
 
 def test_no_permission(auth_client_abcd: AuthClient):
