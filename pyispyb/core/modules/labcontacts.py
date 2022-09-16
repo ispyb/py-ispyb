@@ -14,6 +14,7 @@ def get_labcontacts(
     limit: int,
     labContactId: Optional[int] = None,
     proposal: str = None,
+    proposalId: Optional[int] = None,
     beamlineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.LabContact]:
     query = (
@@ -31,6 +32,9 @@ def get_labcontacts(
 
     if proposal:
         query = query.filter(models.Proposal.proposal == proposal)
+
+    if proposalId:
+        query = query.filter(models.LabContact.proposalId == proposalId)
 
     if beamlineGroups:
         query = with_beamline_groups(query, beamlineGroups)
