@@ -22,7 +22,7 @@ class SessionMetaData(BaseModel):
 class SessionBase(BaseModel):
     proposalId: int
     session: str
-    visit_number: int
+    visit_number: Optional[int]
     startDate: datetime
     endDate: datetime
     beamLineName: str

@@ -88,7 +88,9 @@ def get_sessions(
         query = query.filter(models.Proposal.proposal == proposal)
 
     if beamlineGroups:
-        query = with_beamline_groups(query, beamlineGroups)
+        query = with_beamline_groups(
+            query, beamlineGroups, joinBLSession=False, joinSessionHasPerson=False
+        )
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

@@ -59,13 +59,12 @@ def get_samples(
         )
         .join(models.Dewar, models.Container.dewarId == models.Dewar.dewarId)
         .join(models.Shipping, models.Dewar.shippingId == models.Shipping.shippingId)
+        .join(models.Proposal, models.Proposal.proposalId == models.Shipping.proposalId)
         .group_by(models.BLSample.blSampleId)
     )
 
     if beamlineGroups:
-        query = with_beamline_groups(
-            query, beamlineGroups, proposalColumn=models.Shipping.proposalId
-        )
+        query = with_beamline_groups(query, beamlineGroups)
 
     if blSampleId:
         query = query.filter(models.BLSample.blSampleId == blSampleId)

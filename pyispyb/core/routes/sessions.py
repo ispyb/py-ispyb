@@ -11,7 +11,7 @@ from ..schemas import sessions as schema
 from ..schemas.utils import paginated
 
 
-router = AuthenticatedAPIRouter(prefix="/proposals/sessions", tags=["Sessions"])
+router = AuthenticatedAPIRouter(prefix="/sessions", tags=["Sessions"])
 
 
 @router.get("/", response_model=paginated(schema.Session))

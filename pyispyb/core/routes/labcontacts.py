@@ -1,9 +1,10 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from ispyb import models
 
 from pyispyb.dependencies import pagination
 from pyispyb.app.extensions.database.utils import Paged
 from pyispyb.app.base import AuthenticatedAPIRouter
+from pyispyb import filters
 
 from ..modules import labcontacts as crud
 from ..schemas import labcontacts as schema
@@ -15,10 +16,14 @@ router = AuthenticatedAPIRouter(prefix="/labcontacts", tags=["Lab Contacts"])
 
 @router.get("/", response_model=paginated(schema.LabContact))
 def get_lab_contacts(
-    page: dict[str, int] = Depends(pagination)
+    request: Request,
+    proposal: str = Depends(filters.proposal),
+    page: dict[str, int] = Depends(pagination),
 ) -> Paged[models.LabContact]:
     """Get a list of lab contacts"""
-    return crud.get_labcontacts(**page)
+    return crud.get_labcontacts(
+        proposal=proposal, beamlineGroups=request.app.db_options.beamlineGroups, **page
+    )
 
 
 @router.get(
@@ -26,9 +31,14 @@ def get_lab_contacts(
     response_model=schema.LabContact,
     responses={404: {"description": "No such contact"}},
 )
-def get_lab_contact(labContactId: int) -> models.LabContact:
-    """Get a list of lab contacts"""
-    users = crud.get_labcontacts(labContactId=labContactId, skip=0, limit=1)
+def get_lab_contact(request: Request, labContactId: int) -> models.LabContact:
+    """Get a lab contact"""
+    users = crud.get_labcontacts(
+        labContactId=labContactId,
+        beamlineGroups=request.app.db_options.beamlineGroups,
+        skip=0,
+        limit=1,
+    )
     try:
         return users.first
     except IndexError:
@@ -40,6 +50,11 @@ def get_lab_contact(labContactId: int) -> models.LabContact:
     response_model=schema.LabContact,
     status_code=status.HTTP_201_CREATED,
 )
-def create_lab_contact(labcontact: schema.LabContactCreate) -> models.LabContact:
+def create_lab_contact(
+    request: Request, labcontact: schema.LabContactCreate
+) -> models.LabContact:
     """Create a new lab contact"""
-    return crud.create_labcontact(labcontact=labcontact)
+    return crud.create_labcontact(
+        labcontact=labcontact,
+        beamlineGroups=request.app.db_options.beamlineGroups,
+    )

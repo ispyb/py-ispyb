@@ -47,20 +47,20 @@ def with_auth_to_session(
 
 
 def with_auth_to_session_has_person(
-    query: "sqlalchemy.orm.Query[Any]",
+    query: "sqlalchemy.orm.Query[Any]", joinSessionHasPerson: bool = True
 ) -> "sqlalchemy.orm.Query[Any]":
     """Join relevant tables to authorise right through to SessionHasPerson"""
-    return (
-        query.join(
+
+    if joinSessionHasPerson:
+        query = query.join(
             models.SessionHasPerson,
             models.BLSession.sessionId == models.SessionHasPerson.sessionId,
-        )
-        .join(
+        ).join(
             models.Person,
             models.SessionHasPerson.personId == models.Person.personId,
         )
-        .filter(models.Person.login == g.login)
-    )
+
+    return query.filter(models.Person.login == g.login)
 
 
 def get_current_person(login: str) -> Optional[models.Person]:
@@ -89,6 +89,8 @@ def with_beamline_groups(
     beamlineGroups: list[BeamlineGroup],
     includeArchived: bool = False,
     proposalColumn: "sqlalchemy.Column[Any]" = None,
+    joinBLSession: bool = True,
+    joinSessionHasPerson: bool = True,
 ) -> "sqlalchemy.orm.Query[Any]":
     """Apply beamline group based permissions
 
@@ -112,7 +114,10 @@ def with_beamline_groups(
     if proposalColumn:
         query = query.join(
             models.Proposal, models.Proposal.proposalId == proposalColumn
-        ).join(
+        )
+
+    if joinBLSession:
+        query = query.join(
             models.BLSession, models.BLSession.proposalId == models.Proposal.proposalId
         )
 
@@ -124,7 +129,7 @@ def with_beamline_groups(
         return query.filter(models.BLSession.beamLineName.in_(beamlines))
     else:
         logger.info("No beamline groups, filtering by `session_has_person`")
-        return with_auth_to_session_has_person(query)
+        return with_auth_to_session_has_person(query, joinSessionHasPerson)
 
 
 def groups_from_beamlines(

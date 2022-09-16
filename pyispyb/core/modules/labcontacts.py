@@ -1,10 +1,11 @@
-from typing import Optional
+from typing import Any, Optional
 
 from sqlalchemy.orm import joinedload
 from ispyb import models
 
-from pyispyb.app.extensions.database.utils import Paged, page
-from pyispyb.app.extensions.database.middleware import db
+from ...app.extensions.database.definitions import with_beamline_groups
+from ...app.extensions.database.utils import Paged, page
+from ...app.extensions.database.middleware import db
 from ..schemas import labcontacts as schema
 
 
@@ -12,19 +13,27 @@ def get_labcontacts(
     skip: int,
     limit: int,
     labContactId: Optional[int] = None,
-    proposalId: Optional[int] = None,
+    proposal: str = None,
+    beamlineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.LabContact]:
     query = (
         db.session.query(models.LabContact)
         .options(joinedload(models.LabContact.Person))
-        .options(joinedload(models.LabContact.Person, models.Person.Laboratory))  # type: ignore
+        .options(joinedload(models.LabContact.Person, models.Person.Laboratory))
+        .join(
+            models.Proposal, models.Proposal.proposalId == models.LabContact.proposalId
+        )
+        .group_by(models.LabContact.labContactId)
     )
 
     if labContactId:
         query = query.filter(models.LabContact.labContactId == labContactId)
 
-    if proposalId:
-        query = query.filter(models.LabContact.proposalId == proposalId)
+    if proposal:
+        query = query.filter(models.Proposal.proposal == proposal)
+
+    if beamlineGroups:
+        query = with_beamline_groups(query, beamlineGroups)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)
