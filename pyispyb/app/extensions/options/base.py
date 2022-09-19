@@ -21,6 +21,9 @@ def setup_options(app: ASGIApp):
     with get_session() as session:
         app.db_options = get_options(get_all=True, session=session)
 
+        if not app.db_options.beamlineGroups:
+            logger.warning("`beamlineGroups` are not configured")
+
 
 def get_options(get_all: bool = False, session=None) -> Options:
     if not session:
