@@ -102,7 +102,6 @@ def get_samples(
         query = query.filter(models.Proposal.proposal == proposal)
 
     total = query.count()
-    print(query)
     query = page(query, skip=skip, limit=limit)
     results = with_metadata(query.all(), list(metadata.keys()))
 
