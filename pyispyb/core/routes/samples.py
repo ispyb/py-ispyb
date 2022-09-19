@@ -14,6 +14,49 @@ from ..schemas.utils import paginated
 router = AuthenticatedAPIRouter(prefix="/samples", tags=["Samples"])
 
 
+@router.get("/sub", response_model=paginated(schema.SubSample))
+def get_subsamples(
+    request: Request,
+    page: dict[str, int] = Depends(pagination),
+    blSampleId: int = Depends(filters.blSampleId),
+    proteinId: int = Depends(filters.proteinId),
+    proposal: str = Depends(filters.proposal),
+    containerId: int = Depends(filters.containerId),
+) -> Paged[models.BLSubSample]:
+    """Get a list of sub samples"""
+    return crud.get_subsamples(
+        blSampleId=blSampleId,
+        proteinId=proteinId,
+        proposal=proposal,
+        containerId=containerId,
+        beamlineGroups=request.app.db_options.beamlineGroups,
+        **page
+    )
+
+
+@router.get(
+    "/sub/{blSubSampleId}",
+    response_model=schema.SubSample,
+    responses={404: {"description": "No such sub sample"}},
+)
+def get_subsample(
+    request: Request,
+    blSubSampleId: int = Depends(filters.blSubSampleId),
+) -> models.BLSubSample:
+    """Get a sub sample"""
+    subsamples = crud.get_subsamples(
+        blSubSampleId=blSubSampleId,
+        beamlineGroups=request.app.db_options.beamlineGroups,
+        skip=0,
+        limit=1,
+    )
+
+    try:
+        return subsamples.first
+    except IndexError:
+        raise HTTPException(status_code=404, detail="Sub sample not found")
+
+
 @router.get("/", response_model=paginated(schema.Sample))
 def get_samples(
     request: Request,

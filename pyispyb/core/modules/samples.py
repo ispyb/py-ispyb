@@ -21,6 +21,7 @@ def get_samples(
     metadata = {
         "subsamples": func.count(distinct(models.BLSubSample.blSubSampleId)),
         "datacollections": func.count(distinct(models.DataCollection.dataCollectionId)),
+        "types": func.group_concat(distinct(models.DataCollectionGroup.experimentType)),
     }
 
     query = (
@@ -38,11 +39,111 @@ def get_samples(
         )
         .join(models.Crystal.Protein)
         .options(
-            contains_eager("Crystal.Protein").load_only("name", "acronym"),
+            contains_eager(models.BLSample.Crystal, models.Crystal.Protein).load_only(
+                "name", "acronym"
+            ),
         )
         .outerjoin(
             models.BLSubSample,
             models.BLSubSample.blSampleId == models.BLSample.blSampleId,
+        )
+        .outerjoin(
+            models.DataCollectionGroup,
+            models.DataCollectionGroup.blSampleId == models.BLSample.blSampleId,
+        )
+        .outerjoin(
+            models.DataCollection,
+            models.DataCollectionGroup.dataCollectionGroupId
+            == models.DataCollection.dataCollectionGroupId,
+        )
+        .join(
+            models.Container,
+            models.BLSample.containerId == models.Container.containerId,
+        )
+        .options(
+            contains_eager(models.BLSample.Container).load_only(
+                models.Container.code,
+            )
+        )
+        .join(models.Dewar, models.Container.dewarId == models.Dewar.dewarId)
+        .options(
+            contains_eager(
+                models.BLSample.Container,
+                models.Container.Dewar,
+            ).load_only(
+                models.Dewar.code,
+            )
+        )
+        .join(models.Shipping, models.Dewar.shippingId == models.Shipping.shippingId)
+        .options(
+            contains_eager(
+                models.BLSample.Container, models.Container.Dewar, models.Dewar.Shipping
+            ).load_only(
+                models.Shipping.shippingName,
+            )
+        )
+        .join(models.Proposal, models.Proposal.proposalId == models.Shipping.proposalId)
+        .group_by(models.BLSample.blSampleId)
+    )
+
+    if beamlineGroups:
+        query = with_beamline_groups(query, beamlineGroups)
+
+    if blSampleId:
+        query = query.filter(models.BLSample.blSampleId == blSampleId)
+
+    if proteinId:
+        query = query.filter(models.Protein.proteinId == proteinId)
+
+    if containerId:
+        query = query.filter(models.Container.containerId == containerId)
+
+    if proposal:
+        query = query.filter(models.Proposal.proposal == proposal)
+
+    total = query.count()
+    print(query)
+    query = page(query, skip=skip, limit=limit)
+    results = with_metadata(query.all(), list(metadata.keys()))
+
+    for result in results:
+        if result._metadata["types"]:
+            result._metadata["types"] = result._metadata["types"].split(",")
+
+    return Paged(total=total, results=results, skip=skip, limit=limit)
+
+
+def get_subsamples(
+    skip: int,
+    limit: int,
+    blSubSampleId: Optional[int] = None,
+    blSampleId: Optional[int] = None,
+    proteinId: Optional[int] = None,
+    proposal: Optional[str] = None,
+    containerId: Optional[int] = None,
+    beamlineGroups: Optional[dict[str, Any]] = None,
+) -> Paged[models.BLSubSample]:
+    metadata = {
+        "datacollections": func.count(distinct(models.DataCollection.dataCollectionId)),
+        "types": func.group_concat(distinct(models.DataCollectionGroup.experimentType)),
+    }
+
+    query = (
+        db.session.query(models.BLSubSample, *metadata.values())
+        .join(models.BLSubSample.BLSample)
+        .join(models.BLSample.Crystal)
+        .options(
+            contains_eager(models.BLSubSample.BLSample).load_only(
+                models.BLSample.name,
+            )
+        )
+        .join(models.Crystal.Protein)
+        .options(
+            contains_eager(
+                models.BLSubSample.BLSample,
+                models.BLSample.Crystal,
+                models.Crystal.Protein,
+            ).load_only("name", "acronym"),
         )
         .outerjoin(
             models.DataCollectionGroup,
@@ -66,6 +167,9 @@ def get_samples(
     if beamlineGroups:
         query = with_beamline_groups(query, beamlineGroups)
 
+    if blSubSampleId:
+        query = query.filter(models.BLSubSample.blSubSampleId == blSubSampleId)
+
     if blSampleId:
         query = query.filter(models.BLSample.blSampleId == blSampleId)
 
@@ -81,5 +185,9 @@ def get_samples(
     total = query.count()
     query = page(query, skip=skip, limit=limit)
     results = with_metadata(query.all(), list(metadata.keys()))
+
+    for result in results:
+        if result._metadata["types"]:
+            result._metadata["types"] = result._metadata["types"].split(",")
 
     return Paged(total=total, results=results, skip=skip, limit=limit)

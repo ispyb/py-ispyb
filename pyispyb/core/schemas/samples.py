@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 from ispyb import models
 
 from .crystal import Crystal
+from .shipping import Container
 
 s = models.BLSample
 
@@ -13,19 +14,52 @@ s = models.BLSample
 class SampleMetaData(BaseModel):
     subsamples: int = Field(description="Number of sub samples")
     datacollections: int = Field(description="Number of data collections")
+    types: Optional[list[str]] = Field(description="Types of data collections")
 
 
 class SampleBase(BaseModel):
     name: str
     comments: Optional[str] = Field(title="Comments", nullable=True)
+    location: int = Field(title="Location", description="Location in container")
+    containerId: int
 
-    metadata: SampleMetaData = Field(alias="_metadata")
+    metadata: Optional[SampleMetaData] = Field(alias="_metadata")
 
 
 class Sample(SampleBase):
     blSampleId: int
 
     Crystal: Crystal
+    Container: Container
+
+    class Config:
+        orm_mode = True
+
+
+class SubSampleSample(BaseModel):
+    name: str
+
+    class Config:
+        orm_mode = True
+
+
+class SubSampleMetaData(BaseModel):
+    datacollections: int = Field(description="Number of data collections")
+    types: Optional[list[str]] = Field(description="Types of data collections")
+
+
+class SubSampleBase(BaseModel):
+    type: Optional[str] = Field(title="Subsample Type")
+    comments: Optional[str] = Field(title="Comments", nullable=True)
+    blSampleId: int
+
+    metadata: SubSampleMetaData = Field(alias="_metadata")
+
+
+class SubSample(SubSampleBase):
+    blSubSampleId: int
+
+    BLSample: SubSampleSample
 
     class Config:
         orm_mode = True

@@ -46,6 +46,12 @@ def blSampleId(
     return blSampleId
 
 
+def blSubSampleId(
+    blSubSampleId: Optional[int] = Query(None, description="Sub sample id to filter by")
+) -> Optional[int]:
+    return blSubSampleId
+
+
 def proteinId(
     proteinId: Optional[int] = Query(None, description="Protein id to filter by")
 ) -> Optional[int]:
