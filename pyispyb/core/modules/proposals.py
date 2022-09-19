@@ -32,7 +32,7 @@ def get_proposals(
                 models.BLSession.beamLineName
             )
         )
-        .group_by(models.Proposal.proposalId)
+        .order_by(models.Proposal.proposalId)
     )
 
     if proposalId:
@@ -66,12 +66,12 @@ def get_proposals(
                 models.ProposalHasPerson.personId == models.Person.personId,
             )
             .options(contains_eager("ProposalHasPerson.Person"))
-            .distinct()
         )
 
     if beamlineGroups:
         query = with_beamline_groups(query, beamlineGroups, joinBLSession=False)
 
+    query = query.distinct()
     total = query.count()
     query = page(query, skip=skip, limit=limit)
     results = query.all()

@@ -46,7 +46,6 @@ def get_labcontacts(
 
 
 def create_labcontact(labcontact: schema.LabContactCreate) -> models.LabContact:
-
     labcontact_dict = labcontact.dict()
     person_dict = labcontact_dict.pop("Person")
     laboratory_dict = person_dict.pop("Laboratory")

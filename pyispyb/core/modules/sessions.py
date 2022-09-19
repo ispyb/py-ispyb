@@ -65,7 +65,6 @@ def get_sessions(
                 models.SessionHasPerson.personId == models.Person.personId,
             )
             .options(contains_eager("SessionHasPerson.Person"))
-            .distinct()
         )
 
     if sessionId:
@@ -92,6 +91,7 @@ def get_sessions(
             query, beamlineGroups, joinBLSession=False, joinSessionHasPerson=False
         )
 
+    query = query.distinct()
     total = query.count()
     query = page(query, skip=skip, limit=limit)
 
