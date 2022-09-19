@@ -7,6 +7,8 @@ from typing import Union, Optional
 from pydantic import BaseModel, Field
 from ispyb import models
 
+d = models.DataCollection
+
 
 class DataCollectionGroup(BaseModel):
     dataCollectionGroupId: int
