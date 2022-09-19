@@ -193,7 +193,9 @@ def get_events(
 
         # Apply permissions
         if beamlineGroups:
-            queries[key] = with_beamline_groups(queries[key], beamlineGroups, joinBLSession=False)
+            queries[key] = with_beamline_groups(
+                queries[key], beamlineGroups, joinBLSession=False
+            )
 
         # Filter by session
         if session:
