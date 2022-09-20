@@ -50,8 +50,8 @@ def get_proteins(
         .outerjoin(models.ComponentType)
         .options(contains_eager(models.Protein.ComponentType))
         .outerjoin(models.ProteinHasPDB)
-        .join(models.Crystal)
-        .join(models.BLSample)
+        .outerjoin(models.Crystal)
+        .outerjoin(models.BLSample)
         .group_by(models.Protein.proteinId)
     )
 
