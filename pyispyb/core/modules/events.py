@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+import enum
 from typing import Any, List, Optional
 import os
 
@@ -77,6 +78,11 @@ def with_sample(
     return query
 
 
+class EventStatus(str, enum.Enum):
+    success = "success"
+    failed = "failed"
+
+
 def get_events(
     skip: int,
     limit: int,
@@ -87,6 +93,7 @@ def get_events(
     dataCollectionGroupId: Optional[int] = None,
     blSampleId: Optional[int] = None,
     proteinId: Optional[int] = None,
+    status: Optional[EventStatus] = None,
     beamlineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.Event]:
     queries = {}
@@ -240,6 +247,28 @@ def get_events(
         queries["dc"] = queries["dc"].group_by(
             models.DataCollectionGroup.dataCollectionGroupId
         )
+
+    # Filter by status
+    if status:
+        if status == EventStatus.success:
+            queries["dc"] = queries["dc"].filter(
+                models.DataCollection.runStatus.like("success%")
+            )
+            queries["robot"] = queries["robot"].filter(
+                models.RobotAction.status.like("success%")
+            )
+        else:
+            queries["dc"] = queries["dc"].filter(
+                models.DataCollection.runStatus.notlike("success%")
+            )
+            queries["robot"] = queries["robot"].filter(
+                models.RobotAction.status.notlike("success%")
+            )
+
+        queries["xrf"] = queries["xrf"].filter(
+            models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId == 0
+        )
+        queries["es"] = queries["es"].filter(models.EnergyScan.energyScanId == 0)
 
     # Now union the four queries
     query: sqlalchemy.orm.Query[Any] = queries["dc"].union_all(

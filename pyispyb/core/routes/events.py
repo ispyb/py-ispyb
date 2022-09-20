@@ -2,10 +2,10 @@ from fastapi import Depends, Query, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import conint
 
-from pyispyb.app.extensions.database.utils import Paged
-from pyispyb.dependencies import pagination
-from pyispyb import filters
-from pyispyb.app.base import AuthenticatedAPIRouter
+from ...app.extensions.database.utils import Paged
+from ...dependencies import pagination
+from ... import filters
+from ...app.base import AuthenticatedAPIRouter
 
 from ..modules import events as crud
 from ..schemas import events as schema
@@ -29,6 +29,7 @@ def get_events(
     dataCollectionGroupId: int = Depends(filters.dataCollectionGroupId),
     blSampleId: int = Depends(filters.blSampleId),
     proteinId: int = Depends(filters.proteinId),
+    status: crud.EventStatus = None,
 ) -> Paged[schema.Event]:
     """Get a list of events"""
     return crud.get_events(
@@ -39,6 +40,7 @@ def get_events(
         dataCollectionGroupId=dataCollectionGroupId,
         blSampleId=blSampleId,
         proteinId=proteinId,
+        status=status,
         beamlineGroups=request.app.db_options.beamlineGroups,
         **page
     )
