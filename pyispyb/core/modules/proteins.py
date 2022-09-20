@@ -33,16 +33,25 @@ def get_proteins(
 ) -> Paged[models.Protein]:
     metadata = {
         "pdbs": func.count(models.ProteinHasPDB.proteinid),
+        "samples": func.count(models.BLSample.blSampleId),
+        "crystals": func.count(models.Crystal.crystalId),
     }
 
     query = (
         db.session.query(models.Protein, *metadata.values())
         .options(joinedload(models.Protein.Proposal))
         .join(models.Proposal)
-        .options(contains_eager(models.Protein.ConcentrationType))
+        # .outerjoin(
+        #     models.ConcentrationType,
+        #     models.ConcentrationType.concentrationTypeId
+        #     == models.Protein.concentrationTypeId,
+        # )
+        # .options(contains_eager(models.Protein.ConcentrationType))
         .outerjoin(models.ComponentType)
         .options(contains_eager(models.Protein.ComponentType))
         .outerjoin(models.ProteinHasPDB)
+        .join(models.Crystal)
+        .join(models.BLSample)
         .group_by(models.Protein.proteinId)
     )
 

@@ -22,6 +22,8 @@ class ConcentrationType(BaseModel):
 
 class ProteinMetaData(BaseModel):
     pdbs: Optional[int] = Field(description="Number of attached pdbs")
+    crystals: Optional[int] = Field(description="Number of child crystals")
+    samples: Optional[int] = Field(description="Number of child samples")
 
 
 class ProteinBase(BaseModel):
@@ -39,7 +41,7 @@ class ProteinBase(BaseModel):
     safetyLevel: Optional[str]
 
     ComponentType: Optional[ComponentType]
-    ConcentrationType: Optional[ConcentrationType]
+    # ConcentrationType: Optional[ConcentrationType]
 
 
 class Protein(ProteinBase):
