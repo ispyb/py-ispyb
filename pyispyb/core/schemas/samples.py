@@ -20,7 +20,9 @@ class SampleMetaData(BaseModel):
 class SampleBase(BaseModel):
     name: str
     comments: Optional[str] = Field(title="Comments", nullable=True)
-    location: int = Field(title="Location", description="Location in container")
+    location: Optional[int] = Field(
+        title="Location", description="Location in container"
+    )
     containerId: int
 
     metadata: Optional[SampleMetaData] = Field(alias="_metadata")

@@ -17,39 +17,39 @@ logger = logging.getLogger("db")
 def order(
     query: "sqlalchemy.orm.Query[Any]",
     sort_map: dict[str, "sqlalchemy.Column[Any]"],
-    order: str,
-    default: Optional[list[str]] = None,
-    order_by: Optional[str] = None,
+    order: Optional[dict[str]],
+    default: Optional[dict[str]] = None,
 ) -> "sqlalchemy.orm.Query[Any]":
-    """Sort a result set by a field
+    """Sort a result set by a column
 
     Args:
         query (sqlalchemy.query): The current query
         sort_map (dict): A mapping of field(str) -> sqlalchemy.Column
-
-    Kwargs:
-        order_by (str): Field to sort by
-        order (Order): Asc or desc
+        order (dict): { order_by: column, order: Asc or desc }
 
     Returns
         query (sqlalchemy.orm.Query): The ordered query
     """
-    if not (order_by and order) and not default:
+    if not (order["order_by"] and order["order"]) and not default:
         return query
+
+    logger.info(f"Ordering by {order['order_by']} {order['order']}")
 
     if default:
-        order_by = default[0]
-        order = default[1]
+        order["order_by"] = default["order_by"]
+        order["order"] = default["order"]
 
-    if order_by not in sort_map:
-        logger.warning(f"Unknown order_by {order_by}")
+    if order["order_by"].value not in sort_map:
+        logger.warning(f"Unknown order_by {order['order_by']}")
         return query
 
-    return query.order_by(getattr(sort_map[order_by], str(order))())
+    return query.order_by(
+        getattr(sort_map[order["order_by"].value], order["order"].value)()
+    )
 
 
 def page(
-    query: "sqlalchemy.orm.Query[Any]", skip: int, limit: int
+    query: "sqlalchemy.orm.Query[Any]", *, skip: int, limit: int
 ) -> "sqlalchemy.orm.Query[Any]":
     """Paginate a `Query`
 

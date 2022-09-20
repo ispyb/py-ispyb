@@ -6,7 +6,15 @@ from ispyb import models
 
 from ...app.extensions.database.definitions import with_beamline_groups
 from ...app.extensions.database.middleware import db
-from ...app.extensions.database.utils import Paged, page, with_metadata
+from ...app.extensions.database.utils import Paged, page, with_metadata, order
+
+
+SAMPLE_ORDER_BY_MAP = {
+    "blSampleId": models.BLSample.blSampleId,
+    "name": models.BLSample.name,
+    "location": models.BLSample.location,
+    "datacollections": func.count(distinct(models.DataCollection.dataCollectionId)),
+}
 
 
 def get_samples(
@@ -16,6 +24,7 @@ def get_samples(
     proteinId: Optional[int] = None,
     proposal: Optional[str] = None,
     containerId: Optional[int] = None,
+    sort_order: Optional[dict[str, str]] = None,
     beamlineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSample]:
     metadata = {
@@ -101,6 +110,8 @@ def get_samples(
     if proposal:
         query = query.filter(models.Proposal.proposal == proposal)
 
+    query = order(query, SAMPLE_ORDER_BY_MAP, sort_order)
+
     total = query.count()
     query = page(query, skip=skip, limit=limit)
     results = with_metadata(query.all(), list(metadata.keys()))
@@ -112,6 +123,15 @@ def get_samples(
     return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
+SUBSAMPLE_ORDER_BY_MAP = {
+    "blSubSampleId": models.BLSubSample.blSubSampleId,
+    "datacollections": func.count(distinct(models.DataCollection.dataCollectionId)),
+}
+
+if hasattr(models.BLSubSample, "type"):
+    SUBSAMPLE_ORDER_BY_MAP["type"] = models.BLSubSample.type
+
+
 def get_subsamples(
     skip: int,
     limit: int,
@@ -120,6 +140,7 @@ def get_subsamples(
     proteinId: Optional[int] = None,
     proposal: Optional[str] = None,
     containerId: Optional[int] = None,
+    sort_order: Optional[dict[str, str]] = None,
     beamlineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSubSample]:
     metadata = {
@@ -180,6 +201,8 @@ def get_subsamples(
 
     if proposal:
         query = query.filter(models.Proposal.proposal == proposal)
+
+    query = order(query, SUBSAMPLE_ORDER_BY_MAP, sort_order)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

@@ -1,5 +1,5 @@
 import enum
-from typing import Optional, Any
+from typing import Callable, Optional, Any
 
 from fastapi import HTTPException, Query
 
@@ -18,16 +18,21 @@ def pagination(
     return {"skip": skip, "limit": limit}
 
 
-def order_by(
-    order_by: Optional[str] = Query(None, description="Field to order by"),
-    order: Optional[Order] = Query("asc", description="Order direction"),
-) -> dict[str, Any]:
-    order_fields = {"order_by": order_by}
+def order_by_factory(columns: dict[str], enumName: str) -> Callable:
+    order_by_enum = enum.Enum(enumName, {k: k for k in columns.keys()})
 
-    if order:
+    def order_by(
+        order_by: Optional[order_by_enum] = Query(
+            None, description="Field to order by"
+        ),
+        order: Optional[Order] = Query(Order.asc, description="Order direction"),
+    ) -> dict[str, Any]:
+        order_fields = {"order_by": order_by}
         order_fields["order"] = order
 
-    return order_fields
+        return order_fields
+
+    return order_by
 
 
 def filter(filter: str) -> str:

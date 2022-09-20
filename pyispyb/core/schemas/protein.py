@@ -1,42 +1,51 @@
-"""
-Project: py-ispyb.
+from typing import Optional
 
-https://github.com/ispyb/py-ispyb
-
-This file is part of py-ispyb software.
-
-py-ispyb is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-py-ispyb is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with py-ispyb. If not, see <http://www.gnu.org/licenses/>.
-"""
+from pydantic import BaseModel, Field
 
 
-__license__ = "LGPLv3+"
+class ComponentType(BaseModel):
+    componentTypeId: int
+    name: str
+
+    class Config:
+        orm_mode = True
 
 
-from pydantic import BaseModel
+class ConcentrationType(BaseModel):
+    concentrationTypeId: int
+    name: str
+    symbol: str
 
-from ispyb import models
+    class Config:
+        orm_mode = True
 
-p = models.Protein
+
+class ProteinMetaData(BaseModel):
+    pdbs: Optional[int] = Field(description="Number of attached pdbs")
 
 
 class ProteinBase(BaseModel):
     name: str
-    acronym: str
+    acronym: str = Field(title="Acronym", description="A short name")
+    proposalId: int
+    sequence: Optional[str] = Field(
+        title="Sequence/SMILES", description="Sequence or chemical composition"
+    )
+    density: Optional[float] = Field(title="Density", unit="g/L")
+    molecularMass: Optional[float] = Field(title="Mass", unit="kDa")
+
+    containmentLevel: Optional[str]
+    hazardGroup: Optional[str]
+    safetyLevel: Optional[str]
+
+    ComponentType: Optional[ComponentType]
+    ConcentrationType: Optional[ConcentrationType]
 
 
 class Protein(ProteinBase):
     proteinId: int
+
+    metadata: Optional[ProteinMetaData] = Field(alias="_metadata")
 
     class Config:
         orm_mode = True

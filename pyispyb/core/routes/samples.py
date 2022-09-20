@@ -1,10 +1,10 @@
 from fastapi import Depends, HTTPException, Request
 from ispyb import models
 
-from pyispyb.dependencies import pagination
-from pyispyb.app.extensions.database.utils import Paged
-from pyispyb import filters
-from pyispyb.app.base import AuthenticatedAPIRouter
+from ...dependencies import pagination, order_by_factory
+from ...app.extensions.database.utils import Paged
+from ... import filters
+from ...app.base import AuthenticatedAPIRouter
 
 from ..modules import samples as crud
 from ..schemas import samples as schema
@@ -22,6 +22,9 @@ def get_subsamples(
     proteinId: int = Depends(filters.proteinId),
     proposal: str = Depends(filters.proposal),
     containerId: int = Depends(filters.containerId),
+    sort_order: dict = Depends(
+        order_by_factory(crud.SUBSAMPLE_ORDER_BY_MAP, "SubSampleOrder")
+    ),
 ) -> Paged[models.BLSubSample]:
     """Get a list of sub samples"""
     return crud.get_subsamples(
@@ -29,6 +32,7 @@ def get_subsamples(
         proteinId=proteinId,
         proposal=proposal,
         containerId=containerId,
+        sort_order=sort_order,
         beamlineGroups=request.app.db_options.beamlineGroups,
         **page
     )
@@ -64,12 +68,16 @@ def get_samples(
     proteinId: int = Depends(filters.proteinId),
     proposal: str = Depends(filters.proposal),
     containerId: int = Depends(filters.containerId),
+    sort_order: dict = Depends(
+        order_by_factory(crud.SAMPLE_ORDER_BY_MAP, "SampleOrder")
+    ),
 ) -> Paged[models.BLSample]:
     """Get a list of samples"""
     return crud.get_samples(
         proteinId=proteinId,
         proposal=proposal,
         containerId=containerId,
+        sort_order=sort_order,
         beamlineGroups=request.app.db_options.beamlineGroups,
         **page
     )
