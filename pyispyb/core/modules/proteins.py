@@ -39,11 +39,6 @@ def get_proteins(
         db.session.query(models.Protein, *metadata.values())
         .options(joinedload(models.Protein.Proposal))
         .join(models.Proposal)
-        .outerjoin(
-            models.ConcentrationType,
-            models.ConcentrationType.concentrationTypeId
-            == models.Protein.concentrationTypeId,
-        )
         .options(contains_eager(models.Protein.ConcentrationType))
         .outerjoin(models.ComponentType)
         .options(contains_eager(models.Protein.ComponentType))
