@@ -85,7 +85,8 @@ def get_proteins(
             )
         )
 
-    query = order(query, ORDER_BY_MAP, sort_order)
+    if sort_order:
+        query = order(query, ORDER_BY_MAP, sort_order)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)
