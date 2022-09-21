@@ -1,4 +1,5 @@
 from fastapi import Depends, HTTPException, Request
+from fastapi.responses import FileResponse
 from ispyb import models
 
 from ...dependencies import pagination, order_by_factory
@@ -59,6 +60,41 @@ def get_subsample(
         return subsamples.first
     except IndexError:
         raise HTTPException(status_code=404, detail="Sub sample not found")
+
+
+@router.get("/images", response_model=paginated(schema.SampleImage))
+def get_sample_images(
+    request: Request,
+    page: dict[str, int] = Depends(pagination),
+    blSampleId: int = Depends(filters.blSampleId),
+) -> Paged[models.BLSampleImage]:
+    """Get a list of sample images"""
+    return crud.get_sample_images(
+        blSampleId=blSampleId,
+        beamlineGroups=request.app.db_options.beamlineGroups,
+        **page
+    )
+
+
+@router.get("/images/{blSampleImageId}", response_class=FileResponse)
+def get_sample_image(
+    request: Request,
+    blSampleImageId: int,
+):
+    """Get a sample image"""
+    sampleimages = crud.get_sample_images(
+        blSampleImageId=blSampleImageId,
+        beamlineGroups=request.app.db_options.beamlineGroups,
+        limit=1,
+        skip=0,
+    )
+
+    try:
+        sampleimage = sampleimages.first
+        return sampleimage.imageFullPath
+
+    except IndexError:
+        raise HTTPException(status_code=404, detail="Sample image not found")
 
 
 @router.get("/", response_model=paginated(schema.Sample))

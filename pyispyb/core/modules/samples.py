@@ -1,9 +1,10 @@
 from typing import Any, Optional
 
-from sqlalchemy.orm import contains_eager
+from sqlalchemy.orm import contains_eager, aliased, joinedload
 from sqlalchemy.sql.expression import func, distinct
 from ispyb import models
 
+from ...config import settings
 from ...app.extensions.database.definitions import with_beamline_groups
 from ...app.extensions.database.middleware import db
 from ...app.extensions.database.utils import Paged, page, with_metadata, order
@@ -95,6 +96,29 @@ def get_samples(
         .group_by(models.BLSample.blSampleId)
     )
 
+    if hasattr(models.ContainerQueueSample, "datacollectionPlanId") and hasattr(
+        models.ContainerQueueSample, "blSampleId"
+    ):
+        query = query.outerjoin(
+            models.ContainerQueueSample,
+            models.BLSample.blSampleId == models.ContainerQueueSample.blSampleId,
+        )
+        DataCollectionQueued = aliased(models.DataCollection)
+        query = query.outerjoin(
+            DataCollectionQueued,
+            models.ContainerQueueSample.datacollectionPlanId
+            == DataCollectionQueued.datacollectionPlanId,
+        )
+        metadata["queued"] = (
+            func.IF(
+                func.count(models.ContainerQueueSample.containerqueuesampleid)
+                > func.count(DataCollectionQueued.datacollectionid),
+                True,
+                False,
+            ),
+        )
+        query.add_columns(metadata["queued"])
+
     if beamlineGroups:
         query = with_beamline_groups(query, beamlineGroups)
 
@@ -175,6 +199,18 @@ def get_subsamples(
             models.DataCollectionGroup.dataCollectionGroupId
             == models.DataCollection.dataCollectionGroupId,
         )
+        .options(
+            joinedload(models.BLSubSample.Position1).load_only(
+                models.Position.posX,
+                models.Position.posY,
+            )
+        )
+        .options(
+            joinedload(models.BLSubSample.Position2).load_only(
+                models.Position.posX,
+                models.Position.posY,
+            )
+        )
         .join(
             models.Container,
             models.BLSample.containerId == models.Container.containerId,
@@ -182,8 +218,30 @@ def get_subsamples(
         .join(models.Dewar, models.Container.dewarId == models.Dewar.dewarId)
         .join(models.Shipping, models.Dewar.shippingId == models.Shipping.shippingId)
         .join(models.Proposal, models.Proposal.proposalId == models.Shipping.proposalId)
-        .group_by(models.BLSample.blSampleId)
+        .group_by(models.BLSubSample.blSubSampleId)
     )
+
+    if hasattr(models.ContainerQueueSample, "datacollectionPlanId"):
+        query = query.outerjoin(
+            models.ContainerQueueSample,
+            models.BLSubSample.blSubSampleId
+            == models.ContainerQueueSample.blSubSampleId,
+        )
+        DataCollectionQueued = aliased(models.DataCollection)
+        query = query.outerjoin(
+            DataCollectionQueued,
+            models.ContainerQueueSample.datacollectionPlanId
+            == DataCollectionQueued.datacollectionPlanId,
+        )
+        metadata["queued"] = (
+            func.IF(
+                func.count(models.ContainerQueueSample.containerqueuesampleid)
+                > func.count(DataCollectionQueued.datacollectionid),
+                True,
+                False,
+            ),
+        )
+        query.add_columns(metadata["queued"])
 
     if beamlineGroups:
         query = with_beamline_groups(query, beamlineGroups)
@@ -212,5 +270,48 @@ def get_subsamples(
     for result in results:
         if result._metadata["types"]:
             result._metadata["types"] = result._metadata["types"].split(",")
+
+    return Paged(total=total, results=results, skip=skip, limit=limit)
+
+
+def get_sample_images(
+    skip: int,
+    limit: int,
+    blSampleId: Optional[int] = None,
+    blSampleImageId: Optional[int] = None,
+    beamlineGroups: Optional[dict[str, Any]] = None,
+) -> Paged[models.BLSampleImage]:
+    metadata = {
+        "url": func.concat(
+            f"/{settings.api_root}/samples/images/",
+            models.BLSampleImage.blSampleImageId,
+        )
+    }
+
+    query = (
+        db.session.query(models.BLSampleImage, *metadata.values())
+        .join(models.BLSample)
+        .join(
+            models.Container,
+            models.BLSample.containerId == models.Container.containerId,
+        )
+        .join(models.Dewar, models.Container.dewarId == models.Dewar.dewarId)
+        .join(models.Shipping, models.Dewar.shippingId == models.Shipping.shippingId)
+    )
+
+    if blSampleId:
+        query = query.filter(models.BLSample.blSampleId == blSampleId)
+
+    if blSampleImageId:
+        query = query.filter(models.BLSampleImage.blSampleImageId == blSampleImageId)
+
+    if beamlineGroups:
+        query = with_beamline_groups(
+            query, beamlineGroups, proposalColumn=models.Shipping.proposalId
+        )
+
+    total = query.count()
+    query = page(query, skip=skip, limit=limit)
+    results = with_metadata(query.all(), list(metadata.keys()))
 
     return Paged(total=total, results=results, skip=skip, limit=limit)

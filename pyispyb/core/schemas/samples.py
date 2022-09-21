@@ -11,6 +11,14 @@ from .shipping import Container
 s = models.BLSample
 
 
+class Position(BaseModel):
+    posX: int
+    posY: int
+
+    class Config:
+        orm_mode = True
+
+
 class SampleMetaData(BaseModel):
     subsamples: int = Field(description="Number of sub samples")
     datacollections: int = Field(description="Number of data collections")
@@ -33,6 +41,17 @@ class Sample(SampleBase):
 
     Crystal: Crystal
     Container: Container
+
+    class Config:
+        orm_mode = True
+
+
+class SampleImage(BaseModel):
+    blSampleId: int
+    micronsPerPixelX: float
+    micronsPerPixelY: float
+    offsetX: int
+    offsetY: int
 
     class Config:
         orm_mode = True
@@ -62,6 +81,8 @@ class SubSample(SubSampleBase):
     blSubSampleId: int
 
     BLSample: SubSampleSample
+    Position1: Optional[Position]
+    Position2: Optional[Position]
 
     class Config:
         orm_mode = True
