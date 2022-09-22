@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import Any, Optional
 
@@ -11,6 +12,8 @@ from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.middleware import db
 from .events import get_events
 from ...config import settings
+
+logger = logging.getLogger(__name__)
 
 
 def get_datacollection_snapshot_path(
@@ -37,10 +40,13 @@ def get_datacollection_snapshot_path(
         ext = os.path.splitext(image_path)[1][1:].strip()
         image_path = image_path.replace(f".{ext}", f"t.{ext}")
 
-    if os.path.exists(image_path):
-        return image_path
+    if not os.path.exists(image_path):
+        logger.warning(
+            f"{images[imageId - 1]} [{image_path}] for dataCollectionId {dataCollectionId} does not exist on disk"
+        )
+        return None
 
-    return None
+    return image_path
 
 
 def get_datacollection_attachments(

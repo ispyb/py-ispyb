@@ -23,7 +23,7 @@ router = AuthenticatedAPIRouter(prefix="/datacollections", tags=["Data Collectio
 @router.get("/images/{dataCollectionId}", response_class=FileResponse)
 def get_datacollection_image(
     dataCollectionId: int,
-    imageId: conint(ge=1, le=4) = Query(0, description="Image 1-4 to return"),
+    imageId: conint(ge=1, le=4) = Query(1, description="Image 1-4 to return"),
     snapshot: bool = Query(False, description="Get snapshot image"),
 ) -> str:
     """Get a data collection image"""
