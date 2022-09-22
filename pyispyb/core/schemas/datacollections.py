@@ -1,13 +1,10 @@
 # import datetime
 
 import enum
-from datetime import datetime
-from typing import Union, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
 from ispyb import models
-
-d = models.DataCollection
 
 
 class DataCollectionGroup(BaseModel):
