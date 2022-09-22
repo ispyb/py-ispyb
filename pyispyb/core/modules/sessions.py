@@ -48,9 +48,9 @@ def get_sessions(
     query = (
         db.session.query(models.BLSession, *metadata.values())
         .outerjoin(models.SessionType)
-        .options(contains_eager("SessionType"))
+        .options(contains_eager(models.BLSession.SessionType))
         .join(models.Proposal)
-        .options(contains_eager("Proposal"))
+        .options(contains_eager(models.BLSession.Proposal))
     )
 
     if sessionHasPerson:
@@ -59,12 +59,16 @@ def get_sessions(
                 models.SessionHasPerson,
                 models.BLSession.sessionId == models.SessionHasPerson.sessionId,
             )
-            .options(contains_eager("SessionHasPerson"))
+            .options(contains_eager(models.BLSession.SessionHasPerson))
             .outerjoin(
                 models.Person,
                 models.SessionHasPerson.personId == models.Person.personId,
             )
-            .options(contains_eager("SessionHasPerson.Person"))
+            .options(
+                contains_eager(
+                    models.BLSession.SessionHasPerson, models.SessionHasPerson.Person
+                )
+            )
         )
 
     if sessionId:
