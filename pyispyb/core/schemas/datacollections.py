@@ -4,7 +4,6 @@ import enum
 from typing import Optional
 
 from pydantic import BaseModel, Field
-from ispyb import models
 
 
 class DataCollectionGroup(BaseModel):
