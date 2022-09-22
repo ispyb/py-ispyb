@@ -10,7 +10,7 @@ from ispyb import models
 from ...globals import g
 from ..database.middleware import db
 from ..database.session import get_session
-from .schema import Options, UIOptions
+from .schema import Options, UIOptions, BeamlineGroup
 
 
 logger = logging.getLogger(__file__)
@@ -24,7 +24,12 @@ def setup_options(app: ASGIApp):
         if not app.db_options.beamlineGroups:
             logger.warning("`beamlineGroups` are not configured, setting default empty")
             app.db_options.beamlineGroups = [
-                {"groupName": "Empty", "uiGroup": "empty", "beamlines": []}
+                BeamlineGroup(
+                    groupName="Empty",
+                    uiGroup="empty",
+                    permission="bl_admin",
+                    beamlines=[],
+                )
             ]
 
 
