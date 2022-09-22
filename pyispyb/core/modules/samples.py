@@ -283,7 +283,7 @@ def get_sample_images(
 ) -> Paged[models.BLSampleImage]:
     metadata = {
         "url": func.concat(
-            f"/{settings.api_root}/samples/images/",
+            f"{settings.api_root}/samples/images/",
             models.BLSampleImage.blSampleImageId,
         )
     }

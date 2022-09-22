@@ -1,6 +1,4 @@
-from fastapi import Depends, Query, HTTPException, Request
-from fastapi.responses import FileResponse
-from pydantic import conint
+from fastapi import Depends, Request
 
 from ...app.extensions.database.utils import Paged
 from ...dependencies import pagination
@@ -44,17 +42,3 @@ def get_events(
         beamlineGroups=request.app.db_options.beamlineGroups,
         **page
     )
-
-
-@router.get("/image/{dataCollectionId}", response_class=FileResponse)
-def get_datacollection_image(
-    dataCollectionId: int,
-    imageId: conint(ge=1, le=4) = Query(0, description="Image 1-4 to return"),
-    snapshot: bool = Query(False, description="Get snapshot image"),
-) -> str:
-    """Get a data collection image"""
-    path = crud.get_datacollection_snapshot_path(dataCollectionId, imageId, snapshot)
-    if not path:
-        raise HTTPException(status_code=404, detail="Image not found")
-
-    return path

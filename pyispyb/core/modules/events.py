@@ -126,6 +126,9 @@ def get_events(
             endTime.label("endTime"),
             literal_column("'dc'").label("type"),
             dataCollectionCount.label("count"),
+            sqlalchemy.func.count(
+                models.DataCollectionFileAttachment.dataCollectionFileAttachmentId
+            ).label("attachments"),
             _session,
         )
         .join(
@@ -140,7 +143,9 @@ def get_events(
         .join(
             models.Proposal, models.Proposal.proposalId == models.BLSession.proposalId
         )
+        .outerjoin(models.DataCollectionFileAttachment)
     )
+
     queries["robot"] = (
         db.session.query(
             models.RobotAction.robotActionId.label("id"),
@@ -148,6 +153,7 @@ def get_events(
             models.RobotAction.endTimestamp.label("endTime"),
             literal_column("'robot'").label("type"),
             literal_column("1").label("count"),
+            literal_column("0").label("attachments"),
             _session,
         )
         .join(
@@ -165,6 +171,7 @@ def get_events(
             models.XFEFluorescenceSpectrum.endTime.label("endTime"),
             literal_column("'xrf'").label("type"),
             literal_column("1").label("count"),
+            literal_column("0").label("attachments"),
             _session,
         )
         .join(
@@ -182,6 +189,7 @@ def get_events(
             models.EnergyScan.endTime.label("endTime"),
             literal_column("'es'").label("type"),
             literal_column("1").label("count"),
+            literal_column("0").label("attachments"),
             _session,
         )
         .join(
@@ -233,8 +241,13 @@ def get_events(
 
     # Ungroup a dataCollectionGroup
     if dataCollectionGroupId:
-        queries["dc"] = queries["dc"].filter(
-            models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
+        queries["dc"] = (
+            queries["dc"]
+            .filter(
+                models.DataCollectionGroup.dataCollectionGroupId
+                == dataCollectionGroupId
+            )
+            .group_by(models.DataCollection.dataCollectionId)
         )
         queries["robot"] = queries["robot"].filter(
             models.RobotAction.robotActionId == 0
@@ -325,16 +338,6 @@ def get_events(
     return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
-def get_datacollection(dataCollectionId: int) -> Optional[models.DataCollection]:
-    dc = (
-        db.session.query(models.DataCollection)
-        .filter(models.DataCollection.dataCollectionId == dataCollectionId)
-        .first()
-    )
-
-    return dc
-
-
 def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollection:
     snapshot_statuses = {}
     for i, snapshot in enumerate(
@@ -356,31 +359,3 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
 
     datacollection._metadata["snapshots"] = snapshot_statuses
     return datacollection
-
-
-def get_datacollection_snapshot_path(
-    dataCollectionId: int, imageId: int = 1, snapshot: bool = False
-) -> Optional[str]:
-    dc = get_datacollection(dataCollectionId)
-    if not dc:
-        return None
-
-    images = [
-        "xtalSnapshotFullPath1",
-        "xtalSnapshotFullPath2",
-        "xtalSnapshotFullPath3",
-        "xtalSnapshotFullPath4",
-    ]
-
-    image_path: str = getattr(dc, images[imageId - 1])
-    if image_path is None:
-        return None
-
-    if snapshot:
-        ext = os.path.splitext(image_path)[1][1:].strip()
-        image_path = image_path.replace(f".{ext}", f"t.{ext}")
-
-    if os.path.exists(image_path):
-        return image_path
-
-    return None

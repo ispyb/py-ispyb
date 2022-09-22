@@ -46,12 +46,19 @@ class Sample(SampleBase):
         orm_mode = True
 
 
+class SampleImageMetaData(BaseModel):
+    url: str = Field(description="Url to sample image")
+
+
 class SampleImage(BaseModel):
+    blSampleImageId: int
     blSampleId: int
     micronsPerPixelX: float
     micronsPerPixelY: float
     offsetX: int
     offsetY: int
+
+    metadata: SampleImageMetaData = Field(alias="_metadata")
 
     class Config:
         orm_mode = True

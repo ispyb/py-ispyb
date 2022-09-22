@@ -79,29 +79,16 @@ class DataCollection(BaseModel):
         orm_mode = True
 
 
-class RobotAction(BaseModel):
-    actionType: str
-    status: Optional[str]
-    message: Optional[str]
-
-    class Config:
-        orm_mode = True
+class DataCollectionFileAttachmentMetaData(BaseModel):
+    url: str = Field(description="Url to data collection file attachment")
+    fileName: str = Field(description="File name")
 
 
-class EventBase(BaseModel):
-    id: int
-    type: str
-    startTime: Optional[datetime] = Field(title="Start Time")
-    endTime: Optional[datetime] = Field(title="End Time")
-    count: int
-    session: str
-    blSample: Optional[str] = Field(description="Sample Name")
-    blSampleId: Optional[int] = Field(description="Sample Id")
-    attachments: Optional[int] = Field(description="No. of attachments")
+class DataCollectionFileAttachment(BaseModel):
+    dataCollectionFileAttachmentId: int
+    fileType: str
 
-    Item: Union[DataCollection, RobotAction]
+    metadata: DataCollectionFileAttachmentMetaData = Field(alias="_metadata")
 
-
-class Event(EventBase):
     class Config:
         orm_mode = True

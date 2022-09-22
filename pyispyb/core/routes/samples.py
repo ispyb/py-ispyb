@@ -1,3 +1,6 @@
+import logging
+import os
+
 from fastapi import Depends, HTTPException, Request
 from fastapi.responses import FileResponse
 from ispyb import models
@@ -11,7 +14,7 @@ from ..modules import samples as crud
 from ..schemas import samples as schema
 from ..schemas.utils import paginated
 
-
+logger = logging.getLogger(__name__)
 router = AuthenticatedAPIRouter(prefix="/samples", tags=["Samples"])
 
 
@@ -35,7 +38,7 @@ def get_subsamples(
         containerId=containerId,
         sort_order=sort_order,
         beamlineGroups=request.app.db_options.beamlineGroups,
-        **page
+        **page,
     )
 
 
@@ -72,7 +75,7 @@ def get_sample_images(
     return crud.get_sample_images(
         blSampleId=blSampleId,
         beamlineGroups=request.app.db_options.beamlineGroups,
-        **page
+        **page,
     )
 
 
@@ -91,6 +94,11 @@ def get_sample_image(
 
     try:
         sampleimage = sampleimages.first
+        if not os.path.exists(sampleimage.imageFullPath):
+            logger.warning(
+                f"blSampleImageId `{sampleimage.blSampleImageId}` file `{sampleimage.imageFullPath}` does not exist on disk"
+            )
+            raise IndexError
         return sampleimage.imageFullPath
 
     except IndexError:
@@ -115,7 +123,7 @@ def get_samples(
         containerId=containerId,
         sort_order=sort_order,
         beamlineGroups=request.app.db_options.beamlineGroups,
-        **page
+        **page,
     )
 
 
