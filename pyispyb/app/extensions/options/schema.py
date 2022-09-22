@@ -10,6 +10,7 @@ class BeamlineGroupBeamline(BaseModel):
 
 class BeamlineGroup(BaseModel):
     groupName: str = Field(title="Group Name")
+    uiGroup: str = Field(title="UI Group")
     permission: str = Field(
         title="Permission",
         description="Permission required to view all proposals from these beamlines",

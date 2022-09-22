@@ -15,7 +15,7 @@ def test_all_proposals(auth_client_efgh: AuthClient, app: ASGIApp):
 
 
 def test_bl_admin(auth_client_efgh: AuthClient, app: ASGIApp, with_beamline_groups):
-    """Should be able to browse proposals on beamline id00"""
+    """Should be able to browse proposals on beamline BL01 and BL02"""
     with mock_permissions("bl_admin", app):
         resp = auth_client_efgh.get("/proposals")
         assert resp.status_code == 200
