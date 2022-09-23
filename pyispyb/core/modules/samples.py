@@ -26,7 +26,7 @@ def get_samples(
     proposal: Optional[str] = None,
     containerId: Optional[int] = None,
     sort_order: Optional[dict[str, str]] = None,
-    beamlineGroups: Optional[dict[str, Any]] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSample]:
     metadata = {
         "subsamples": func.count(distinct(models.BLSubSample.blSubSampleId)),
@@ -119,8 +119,8 @@ def get_samples(
         )
         query.add_columns(metadata["queued"])
 
-    if beamlineGroups:
-        query = with_beamline_groups(query, beamlineGroups)
+    if beamLineGroups:
+        query = with_beamline_groups(query, beamLineGroups)
 
     if blSampleId:
         query = query.filter(models.BLSample.blSampleId == blSampleId)
@@ -166,7 +166,7 @@ def get_subsamples(
     proposal: Optional[str] = None,
     containerId: Optional[int] = None,
     sort_order: Optional[dict[str, str]] = None,
-    beamlineGroups: Optional[dict[str, Any]] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSubSample]:
     metadata = {
         "datacollections": func.count(distinct(models.DataCollection.dataCollectionId)),
@@ -243,8 +243,8 @@ def get_subsamples(
         )
         query.add_columns(metadata["queued"])
 
-    if beamlineGroups:
-        query = with_beamline_groups(query, beamlineGroups)
+    if beamLineGroups:
+        query = with_beamline_groups(query, beamLineGroups)
 
     if blSubSampleId:
         query = query.filter(models.BLSubSample.blSubSampleId == blSubSampleId)
@@ -279,7 +279,7 @@ def get_sample_images(
     limit: int,
     blSampleId: Optional[int] = None,
     blSampleImageId: Optional[int] = None,
-    beamlineGroups: Optional[dict[str, Any]] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSampleImage]:
     metadata = {
         "url": func.concat(
@@ -305,9 +305,9 @@ def get_sample_images(
     if blSampleImageId:
         query = query.filter(models.BLSampleImage.blSampleImageId == blSampleImageId)
 
-    if beamlineGroups:
+    if beamLineGroups:
         query = with_beamline_groups(
-            query, beamlineGroups, proposalColumn=models.Shipping.proposalId
+            query, beamLineGroups, proposalColumn=models.Shipping.proposalId
         )
 
     total = query.count()

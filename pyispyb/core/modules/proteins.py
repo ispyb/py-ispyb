@@ -29,7 +29,7 @@ def get_proteins(
     acronym: Optional[str] = None,
     search: Optional[str] = None,
     sort_order: Optional[dict[str, str]] = None,
-    beamlineGroups: Optional[dict[str, Any]] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.Protein]:
     metadata = {
         "pdbs": func.count(models.ProteinHasPDB.proteinid),
@@ -55,8 +55,8 @@ def get_proteins(
         .group_by(models.Protein.proteinId)
     )
 
-    if beamlineGroups:
-        query = with_beamline_groups(query, beamlineGroups)
+    if beamLineGroups:
+        query = with_beamline_groups(query, beamLineGroups)
 
     if proteinId:
         query = query.filter(models.Protein.proteinId == proteinId)

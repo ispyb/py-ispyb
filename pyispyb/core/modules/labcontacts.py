@@ -15,7 +15,7 @@ def get_labcontacts(
     labContactId: Optional[int] = None,
     proposal: str = None,
     proposalId: Optional[int] = None,
-    beamlineGroups: Optional[dict[str, Any]] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.LabContact]:
     query = (
         db.session.query(models.LabContact)
@@ -36,8 +36,8 @@ def get_labcontacts(
     if proposalId:
         query = query.filter(models.LabContact.proposalId == proposalId)
 
-    if beamlineGroups:
-        query = with_beamline_groups(query, beamlineGroups)
+    if beamLineGroups:
+        query = with_beamline_groups(query, beamLineGroups)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

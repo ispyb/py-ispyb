@@ -54,7 +54,7 @@ def get_datacollection_attachments(
     limit: int,
     dataCollectionId: Optional[int] = None,
     dataCollectionFileAttachmentId: Optional[int] = None,
-    beamlineGroups: Optional[dict[str, Any]] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.DataCollectionFileAttachment]:
     metadata = {
         "url": func.concat(
@@ -82,8 +82,8 @@ def get_datacollection_attachments(
             == dataCollectionFileAttachmentId
         )
 
-    if beamlineGroups:
-        query = with_beamline_groups(query, beamlineGroups, joinBLSession=False)
+    if beamLineGroups:
+        query = with_beamline_groups(query, beamLineGroups, joinBLSession=False)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

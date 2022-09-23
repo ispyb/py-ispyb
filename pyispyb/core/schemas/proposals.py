@@ -13,7 +13,7 @@ class ProposalState(str, enum.Enum):
 
 class ProposalMetaData(BaseModel):
     sessions: int = Field(description="Number of sessions")
-    beamlines: list[str] = Field(description="Beamlines allocated in this proposal")
+    beamLines: list[str] = Field(description="Beamlines allocated in this proposal")
     groups: Optional[list[str]] = Field(
         description="Beamline groups allocated in this proposal"
     )

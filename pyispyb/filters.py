@@ -18,10 +18,10 @@ def proposal(
     return proposal
 
 
-def beamlineName(
-    beamlineName: Optional[str] = Query(None, description="Beamline name to filter by")
+def beamLineName(
+    beamLineName: Optional[str] = Query(None, description="Beamline name to filter by")
 ) -> Optional[str]:
-    return beamlineName
+    return beamLineName
 
 
 def dataCollectionGroupId(

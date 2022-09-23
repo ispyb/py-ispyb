@@ -22,7 +22,7 @@ def get_proposals(
 ) -> Paged[models.Proposal]:
     """Get a list of proposals"""
     return crud.get_proposals(
-        search=search, beamlineGroups=request.app.db_options.beamlineGroups, **page
+        search=search, beamLineGroups=request.app.db_options.beamLineGroups, **page
     )
 
 
@@ -38,7 +38,7 @@ def get_proposal(
     """Get a proposal"""
     proposals = crud.get_proposals(
         proposal=proposal,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )

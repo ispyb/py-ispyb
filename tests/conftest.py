@@ -62,14 +62,14 @@ def with_beamline_groups(auth_client_efgh: AuthClient, app: ASGIApp):
         resp = auth_client_efgh.post(
             "/options",
             payload={
-                "beamlineGroups": [
+                "beamLineGroups": [
                     {
                         "groupName": "BL0x",
                         "uiGroup": "mx",
                         "permission": "bl_admin",
                         "beamlines": [
-                            {"beamlineName": "BL01"},
-                            {"beamlineName": "BL02"},
+                            {"beamLineName": "BL01"},
+                            {"beamLineName": "BL02"},
                         ],
                     },
                 ]

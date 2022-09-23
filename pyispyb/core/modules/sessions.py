@@ -13,6 +13,8 @@ from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.middleware import db
 from ...core.modules.utils import encode_external_id
 
+models.BLSession.beamLineName
+
 
 def get_sessions(
     skip: int,
@@ -24,7 +26,7 @@ def get_sessions(
     proposal: Optional[str] = None,
     session: Optional[str] = None,
     sessionHasPerson: Optional[bool] = False,
-    beamlineGroups: Optional[dict[str, Any]] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSession]:
     metadata = {
         "active": func.IF(
@@ -90,9 +92,9 @@ def get_sessions(
     if proposal:
         query = query.filter(models.Proposal.proposal == proposal)
 
-    if beamlineGroups:
+    if beamLineGroups:
         query = with_beamline_groups(
-            query, beamlineGroups, joinBLSession=False, joinSessionHasPerson=False
+            query, beamLineGroups, joinBLSession=False, joinSessionHasPerson=False
         )
 
     query = query.distinct()
@@ -102,9 +104,9 @@ def get_sessions(
     results = query.all()
     results = with_metadata(query.all(), list(metadata.keys()))
     for result in results:
-        if beamlineGroups:
+        if beamLineGroups:
             result._metadata["groups"] = groups_from_beamlines(
-                beamlineGroups, [result.beamLineName]
+                beamLineGroups, [result.beamLineName]
             )
         result._metadata["persons"] = len(result.SessionHasPerson)
 

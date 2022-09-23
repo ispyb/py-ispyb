@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import Depends, HTTPException, Request
 from ispyb import models
 
@@ -24,7 +26,7 @@ def get_sessions(
     return crud.get_sessions(
         sessionHasPerson=True,
         proposal=proposal,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         **page
     )
 
@@ -37,11 +39,15 @@ def get_sessions(
 def get_session(
     request: Request,
     session: str = Depends(filters.session),
+    beamLineName: str = Depends(filters.beamLineName),
+    beamLineGroup: Optional[str] = None,
 ) -> models.BLSession:
     """Get a session"""
     sessions = crud.get_sessions(
         session=session,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineName=beamLineName,
+        beamLineGroup=beamLineGroup
+        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )

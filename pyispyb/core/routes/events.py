@@ -22,7 +22,7 @@ def get_events(
     page: dict[str, int] = Depends(pagination),
     session: str = Depends(filters.session),
     proposal: str = Depends(filters.proposal),
-    beamlineName: str = Depends(filters.beamlineName),
+    beamLineName: str = Depends(filters.beamLineName),
     dataCollectionId: int = Depends(filters.dataCollectionId),
     dataCollectionGroupId: int = Depends(filters.dataCollectionGroupId),
     blSampleId: int = Depends(filters.blSampleId),
@@ -33,12 +33,12 @@ def get_events(
     return crud.get_events(
         session=session,
         proposal=proposal,
-        beamlineName=beamlineName,
+        beamLineName=beamLineName,
         dataCollectionId=dataCollectionId,
         dataCollectionGroupId=dataCollectionGroupId,
         blSampleId=blSampleId,
         proteinId=proteinId,
         status=status,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         **page
     )

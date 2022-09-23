@@ -7,7 +7,7 @@ from ispyb import models
 
 from pyispyb.app.globals import g
 from pyispyb.app.extensions.database.middleware import db
-from ...extensions.options.schema import BeamlineGroup
+from ...extensions.options.schema import BeamLineGroup
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +86,7 @@ def get_current_person(login: str) -> Optional[models.Person]:
 
 def with_beamline_groups(
     query: "sqlalchemy.orm.Query[Any]",
-    beamlineGroups: list[BeamlineGroup],
+    beamLineGroups: list[BeamLineGroup],
     includeArchived: bool = False,
     proposalColumn: "sqlalchemy.Column[Any]" = None,
     joinBLSession: bool = True,
@@ -102,14 +102,14 @@ def with_beamline_groups(
         return query
 
     # Iterate through users permissions and match them to the relevant groups
-    beamlines = []
+    beamLines = []
     permissions_applied = []
-    for group in beamlineGroups:
+    for group in beamLineGroups:
         if group.permission in g.permissions:
             permissions_applied.append(group.permission)
-            for beamline in group.beamlines:
-                if (beamline.archived and includeArchived) or not includeArchived:
-                    beamlines.append(beamline.beamlineName)
+            for beamLine in group.beamLines:
+                if (beamLine.archived and includeArchived) or not includeArchived:
+                    beamLines.append(beamLine.beamLineName)
 
     if proposalColumn:
         query = query.join(
@@ -121,25 +121,25 @@ def with_beamline_groups(
             models.BLSession, models.BLSession.proposalId == models.Proposal.proposalId
         )
 
-    if beamlines:
+    if beamLines:
         logger.info(
-            f"filtered to beamlines `{beamlines}` with permissions `{permissions_applied}`"
+            f"filtered to beamlines `{beamLines}` with permissions `{permissions_applied}`"
         )
 
-        return query.filter(models.BLSession.beamLineName.in_(beamlines))
+        return query.filter(models.BLSession.beamLineName.in_(beamLines))
     else:
         logger.info("No beamline groups, filtering by `session_has_person`")
         return with_auth_to_session_has_person(query, joinSessionHasPerson)
 
 
 def groups_from_beamlines(
-    beamlineGroups: list[BeamlineGroup], beamlines: list[str]
+    beamLineGroups: list[BeamLineGroup], beamLines: list[str]
 ) -> list[list]:
     groups = []
-    for beamline in beamlines:
-        for group in beamlineGroups:
-            for groupBeamline in group.beamlines:
-                if beamline == groupBeamline.beamlineName:
+    for beamline in beamLines:
+        for group in beamLineGroups:
+            for groupBeamline in group.beamLines:
+                if beamline == groupBeamline.beamLineName:
                     groups.append(group.groupName)
 
     return groups

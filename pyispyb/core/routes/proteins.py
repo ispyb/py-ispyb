@@ -29,7 +29,7 @@ def get_proteins(
         proposal=proposal,
         search=search,
         sort_order=sort_order,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         **page
     )
 
@@ -46,7 +46,7 @@ def get_protein(
     """Get a protein"""
     proteins = crud.get_proteins(
         proteinId=proteinId,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )

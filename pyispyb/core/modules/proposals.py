@@ -21,7 +21,7 @@ def get_proposals(
     proposalHasPerson: Optional[bool] = False,
     proposal: Optional[str] = None,
     search: Optional[str] = None,
-    beamlineGroups: Optional[dict[str, Any]] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.Proposal]:
     query = (
         db.session.query(models.Proposal)
@@ -68,8 +68,8 @@ def get_proposals(
             .options(contains_eager("ProposalHasPerson.Person"))
         )
 
-    if beamlineGroups:
-        query = with_beamline_groups(query, beamlineGroups, joinBLSession=False)
+    if beamLineGroups:
+        query = with_beamline_groups(query, beamLineGroups, joinBLSession=False)
 
     query = query.distinct()
     total = query.count()
@@ -78,12 +78,12 @@ def get_proposals(
 
     for result in results:
         result._metadata["sessions"] = len(result.BLSession)
-        result._metadata["beamlines"] = list(
+        result._metadata["beamLines"] = list(
             set([session.beamLineName for session in result.BLSession])
         )
-        if beamlineGroups:
+        if beamLineGroups:
             result._metadata["groups"] = groups_from_beamlines(
-                beamlineGroups, result._metadata["beamlines"]
+                beamLineGroups, result._metadata["beamLines"]
             )
 
     return Paged(total=total, results=results, skip=skip, limit=limit)

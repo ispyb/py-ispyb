@@ -37,7 +37,7 @@ def get_subsamples(
         proposal=proposal,
         containerId=containerId,
         sort_order=sort_order,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         **page,
     )
 
@@ -54,7 +54,7 @@ def get_subsample(
     """Get a sub sample"""
     subsamples = crud.get_subsamples(
         blSubSampleId=blSubSampleId,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )
@@ -74,7 +74,7 @@ def get_sample_images(
     """Get a list of sample images"""
     return crud.get_sample_images(
         blSampleId=blSampleId,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         **page,
     )
 
@@ -87,7 +87,7 @@ def get_sample_image(
     """Get a sample image"""
     sampleimages = crud.get_sample_images(
         blSampleImageId=blSampleImageId,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         limit=1,
         skip=0,
     )
@@ -122,7 +122,7 @@ def get_samples(
         proposal=proposal,
         containerId=containerId,
         sort_order=sort_order,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         **page,
     )
 
@@ -139,7 +139,7 @@ def get_sample(
     """Get a sample"""
     samples = crud.get_samples(
         blSampleId=blSampleId,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )

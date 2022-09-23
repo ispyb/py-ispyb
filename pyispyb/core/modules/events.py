@@ -88,13 +88,13 @@ def get_events(
     limit: int,
     session: Optional[str] = None,
     proposal: Optional[str] = None,
-    beamlineName: Optional[str] = None,
+    beamLineName: Optional[str] = None,
     dataCollectionId: Optional[int] = None,
     dataCollectionGroupId: Optional[int] = None,
     blSampleId: Optional[int] = None,
     proteinId: Optional[int] = None,
     status: Optional[EventStatus] = None,
-    beamlineGroups: Optional[dict[str, Any]] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.Event]:
     queries = {}
 
@@ -207,9 +207,9 @@ def get_events(
         )
 
         # Apply permissions
-        if beamlineGroups:
+        if beamLineGroups:
             queries[key] = with_beamline_groups(
-                queries[key], beamlineGroups, joinBLSession=False
+                queries[key], beamLineGroups, joinBLSession=False
             )
 
         # Filter by session
@@ -220,10 +220,10 @@ def get_events(
         if proposal:
             queries[key] = queries[key].filter(_proposal == proposal)
 
-        # Filter by beamlineName
-        if beamlineName:
+        # Filter by beamLineName
+        if beamLineName:
             queries[key] = queries[key].filter(
-                models.BLSession.beamLineName == beamlineName
+                models.BLSession.beamLineName == beamLineName
             )
 
     # Filter a single dataColleciton

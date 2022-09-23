@@ -22,7 +22,7 @@ def get_lab_contacts(
 ) -> Paged[models.LabContact]:
     """Get a list of lab contacts"""
     return crud.get_labcontacts(
-        proposal=proposal, beamlineGroups=request.app.db_options.beamlineGroups, **page
+        proposal=proposal, beamLineGroups=request.app.db_options.beamLineGroups, **page
     )
 
 
@@ -35,7 +35,7 @@ def get_lab_contact(request: Request, labContactId: int) -> models.LabContact:
     """Get a lab contact"""
     users = crud.get_labcontacts(
         labContactId=labContactId,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )
@@ -56,5 +56,5 @@ def create_lab_contact(
     """Create a new lab contact"""
     return crud.create_labcontact(
         labcontact=labcontact,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
     )

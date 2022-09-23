@@ -45,7 +45,7 @@ def get_datacollection_attachments(
     """Get a list of data collection attachments"""
     return crud.get_datacollection_attachments(
         dataCollectionId=dataCollectionId,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         **page,
     )
 
@@ -62,7 +62,7 @@ def get_datacollection_attachment(
     """Get a data collection attachment"""
     attachments = crud.get_datacollection_attachments(
         dataCollectionFileAttachmentId=dataCollectionFileAttachmentId,
-        beamlineGroups=request.app.db_options.beamlineGroups,
+        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )
