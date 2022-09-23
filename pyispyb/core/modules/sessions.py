@@ -24,7 +24,7 @@ def get_sessions(
     proposal: Optional[str] = None,
     session: Optional[str] = None,
     beamLineName: Optional[str] = None,
-    beamLineGroup: Optional[str] = None,
+    uiGroup: Optional[str] = None,
     scheduled: Optional[bool] = None,
     upcoming: Optional[bool] = None,
     previous: Optional[bool] = None,
@@ -105,10 +105,12 @@ def get_sessions(
         query = query.filter(models.BLSession.scheduled == 1)
 
     if upcoming:
-        query = query.filter(models.BLSession.startDate > datetime.now())
+        query = query.filter(models.BLSession.endDate >= datetime.now())
+        query = query.order_by(models.BLSession.startDate)
 
     if previous:
         query = query.filter(models.BLSession.endDate < datetime.now())
+        query = query.order_by(models.BLSession.startDate)
 
     if sessionType:
         query = query.filter(models.SessionType.typeName == sessionType)
@@ -130,14 +132,16 @@ def get_sessions(
         )
 
     if beamLineGroups:
-        if beamLineGroup:
+        if uiGroup:
             for group in beamLineGroups:
-                if group.groupName == beamLineGroup:
+                if group.uiGroup == uiGroup:
                     query = query.filter(
                         models.BLSession.beamLineName.in_(
                             [beamline.beamLineName for beamline in group.beamLines]
                         )
                     )
+                    query = query.group_by(models.BLSession.beamLineName)
+                    query = query.order_by(models.BLSession.beamLineName)
 
         query = with_beamline_groups(
             query, beamLineGroups, joinBLSession=False, joinSessionHasPerson=False
@@ -151,7 +155,7 @@ def get_sessions(
     results = with_metadata(query.all(), list(metadata.keys()))
     for result in results:
         if beamLineGroups:
-            result._metadata["groups"] = groups_from_beamlines(
+            result._metadata["uiGroups"] = groups_from_beamlines(
                 beamLineGroups, [result.beamLineName]
             )
         result._metadata["persons"] = len(result.SessionHasPerson)

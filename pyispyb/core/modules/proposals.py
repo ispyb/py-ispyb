@@ -82,7 +82,7 @@ def get_proposals(
             set([session.beamLineName for session in result.BLSession])
         )
         if beamLineGroups:
-            result._metadata["groups"] = groups_from_beamlines(
+            result._metadata["uiGroups"] = groups_from_beamlines(
                 beamLineGroups, result._metadata["beamLines"]
             )
 

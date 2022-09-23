@@ -21,7 +21,7 @@ def get_sessions(
     request: Request,
     proposal: str = Depends(filters.proposal),
     beamLineName: str = Depends(filters.beamLineName),
-    beamLineGroup: Optional[str] = None,
+    uiGroup: Optional[str] = Query(None, description="Show sessions for a uiGroup"),
     scheduled: bool = Query(None, description="Get scheduled sessions"),
     upcoming: Optional[bool] = Query(False, description="Get the upcoming sessions"),
     previous: Optional[bool] = Query(
@@ -39,7 +39,7 @@ def get_sessions(
         sessionHasPerson=True,
         proposal=proposal,
         beamLineName=beamLineName,
-        beamLineGroup=beamLineGroup,
+        uiGroup=uiGroup,
         scheduled=scheduled,
         upcoming=upcoming,
         previous=previous,
