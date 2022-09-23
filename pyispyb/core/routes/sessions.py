@@ -46,7 +46,7 @@ def get_session(
     sessions = crud.get_sessions(
         session=session,
         beamLineName=beamLineName,
-        beamLineGroup=beamLineGroup
+        beamLineGroup=beamLineGroup,
         beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
