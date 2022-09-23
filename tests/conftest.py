@@ -67,7 +67,7 @@ def with_beamline_groups(auth_client_efgh: AuthClient, app: ASGIApp):
                         "groupName": "BL0x",
                         "uiGroup": "mx",
                         "permission": "bl_admin",
-                        "beamlines": [
+                        "beamLines": [
                             {"beamLineName": "BL01"},
                             {"beamLineName": "BL02"},
                         ],
