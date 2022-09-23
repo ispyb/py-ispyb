@@ -98,15 +98,6 @@ def get_sessions(
     if proposal:
         query = query.filter(models.Proposal.proposal == proposal)
 
-    beamLineName: Optional[str] = (None,)
-    beamLineGroup: Optional[str] = (None,)
-    scheduled: Optional[bool] = (None,)
-    upcoming: Optional[bool] = (None,)
-    previous: Optional[bool] = (None,)
-    sessionType: Optional[str] = (None,)
-    month: Optional[int] = (None,)
-    year: Optional[int] = (None,)
-
     if beamLineName:
         query = query.filter(models.BLSession.beamLineName == beamLineName)
 
