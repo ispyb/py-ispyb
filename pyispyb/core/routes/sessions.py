@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import Depends, HTTPException, Request
+from fastapi import Depends, HTTPException, Request, Query
 from ispyb import models
 
 from pyispyb.dependencies import pagination
@@ -20,12 +20,32 @@ router = AuthenticatedAPIRouter(prefix="/sessions", tags=["Sessions"])
 def get_sessions(
     request: Request,
     proposal: str = Depends(filters.proposal),
+    beamLineName: str = Depends(filters.beamLineName),
+    beamLineGroup: Optional[str] = None,
+    scheduled: bool = Query(None, description="Get scheduled sessions"),
+    upcoming: Optional[bool] = Query(False, description="Get the upcoming sessions"),
+    previous: Optional[bool] = Query(
+        False, description="Get the recently finished sessions"
+    ),
+    sessionType=Query(
+        None, description="Filter by session type, i.e. commissioning, remote"
+    ),
+    month: int = Depends(filters.month),
+    year: int = Depends(filters.year),
     page: dict[str, int] = Depends(pagination),
 ) -> Paged[models.BLSession]:
     """Get a list of sessions"""
     return crud.get_sessions(
         sessionHasPerson=True,
         proposal=proposal,
+        beamLineName=beamLineName,
+        beamLineGroup=beamLineGroup,
+        scheduled=scheduled,
+        upcoming=upcoming,
+        previous=previous,
+        sessionType=sessionType,
+        month=month,
+        year=year,
         beamLineGroups=request.app.db_options.beamLineGroups,
         **page
     )
@@ -39,14 +59,10 @@ def get_sessions(
 def get_session(
     request: Request,
     session: str = Depends(filters.session),
-    beamLineName: str = Depends(filters.beamLineName),
-    beamLineGroup: Optional[str] = None,
 ) -> models.BLSession:
     """Get a session"""
     sessions = crud.get_sessions(
         session=session,
-        beamLineName=beamLineName,
-        beamLineGroup=beamLineGroup,
         beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,

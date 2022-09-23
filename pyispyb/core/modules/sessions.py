@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Any, Optional
 
 from ispyb import models
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, or_, extract
 from sqlalchemy.orm import joinedload, contains_eager
 
 from ...app.extensions.database.definitions import (
@@ -12,8 +12,6 @@ from ...app.extensions.database.definitions import (
 from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.middleware import db
 from ...core.modules.utils import encode_external_id
-
-models.BLSession.beamLineName
 
 
 def get_sessions(
@@ -25,6 +23,14 @@ def get_sessions(
     proposalId: Optional[int] = None,
     proposal: Optional[str] = None,
     session: Optional[str] = None,
+    beamLineName: Optional[str] = None,
+    beamLineGroup: Optional[str] = None,
+    scheduled: Optional[bool] = None,
+    upcoming: Optional[bool] = None,
+    previous: Optional[bool] = None,
+    sessionType: Optional[str] = None,
+    month: Optional[int] = None,
+    year: Optional[int] = None,
     sessionHasPerson: Optional[bool] = False,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSession]:
@@ -92,7 +98,56 @@ def get_sessions(
     if proposal:
         query = query.filter(models.Proposal.proposal == proposal)
 
+    beamLineName: Optional[str] = (None,)
+    beamLineGroup: Optional[str] = (None,)
+    scheduled: Optional[bool] = (None,)
+    upcoming: Optional[bool] = (None,)
+    previous: Optional[bool] = (None,)
+    sessionType: Optional[str] = (None,)
+    month: Optional[int] = (None,)
+    year: Optional[int] = (None,)
+
+    if beamLineName:
+        query = query.filter(models.BLSession.beamLineName == beamLineName)
+
+    if scheduled:
+        query = query.filter(models.BLSession.scheduled == 1)
+
+    if upcoming:
+        query = query.filter(models.BLSession.startDate > datetime.now())
+
+    if previous:
+        query = query.filter(models.BLSession.endDate < datetime.now())
+
+    if sessionType:
+        query = query.filter(models.SessionType.typeName == sessionType)
+
+    if month:
+        query = query.filter(
+            or_(
+                extract("month", models.BLSession.startDate) == month,
+                extract("month", models.BLSession.endDate) == month,
+            )
+        )
+
+    if year:
+        query = query.filter(
+            or_(
+                extract("year", models.BLSession.startDate) == year,
+                extract("year", models.BLSession.endDate) == year,
+            )
+        )
+
     if beamLineGroups:
+        if beamLineGroup:
+            for group in beamLineGroups:
+                if group.groupName == beamLineGroup:
+                    query = query.filter(
+                        models.BLSession.beamLineName.in_(
+                            [beamline.beamLineName for beamline in group.beamLines]
+                        )
+                    )
+
         query = with_beamline_groups(
             query, beamLineGroups, joinBLSession=False, joinSessionHasPerson=False
         )
