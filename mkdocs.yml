@@ -6,6 +6,7 @@ nav:
   - Configuration: conf.md
   - Authentication and authorization:
       - Basics: auth.md
+      - Authorization: authorization.md
       - Permissions: permissions.md
   - Routes:
       - About: routes.md
