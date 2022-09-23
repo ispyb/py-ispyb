@@ -12,7 +12,7 @@ The authorization rules are applied in four ways:
 
 ### Users
 
-- A user can access entities related to a Proposal in which they are a member of one or more Session(s) and the DataCollection(s) for the specific Session(s) [linked via SessionHasPerson]. _This is an intrinsic permission and is the default behaviour if the user has no other permissions._
+- A user can access entities related to a Proposal and the DataCollection(s) in which they are a member of one or more Session(s) [linked via SessionHasPerson]. _This is an intrinsic permission and is the default behaviour if the user has no other permissions._
 - A user can access entities related to all Session(s) in a Proposal [linked via ProposalHasPerson]
 
 ### Administrators
