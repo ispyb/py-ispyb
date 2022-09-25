@@ -1,4 +1,4 @@
-ispyb-models==1.0.4
+ispyb-models==1.0.5
 
 fastapi
 pydantic[dotenv]
