@@ -9,6 +9,7 @@ from ...app.extensions.database.definitions import (
     groups_from_beamlines,
     with_beamline_groups,
 )
+from ...app.extensions.options.schema import BeamLineGroup
 from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.middleware import db
 from ...core.modules.utils import encode_external_id
@@ -59,6 +60,7 @@ def get_sessions(
         .options(contains_eager(models.BLSession.SessionType))
         .join(models.Proposal)
         .options(contains_eager(models.BLSession.Proposal))
+        .order_by(models.BLSession.startDate.desc())
     )
 
     if sessionHasPerson:
@@ -110,7 +112,6 @@ def get_sessions(
 
     if previous:
         query = query.filter(models.BLSession.endDate < datetime.now())
-        query = query.order_by(models.BLSession.startDate)
 
     if sessionType:
         query = query.filter(models.SessionType.typeName == sessionType)
@@ -140,8 +141,6 @@ def get_sessions(
                             [beamline.beamLineName for beamline in group.beamLines]
                         )
                     )
-                    query = query.group_by(models.BLSession.beamLineName)
-                    query = query.order_by(models.BLSession.beamLineName)
 
         query = with_beamline_groups(
             query, beamLineGroups, joinBLSession=False, joinSessionHasPerson=False
@@ -153,14 +152,71 @@ def get_sessions(
 
     results = query.all()
     results = with_metadata(query.all(), list(metadata.keys()))
+
+    dataCollections = (
+        db.session.query(
+            func.count(models.DataCollection.dataCollectionId).label("count"),
+            models.DataCollectionGroup.sessionId,
+        )
+        .join(models.DataCollectionGroup)
+        .filter(
+            models.DataCollectionGroup.sessionId.in_(
+                [result.sessionId for result in results]
+            )
+        )
+        .group_by(models.DataCollectionGroup.sessionId)
+        .all()
+    )
+    dataCollectionCount = {}
+    for dataCollection in dataCollections:
+        dataCollectionDict = dataCollection._asdict()
+        dataCollectionCount[dataCollectionDict["sessionId"]] = dataCollectionDict[
+            "count"
+        ]
+
     for result in results:
         if beamLineGroups:
             result._metadata["uiGroups"] = groups_from_beamlines(
                 beamLineGroups, [result.beamLineName]
             )
         result._metadata["persons"] = len(result.SessionHasPerson)
+        result._metadata["datacollections"] = dataCollectionCount.get(
+            result.sessionId, 0
+        )
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
+
+
+def get_sessions_for_ui_group(
+    uiGroup: Optional[str],
+    upcoming: Optional[bool] = None,
+    previous: Optional[bool] = None,
+    sessionType: Optional[str] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
+) -> Paged[models.BLSession]:
+    group: BeamLineGroup = None
+    for beamLineGroup in beamLineGroups:
+        if beamLineGroup.uiGroup == uiGroup:
+            group = beamLineGroup
+
+    if not group:
+        return Paged(total=0, results=[], skip=0, limit=0)
+
+    sessions = []
+    for beamLine in group.beamLines:
+        beamline_sessions = get_sessions(
+            skip=0,
+            limit=1,
+            beamLineName=beamLine.beamLineName,
+            upcoming=upcoming,
+            previous=previous,
+            sessionType=sessionType,
+            beamLineGroups=beamLineGroups,
+        )
+
+        sessions.extend(beamline_sessions.results)
+
+    return Paged(total=len(sessions), results=sessions, skip=0, limit=len(sessions))
 
 
 def get_sessionHasPerson(

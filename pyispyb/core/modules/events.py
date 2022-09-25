@@ -127,9 +127,12 @@ def get_events(
             literal_column("'dc'").label("type"),
             dataCollectionCount.label("count"),
             sqlalchemy.func.count(
-                models.DataCollectionFileAttachment.dataCollectionFileAttachmentId
+                sqlalchemy.distinct(
+                    models.DataCollectionFileAttachment.dataCollectionFileAttachmentId
+                )
             ).label("attachments"),
             _session,
+            _proposal,
         )
         .join(
             models.DataCollectionGroup,
@@ -155,6 +158,7 @@ def get_events(
             literal_column("1").label("count"),
             literal_column("0").label("attachments"),
             _session,
+            _proposal,
         )
         .join(
             models.BLSession,
@@ -173,6 +177,7 @@ def get_events(
             literal_column("1").label("count"),
             literal_column("0").label("attachments"),
             _session,
+            _proposal,
         )
         .join(
             models.BLSession,
@@ -191,6 +196,7 @@ def get_events(
             literal_column("1").label("count"),
             literal_column("0").label("attachments"),
             _session,
+            _proposal,
         )
         .join(
             models.BLSession, models.BLSession.sessionId == models.EnergyScan.sessionId
@@ -289,7 +295,7 @@ def get_events(
     )
 
     total = query.count()
-    query = query.order_by(sqlalchemy.desc("startTime"))
+    query = query.order_by(sqlalchemy.desc("endTime"))
     query = page(query, skip=skip, limit=limit)
 
     # Results contains an index of type / id

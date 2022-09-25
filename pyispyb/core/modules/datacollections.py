@@ -17,9 +17,17 @@ logger = logging.getLogger(__name__)
 
 
 def get_datacollection_snapshot_path(
-    dataCollectionId: int, imageId: int = 1, snapshot: bool = False
+    dataCollectionId: int,
+    imageId: int = 1,
+    snapshot: bool = False,
+    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Optional[str]:
-    datacollections = get_events(dataCollectionId=dataCollectionId, skip=0, limit=1)
+    datacollections = get_events(
+        dataCollectionId=dataCollectionId,
+        beamLineGroups=beamLineGroups,
+        skip=0,
+        limit=1,
+    )
     try:
         dc = datacollections.first["Item"]
     except IndexError:
@@ -39,6 +47,8 @@ def get_datacollection_snapshot_path(
     if snapshot:
         ext = os.path.splitext(image_path)[1][1:].strip()
         image_path = image_path.replace(f".{ext}", f"t.{ext}")
+
+    # image_path = image_path.replace("/data", "/Users/Shared/data")
 
     if not os.path.exists(image_path):
         logger.warning(
@@ -69,6 +79,7 @@ def get_datacollection_attachments(
         .join(models.DataCollectionGroup)
         .join(models.BLSession)
         .join(models.Proposal)
+        .group_by(models.DataCollectionFileAttachment.dataCollectionFileAttachmentId)
     )
 
     if dataCollectionId:

@@ -22,12 +22,18 @@ router = AuthenticatedAPIRouter(prefix="/datacollections", tags=["Data Collectio
 
 @router.get("/images/{dataCollectionId}", response_class=FileResponse)
 def get_datacollection_image(
+    request: Request,
     dataCollectionId: int,
     imageId: conint(ge=1, le=4) = Query(1, description="Image 1-4 to return"),
     snapshot: bool = Query(False, description="Get snapshot image"),
 ) -> str:
     """Get a data collection image"""
-    path = crud.get_datacollection_snapshot_path(dataCollectionId, imageId, snapshot)
+    path = crud.get_datacollection_snapshot_path(
+        dataCollectionId,
+        imageId,
+        snapshot,
+        beamLineGroups=request.app.db_options.beamLineGroups,
+    )
     if not path:
         raise HTTPException(status_code=404, detail="Image not found")
 
@@ -40,7 +46,7 @@ def get_datacollection_image(
 def get_datacollection_attachments(
     request: Request,
     page: dict[str, int] = Depends(pagination),
-    dataCollectionId: int = Depends(filters.blSampleId),
+    dataCollectionId: int = Depends(filters.dataCollectionId),
 ) -> Paged[models.DataCollectionFileAttachment]:
     """Get a list of data collection attachments"""
     return crud.get_datacollection_attachments(

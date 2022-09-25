@@ -4,9 +4,12 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from ispyb import models
 
-s = models.BLSession
+class SessionType(BaseModel):
+    typeName: str
+
+    class Config:
+        orm_mode = True
 
 
 class SessionMetaData(BaseModel):
@@ -22,18 +25,21 @@ class SessionMetaData(BaseModel):
 class SessionBase(BaseModel):
     proposalId: int
     session: str
+    proposal: str
     visit_number: Optional[int]
     startDate: datetime
     endDate: datetime
     beamLineName: str
     beamLineOperator: Optional[str]
-    scheduled: bool
-
-    metadata: SessionMetaData = Field(alias="_metadata")
+    scheduled: Optional[bool]
 
 
 class Session(SessionBase):
     sessionId: int
+
+    SessionType: list[SessionType]
+
+    metadata: SessionMetaData = Field(alias="_metadata")
 
     class Config:
         orm_mode = True

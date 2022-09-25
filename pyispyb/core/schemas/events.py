@@ -5,9 +5,6 @@ from datetime import datetime
 from typing import Union, Optional
 
 from pydantic import BaseModel, Field
-from ispyb import models
-
-d = models.DataCollection
 
 
 class DataCollectionGroup(BaseModel):
@@ -28,6 +25,7 @@ class RotationAxis(str, enum.Enum):
 
 
 class DataCollection(BaseModel):
+    dataCollectionId: int
     runStatus: Optional[str] = Field(
         title="Status", description="`Successful` on success"
     )
@@ -95,6 +93,7 @@ class EventBase(BaseModel):
     endTime: Optional[datetime] = Field(title="End Time")
     count: int
     session: str
+    proposal: str
     blSample: Optional[str] = Field(description="Sample Name")
     blSampleId: Optional[int] = Field(description="Sample Id")
     attachments: Optional[int] = Field(description="No. of attachments")

@@ -71,7 +71,7 @@ def containerId(
 
 
 def month(
-    month: Optional[str] = Query(None, description="Month filter by", regex=r"^\d\d$")
+    month: Optional[str] = Query(None, description="Month filter by", regex=r"^\d\d?$")
 ) -> Optional[str]:
     return month
 

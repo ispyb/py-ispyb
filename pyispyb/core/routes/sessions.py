@@ -14,15 +14,16 @@ from ..schemas.utils import paginated
 
 
 router = AuthenticatedAPIRouter(prefix="/sessions", tags=["Sessions"])
+PaginatedSession = paginated(schema.Session)
 
 
-@router.get("/", response_model=paginated(schema.Session))
+@router.get("/", response_model=PaginatedSession)
 def get_sessions(
     request: Request,
     proposal: str = Depends(filters.proposal),
     beamLineName: str = Depends(filters.beamLineName),
     uiGroup: Optional[str] = Query(None, description="Show sessions for a uiGroup"),
-    scheduled: bool = Query(None, description="Get scheduled sessions"),
+    scheduled: bool = Query(None, description="Get scheduled sessions only"),
     upcoming: Optional[bool] = Query(False, description="Get the upcoming sessions"),
     previous: Optional[bool] = Query(
         False, description="Get the recently finished sessions"
@@ -48,6 +49,30 @@ def get_sessions(
         year=year,
         beamLineGroups=request.app.db_options.beamLineGroups,
         **page
+    )
+
+
+@router.get("/group", response_model=PaginatedSession)
+def get_sessions_for_ui_group(
+    request: Request,
+    uiGroup: Optional[str] = Query(description="UI Group to display session for"),
+    upcoming: Optional[bool] = Query(False, description="Get the upcoming sessions"),
+    previous: Optional[bool] = Query(
+        False, description="Get the recently finished sessions"
+    ),
+    sessionType=Query(
+        None, description="Filter by session type, i.e. commissioning, remote"
+    ),
+):
+    """Get a list of sessions for a UI Group
+    Displays one session per beamline
+    """
+    return crud.get_sessions_for_ui_group(
+        uiGroup=uiGroup,
+        upcoming=upcoming,
+        previous=previous,
+        sessionType=sessionType,
+        beamLineGroups=request.app.db_options.beamLineGroups,
     )
 
 

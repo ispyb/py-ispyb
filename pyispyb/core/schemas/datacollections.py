@@ -82,6 +82,7 @@ class DataCollectionFileAttachmentMetaData(BaseModel):
 
 class DataCollectionFileAttachment(BaseModel):
     dataCollectionFileAttachmentId: int
+    dataCollectionId: int
     fileType: str
 
     metadata: DataCollectionFileAttachmentMetaData = Field(alias="_metadata")
