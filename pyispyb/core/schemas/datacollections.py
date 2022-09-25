@@ -23,7 +23,7 @@ class RotationAxis(str, enum.Enum):
     phi = "phi"
 
 
-class DataCollection(BaseModel):
+class DataCollectionBase(BaseModel):
     runStatus: Optional[str] = Field(
         title="Status", description="`Successful` on success"
     )
@@ -66,6 +66,10 @@ class DataCollection(BaseModel):
     kappaStart: Optional[float] = Field(title="Kappa Start", unit="°")
     omegaStart: Optional[float] = Field(title="Omega Start", unit="°")
     chiStart: Optional[float] = Field(title="Chi Start", unit="°")
+
+
+class DataCollection(DataCollectionBase):
+    dataCollectionId: int
 
     DataCollectionGroup: DataCollectionGroup
 

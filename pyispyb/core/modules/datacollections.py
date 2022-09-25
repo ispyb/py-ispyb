@@ -63,6 +63,7 @@ def get_datacollection_attachments(
     skip: int,
     limit: int,
     dataCollectionId: Optional[int] = None,
+    dataCollectionGroupId: Optional[int] = None,
     dataCollectionFileAttachmentId: Optional[int] = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.DataCollectionFileAttachment]:
@@ -85,6 +86,11 @@ def get_datacollection_attachments(
     if dataCollectionId:
         query = query.filter(
             models.DataCollectionFileAttachment.dataCollectionId == dataCollectionId
+        )
+
+    if dataCollectionGroupId:
+        query = query.filter(
+            models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
         )
 
     if dataCollectionFileAttachmentId:

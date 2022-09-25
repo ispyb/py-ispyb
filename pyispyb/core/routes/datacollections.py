@@ -47,10 +47,12 @@ def get_datacollection_attachments(
     request: Request,
     page: dict[str, int] = Depends(pagination),
     dataCollectionId: int = Depends(filters.dataCollectionId),
+    dataCollectionGroupId: int = Depends(filters.dataCollectionGroupId),
 ) -> Paged[models.DataCollectionFileAttachment]:
     """Get a list of data collection attachments"""
     return crud.get_datacollection_attachments(
         dataCollectionId=dataCollectionId,
+        dataCollectionGroupId=dataCollectionGroupId,
         beamLineGroups=request.app.db_options.beamLineGroups,
         **page,
     )
