@@ -25,3 +25,8 @@ class EventBase(BaseModel):
 class Event(EventBase):
     class Config:
         orm_mode = True
+
+
+class EventType(BaseModel):
+    eventTypeName: str
+    eventType: str

@@ -95,6 +95,7 @@ def get_events(
     blSampleId: Optional[int] = None,
     proteinId: Optional[int] = None,
     status: Optional[EventStatus] = None,
+    eventType: Optional[str] = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.Event]:
     queries = {}
@@ -290,6 +291,30 @@ def get_events(
         )
         queries["es"] = queries["es"].filter(models.EnergyScan.energyScanId == 0)
 
+    # Filter by eventType
+    if eventType:
+        filters = {
+            "dc": queries["dc"].filter(models.DataCollection.dataCollectionId == 0),
+            "robot": queries["robot"].filter(models.RobotAction.robotActionId == 0),
+            "xrf": queries["xrf"].filter(
+                models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId == 0
+            ),
+            "es": queries["es"].filter(models.EnergyScan.energyScanId == 0),
+        }
+
+        tableFilters = ["robot", "es", "src"]
+        if eventType in tableFilters:
+            for query in tableFilters:
+                if eventType == query:
+                    filters[query] = queries[query]
+        else:
+            filters["dc"] = queries["dc"].filter(
+                models.DataCollectionGroup.experimentType == eventType
+            )
+
+        for key, query_filter in filters.items():
+            queries[key] = query_filter
+
     # Now union the four queries
     query: sqlalchemy.orm.Query[Any] = queries["dc"].union_all(
         queries["robot"], queries["xrf"], queries["es"]
@@ -367,3 +392,73 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
 
     datacollection._metadata["snapshots"] = snapshot_statuses
     return datacollection
+
+
+def get_event_types(
+    session: Optional[str] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
+) -> Paged[schema.EventType]:
+    queries = {}
+    queries["dc"] = db.session.query(
+        sqlalchemy.distinct(models.DataCollectionGroup.experimentType).label(
+            "experimentType"
+        ),
+    ).join(
+        models.BLSession,
+        models.BLSession.sessionId == models.DataCollectionGroup.sessionId,
+    )
+
+    queries["robot"] = db.session.query(
+        sqlalchemy.func.count(models.RobotAction.robotActionId).label("count")
+    ).join(
+        models.BLSession,
+        models.BLSession.sessionId == models.RobotAction.blsessionId,
+    )
+    queries["xrf"] = db.session.query(
+        sqlalchemy.func.count(
+            models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId
+        ).label("count")
+    ).join(
+        models.BLSession,
+        models.BLSession.sessionId == models.XFEFluorescenceSpectrum.sessionId,
+    )
+    queries["es"] = db.session.query(
+        sqlalchemy.func.count(models.EnergyScan.energyScanId).label("count")
+    ).join(models.BLSession, models.BLSession.sessionId == models.EnergyScan.sessionId)
+
+    for key in queries.keys():
+        queries[key] = queries[key].join(
+            models.Proposal,
+            models.Proposal.proposalId == models.BLSession.proposalId,
+        )
+
+        if session:
+            queries[key] = queries[key].filter(models.BLSession.session == session)
+
+        if beamLineGroups:
+            queries[key] = with_beamline_groups(
+                queries[key], beamLineGroups, joinBLSession=False
+            )
+
+        queries[key] = [result._asdict() for result in queries[key].all()]
+
+    eventTypes = []
+    for eventType in queries["dc"]:
+        eventTypes.append(
+            {
+                "eventType": eventType["experimentType"],
+                "eventTypeName": eventType["experimentType"],
+            }
+        )
+
+    for table, name in {
+        "robot": "Sample Actions",
+        "xrf": "XRF Spectrum",
+        "es": "Energy Scan",
+    }.items():
+        if queries[table][0]["count"] > 0:
+            eventTypes.append({"eventType": table, "eventTypeName": name})
+
+    return Paged(
+        total=len(eventTypes), results=eventTypes, skip=0, limit=len(eventTypes)
+    )

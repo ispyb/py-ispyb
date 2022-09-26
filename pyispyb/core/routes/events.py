@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import Depends, Request
 
 from ...app.extensions.database.utils import Paged
@@ -28,6 +29,7 @@ def get_events(
     blSampleId: int = Depends(filters.blSampleId),
     proteinId: int = Depends(filters.proteinId),
     status: crud.EventStatus = None,
+    eventType: Optional[str] = None,
 ) -> Paged[schema.Event]:
     """Get a list of events"""
     return crud.get_events(
@@ -39,6 +41,22 @@ def get_events(
         blSampleId=blSampleId,
         proteinId=proteinId,
         status=status,
+        eventType=eventType,
         beamLineGroups=request.app.db_options.beamLineGroups,
         **page
+    )
+
+
+@router.get(
+    "/types",
+    response_model=paginated(schema.EventType),
+)
+def get_event_types(
+    request: Request,
+    session: str = Depends(filters.session),
+) -> Paged[schema.EventType]:
+    """Get a list of event types"""
+    return crud.get_event_types(
+        session=session,
+        beamLineGroups=request.app.db_options.beamLineGroups,
     )
