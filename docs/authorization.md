@@ -40,4 +40,4 @@ For example:
 ]
 ```
 
-A staff member with the `bl0_admin` permission will be able to access Proposal(s) and Session(s) allocated on beamlines `BL01` and `BL02`, but not other beamlines.
+A staff member with the `bl0_admin` permission will be able to access Proposal(s) and Session(s) allocated on beamlines `BL01` and `BL02`, but not other beamlines. `uiGroup` specifies how this group should be rendered in the UI.

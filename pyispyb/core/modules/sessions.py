@@ -25,7 +25,7 @@ def get_sessions(
     proposal: Optional[str] = None,
     session: Optional[str] = None,
     beamLineName: Optional[str] = None,
-    uiGroup: Optional[str] = None,
+    beamlineGroup: Optional[str] = None,
     scheduled: Optional[bool] = None,
     upcoming: Optional[bool] = None,
     previous: Optional[bool] = None,
@@ -133,9 +133,9 @@ def get_sessions(
         )
 
     if beamLineGroups:
-        if uiGroup:
+        if beamlineGroup:
             for group in beamLineGroups:
-                if group.uiGroup == uiGroup:
+                if group.groupName == beamlineGroup:
                     query = query.filter(
                         models.BLSession.beamLineName.in_(
                             [beamline.beamLineName for beamline in group.beamLines]
@@ -187,8 +187,8 @@ def get_sessions(
     return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
-def get_sessions_for_ui_group(
-    uiGroup: Optional[str],
+def get_sessions_for_beamline_group(
+    beamlineGroup: Optional[str],
     upcoming: Optional[bool] = None,
     previous: Optional[bool] = None,
     sessionType: Optional[str] = None,
@@ -196,7 +196,7 @@ def get_sessions_for_ui_group(
 ) -> Paged[models.BLSession]:
     group: BeamLineGroup = None
     for beamLineGroup in beamLineGroups:
-        if beamLineGroup.uiGroup == uiGroup:
+        if beamLineGroup.groupName == beamlineGroup:
             group = beamLineGroup
 
     if not group:

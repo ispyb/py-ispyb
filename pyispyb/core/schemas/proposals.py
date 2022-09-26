@@ -15,7 +15,7 @@ class ProposalMetaData(BaseModel):
     sessions: int = Field(description="Number of sessions")
     beamLines: list[str] = Field(description="Beamlines allocated in this proposal")
     uiGroups: Optional[list[str]] = Field(
-        description="Beamline groups allocated in this proposal"
+        description="UI groups allocated in this proposal"
     )
 
 

@@ -15,7 +15,7 @@ class CurrentUser(BaseModel):
     familyName: str
     Permissions: list[str]
     personId: int
-    uiGroups: list[str]
+    beamlineGroups: list[str]
 
 
 @router.get(
@@ -29,12 +29,12 @@ def current_user(request: Request) -> CurrentUser:
     groups = []
     for beamLineGroup in beamLineGroups:
         if beamLineGroup.permission in g.permissions:
-            groups.append(beamLineGroup.uiGroup)
+            groups.append(beamLineGroup.groupName)
 
     return {
         "personId": person.personId,
         "givenName": person.givenName,
         "familyName": person.familyName,
         "Permissions": g.permissions,
-        "uiGroups": groups,
+        "beamlineGroups": groups,
     }

@@ -14,7 +14,7 @@ class SessionType(BaseModel):
 
 class SessionMetaData(BaseModel):
     datacollections: Optional[int] = Field(description="Number of datacollections")
-    uiGroups: Optional[list[str]] = Field(description="Beamline group for this session")
+    uiGroups: Optional[list[str]] = Field(description="UI groups for this session")
     persons: int = Field(description="Number of people registered on this session")
     active: bool = Field(description="Whether this session is active")
     active_soon: bool = Field(

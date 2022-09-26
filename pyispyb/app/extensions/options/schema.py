@@ -9,8 +9,8 @@ class BeamLineGroupBeamLine(BaseModel):
 
 
 class BeamLineGroup(BaseModel):
-    groupName: str = Field(title="Group Name")
-    uiGroup: str = Field(title="UI Group")
+    groupName: str = Field(title="Group Name", descriptiopn="A group of beamlines")
+    uiGroup: str = Field(title="UI Group", description="Display type to use in the UI")
     permission: str = Field(
         title="Permission",
         description="Permission required to view all proposals from these beamlines",

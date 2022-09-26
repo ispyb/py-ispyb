@@ -135,11 +135,12 @@ def with_beamline_groups(
 def groups_from_beamlines(
     beamLineGroups: list[BeamLineGroup], beamLines: list[str]
 ) -> list[list]:
+    """Get uiGroups from a list of beamlines"""
     groups = []
     for beamline in beamLines:
         for group in beamLineGroups:
             for groupBeamline in group.beamLines:
                 if beamline == groupBeamline.beamLineName:
-                    groups.append(group.groupName)
+                    groups.append(group.uiGroup)
 
     return groups
