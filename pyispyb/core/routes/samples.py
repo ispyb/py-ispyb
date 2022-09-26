@@ -5,11 +5,11 @@ from fastapi import Depends, HTTPException, Request
 from fastapi.responses import FileResponse
 from ispyb import models
 
+from ...config import settings
 from ...dependencies import pagination, order_by_factory
 from ...app.extensions.database.utils import Paged
 from ... import filters
 from ...app.base import AuthenticatedAPIRouter
-
 from ..modules import samples as crud
 from ..schemas import samples as schema
 from ..schemas.utils import paginated
@@ -94,12 +94,16 @@ def get_sample_image(
 
     try:
         sampleimage = sampleimages.first
-        if not os.path.exists(sampleimage.imageFullPath):
+        image_path = sampleimage.imageFullPath
+        if settings.path_map:
+            image_path = settings.path_map + image_path
+
+        if not os.path.exists(image_path):
             logger.warning(
-                f"blSampleImageId `{sampleimage.blSampleImageId}` file `{sampleimage.imageFullPath}` does not exist on disk"
+                f"blSampleImageId `{sampleimage.blSampleImageId}` file `{image_path}` does not exist on disk"
             )
             raise IndexError
-        return sampleimage.imageFullPath
+        return image_path
 
     except IndexError:
         raise HTTPException(status_code=404, detail="Sample image not found")
