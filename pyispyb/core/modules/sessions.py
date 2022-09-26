@@ -143,7 +143,10 @@ def get_sessions(
                     )
 
         query = with_beamline_groups(
-            query, beamLineGroups, joinBLSession=False, joinSessionHasPerson=False
+            query,
+            beamLineGroups,
+            joinBLSession=False,
+            joinSessionHasPerson=(not sessionHasPerson),
         )
 
     query = query.distinct()

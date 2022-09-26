@@ -54,6 +54,13 @@ def with_beamline_groups(
 ) -> "sqlalchemy.orm.Query[Any]":
     """Apply beamline group based permissions
 
+    Kwargs:
+        beamLineGroups: beamlineGroups to apply filtering via
+        includeArchived: whether to exclude archived beamlines
+        proposalColumn: the column used to join to `models.Proposal`, will force a join with `models.Proposal`
+        joinBLSession: whether to join `models.BLSession`
+        joinSessionHasPerson: whether to join `models.SessionHasPerson`
+
     If the user is not a beamline group admin this will fallback to SessionHasPerson
     """
     # `all_proposals`` can access all sessions
