@@ -23,46 +23,6 @@ _proposal = sqlalchemy.func.concat(
 ).label("proposal")
 
 
-def with_auth_to_session(
-    query: "sqlalchemy.orm.Query[Any]", column: "sqlalchemy.Column[Any]"
-) -> "sqlalchemy.orm.Query[Any]":
-    """Join relevant tables to authorise right through to SessionHasPerson
-
-    in case of not being admin, can be reused"""
-    return (
-        query.join(models.Proposal, column == models.Proposal.proposalId)
-        .join(
-            models.BLSession, models.BLSession.proposalId == models.Proposal.proposalId
-        )
-        .join(
-            models.SessionHasPerson,
-            models.BLSession.sessionId == models.SessionHasPerson.sessionId,
-        )
-        .join(
-            models.Person,
-            models.SessionHasPerson.personId == models.Person.personId,
-        )
-        .filter(models.Person.login == g.login)
-    )
-
-
-def with_auth_to_session_has_person(
-    query: "sqlalchemy.orm.Query[Any]", joinSessionHasPerson: bool = True
-) -> "sqlalchemy.orm.Query[Any]":
-    """Join relevant tables to authorise right through to SessionHasPerson"""
-
-    if joinSessionHasPerson:
-        query = query.join(
-            models.SessionHasPerson,
-            models.BLSession.sessionId == models.SessionHasPerson.sessionId,
-        ).join(
-            models.Person,
-            models.SessionHasPerson.personId == models.Person.personId,
-        )
-
-    return query.filter(models.Person.login == g.login)
-
-
 def get_current_person(login: str) -> Optional[models.Person]:
     person = (
         db.session.query(models.Person)
@@ -121,15 +81,26 @@ def with_beamline_groups(
             models.BLSession, models.BLSession.proposalId == models.Proposal.proposalId
         )
 
+    conditions = []
     if beamLines:
         logger.info(
             f"filtered to beamlines `{beamLines}` with permissions `{permissions_applied}`"
         )
 
-        return query.filter(models.BLSession.beamLineName.in_(beamLines))
-    else:
-        logger.info("No beamline groups, filtering by `session_has_person`")
-        return with_auth_to_session_has_person(query, joinSessionHasPerson)
+        conditions.append(models.BLSession.beamLineName.in_(beamLines))
+
+    logger.info("filtering by `session_has_person`")
+    if joinSessionHasPerson:
+        query = query.outerjoin(
+            models.SessionHasPerson,
+            models.BLSession.sessionId == models.SessionHasPerson.sessionId,
+        ).outerjoin(
+            models.Person,
+            models.SessionHasPerson.personId == models.Person.personId,
+        )
+
+    conditions.append(models.Person.login == g.login)
+    return query.filter(sqlalchemy.or_(*conditions))
 
 
 def groups_from_beamlines(
