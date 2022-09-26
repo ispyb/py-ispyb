@@ -17,7 +17,7 @@ router = AuthenticatedAPIRouter(prefix="/sessions", tags=["Sessions"])
 PaginatedSession = paginated(schema.Session)
 
 
-@router.get("/", response_model=PaginatedSession)
+@router.get("", response_model=PaginatedSession)
 def get_sessions(
     request: Request,
     proposal: str = Depends(filters.proposal),

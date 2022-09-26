@@ -14,7 +14,7 @@ from ..schemas.utils import paginated
 router = AuthenticatedAPIRouter(prefix="/labcontacts", tags=["Lab Contacts"])
 
 
-@router.get("/", response_model=paginated(schema.LabContact))
+@router.get("", response_model=paginated(schema.LabContact))
 def get_lab_contacts(
     request: Request,
     proposal: str = Depends(filters.proposal),

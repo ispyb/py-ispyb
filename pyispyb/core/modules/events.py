@@ -16,6 +16,7 @@ from ...app.extensions.database.definitions import (
 from ...app.extensions.database.utils import Paged, page
 from ...app.extensions.database.middleware import db
 from ..schemas import events as schema
+from ...config import settings
 
 
 @dataclass
@@ -356,7 +357,8 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
     ):
         snapshot_path = getattr(datacollection, snapshot)
         if snapshot_path:
-            # snapshot_path = snapshot_path.replace("/data", "/Users/Shared/data")
+            if settings.path_map:
+                snapshot_path = settings.path_map + snapshot_path
             snapshot_statuses[i + 1] = (
                 os.path.exists(snapshot_path) if snapshot_path is not None else False
             )

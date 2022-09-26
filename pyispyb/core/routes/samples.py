@@ -105,7 +105,7 @@ def get_sample_image(
         raise HTTPException(status_code=404, detail="Sample image not found")
 
 
-@router.get("/", response_model=paginated(schema.Sample))
+@router.get("", response_model=paginated(schema.Sample))
 def get_samples(
     request: Request,
     page: dict[str, int] = Depends(pagination),

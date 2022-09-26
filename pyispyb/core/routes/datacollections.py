@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse
 from pydantic import conint
 from ispyb import models
 
+from ...config import settings
 from ...dependencies import pagination
 from ...app.extensions.database.utils import Paged
 from ... import filters
@@ -77,12 +78,16 @@ def get_datacollection_attachment(
 
     try:
         attachment = attachments.first
-        if not os.path.exists(attachment.fileFullPath):
+        file_path = attachment.fileFullPath
+        if settings.path_map:
+            file_path = settings.path_map + file_path
+
+        if not os.path.exists(file_path):
             logger.warning(
-                f"dataCollectionFileAttachmentId `{attachment.dataCollectionFileAttachmentId}` file `{attachment.fileFullPath}` does not exist on disk"
+                f"dataCollectionFileAttachmentId `{attachment.dataCollectionFileAttachmentId}` file `{file_path}` does not exist on disk"
             )
             raise IndexError
-        return attachment.fileFullPath
+        return FileResponse(file_path, filename=attachment._metadata["fileName"])
     except IndexError:
         raise HTTPException(
             status_code=404, detail="Data collection attachment not found"

@@ -13,7 +13,7 @@ router = AuthenticatedAPIRouter(prefix="/events", tags=["Events"])
 
 
 @router.get(
-    "/",
+    "",
     response_model=paginated(schema.Event),
     responses={404: {"description": "Entity not found"}},
 )

@@ -48,7 +48,8 @@ def get_datacollection_snapshot_path(
         ext = os.path.splitext(image_path)[1][1:].strip()
         image_path = image_path.replace(f".{ext}", f"t.{ext}")
 
-    # image_path = image_path.replace("/data", "/Users/Shared/data")
+    if settings.path_map:
+        image_path = settings.path_map + image_path
 
     if not os.path.exists(image_path):
         logger.warning(

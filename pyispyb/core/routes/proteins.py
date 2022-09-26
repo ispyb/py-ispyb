@@ -14,7 +14,7 @@ from ..schemas.utils import paginated
 router = AuthenticatedAPIRouter(prefix="/proteins", tags=["Proteins"])
 
 
-@router.get("/", response_model=paginated(schema.Protein))
+@router.get("", response_model=paginated(schema.Protein))
 def get_proteins(
     request: Request,
     page: dict[str, int] = Depends(pagination),
