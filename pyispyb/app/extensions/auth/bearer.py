@@ -1,11 +1,14 @@
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
 
 from ...globals import g
 from .token import decode_token, set_token_data
+from .onetime import expire_onetime_tokens, onetime, validate_onetime_token
 
-security = HTTPBearer()
+# auto_error=False to correct 403 -> 401
+# https://github.com/tiangolo/fastapi/issues/2026
+security = HTTPBearer(auto_error=False)
 
 
 def verify_jwt(token: str):
@@ -20,9 +23,18 @@ def verify_jwt(token: str):
 
 
 async def JWTBearer(
+    request: Request,
+    onetime: str = Depends(onetime),
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
-    if credentials:
+    # One time token authentication
+    expire_onetime_tokens()
+    if onetime:
+        person_dict = validate_onetime_token(onetime, request.url.components.path)
+        set_token_data(person_dict)
+
+    # JWT authentication
+    elif credentials:
         if not credentials.scheme == "Bearer":
             raise HTTPException(
                 status_code=401, detail="Invalid authentication scheme."

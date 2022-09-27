@@ -1,9 +1,9 @@
 from typing import Optional
-from pydantic import BaseModel
-
-from pyispyb.app.extensions.options.schema import BeamLineGroup
+from pydantic import BaseModel, Field
 
 from ...app.extensions.database.definitions import get_current_person, get_options
+from ...app.extensions.auth.onetime import generate_onetime_token
+from ...app.extensions.options.schema import BeamLineGroup
 from ...app.base import AuthenticatedAPIRouter
 from ...app.globals import g
 
@@ -46,3 +46,18 @@ def current_user() -> CurrentUser:
         "beamLineGroups": groups,
         "beamLines": list(set(beamLines)),
     }
+
+
+class OneTimeToken(BaseModel):
+    validity: str = Field(description="The url to sign")
+    token: Optional[str]
+
+
+@router.post(
+    "/sign",
+    response_model=OneTimeToken,
+)
+def sign_url(token_request: OneTimeToken) -> OneTimeToken:
+    """Sign a url with a one time token"""
+    token = generate_onetime_token(token_request.validity, g.personId)
+    return OneTimeToken(token=token, validity=token_request.validity)
