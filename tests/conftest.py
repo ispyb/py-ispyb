@@ -59,7 +59,7 @@ def short_session():
 @pytest.fixture
 def with_beamline_groups(auth_client_efgh: AuthClient, app: ASGIApp):
     with mock_permissions(["manage_options"], app):
-        resp = auth_client_efgh.post(
+        resp = auth_client_efgh.patch(
             "/options",
             payload={
                 "beamLineGroups": [
