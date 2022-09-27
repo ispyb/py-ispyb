@@ -74,7 +74,7 @@ def validate_onetime_token(token: str, validity: str) -> models.Person:
 
     if validity != settings.api_root + once_token.validity:
         logger.warning(
-            f"One time token validtiy `{once_token.validity}` and path `{validity}` do not match"
+            f"One time token validity `{settings.api_root+once_token.validity}` and path `{validity}` do not match"
         )
         raise HTTPException(status_code=401, detail="Invalid one time token.")
 
