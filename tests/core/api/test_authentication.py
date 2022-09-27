@@ -58,7 +58,7 @@ def test_onetime(client: TestClient):
 
     headers = {"Authorization": f"Bearer {res.json()['token']}"}
     res2 = client.post(
-        f"{settings.api_root}/user/sign", headers=headers, json={"validity": "/events/"}
+        f"{settings.api_root}/user/sign", headers=headers, json={"validity": "/events"}
     )
     assert res2.status_code == 200
 
