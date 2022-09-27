@@ -26,7 +26,7 @@ def get_options(depends: bool = Depends(permission("manage_options"))) -> Option
     return crud.get_options(get_all=True)
 
 
-@router.post(
+@router.patch(
     "",
     response_model=Options,
 )

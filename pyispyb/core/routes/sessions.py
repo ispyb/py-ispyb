@@ -68,7 +68,7 @@ def get_sessions_for_ui_group(
         None, description="Filter by session type, i.e. commissioning, remote"
     ),
 ):
-    """Get a list of sessions for a UI Group
+    """Get a list of sessions for a beamline group
     Displays one session per beamline
     """
     return crud.get_sessions_for_beamline_group(
