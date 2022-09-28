@@ -22,8 +22,8 @@ def get_sessions(
     request: Request,
     proposal: str = Depends(filters.proposal),
     beamLineName: str = Depends(filters.beamLineName),
-    beamlineGroup: Optional[str] = Query(
-        None, description="Show sessions for a beamlineGroup"
+    beamLineGroup: Optional[str] = Query(
+        None, description="Show sessions for a beamLineGroup"
     ),
     scheduled: bool = Query(None, description="Get scheduled sessions only"),
     upcoming: Optional[bool] = Query(False, description="Get the upcoming sessions"),
@@ -42,7 +42,7 @@ def get_sessions(
         sessionHasPerson=True,
         proposal=proposal,
         beamLineName=beamLineName,
-        beamlineGroup=beamlineGroup,
+        beamLineGroup=beamLineGroup,
         scheduled=scheduled,
         upcoming=upcoming,
         previous=previous,
@@ -57,7 +57,7 @@ def get_sessions(
 @router.get("/group", response_model=PaginatedSession)
 def get_sessions_for_ui_group(
     request: Request,
-    beamlineGroup: Optional[str] = Query(
+    beamLineGroup: Optional[str] = Query(
         description="Beamline group to display session for"
     ),
     upcoming: Optional[bool] = Query(False, description="Get the upcoming sessions"),
@@ -72,7 +72,7 @@ def get_sessions_for_ui_group(
     Displays one session per beamline
     """
     return crud.get_sessions_for_beamline_group(
-        beamlineGroup=beamlineGroup,
+        beamLineGroup=beamLineGroup,
         upcoming=upcoming,
         previous=previous,
         sessionType=sessionType,

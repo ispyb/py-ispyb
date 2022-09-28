@@ -57,13 +57,13 @@ def with_authorization(
 
     Checks in the following order:
         * `all_proposals` allowing access to everything
-        * checks if the user is in a beamlineGroup to allow access to all proposals on a beamline
+        * checks if the user is in a beamLineGroup to allow access to all proposals on a beamline
         * checks ProposalHasPerson
         * falls back to SessionHasPerson allowing access to entities related to where the
             user is registered on a session
 
     Kwargs:
-        beamLineGroups: beamlineGroups to apply filtering via
+        beamLineGroups: beamLineGroups to apply filtering via
         includeArchived: whether to exclude archived beamlines
         proposalColumn: the column used to join to `models.Proposal`, will force a join with `models.Proposal`
         joinBLSession: whether to join `models.BLSession`
