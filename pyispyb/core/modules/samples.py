@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import func, distinct
 from ispyb import models
 
 from ...config import settings
-from ...app.extensions.database.definitions import with_beamline_groups
+from ...app.extensions.database.definitions import with_authorization
 from ...app.extensions.database.middleware import db
 from ...app.extensions.database.utils import Paged, page, with_metadata, order
 
@@ -120,7 +120,7 @@ def get_samples(
         query.add_columns(metadata["queued"])
 
     if beamLineGroups:
-        query = with_beamline_groups(query, beamLineGroups)
+        query = with_authorization(query, beamLineGroups)
 
     if blSampleId:
         query = query.filter(models.BLSample.blSampleId == blSampleId)
@@ -244,7 +244,7 @@ def get_subsamples(
         query.add_columns(metadata["queued"])
 
     if beamLineGroups:
-        query = with_beamline_groups(query, beamLineGroups)
+        query = with_authorization(query, beamLineGroups)
 
     if blSubSampleId:
         query = query.filter(models.BLSubSample.blSubSampleId == blSubSampleId)
@@ -306,7 +306,7 @@ def get_sample_images(
         query = query.filter(models.BLSampleImage.blSampleImageId == blSampleImageId)
 
     if beamLineGroups:
-        query = with_beamline_groups(
+        query = with_authorization(
             query, beamLineGroups, proposalColumn=models.Shipping.proposalId
         )
 

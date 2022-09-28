@@ -44,15 +44,23 @@ def get_current_person(login: str) -> Optional[models.Person]:
     return person
 
 
-def with_beamline_groups(
+def with_authorization(
     query: "sqlalchemy.orm.Query[Any]",
     beamLineGroups: list[BeamLineGroup],
     includeArchived: bool = False,
     proposalColumn: "sqlalchemy.Column[Any]" = None,
     joinBLSession: bool = True,
     joinSessionHasPerson: bool = True,
+    joinProposalHasPerson: bool = True,
 ) -> "sqlalchemy.orm.Query[Any]":
-    """Apply beamline group based permissions
+    """Apply authorization to a query
+
+    Checks in the following order:
+        * `all_proposals` allowing access to everything
+        * checks if the user is in a beamlineGroup to allow access to all proposals on a beamline
+        * checks ProposalHasPerson
+        * falls back to SessionHasPerson allowing access to entities related to where the
+            user is registered on a session
 
     Kwargs:
         beamLineGroups: beamlineGroups to apply filtering via
@@ -60,8 +68,6 @@ def with_beamline_groups(
         proposalColumn: the column used to join to `models.Proposal`, will force a join with `models.Proposal`
         joinBLSession: whether to join `models.BLSession`
         joinSessionHasPerson: whether to join `models.SessionHasPerson`
-
-    If the user is not a beamline group admin this will fallback to SessionHasPerson
     """
     # `all_proposals`` can access all sessions
     if "all_proposals" in g.permissions:
@@ -96,17 +102,22 @@ def with_beamline_groups(
 
         conditions.append(models.BLSession.beamLineName.in_(beamLines))
 
-    logger.info("filtering by `session_has_person`")
+    # logger.info("filtering by `SessionHasPerson`")
     if joinSessionHasPerson:
         query = query.outerjoin(
             models.SessionHasPerson,
             models.BLSession.sessionId == models.SessionHasPerson.sessionId,
-        ).outerjoin(
-            models.Person,
-            models.SessionHasPerson.personId == models.Person.personId,
         )
+    conditions.append(models.SessionHasPerson.personId == g.personId)
 
-    conditions.append(models.Person.login == g.login)
+    # logger.info("filtering by `ProposalHasPerson`")
+    if joinProposalHasPerson:
+        query = query.outerjoin(
+            models.ProposalHasPerson,
+            models.Proposal.proposalId == models.ProposalHasPerson.proposalId,
+        )
+    conditions.append(models.ProposalHasPerson.personId == g.personId)
+
     return query.filter(sqlalchemy.or_(*conditions))
 
 

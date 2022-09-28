@@ -7,7 +7,7 @@ from sqlalchemy.orm import joinedload, contains_eager
 
 from ...app.extensions.database.definitions import (
     groups_from_beamlines,
-    with_beamline_groups,
+    with_authorization,
 )
 from ...app.extensions.options.schema import BeamLineGroup
 from ...app.extensions.database.utils import Paged, page, with_metadata
@@ -142,7 +142,7 @@ def get_sessions(
                         )
                     )
 
-        query = with_beamline_groups(
+        query = with_authorization(
             query,
             beamLineGroups,
             joinBLSession=False,

@@ -8,7 +8,7 @@ from ...app.extensions.database.utils import Paged, page
 from ...app.extensions.database.middleware import db
 from ...app.extensions.database.definitions import (
     groups_from_beamlines,
-    with_beamline_groups,
+    with_authorization,
 )
 
 
@@ -69,7 +69,7 @@ def get_proposals(
         )
 
     if beamLineGroups:
-        query = with_beamline_groups(query, beamLineGroups, joinBLSession=False)
+        query = with_authorization(query, beamLineGroups, joinBLSession=False)
 
     query = query.distinct()
     total = query.count()

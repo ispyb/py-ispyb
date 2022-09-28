@@ -7,7 +7,7 @@ from ispyb import models
 
 from ...app.extensions.database.utils import Paged, page, with_metadata, order
 from ...app.extensions.database.middleware import db
-from ...app.extensions.database.definitions import with_beamline_groups
+from ...app.extensions.database.definitions import with_authorization
 from ...core.modules.utils import encode_external_id
 
 
@@ -56,7 +56,7 @@ def get_proteins(
     )
 
     if beamLineGroups:
-        query = with_beamline_groups(query, beamLineGroups)
+        query = with_authorization(query, beamLineGroups)
 
     if proteinId:
         query = query.filter(models.Protein.proteinId == proteinId)

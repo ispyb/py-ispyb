@@ -9,7 +9,7 @@ from sqlalchemy.sql.expression import literal_column
 from ispyb import models
 
 from ...app.extensions.database.definitions import (
-    with_beamline_groups,
+    with_authorization,
     _session,
     _proposal,
 )
@@ -216,7 +216,7 @@ def get_events(
 
         # Apply permissions
         if beamLineGroups:
-            queries[key] = with_beamline_groups(
+            queries[key] = with_authorization(
                 queries[key], beamLineGroups, joinBLSession=False
             )
 
@@ -436,7 +436,7 @@ def get_event_types(
             queries[key] = queries[key].filter(models.BLSession.session == session)
 
         if beamLineGroups:
-            queries[key] = with_beamline_groups(
+            queries[key] = with_authorization(
                 queries[key], beamLineGroups, joinBLSession=False
             )
 

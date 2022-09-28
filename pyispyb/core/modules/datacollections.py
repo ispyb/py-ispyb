@@ -6,7 +6,7 @@ from sqlalchemy import func
 from ispyb import models
 
 from ...app.extensions.database.definitions import (
-    with_beamline_groups,
+    with_authorization,
 )
 from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.middleware import db
@@ -101,7 +101,7 @@ def get_datacollection_attachments(
         )
 
     if beamLineGroups:
-        query = with_beamline_groups(query, beamLineGroups, joinBLSession=False)
+        query = with_authorization(query, beamLineGroups, joinBLSession=False)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

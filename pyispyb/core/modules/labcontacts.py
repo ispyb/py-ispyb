@@ -3,7 +3,7 @@ from typing import Any, Optional
 from sqlalchemy.orm import joinedload
 from ispyb import models
 
-from ...app.extensions.database.definitions import with_beamline_groups
+from ...app.extensions.database.definitions import with_authorization
 from ...app.extensions.database.utils import Paged, page
 from ...app.extensions.database.middleware import db
 from ..schemas import labcontacts as schema
@@ -37,7 +37,7 @@ def get_labcontacts(
         query = query.filter(models.LabContact.proposalId == proposalId)
 
     if beamLineGroups:
-        query = with_beamline_groups(query, beamLineGroups)
+        query = with_authorization(query, beamLineGroups)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)
