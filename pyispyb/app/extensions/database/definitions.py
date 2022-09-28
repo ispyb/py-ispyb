@@ -132,4 +132,4 @@ def groups_from_beamlines(
                 if beamline == groupBeamline.beamLineName:
                     groups.append(group.uiGroup)
 
-    return groups
+    return list(set(groups))
