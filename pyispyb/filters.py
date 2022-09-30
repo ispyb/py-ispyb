@@ -92,3 +92,9 @@ def year(
     year: Optional[str] = Query(None, description="Year filter by", regex=r"^\d\d\d\d$")
 ) -> Optional[str]:
     return year
+
+
+def runId(
+    runId: Optional[str] = Query(None, description="Run id filter by")
+) -> Optional[str]:
+    return runId
