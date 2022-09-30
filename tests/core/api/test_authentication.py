@@ -64,9 +64,3 @@ def test_onetime(client: TestClient):
 
     res = client.get(f"{settings.api_root}/events?onetime={res2.json()['token']}")
     assert res.status_code == 200
-
-
-def test_onetime_expired(client: TestClient):
-    res = client.get(f"{settings.api_root}/events?onetime=one")
-    assert res.status_code == 401
-    assert "invalid" in res.json()["detail"].lower()

@@ -4,7 +4,7 @@ import jwt
 
 from ...globals import g
 from .token import decode_token, set_token_data
-from .onetime import expire_onetime_tokens, onetime, validate_onetime_token
+from .onetime import onetime, validate_onetime_token
 
 # auto_error=False to correct 403 -> 401
 # https://github.com/tiangolo/fastapi/issues/2026
