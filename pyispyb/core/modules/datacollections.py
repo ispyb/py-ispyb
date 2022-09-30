@@ -16,6 +16,34 @@ from ...config import settings
 logger = logging.getLogger(__name__)
 
 
+def get_datacollection_diffraction_image_path(
+    dataCollectionId: int,
+    snapshot: bool = False,
+    beamLineGroups: Optional[dict[str, Any]] = None,
+) -> Optional[str]:
+    query = (
+        db.session.query(
+            (
+                models.Image.jpegThumbnailFileFullPath
+                if snapshot
+                else models.Image.jpegFileFullPath
+            ).label("imagePath")
+        )
+        .filter(models.Image.imageNumber == 1)
+        .filter(models.Image.dataCollectionId == dataCollectionId)
+        .join(models.DataCollection)
+        .join(models.DataCollectionGroup)
+        .join(models.BLSession)
+        .join(models.Proposal)
+    )
+
+    query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    first_image = query.first()
+
+    if first_image:
+        return first_image.imagePath
+
+
 def get_datacollection_snapshot_path(
     dataCollectionId: int,
     imageId: int = 1,

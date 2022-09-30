@@ -21,6 +21,24 @@ logger = logging.getLogger(__name__)
 router = AuthenticatedAPIRouter(prefix="/datacollections", tags=["Data Collections"])
 
 
+@router.get("/images/diffraction/{dataCollectionId}", response_class=FileResponse)
+def get_datacollection_diffraction_image(
+    request: Request,
+    dataCollectionId: int,
+    snapshot: bool = Query(False, description="Get snapshot image"),
+) -> str:
+    """Get a data collection diffraction image"""
+    path = crud.get_datacollection_diffraction_image_path(
+        dataCollectionId,
+        snapshot,
+        beamLineGroups=request.app.db_options.beamLineGroups,
+    )
+    if not path:
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    return path
+
+
 @router.get("/images/{dataCollectionId}", response_class=FileResponse)
 def get_datacollection_image(
     request: Request,
