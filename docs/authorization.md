@@ -41,3 +41,52 @@ For example:
 ```
 
 A staff member with the `bl0_admin` permission will be able to access Proposal(s) and Session(s) allocated on beamlines `BL01` and `BL02`, but not other beamlines. `uiGroup` specifies how this group should be rendered in the UI.
+
+# Permissions
+
+Routes can require a specific permission by using the `permission` dependency.
+
+```python
+from pyispyb.dependencies import permission
+
+
+@router.get(
+    "/path",
+)
+def get_something(depends: bool = Depends(permission("my_permission"))):
+    ...
+```
+
+# Deprecated Authorization Mechanisms
+
+These functions are deprecated and currently only used in the legacy API resources. They should not be used for new developments.
+
+## Authorization dependencies
+
+The following decorators can be used to manage authentication and authorization rules.
+
+### `permission_required(operator, [permissions])`
+
+Makes the route only accessible to users with the **specified permissions**.
+
+- `operator` is either
+  - `"any"` User should have **any** of the specified permissions
+  - `"all"` User should have **all** of the specified permissions
+
+### `proposal_authorisation`
+
+Verifies that the user is **associated to the requested proposal**. To do so, it uses the `proposal_id` parameter.
+User must verify any of the following conditions :
+
+- `Person.personId = Proposal.personId`
+- `Person.personId = ProposalHasPerson.personId and ProposalHasPerson.proposalId = Proposal.proposalId`
+- _has permission_ `all_proposals`
+
+### `session_authorisation`
+
+Verifies that the user is **associated to the requested session**. To do so, it uses the `session_id` parameter.
+User must verify any of the following conditions :
+
+- `Person.personId = Session_has_Person.personId and Session_has_Person.sessionId = BLSession.sessionId`
+- `BLSession.proposalId = Proposal.proposalId and Person.personId = Proposal.personId`
+- _has permission_ `all_sessions`
