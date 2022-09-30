@@ -1,14 +1,17 @@
+import asyncio
 import logging
 import secrets
 from typing import Optional
 from urllib.parse import urlparse
 
 from fastapi import Query, HTTPException
-from ispyb import models
 from sqlalchemy import text
+from starlette.concurrency import run_in_threadpool
+from ispyb import models
 
 from ....config import settings
 from ...extensions.database.definitions import get_current_person
+from ...extensions.database.session import get_session
 from ...extensions.database.middleware import db
 
 logger = logging.getLogger(__name__)
@@ -95,7 +98,7 @@ def validate_onetime_token(token: str, validity: str) -> models.Person:
     }
 
 
-def expire_onetime_tokens(expiry: int = 5) -> None:
+def expire_onetime_tokens(expiry: int = 10) -> None:
     """Expire one time tokens
 
     Delete all tokens generated more than 10 seconds ago that are unused
@@ -106,6 +109,27 @@ def expire_onetime_tokens(expiry: int = 5) -> None:
     if not isinstance(expiry, int):
         raise RuntimeError(f"Expiry {expiry} is a none integer value")
 
-    db.session.query(models.SWOnceToken).filter(
-        models.SWOnceToken.recordTimeStamp < text(f"NOW() - INTERVAL {expiry} SECOND")
-    ).delete(synchronize_session="fetch")
+    with get_session() as session:
+        session.query(models.SWOnceToken).filter(
+            models.SWOnceToken.recordTimeStamp
+            < text(f"NOW() - INTERVAL {expiry} SECOND")
+        ).delete(synchronize_session="fetch")
+
+
+async def expire_ontime_tokens_periodically(interval: int = 5) -> None:
+    """Periodically remove onetime tokens that have expired
+
+    Mostly stolen from https://github.com/dmontagu/fastapi-utils/blob/master/fastapi_utils/tasks.py
+    """
+
+    async def loop():
+        while True:
+            try:
+                logger.debug("Expiring onetime tokens")
+                await run_in_threadpool(expire_onetime_tokens)
+            except Exception:
+                logger.exception("Could not expire onetime tokens")
+
+            await asyncio.sleep(interval)
+
+    asyncio.ensure_future(loop())
