@@ -27,14 +27,8 @@ async def JWTBearer(
     onetime: str = Depends(onetime),
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
-    # One time token authentication
-    expire_onetime_tokens()
-    if onetime:
-        person_dict = validate_onetime_token(onetime, request.url.components.path)
-        set_token_data(person_dict)
-
     # JWT authentication
-    elif credentials:
+    if credentials:
         if not credentials.scheme == "Bearer":
             raise HTTPException(
                 status_code=401, detail="Invalid authentication scheme."
@@ -48,6 +42,11 @@ async def JWTBearer(
         set_token_data(decoded)
 
         return credentials.credentials
+
+    # One time token authentication
+    elif onetime:
+        person_dict = validate_onetime_token(onetime, request.url.components.path)
+        set_token_data(person_dict)
     else:
         raise HTTPException(status_code=401, detail="No token provided.")
 
