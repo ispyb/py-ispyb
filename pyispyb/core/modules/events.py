@@ -169,6 +169,7 @@ def get_events(
         .join(
             models.Proposal, models.Proposal.proposalId == models.BLSession.proposalId
         )
+        .group_by(models.RobotAction.robotActionId)
     )
     queries["xrf"] = (
         db.session.query(
@@ -188,6 +189,7 @@ def get_events(
         .join(
             models.Proposal, models.Proposal.proposalId == models.BLSession.proposalId
         )
+        .group_by(models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId)
     )
     queries["es"] = (
         db.session.query(
@@ -206,6 +208,7 @@ def get_events(
         .join(
             models.Proposal, models.Proposal.proposalId == models.BLSession.proposalId
         )
+        .group_by(models.EnergyScan.energyScanId)
     )
 
     # Join sample information
@@ -302,7 +305,7 @@ def get_events(
             "es": queries["es"].filter(models.EnergyScan.energyScanId == 0),
         }
 
-        tableFilters = ["robot", "es", "src"]
+        tableFilters = ["robot", "es", "xrf"]
         if eventType in tableFilters:
             for query in tableFilters:
                 if eventType == query:

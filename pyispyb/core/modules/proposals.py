@@ -32,7 +32,7 @@ def get_proposals(
                 models.BLSession.beamLineName
             )
         )
-        .order_by(models.Proposal.proposalId)
+        .order_by(models.Proposal.proposalId.desc())
     )
 
     if proposalId:

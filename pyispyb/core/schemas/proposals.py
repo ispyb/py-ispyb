@@ -23,7 +23,7 @@ class ProposalBase(BaseModel):
     proposalCode: str = Field(title="Proposal Code")
     proposalNumber: str = Field(title="Proposal Number")
     proposal: str
-    title: str = Field(title="Proposal Title")
+    title: Optional[str] = Field(title="Proposal Title")
     state: Optional[ProposalState] = Field(title="Proposal State")
 
     metadata: ProposalMetaData = Field(alias="_metadata")
