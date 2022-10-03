@@ -110,8 +110,8 @@ def get_breakdown(
         )
         .filter(
             and_(
-                models.DataCollection.startTime != None,
-                models.DataCollection.endTime != None,
+                models.DataCollection.startTime != None,  # noqa
+                models.DataCollection.endTime != None,  # noqa
             )
         )
         .group_by(models.DataCollection.dataCollectionId)
