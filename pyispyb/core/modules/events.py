@@ -167,8 +167,8 @@ def get_events(
             (
                 sqlalchemy.func.timestampdiff(
                     sqlalchemy.text("SECOND"),
-                    models.RobotAction.endTimestamp,
                     models.RobotAction.startTimestamp,
+                    models.RobotAction.endTimestamp,
                 )
                 / 60
             ).label("duration"),
@@ -195,8 +195,8 @@ def get_events(
             (
                 sqlalchemy.func.timestampdiff(
                     sqlalchemy.text("SECOND"),
-                    models.XFEFluorescenceSpectrum.endTime,
                     models.XFEFluorescenceSpectrum.startTime,
+                    models.XFEFluorescenceSpectrum.endTime,
                 )
                 / 60
             ).label("duration"),
