@@ -76,7 +76,7 @@ class TimeEntry(BaseModel):
     thinking: float = Field(0, title="Time not used by other types")
 
     def calc_thinking(self) -> float:
-        return (
+        thinking = (
             self.duration
             - self.startup
             - self.datacollection
@@ -87,6 +87,8 @@ class TimeEntry(BaseModel):
             - self.centring
             - self.fault
         )
+
+        return thinking if thinking >= 0 else 0
 
 
 class AverageTimeEntry(TimeEntry):

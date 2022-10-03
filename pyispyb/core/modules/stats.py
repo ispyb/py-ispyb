@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 from ispyb import models
 import sqlalchemy
-from sqlalchemy import func, and_, text, extract
+from sqlalchemy import func, and_, text, extract, distinct
 
 
 from ...config import settings
@@ -64,6 +64,7 @@ def get_breakdown(
                     / 3600
                 ).label("duration"),
             )
+            .join(models.Proposal)
             .filter(models.BLSession.session == session)
             .first()
         )
@@ -107,6 +108,13 @@ def get_breakdown(
             models.BLSample,
             models.DataCollectionGroup.blSampleId == models.BLSample.blSampleId,
         )
+        .filter(
+            and_(
+                models.DataCollection.startTime != None,
+                models.DataCollection.endTime != None,
+            )
+        )
+        .group_by(models.DataCollection.dataCollectionId)
         .order_by(models.DataCollection.startTime)
     )
 
@@ -119,6 +127,7 @@ def get_breakdown(
             models.RobotAction.status,
         )
         .outerjoin(models.BLSample)
+        .group_by(models.RobotAction.robotActionId)
         .order_by(models.RobotAction.endTimestamp)
     )
 
@@ -130,6 +139,7 @@ def get_breakdown(
         )
         .outerjoin(models.BLSample)
         .order_by(models.EnergyScan.endTime)
+        .group_by(models.EnergyScan.energyScanId)
     )
 
     queries["xrf"] = (
@@ -140,6 +150,7 @@ def get_breakdown(
         )
         .outerjoin(models.BLSample)
         .order_by(models.XFEFluorescenceSpectrum.endTime)
+        .group_by(models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId)
     )
 
     queries["fault"] = (
@@ -151,6 +162,7 @@ def get_breakdown(
         )
         .filter(models.BFFault.beamtimelost == 1)
         .order_by(models.BFFault.beamtimelost_endtime)
+        .group_by(models.BFFault.faultId)
     )
 
     if session:
@@ -187,13 +199,17 @@ def get_breakdown(
         )
 
     else:
-        queries["sessions"] = db.session.query(
-            models.BLSession.session,
-            models.BLSession.startDate.label("startTime"),
-            models.BLSession.endDate.label("endTime"),
-            models.BLSession.scheduled,
-            models.Proposal.title,
-        ).order_by(models.BLSession.startDate)
+        queries["sessions"] = (
+            db.session.query(
+                models.BLSession.session,
+                models.BLSession.startDate.label("startTime"),
+                models.BLSession.endDate.label("endTime"),
+                models.BLSession.scheduled,
+                models.Proposal.title,
+            )
+            .order_by(models.BLSession.startDate)
+            .group_by(models.BLSession.session)
+        )
 
     results = {}
     for key in queries.keys():
@@ -297,14 +313,13 @@ def get_times(
             func.min(models.BLSession.startDate).label("start"),
             func.max(models.BLSession.endDate).label("end"),
             models.BLSession.session,
-            func.greatest(
+            (
                 func.timestampdiff(
                     text("SECOND"),
                     func.min(models.BLSession.startDate),
-                    func.min(models.BLSession.endDate),
+                    func.max(models.BLSession.endDate),
                 )
-                / 3600,
-                0,
+                / 3600
             ).label("duration"),
             (
                 func.sum(
@@ -314,7 +329,13 @@ def get_times(
                         models.DataCollection.endTime,
                     )
                 )
-                / 3600
+                / (
+                    3600
+                    * (
+                        func.count(models.DataCollection.dataCollectionId)
+                        / func.count(distinct(models.DataCollection.dataCollectionId))
+                    )
+                )
             ).label("datacollection"),
             func.max(models.DataCollection.endTime).label("last"),
             func.greatest(
@@ -548,7 +569,7 @@ def get_errors(
     queries = {}
     queries["total"] = (
         db.session.query(
-            func.count(models.DataCollection.dataCollectionId).label("count"),
+            func.count(distinct(models.DataCollection.dataCollectionId)).label("count"),
             models.DataCollectionGroup.experimentType,
         )
         .join(models.DataCollectionGroup)
@@ -664,7 +685,7 @@ def get_hourlies(
 
     queries["datacollections"] = (
         db.session.query(
-            func.count(models.DataCollection.dataCollectionId).label("count"),
+            func.count(distinct(models.DataCollection.dataCollectionId)).label("count"),
             extract("HOUR", models.DataCollection.startTime).label("hour"),
         )
         .join(models.DataCollectionGroup)
@@ -678,7 +699,7 @@ def get_hourlies(
 
     queries["loaded"] = (
         db.session.query(
-            func.count(models.RobotAction.robotActionId).label("count"),
+            func.count(distinct(models.RobotAction.robotActionId)).label("count"),
             extract("HOUR", models.RobotAction.startTimestamp).label("hour"),
         )
         .filter(models.RobotAction.actionType.like("load"))
