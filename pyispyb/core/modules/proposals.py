@@ -1,7 +1,7 @@
 from typing import Any, Optional
 
 from sqlalchemy import or_, func, distinct
-from sqlalchemy.orm import joinedload, contains_eager
+from sqlalchemy.orm import joinedload
 from ispyb import models
 
 from ...app.extensions.database.utils import Paged, page, with_metadata
