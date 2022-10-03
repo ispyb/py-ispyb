@@ -492,12 +492,16 @@ def get_times(
 
     strategy = queries["strategy"].subquery()
     queries["strategy"] = db.session.query(
-        func.sum(strategy.c.strategy), strategy.c.session
+        func.sum(strategy.c.strategy).label("strategy"),
+        strategy.c.session.label("session"),
     ).group_by(strategy.c.session)
 
     centring = queries["centring"].subquery()
     queries["centring"] = (
-        db.session.query(func.sum(centring.c.centring), centring.c.session)
+        db.session.query(
+            func.sum(centring.c.centring).label("centring"),
+            centring.c.session.label("session"),
+        )
         .filter(centring.c.centring < 0.25)
         .group_by(centring.c.session)
     )

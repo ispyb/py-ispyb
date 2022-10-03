@@ -21,6 +21,9 @@ def encode_external_id(column):
 
 def to_energy(wavelength: float, round_value: bool = True) -> float:
     """Convert from wavelength in Angstroms to energy in eV"""
+    if wavelength is None:
+        return None
+
     energy = (
         ((ureg.planck_constant * ureg.c) / (wavelength * ureg.angstrom))
         .to(ureg.eV)
