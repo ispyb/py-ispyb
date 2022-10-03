@@ -1,10 +1,10 @@
 from typing import Any, Optional
 
-from sqlalchemy import or_
+from sqlalchemy import or_, func, distinct
 from sqlalchemy.orm import joinedload, contains_eager
 from ispyb import models
 
-from ...app.extensions.database.utils import Paged, page
+from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.middleware import db
 from ...app.extensions.database.definitions import (
     groups_from_beamlines,
@@ -18,21 +18,23 @@ def get_proposals(
     proposalId: Optional[int] = None,
     proposalCode: Optional[str] = None,
     proposalNumber: Optional[str] = None,
-    proposalHasPerson: Optional[bool] = False,
     proposal: Optional[str] = None,
     search: Optional[str] = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.Proposal]:
+    metadata = {
+        "persons": func.count(distinct(models.ProposalHasPerson.personId)),
+        "sessions": func.count(distinct(models.BLSession.sessionId)),
+        "beamLines": func.group_concat(distinct(models.BLSession.beamLineName)),
+    }
+
     query = (
-        db.session.query(models.Proposal)
+        db.session.query(models.Proposal, *metadata.values())
         .options(joinedload(models.Proposal.Person))
         .outerjoin(models.BLSession)
-        .options(
-            contains_eager(models.Proposal.BLSession).load_only(
-                models.BLSession.beamLineName
-            )
-        )
+        .outerjoin(models.ProposalHasPerson)
         .order_by(models.Proposal.proposalId.desc())
+        .group_by(models.Proposal.proposalId)
     )
 
     if proposalId:
@@ -54,33 +56,22 @@ def get_proposals(
             )
         )
 
-    if proposalHasPerson:
-        query = (
-            query.outerjoin(
-                models.ProposalHasPerson,
-                models.Proposal.proposalId == models.ProposalHasPerson.proposalId,
-            )
-            .options(contains_eager("ProposalHasPerson"))
-            .outerjoin(
-                models.Person,
-                models.ProposalHasPerson.personId == models.Person.personId,
-            )
-            .options(contains_eager("ProposalHasPerson.Person"))
+    if beamLineGroups:
+        query = with_authorization(
+            query, beamLineGroups, joinBLSession=False, joinProposalHasPerson=False
         )
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups, joinBLSession=False)
-
-    query = query.distinct()
     total = query.count()
     query = page(query, skip=skip, limit=limit)
-    results = query.all()
+    results = with_metadata(query.all(), list(metadata.keys()))
 
     for result in results:
-        result._metadata["sessions"] = len(result.BLSession)
-        result._metadata["beamLines"] = list(
-            set([session.beamLineName for session in result.BLSession])
+        result._metadata["beamLines"] = (
+            result._metadata["beamLines"].split(",")
+            if result._metadata["beamLines"]
+            else []
         )
+
         if beamLineGroups:
             result._metadata["uiGroups"] = groups_from_beamlines(
                 beamLineGroups, result._metadata["beamLines"]

@@ -32,7 +32,6 @@ def test_proposal_persons_sync(with_db_session):
         proposalNumber=test_data_proposal_userportalsync_create["proposal"][
             "proposalNumber"
         ],
-        proposalHasPerson=True,
     )
 
     assert proposals.total == 1
@@ -66,8 +65,9 @@ def test_proposal_persons_sync(with_db_session):
     assert first_person_id == proposals.results[0].personId
 
     # Check the number of persons within the ProposalHasPerson table
-    assert len(test_data_proposal_userportalsync_create["proposal"]["persons"]) == len(
-        proposals.results[0].ProposalHasPerson
+    assert (
+        len(test_data_proposal_userportalsync_create["proposal"]["persons"])
+        == proposals.results[0]._metadata["persons"]
     )
 
 
@@ -114,10 +114,7 @@ def test_session_persons_sync(with_db_session):
         try:
             if json_session["externalId"] is not None:
                 sessions = get_sessions(
-                    skip=0,
-                    limit=10,
-                    externalId=json_session["externalId"],
-                    sessionHasPerson=True,
+                    skip=0, limit=10, externalId=json_session["externalId"]
                 )
         except KeyError:
             pass
@@ -138,8 +135,8 @@ def test_session_persons_sync(with_db_session):
             sessions_in_db += 1
 
             # Check the number of persons within the Session_has_Person table
-            assert len(json_session["persons"]) == len(
-                sessions.results[0].SessionHasPerson
+            assert (
+                len(json_session["persons"]) == sessions.results[0]._metadata["persons"]
             )
 
     # Check the amount of sessions corresponds with the entries in the DB

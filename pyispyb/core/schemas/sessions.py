@@ -5,21 +5,17 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
-class SessionType(BaseModel):
-    typeName: str
-
-    class Config:
-        orm_mode = True
-
-
 class SessionMetaData(BaseModel):
     datacollections: Optional[int] = Field(description="Number of datacollections")
     uiGroups: Optional[list[str]] = Field(description="UI groups for this session")
-    persons: int = Field(description="Number of people registered on this session")
+    persons: int = Field(
+        description="Number of people registered on this session (via SessionHasPerson)"
+    )
     active: bool = Field(description="Whether this session is active")
     active_soon: bool = Field(
         description="Whether this session is due to start soon or has ended recently (+/-20 min)"
     )
+    sessionTypes: list[str] = Field(description="Session types for this session")
 
 
 class SessionBase(BaseModel):
@@ -36,8 +32,6 @@ class SessionBase(BaseModel):
 
 class Session(SessionBase):
     sessionId: int
-
-    SessionType: list[SessionType]
 
     metadata: SessionMetaData = Field(alias="_metadata")
 

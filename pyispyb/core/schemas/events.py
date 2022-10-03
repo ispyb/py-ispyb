@@ -12,6 +12,7 @@ class EventBase(BaseModel):
     type: str
     startTime: Optional[datetime] = Field(title="Start Time")
     endTime: Optional[datetime] = Field(title="End Time")
+    duration: Optional[float] = Field(title="Duration", unit="min")
     count: int
     session: str
     proposal: str

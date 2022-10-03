@@ -39,7 +39,6 @@ def get_sessions(
 ) -> Paged[models.BLSession]:
     """Get a list of sessions"""
     return crud.get_sessions(
-        sessionHasPerson=True,
         proposal=proposal,
         beamLineName=beamLineName,
         beamLineGroup=beamLineGroup,
@@ -91,7 +90,6 @@ def get_session(
 ) -> models.BLSession:
     """Get a session"""
     sessions = crud.get_sessions(
-        sessionHasPerson=True,
         session=session,
         beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,

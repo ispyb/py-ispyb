@@ -54,8 +54,8 @@ def page(
     """Paginate a `Query`
 
     Kwargs:
-        per_page (str): Number of rows per page
-        page (str): Page number to display
+        skip (str): Offset to start at
+        limit(str): Number of items to display
 
     Returns
         query (sqlalchemy.orm.Query): The paginated query

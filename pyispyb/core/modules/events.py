@@ -103,16 +103,23 @@ def get_events(
     _dataCollectionId = models.DataCollection.dataCollectionId
     startTime = models.DataCollection.startTime
     endTime = models.DataCollection.endTime
-    duration = sqlalchemy.func.time_to_sec(
-        sqlalchemy.func.timediff(
-            models.DataCollection.endTime,
+    duration = (
+        sqlalchemy.func.timestampdiff(
+            sqlalchemy.text("SECOND"),
             models.DataCollection.startTime,
+            models.DataCollection.endTime,
         )
+        / 60
     )
     dataCollectionCount = literal_column("1")
 
     if dataCollectionGroupId is None:
-        duration = sqlalchemy.func.sum(duration)
+        duration = sqlalchemy.func.sum(duration) / (
+            sqlalchemy.func.count(models.DataCollection.dataCollectionId)
+            / sqlalchemy.func.count(
+                sqlalchemy.distinct(models.DataCollection.dataCollectionId)
+            )
+        )
         # Return the first dataCollectionId in a group
         _dataCollectionId = sqlalchemy.func.min(models.DataCollection.dataCollectionId)
         startTime = sqlalchemy.func.min(models.DataCollection.startTime)
@@ -126,6 +133,7 @@ def get_events(
             _dataCollectionId.label("id"),
             startTime.label("startTime"),
             endTime.label("endTime"),
+            duration.label("duration"),
             literal_column("'dc'").label("type"),
             dataCollectionCount.label("count"),
             sqlalchemy.func.count(
@@ -156,6 +164,14 @@ def get_events(
             models.RobotAction.robotActionId.label("id"),
             models.RobotAction.startTimestamp.label("startTime"),
             models.RobotAction.endTimestamp.label("endTime"),
+            (
+                sqlalchemy.func.timestampdiff(
+                    sqlalchemy.text("SECOND"),
+                    models.RobotAction.endTimestamp,
+                    models.RobotAction.startTimestamp,
+                )
+                / 60
+            ).label("duration"),
             literal_column("'robot'").label("type"),
             literal_column("1").label("count"),
             literal_column("0").label("attachments"),
@@ -176,6 +192,14 @@ def get_events(
             models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId.label("id"),
             models.XFEFluorescenceSpectrum.startTime.label("startTime"),
             models.XFEFluorescenceSpectrum.endTime.label("endTime"),
+            (
+                sqlalchemy.func.timestampdiff(
+                    sqlalchemy.text("SECOND"),
+                    models.XFEFluorescenceSpectrum.endTime,
+                    models.XFEFluorescenceSpectrum.startTime,
+                )
+                / 60
+            ).label("duration"),
             literal_column("'xrf'").label("type"),
             literal_column("1").label("count"),
             literal_column("0").label("attachments"),
@@ -196,6 +220,14 @@ def get_events(
             models.EnergyScan.energyScanId.label("id"),
             models.EnergyScan.startTime.label("startTime"),
             models.EnergyScan.endTime.label("endTime"),
+            (
+                sqlalchemy.func.timestampdiff(
+                    sqlalchemy.text("SECOND"),
+                    models.EnergyScan.startTime,
+                    models.EnergyScan.endTime,
+                )
+                / 60
+            ).label("duration"),
             literal_column("'es'").label("type"),
             literal_column("1").label("count"),
             literal_column("0").label("attachments"),

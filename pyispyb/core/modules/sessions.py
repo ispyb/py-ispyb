@@ -32,7 +32,6 @@ def get_sessions(
     sessionType: Optional[str] = None,
     month: Optional[int] = None,
     year: Optional[int] = None,
-    sessionHasPerson: Optional[bool] = False,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSession]:
     metadata = {
@@ -52,34 +51,19 @@ def get_sessions(
             True,
             False,
         ),
+        "sessionTypes": func.group_concat(models.SessionType.typeName),
+        "persons": func.count(models.SessionHasPerson.personId),
     }
 
     query = (
         db.session.query(models.BLSession, *metadata.values())
         .outerjoin(models.SessionType)
-        .options(contains_eager(models.BLSession.SessionType))
         .join(models.Proposal)
+        .outerjoin(models.SessionHasPerson)
         .options(contains_eager(models.BLSession.Proposal))
         .order_by(models.BLSession.startDate.desc())
+        .group_by(models.BLSession.sessionId)
     )
-
-    if sessionHasPerson:
-        query = (
-            query.outerjoin(
-                models.SessionHasPerson,
-                models.BLSession.sessionId == models.SessionHasPerson.sessionId,
-            )
-            .options(contains_eager(models.BLSession.SessionHasPerson))
-            .outerjoin(
-                models.Person,
-                models.SessionHasPerson.personId == models.Person.personId,
-            )
-            .options(
-                contains_eager(
-                    models.BLSession.SessionHasPerson, models.SessionHasPerson.Person
-                )
-            )
-        )
 
     if sessionId:
         query = query.filter(models.BLSession.sessionId == sessionId)
@@ -146,14 +130,11 @@ def get_sessions(
             query,
             beamLineGroups,
             joinBLSession=False,
-            joinSessionHasPerson=(not sessionHasPerson),
+            joinSessionHasPerson=False,
         )
 
-    query = query.distinct()
     total = query.count()
     query = page(query, skip=skip, limit=limit)
-
-    results = query.all()
     results = with_metadata(query.all(), list(metadata.keys()))
 
     dataCollections = (
@@ -182,9 +163,13 @@ def get_sessions(
             result._metadata["uiGroups"] = groups_from_beamlines(
                 beamLineGroups, [result.beamLineName]
             )
-        result._metadata["persons"] = len(result.SessionHasPerson)
         result._metadata["datacollections"] = dataCollectionCount.get(
             result.sessionId, 0
+        )
+        result._metadata["sessionTypes"] = (
+            result._metadata["sessionTypes"].split(",")
+            if result._metadata["sessionTypes"]
+            else []
         )
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
