@@ -59,7 +59,7 @@ class DataCollectionBase(BaseModel):
     axisStart: Optional[float] = Field(title="Rotation Axis Start", unit="°")
     axisEnd: Optional[float] = Field(title="Rotation Axis End", unit="°")
     axisRange: Optional[float] = Field(title="Rotation Axis Oscillation", unit="°")
-    rotationAxis: Optional[RotationAxis] = Field(title="Rotation Axis Motor")
+    rotationAxis: Optional[str] = Field(title="Rotation Axis Motor")
     overlap: Optional[float] = Field(title="Rotation Axis Overlap", unit="°")
 
     phiStart: Optional[float] = Field(title="Phi Start", unit="°")
