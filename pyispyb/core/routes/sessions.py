@@ -57,7 +57,7 @@ def get_sessions(
 def get_sessions_for_ui_group(
     request: Request,
     beamLineGroup: Optional[str] = Query(
-        description="Beamline group to display session for"
+        None, description="Beamline group to display session for"
     ),
     upcoming: Optional[bool] = Query(False, description="Get the upcoming sessions"),
     previous: Optional[bool] = Query(
