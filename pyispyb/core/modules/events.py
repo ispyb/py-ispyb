@@ -351,7 +351,7 @@ def get_events(
             queries[key] = query_filter
 
     # Now union the four queries
-    query: sqlalchemy.orm.Query[Any] = queries["dc"].union_all(
+    query: sqlalchemy.orm.Query[Any] = queries["dc"].union(
         queries["robot"], queries["xrf"], queries["es"]
     )
 
