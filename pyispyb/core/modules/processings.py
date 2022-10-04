@@ -5,7 +5,8 @@ from sqlalchemy.sql.expression import literal_column
 from sqlalchemy.orm import contains_eager, aliased
 from ispyb import models
 
-from ...app.extensions.database.utils import Paged, page
+from ...config import settings
+from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.definitions import (
     with_authorization,
 )
@@ -204,7 +205,6 @@ def get_processing_messages(
         .join(models.AutoProcIntegration)
         .join(models.DataCollection)
         .join(models.DataCollectionGroup)
-        .group_by(models.DataCollection.dataCollectionId)
     )
 
     queries["processing"] = (
@@ -213,7 +213,6 @@ def get_processing_messages(
         .join(models.ProcessingJob)
         .join(models.DataCollection)
         .join(models.DataCollectionGroup)
-        .group_by(models.DataCollection.dataCollectionId)
     )
 
     for key in queries.keys():
@@ -238,7 +237,11 @@ def get_processing_messages(
                 models.AutoProcProgram.autoProcProgramId == autoProcProgramId
             )
 
-    query = queries["autoIntegration"].union_all(queries["processing"])
+    query = (
+        queries["autoIntegration"]
+        .union_all(queries["processing"])
+        .group_by(models.AutoProcProgramMessage.autoProcProgramMessageId)
+    )
     query = page(query, skip=skip, limit=limit)
 
     total = query.count()
@@ -315,8 +318,14 @@ def get_processing_results(
     autoProcProgramId: int = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.AutoProcProgram]:
+    metadata = {
+        "attachments": func.count(
+            models.AutoProcProgramAttachment.autoProcProgramAttachmentId
+        )
+    }
+
     query = (
-        db.session.query(models.AutoProcProgram)
+        db.session.query(models.AutoProcProgram, *metadata.values())
         .join(models.ProcessingJob)
         .options(contains_eager(models.AutoProcProgram.ProcessingJob))
         .outerjoin(models.ProcessingJobParameter)
@@ -326,10 +335,12 @@ def get_processing_results(
                 models.ProcessingJob.ProcessingJobParameters,
             )
         )
+        .outerjoin(models.AutoProcProgramAttachment)
         .join(models.DataCollection)
         .join(models.DataCollectionGroup)
         .join(models.BLSession)
         .join(models.Proposal)
+        .group_by(models.AutoProcProgram.autoProcProgramId)
     )
 
     if dataCollectionId:
@@ -345,7 +356,23 @@ def get_processing_results(
 
     query = page(query, skip=skip, limit=limit)
     total = query.count()
-    return Paged(total=total, results=query.all(), skip=skip, limit=limit)
+    results = with_metadata(query.all(), list(metadata.keys()))
+
+    messages = get_processing_messages(
+        skip=0,
+        limit=9999,
+        dataCollectionId=dataCollectionId,
+        beamLineGroups=beamLineGroups,
+    )
+
+    for result in results:
+        result._metadata["autoProcProgramMessages"] = [
+            message
+            for message in messages.results
+            if message.autoProcProgramId == result.autoProcProgramId
+        ]
+
+    return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
 def get_processing_attachments(
@@ -355,14 +382,21 @@ def get_processing_attachments(
     autoProcProgramAttachmentId: int = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.AutoProcProgramAttachment]:
+    metadata = {
+        "url": func.concat(
+            f"{settings.api_root}/processings/attachments/",
+            models.AutoProcProgramAttachment.autoProcProgramAttachmentId,
+        )
+    }
+
     queries = {}
     queries["api"] = (
-        db.session.query(models.AutoProcProgramAttachment)
+        db.session.query(models.AutoProcProgramAttachment, *metadata.values())
         .join(models.AutoProcProgram)
         .join(models.AutoProcIntegration)
     )
     queries["pj"] = (
-        db.session.query(models.AutoProcProgramAttachment)
+        db.session.query(models.AutoProcProgramAttachment, *metadata.values())
         .join(models.AutoProcProgram)
         .join(models.ProcessingJob)
     )
@@ -394,7 +428,9 @@ def get_processing_attachments(
 
     query_all = queries["api"].union_all(queries["pj"])
     total = query_all.count()
-    return Paged(total=total, results=query_all.all(), skip=skip, limit=limit)
+    results = with_metadata(query_all.all(), list(metadata.keys()))
+
+    return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
 def get_autointegration_results(
@@ -412,8 +448,15 @@ def get_autointegration_results(
         .filter(api2.autoProcProgramId == models.AutoProcProgram.autoProcProgramId)
         .subquery()
     )
+    metadata = {
+        "imageSweepCount": subquery.c.imageSweepCount,
+        "attachments": func.count(
+            models.AutoProcProgramAttachment.autoProcProgramAttachmentId
+        ),
+    }
     query = (
-        db.session.query(models.AutoProcProgram, subquery.c.imageSweepCount)
+        db.session.query(models.AutoProcProgram, *metadata.values())
+        .outerjoin(models.AutoProcProgramAttachment)
         .join(models.AutoProcIntegration)
         .options(contains_eager(models.AutoProcProgram.AutoProcIntegration))
         .outerjoin(models.AutoProcScalingHasInt)
@@ -488,4 +531,20 @@ def get_autointegration_results(
 
     query = page(query, skip=skip, limit=limit)
     total = query.count()
-    return Paged(total=total, results=query.all(), skip=skip, limit=limit)
+    results = with_metadata(query.all(), list(metadata.keys()))
+
+    messages = get_processing_messages(
+        skip=0,
+        limit=9999,
+        dataCollectionId=dataCollectionId,
+        beamLineGroups=beamLineGroups,
+    )
+
+    for result in results:
+        result._metadata["autoProcProgramMessages"] = [
+            message
+            for message in messages.results
+            if message.autoProcProgramId == result.autoProcProgramId
+        ]
+
+    return Paged(total=total, results=results, skip=skip, limit=limit)

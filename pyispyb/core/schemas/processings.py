@@ -2,14 +2,14 @@ import enum
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class StatusEnum(enum.Enum):
     RUNNING = None
     FAILED = 0
     SUCCESS = 1
-    DIDNTRUN = 3
+    DIDNTRUN = 2
 
 
 class ProcessingStatus(BaseModel):
@@ -105,6 +105,7 @@ class ScreeningOutput(BaseModel):
 
 
 class Screening(BaseModel):
+    screeningId: int
     programVersion: str
     comments: str
     shortComments: str
@@ -137,6 +138,30 @@ class ProcessingJob(BaseModel):
         orm_mode = True
 
 
+class AutoProcProgramMessageSeverity(str, enum.Enum):
+    ERROR = "ERROR"
+    WARNING = "WARNING"
+    INFO = "INFO"
+
+
+class AutoProcProgramMessage(BaseModel):
+    autoProcProgramMessageId: int
+    autoProcProgramId: int
+    description: str
+    message: str
+    severity: AutoProcProgramMessageSeverity
+    recordTimeStamp: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class AutoProcProgramMetadata(BaseModel):
+    attachments: Optional[int] = Field(description="Number of attachments")
+    autoProcProgramMessages: Optional[list[AutoProcProgramMessage]]
+    imageSweepCount: Optional[int]
+
+
 class AutoProcProgram(BaseModel):
     autoProcProgramId: int
     processingCommandLine: Optional[str]
@@ -149,6 +174,8 @@ class AutoProcProgram(BaseModel):
     recordTimeStamp: datetime
 
     ProcessingJob: Optional[ProcessingJob]
+
+    metadata: AutoProcProgramMetadata = Field(alias="_metadata")
 
     class Config:
         orm_mode = True
@@ -228,22 +255,8 @@ class AutoProcProgramMessageStatuses(BaseModel):
     statuses: dict[int, AutoProcProgramMessageStatus]
 
 
-class AutoProcProgramMessageSeverity(str, enum.Enum):
-    ERROR = "ERROR"
-    WARNING = "WARNING"
-    INFO = "INFO"
-
-
-class AutoProcProgramMessage(BaseModel):
-    autoProcProgramMessageId: int
-    autoProcProgramId: int
-    description: str
-    message: str
-    severity: AutoProcProgramMessageSeverity
-    recordTimeStamp: datetime
-
-    class Config:
-        orm_mode = True
+class AutoProcProgramAttachmentMetaData(BaseModel):
+    url: str = Field(description="Url to autoproc program attachment")
 
 
 class AutoProcProgramAttachment(BaseModel):
@@ -252,6 +265,8 @@ class AutoProcProgramAttachment(BaseModel):
     fileName: str
     fileType: str
     importanceRank: Optional[int]
+
+    metadata: AutoProcProgramAttachmentMetaData = Field(alias="_metadata")
 
     class Config:
         orm_mode = True
