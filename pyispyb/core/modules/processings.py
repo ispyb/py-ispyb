@@ -345,7 +345,7 @@ def get_processing_results(
             == models.AutoProcProgram.autoProcProgramId,
         )
         .group_by(models.AutoProcProgram.autoProcProgramId)
-        .filter(models.AutoProcIntegration.autoProcIntegrationId == None)
+        .filter(models.AutoProcIntegration.autoProcIntegrationId == None)  # noqa
     )
 
     if dataCollectionId:
