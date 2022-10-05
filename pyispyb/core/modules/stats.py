@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 from ispyb import models
 import sqlalchemy
-from sqlalchemy import func, and_, text, extract, distinct
+from sqlalchemy import func, and_, text, extract, distinct, Date, cast
 
 
 from ...config import settings
@@ -27,6 +27,12 @@ def filter_query(
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> "sqlalchemy.orm.Query[Any]":
     if runId:
+        query = query.join(
+            models.VRun,
+            models.BLSession.startDate.between(
+                models.VRun.startDate, models.VRun.endDate
+            ),
+        )
         query = query.filter(models.VRun.runId == runId)
 
     if beamLineName:
@@ -183,13 +189,25 @@ def get_breakdown(
             db.session.query(
                 models.RobotAction.endTimestamp.label("startTime"),
                 func.min(models.DataCollection.startTime).label("endTime"),
+                func.timestampdiff(
+                    text("SECOND"),
+                    cast(models.RobotAction.endTimestamp, Date),
+                    func.min(models.DataCollection.startTime),
+                ).label("duration"),
             )
             .select_from(models.RobotAction)
             .join(
                 models.DataCollectionGroup,
                 models.DataCollectionGroup.blSampleId == models.RobotAction.blsampleId,
             )
-            .join(models.DataCollection)
+            .join(
+                models.DataCollection,
+                and_(
+                    models.DataCollection.dataCollectionGroupId
+                    == models.DataCollectionGroup.dataCollectionGroupId,
+                    models.RobotAction.endTimestamp < models.DataCollection.startTime,
+                ),
+            )
             .join(
                 models.BLSession,
                 models.BLSession.sessionId == models.DataCollectionGroup.sessionId,
@@ -227,27 +245,25 @@ def get_breakdown(
         if key not in ["sessions", "centring"]:
             queries[key] = queries[key].join(models.BLSession)
 
-        queries[key] = (
-            queries[key]
-            .join(models.Proposal)
-            .outerjoin(
-                models.VRun,
-                models.BLSession.startDate.between(
-                    models.VRun.startDate, models.VRun.endDate
-                ),
-            )
-        )
+        queries[key] = queries[key].join(models.Proposal)
 
         queries[key] = filter_query(
             queries[key], runId, beamLineName, session, beamLineGroups
         )
 
+        if key == "centring":
+            subquery = queries[key].subquery()
+            queries[key] = db.session.query(
+                subquery.c.startTime.label("startTime"),
+                subquery.c.endTime.label("endTime"),
+            ).filter(subquery.c.duration < 1000)
+            print(queries[key])
+
         results[key] = [r._asdict() for r in queries[key].all()]
 
     history = []
-    for key in ["dc", "robot", "edge", "xrf"]:
+    for key in ["dc", "robot", "edge", "xrf", "centring", "strategy"]:
         if key in results:
-            print("got", key)
             for row in results[key]:
                 history.append(schema.BreakdownPoint(eventType=key, **row))
 
@@ -452,7 +468,7 @@ def get_times(
             (
                 func.timestampdiff(
                     text("SECOND"),
-                    models.RobotAction.endTimestamp,
+                    cast(models.RobotAction.endTimestamp, Date),
                     func.min(models.DataCollection.startTime),
                 )
                 / 3600
@@ -575,12 +591,6 @@ def get_errors(
         .join(models.DataCollectionGroup)
         .join(models.BLSession)
         .join(models.Proposal)
-        .outerjoin(
-            models.VRun,
-            models.BLSession.startDate.between(
-                models.VRun.startDate, models.VRun.endDate
-            ),
-        )
         .group_by(models.DataCollectionGroup.experimentType)
     )
 
@@ -603,12 +613,6 @@ def get_errors(
         .join(models.DataCollectionGroup)
         .join(models.BLSession)
         .join(models.Proposal)
-        .outerjoin(
-            models.VRun,
-            models.BLSession.startDate.between(
-                models.VRun.startDate, models.VRun.endDate
-            ),
-        )
         .group_by(models.DataCollection.dataCollectionId)
         .filter(models.DataCollection.runStatus.notlike("%success%"))
     )
@@ -713,17 +717,7 @@ def get_hourlies(
 
     hourlies = {}
     for key in queries.keys():
-        queries[key] = (
-            queries[key]
-            .join(models.BLSession)
-            .join(models.Proposal)
-            .outerjoin(
-                models.VRun,
-                models.BLSession.startDate.between(
-                    models.VRun.startDate, models.VRun.endDate
-                ),
-            )
-        )
+        queries[key] = queries[key].join(models.BLSession).join(models.Proposal)
 
         queries[key] = filter_query(
             queries[key], runId, beamLineName, session, beamLineGroups
@@ -819,12 +813,6 @@ def get_parameter_histogram(
         .join(models.DataCollectionGroup)
         .join(models.BLSession)
         .join(models.Proposal)
-        .outerjoin(
-            models.VRun,
-            models.BLSession.startDate.between(
-                models.VRun.startDate, models.VRun.endDate
-            ),
-        )
         .group_by(models.BLSession.beamLineName, text("x"))
         .order_by(models.BLSession.beamLineName, text("x"))
     )
