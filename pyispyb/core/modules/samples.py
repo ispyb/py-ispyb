@@ -96,27 +96,26 @@ def get_samples(
         .group_by(models.BLSample.blSampleId)
     )
 
-    if hasattr(models.ContainerQueueSample, "datacollectionPlanId") and hasattr(
+    if hasattr(models.ContainerQueueSample, "dataCollectionPlanId") and hasattr(
         models.ContainerQueueSample, "blSampleId"
     ):
         query = query.outerjoin(
             models.ContainerQueueSample,
             models.BLSample.blSampleId == models.ContainerQueueSample.blSampleId,
         )
-        DataCollectionQueued = aliased(models.DataCollection)
+        DataCollectionQueued: models.DataCollection = aliased(models.DataCollection)
         query = query.outerjoin(
             DataCollectionQueued,
-            models.ContainerQueueSample.datacollectionPlanId
-            == DataCollectionQueued.datacollectionPlanId,
+            models.ContainerQueueSample.dataCollectionPlanId
+            == DataCollectionQueued.dataCollectionPlanId,
         )
-        metadata["queued"] = (
-            func.IF(
-                func.count(models.ContainerQueueSample.containerqueuesampleid)
-                > func.count(DataCollectionQueued.datacollectionid),
-                True,
-                False,
-            ),
+        metadata["queued"] = func.IF(
+            func.count(models.ContainerQueueSample.containerQueueSampleId)
+            > func.count(DataCollectionQueued.dataCollectionId),
+            True,
+            False,
         )
+
         query.add_columns(metadata["queued"])
 
     if beamLineGroups:
@@ -221,25 +220,23 @@ def get_subsamples(
         .group_by(models.BLSubSample.blSubSampleId)
     )
 
-    if hasattr(models.ContainerQueueSample, "datacollectionPlanId"):
+    if hasattr(models.ContainerQueueSample, "dataCollectionPlanId"):
         query = query.outerjoin(
             models.ContainerQueueSample,
             models.BLSubSample.blSubSampleId
             == models.ContainerQueueSample.blSubSampleId,
         )
-        DataCollectionQueued = aliased(models.DataCollection)
+        DataCollectionQueued: models.DataCollection = aliased(models.DataCollection)
         query = query.outerjoin(
             DataCollectionQueued,
-            models.ContainerQueueSample.datacollectionPlanId
-            == DataCollectionQueued.datacollectionPlanId,
+            models.ContainerQueueSample.dataCollectionPlanId
+            == DataCollectionQueued.dataCollectionPlanId,
         )
-        metadata["queued"] = (
-            func.IF(
-                func.count(models.ContainerQueueSample.containerqueuesampleid)
-                > func.count(DataCollectionQueued.datacollectionid),
-                True,
-                False,
-            ),
+        metadata["queued"] = func.IF(
+            func.count(models.ContainerQueueSample.containerQueueSampleId)
+            > func.count(DataCollectionQueued.dataCollectionId),
+            True,
+            False,
         )
         query.add_columns(metadata["queued"])
 

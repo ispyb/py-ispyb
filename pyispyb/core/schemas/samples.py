@@ -23,6 +23,9 @@ class SampleMetaData(BaseModel):
     subsamples: int = Field(description="Number of sub samples")
     datacollections: int = Field(description="Number of data collections")
     types: Optional[list[str]] = Field(description="Types of data collections")
+    queued: Optional[bool] = Field(
+        description="Whether this sample is queued for data collection"
+    )
 
 
 class SampleBase(BaseModel):

@@ -54,9 +54,11 @@ def get_events(
 def get_event_types(
     request: Request,
     session: str = Depends(filters.session),
+    blSampleId: int = Depends(filters.blSampleId),
 ) -> Paged[schema.EventType]:
     """Get a list of event types"""
     return crud.get_event_types(
         session=session,
+        blSampleId=blSampleId,
         beamLineGroups=request.app.db_options.beamLineGroups,
     )

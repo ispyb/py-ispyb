@@ -431,6 +431,7 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
 
 def get_event_types(
     session: Optional[str] = None,
+    blSampleId: Optional[int] = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.EventType]:
     queries = {}
@@ -470,6 +471,11 @@ def get_event_types(
         if session:
             queries[key] = queries[key].filter(models.BLSession.session == session)
 
+        if blSampleId:
+            queries[key] = queries[key].filter(
+                models.DataCollectionGroup.blSampleId == blSampleId
+            )
+
         if beamLineGroups:
             queries[key] = with_authorization(
                 queries[key], beamLineGroups, joinBLSession=False
@@ -479,12 +485,13 @@ def get_event_types(
 
     eventTypes = []
     for eventType in queries["dc"]:
-        eventTypes.append(
-            {
-                "eventType": eventType["experimentType"],
-                "eventTypeName": eventType["experimentType"],
-            }
-        )
+        if eventType["experimentType"]:
+            eventTypes.append(
+                {
+                    "eventType": eventType["experimentType"],
+                    "eventTypeName": eventType["experimentType"],
+                }
+            )
 
     for table, name in {
         "robot": "Sample Actions",
