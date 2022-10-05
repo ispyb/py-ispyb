@@ -4,24 +4,24 @@ from typing import Optional
 from pyispyb.app.utils import model_from_json
 
 
-from pyispyb.core import models
+from ispyb import models
 from pyispyb.app.extensions.database.middleware import db
 
 from sqlalchemy.orm import joinedload
 from pyispyb.core.modules.session import get_session
 from pyispyb.core.schemas import ssx as schema
 
-import numpy as np
 
-
-def get_ssx_datacollection_sequences(dataCollectionId: int) -> list[models.Sequence]:
+def get_ssx_datacollection_event_chains(
+    dataCollectionId: int,
+) -> list[models.EventChain]:
     res = (
-        db.session.query(models.Sequence)
-        .filter(models.Sequence.dataCollectionId == dataCollectionId)
+        db.session.query(models.EventChain)
+        .filter(models.EventChain.dataCollectionId == dataCollectionId)
         .options(
             joinedload(
-                models.Sequence.sequence_events,
-                models.SequenceEvent.SequenceEventType,
+                models.EventChain.events,
+                models.Event.EventType,
             )
         )
         .all()
@@ -193,20 +193,19 @@ def get_ssx_datacollectiongroups(
     dc = (
         db.session.query(models.DataCollectionGroup)
         .filter(models.DataCollectionGroup.sessionId == sessionId)
+        .options(joinedload(models.DataCollectionGroup.ExperimentType))
         .all()
     )
 
     return dc
 
 
-def find_or_create_sequence_event_type(name: str):
+def find_or_create_event_type(name: str):
     type = (
-        db.session.query(models.SequenceEventType)
-        .filter(models.SequenceEventType.name == name)
-        .first()
+        db.session.query(models.EventType).filter(models.EventType.name == name).first()
     )
     if type is None:
-        type = models.SequenceEventType(name=name)
+        type = models.EventType(name=name)
         db.session.add(type)
         db.session.flush()
     return type
@@ -216,7 +215,7 @@ def create_ssx_datacollection(
     ssx_datacollection_create: schema.SSXDataCollectionCreate,
 ) -> Optional[models.SSXDataCollection]:
     data_collection_dict = ssx_datacollection_create.dict()
-    sequences_list = data_collection_dict.pop("sequences")
+    event_chains_list = data_collection_dict.pop("event_chains")
 
     try:
         # DATA COLLECTION
@@ -238,27 +237,27 @@ def create_ssx_datacollection(
         db.session.add(ssx_data_collection)
         db.session.flush()
 
-        # SEQUENCES
+        # EVENT CHAINS
 
-        for sequence_dict in sequences_list:
-            events_list = sequence_dict.pop("events")
-            sequence = model_from_json(
-                models.Sequence,
+        for event_chain_dict in event_chains_list:
+            events_list = event_chain_dict.pop("events")
+            event_chain = model_from_json(
+                models.EventChain,
                 {
-                    **sequence_dict,
+                    **event_chain_dict,
                     "dataCollectionId": data_collection.dataCollectionId,
                 },
             )
-            db.session.add(sequence)
+            db.session.add(event_chain)
             db.session.flush()
             for event_dict in events_list:
-                type = find_or_create_sequence_event_type(event_dict["type"])
+                type = find_or_create_event_type(event_dict["type"])
                 event = model_from_json(
-                    models.SequenceEvent,
+                    models.Event,
                     {
                         **event_dict,
-                        "sequenceId": sequence.sequenceId,
-                        "sequenceEventTypeId": type.sequenceEventTypeId,
+                        "eventChainId": event_chain.eventChainId,
+                        "eventTypeId": type.eventTypeId,
                     },
                 )
                 db.session.add(event)
@@ -281,6 +280,19 @@ def find_or_create_component_type(name: str):
     )
     if type is None:
         type = models.ComponentType(name=name)
+        db.session.add(type)
+        db.session.flush()
+    return type
+
+
+def find_or_create_experiment_type(name: str):
+    type = (
+        db.session.query(models.ExperimentType)
+        .filter(models.ComponentType.name == name)
+        .first()
+    )
+    if type is None:
+        type = models.ExperimentType(name=name)
         db.session.add(type)
         db.session.flush()
     return type
@@ -378,11 +390,16 @@ def create_ssx_datacollectiongroup(
 
         # DATA COLLECTION GROUP
 
+        type = find_or_create_experiment_type(
+            datacollectiongroup_dict.pop("experimentType")
+        )
+
         data_collection_group = model_from_json(
             models.DataCollectionGroup,
             {
                 **datacollectiongroup_dict,
                 "blSampleId": sample.blSampleId,
+                "experimentTypeId": type.experimentTypeId,
             },
         )
         db.session.add(data_collection_group)
@@ -397,32 +414,43 @@ def create_ssx_datacollectiongroup(
         raise e
 
 
-def get_ssx_hits(
+def get_ssx_datacollection_processing(
     dataCollectionId: int,
-) -> Optional[models.SSXHits]:
+) -> Optional[models.SSXDataCollectionProcessing]:
     return (
-        db.session.query(models.SSXHits)
-        .filter(models.SSXHits.dataCollectionId == dataCollectionId)
+        db.session.query(models.SSXDataCollectionProcessing)
+        .filter(models.SSXDataCollectionProcessing.dataCollectionId == dataCollectionId)
         .first()
     )
 
 
-def create_ssx_hits(
+def create_ssx_datacollection_processing(
     dataCollectionId: int,
-    ssx_hits_create: schema.SSXHitsCreate,
-) -> Optional[models.SSXHits]:
+    ssx_hits_create: schema.SSXDataCollectionProcessingCreate,
+) -> Optional[models.SSXDataCollectionProcessing]:
     hits_dict = ssx_hits_create.dict()
-    unit_cells_array = hits_dict.pop("unit_cells")
+    # unit_cells_array = hits_dict.pop("unit_cells")
 
     try:
 
-        ## HITS
+        # AUTO PROC PROGRAM
+
+        prog = models.AutoProcProgram(
+            dataCollectionId=dataCollectionId,
+            processingPrograms="ssxDataCollectionProcessing",
+            processingStatus="SUCCESS",
+        )
+        db.session.add(prog)
+        db.session.flush()
+
+        ## SSX DC PROCESSING
 
         hits = model_from_json(
-            models.SSXHits,
+            models.SSXDataCollectionProcessing,
             {
                 **hits_dict,
                 "dataCollectionId": dataCollectionId,
+                "autoProcProgramId": prog.autoProcProgramId,
             },
         )
         db.session.add(hits)
@@ -430,52 +458,32 @@ def create_ssx_hits(
 
         # UNIT CELLS
 
-        if hits_dict["nbIndexed"] >= 1000:
+        # if hits_dict["nbIndexed"] >= 1000:
 
-            names = ["a", "b", "c", "alpha", "beta", "gamma"]
+        #     names = ["a", "b", "c", "alpha", "beta", "gamma"]
 
-            for i in range(0, 6):
-                d = list(map(lambda a: a[i], unit_cells_array))
+        #     for i in range(0, 6):
+        #         d = list(map(lambda a: a[i], unit_cells_array))
 
-                hist, bins = np.histogram(d, bins=100)
+        #         hist, bins = np.histogram(d, bins=100)
 
-                graph = models.Graph(name=names[i], dataCollectionId=dataCollectionId)
-                db.session.add(graph)
-                db.session.flush()
+        #         graph = models.Graph(name=names[i], dataCollectionId=dataCollectionId)
+        #         db.session.add(graph)
+        #         db.session.flush()
 
-                for n in range(0, hist.size):
-                    y = hist[n]
-                    x = round((bins[n] + bins[n + 1]) / 2, 2)
-                    graphData = models.GraphData(
-                        graphId=graph.graphId, x=float(x), y=float(y)
-                    )
-                    db.session.add(graphData)
-                    db.session.flush()
+        #         for n in range(0, hist.size):
+        #             y = hist[n]
+        #             x = round((bins[n] + bins[n + 1]) / 2, 2)
+        #             graphData = models.GraphData(
+        #                 graphId=graph.graphId, x=float(x), y=float(y)
+        #             )
+        #             db.session.add(graphData)
+        #             db.session.flush()
 
         db.session.commit()
-        return get_ssx_hits(dataCollectionId)
+        return get_ssx_datacollection_processing(dataCollectionId)
 
     except Exception as e:
         logging.error(traceback.format_exc())
         db.session.rollback()
         raise e
-
-
-def get_graphs(
-    dataCollectionId: int,
-) -> list[models.Graph]:
-    return (
-        db.session.query(models.Graph)
-        .filter(models.Graph.dataCollectionId == dataCollectionId)
-        .all()
-    )
-
-
-def get_graph_data(
-    graphId: int,
-) -> list[models.GraphData]:
-    return (
-        db.session.query(models.GraphData)
-        .filter(models.GraphData.graphId == graphId)
-        .all()
-    )

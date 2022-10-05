@@ -1,5 +1,5 @@
 from pyispyb.app.base import AuthenticatedAPIRouter
-from pyispyb.core import models
+from ispyb import models
 import pyispyb.core.modules.session as crud
 
 from pyispyb.core.schemas import session as schema

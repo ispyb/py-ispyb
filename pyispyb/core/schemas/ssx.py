@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any, Dict, Literal, Optional
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 
-from pyispyb.core import models
+from ispyb import models
 
 from pydantic import BaseModel
 
@@ -68,31 +68,22 @@ class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)
 
 class DataCollectionGroupResponse(sqlalchemy_to_pydantic(models.DataCollectionGroup)):
     nbDataCollection: Optional[int]
+    ExperimentType: sqlalchemy_to_pydantic(models.ExperimentType)
 
     def dict(self, *args, **kwargs) -> Dict[str, Any]:
         kwargs.pop("exclude_none")
         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class SSXHitsResponse(sqlalchemy_to_pydantic(models.SSXHits)):
+class SSXDataCollectionProcessingResponse(
+    sqlalchemy_to_pydantic(models.SSXDataCollectionProcessing)
+):
     def dict(self, *args, **kwargs) -> Dict[str, Any]:
         kwargs.pop("exclude_none")
         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class GraphResponse(sqlalchemy_to_pydantic(models.Graph)):
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
-
-
-class GraphDataResponse(sqlalchemy_to_pydantic(models.GraphData)):
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
-
-
-class SSXHitsCreate(BaseModel):
+class SSXDataCollectionProcessingCreate(BaseModel):
     nbHits: int
     nbIndexed: int
     laticeType: Optional[str]
@@ -100,16 +91,16 @@ class SSXHitsCreate(BaseModel):
     unit_cells: Optional[list[list[float]]]
 
 
-class SSXSequenceEventResponse(sqlalchemy_to_pydantic(models.SequenceEvent)):
-    SequenceEventType: sqlalchemy_to_pydantic(models.SequenceEventType)
+class EventResponse(sqlalchemy_to_pydantic(models.Event)):
+    EventType: sqlalchemy_to_pydantic(models.EventType)
 
     def dict(self, *args, **kwargs) -> Dict[str, Any]:
         kwargs.pop("exclude_none")
         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class SSXSequenceResponse(sqlalchemy_to_pydantic(models.Sequence)):
-    sequence_events: list[SSXSequenceEventResponse]
+class EventChainResponse(sqlalchemy_to_pydantic(models.EventChain)):
+    events: list[EventResponse]
 
     def dict(self, *args, **kwargs) -> Dict[str, Any]:
         kwargs.pop("exclude_none")
@@ -192,7 +183,7 @@ class SSXDataCollectionCreate(BaseModel):
     energyBandwidth: Optional[float]
     monoStripe: Optional[str]
 
-    sequences: list[SSXSequenceCreate]
+    event_chains: list[SSXSequenceCreate]
 
 
 class SSXDataCollectionGroupCreate(BaseModel):

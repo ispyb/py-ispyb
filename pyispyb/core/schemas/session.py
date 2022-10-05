@@ -2,7 +2,7 @@ import datetime
 from typing import Optional
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 
-from pyispyb.core import models
+from ispyb import models
 
 
 class SessionResponse(sqlalchemy_to_pydantic(models.BLSession)):

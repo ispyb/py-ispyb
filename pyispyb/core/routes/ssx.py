@@ -1,5 +1,5 @@
 from pyispyb.app.base import AuthenticatedAPIRouter
-from pyispyb.core import models
+from ispyb import models
 import pyispyb.core.modules.ssx as crud
 
 
@@ -51,12 +51,12 @@ def get_datacollection_sample(dataCollectionId: int) -> models.BLSample:
 
 
 @router.get(
-    "/datacollection/{dataCollectionId:int}/sequences",
-    response_model=list[schema.SSXSequenceResponse],
+    "/datacollection/{dataCollectionId:int}/events",
+    response_model=list[schema.EventChainResponse],
     responses={404: {"description": "Entity not found"}},
 )
-def get_datacollection_sequences(dataCollectionId: int) -> list[models.Sequence]:
-    return crud.get_ssx_datacollection_sequences(dataCollectionId)
+def get_datacollection_event_chains(dataCollectionId: int) -> list[models.EventChain]:
+    return crud.get_ssx_datacollection_event_chains(dataCollectionId)
 
 
 @router.post(
@@ -101,34 +101,20 @@ def get_datacollectiongroup_sample(dataCollectionGroupId: int) -> models.BLSampl
 
 
 @router.post(
-    "/datacollection/{dataCollectionId:int}/hits",
-    response_model=schema.SSXHitsResponse,
+    "/datacollection/{dataCollectionId:int}/processing",
+    response_model=schema.SSXDataCollectionProcessingResponse,
 )
-def create_ssx_hits(
-    ssx_hits_create: schema.SSXHitsCreate, dataCollectionId: int
-) -> models.SSXHits:
-    return crud.create_ssx_hits(dataCollectionId, ssx_hits_create)
+def create_ssx_datacollection_processing(
+    ssx_hits_create: schema.SSXDataCollectionProcessingCreate, dataCollectionId: int
+) -> models.SSXDataCollectionProcessing:
+    return crud.create_ssx_datacollection_processing(dataCollectionId, ssx_hits_create)
 
 
 @router.get(
-    "/datacollection/{dataCollectionId:int}/hits",
-    response_model=schema.SSXHitsResponse,
+    "/datacollection/{dataCollectionId:int}/processing",
+    response_model=schema.SSXDataCollectionProcessingResponse,
 )
-def get_ssx_hits(dataCollectionId: int) -> models.SSXHits:
-    return crud.get_ssx_hits(dataCollectionId)
-
-
-@router.get(
-    "/datacollection/{dataCollectionId:int}/graphs",
-    response_model=list[schema.GraphResponse],
-)
-def get_graphs(dataCollectionId: int) -> list[models.Graph]:
-    return crud.get_graphs(dataCollectionId)
-
-
-@router.get(
-    "/graph/{graphId:int}/data",
-    response_model=list[schema.GraphDataResponse],
-)
-def get_graph_data(graphId: int) -> list[models.GraphData]:
-    return crud.get_graph_data(graphId)
+def get_ssx_datacollection_processing(
+    dataCollectionId: int,
+) -> models.SSXDataCollectionProcessing:
+    return crud.get_ssx_datacollection_processing(dataCollectionId)
