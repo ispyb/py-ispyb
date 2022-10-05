@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import Optional
 
 from fastapi import Depends, Request, HTTPException, Query
 from fastapi.responses import FileResponse

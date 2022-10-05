@@ -2,7 +2,7 @@ from typing import Any, Optional
 
 from sqlalchemy import func, and_, distinct
 from sqlalchemy.sql.expression import literal_column
-from sqlalchemy.orm import contains_eager, aliased
+from sqlalchemy.orm import contains_eager
 from ispyb import models
 
 from ...config import settings
@@ -445,16 +445,10 @@ def get_autointegration_results(
     autoProcProgramId: int = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.AutoProcProgram]:
-    # api2 = aliased(models.AutoProcIntegration)
-    # subquery = (
-    #     db.session.query(
-    #         func.count(api2.autoProcIntegrationId).label("imageSweepCount")
-    #     )
-    #     .filter(api2.autoProcProgramId == models.AutoProcProgram.autoProcProgramId)
-    #     .subquery()
-    # )
     metadata = {
-        # "imageSweepCount": subquery.c.imageSweepCount,
+        "imageSweepCount": func.count(
+            distinct(models.ProcessingJobImageSweep.processingJobImageSweepId)
+        ),
         "attachments": func.count(
             distinct(models.AutoProcProgramAttachment.autoProcProgramAttachmentId)
         ),
