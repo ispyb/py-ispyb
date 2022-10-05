@@ -30,19 +30,21 @@ class DataCollectionIds(BaseModel):
 
 
 def dataCollectionIds(
-    dataCollectionIds: Optional[Json] = Query(
+    dataCollectionIds: Json = Query(
         "", title="List of data collection ids (JSON encoded)"
     )
-) -> Optional[list[int]]:
-    if dataCollectionIds:
-        try:
-            obj: DataCollectionIds = parse_obj_as(
-                DataCollectionIds, {"dataCollectionIds": dataCollectionIds}
-            )
-            return obj.dataCollectionIds
-        except Exception:
-            logger.exception("Couldn't parse dataCollectionIds")
-            raise HTTPException(status_code=422, detail="Couldnt parse dataCollectionIds")
+) -> list[int]:
+    try:
+        obj: DataCollectionIds = parse_obj_as(
+            DataCollectionIds, {"dataCollectionIds": dataCollectionIds}
+        )
+        if not len(obj.dataCollectionIds):
+            raise
+
+        return obj.dataCollectionIds
+    except Exception:
+        logger.exception("Couldn't parse dataCollectionIds")
+        raise HTTPException(status_code=422, detail="Couldn't parse dataCollectionIds")
 
 
 @router.get("/status", response_model=schema.ProcessingStatusesList)
