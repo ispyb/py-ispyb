@@ -5,6 +5,8 @@ from typing import Optional
 from fastapi import Depends, Request, HTTPException, Query
 from fastapi.responses import FileResponse
 from ispyb import models
+from pydantic import BaseModel, parse_obj_as
+from pydantic.types import Json
 
 from ...config import settings
 from ...app.base import AuthenticatedAPIRouter
@@ -23,12 +25,24 @@ router = AuthenticatedAPIRouter(
 )
 
 
+class DataCollectionIds(BaseModel):
+    dataCollectionIds: list[int]
+
+
 def dataCollectionIds(
-    dataCollectionIds: Optional[list[int]] = Query(
-        [], title="List of data collection ids"
+    dataCollectionIds: Optional[Json] = Query(
+        "", title="List of data collection ids (JSON encoded)"
     )
 ) -> Optional[list[int]]:
-    return dataCollectionIds
+    if dataCollectionIds:
+        try:
+            obj: DataCollectionIds = parse_obj_as(
+                DataCollectionIds, {"dataCollectionIds": dataCollectionIds}
+            )
+            return obj.dataCollectionIds
+        except Exception:
+            logger.exception("Couldn't parse dataCollectionIds")
+            raise HTTPException(status_code=422, detail="Couldnt parse dataCollectionIds")
 
 
 @router.get("/status", response_model=schema.ProcessingStatusesList)

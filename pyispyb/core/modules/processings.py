@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, distinct
 from sqlalchemy.sql.expression import literal_column
 from sqlalchemy.orm import contains_eager, aliased
 from ispyb import models
@@ -30,9 +30,7 @@ def get_processing_status(
         .join(models.ScreeningOutput)
         .join(models.DataCollection)
         .join(models.DataCollectionGroup)
-        .group_by(
-            models.DataCollection.dataCollectionId, models.Screening.programVersion
-        )
+        .group_by(models.DataCollection.dataCollectionId, models.Screening.screeningId)
     )
 
     queries["xrc"] = (
@@ -299,16 +297,17 @@ def get_screening_results(
     )
 
     if dataCollectionId:
-        query.filter(models.Screening.dataCollectionId == dataCollectionId)
+        query = query.filter(models.Screening.dataCollectionId == dataCollectionId)
 
     if screeningId:
-        query.filter(models.Screening.screeningId == screeningId)
+        query = query.filter(models.Screening.screeningId == screeningId)
 
     if beamLineGroups:
         query = with_authorization(query, beamLineGroups, joinBLSession=False)
 
     total = query.count()
-    return Paged(total=total, results=query.all(), skip=skip, limit=limit)
+    results = query.all()
+    return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
 def get_processing_results(
@@ -320,7 +319,7 @@ def get_processing_results(
 ) -> Paged[models.AutoProcProgram]:
     metadata = {
         "attachments": func.count(
-            models.AutoProcProgramAttachment.autoProcProgramAttachmentId
+            distinct(models.AutoProcProgramAttachment.autoProcProgramAttachmentId)
         )
     }
 
@@ -340,7 +339,13 @@ def get_processing_results(
         .join(models.DataCollectionGroup)
         .join(models.BLSession)
         .join(models.Proposal)
+        .outerjoin(
+            models.AutoProcIntegration,
+            models.AutoProcIntegration.autoProcProgramId
+            == models.AutoProcProgram.autoProcProgramId,
+        )
         .group_by(models.AutoProcProgram.autoProcProgramId)
+        .filter(models.AutoProcIntegration.autoProcIntegrationId == None)
     )
 
     if dataCollectionId:
@@ -440,18 +445,18 @@ def get_autointegration_results(
     autoProcProgramId: int = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.AutoProcProgram]:
-    api2 = aliased(models.AutoProcIntegration)
-    subquery = (
-        db.session.query(
-            func.count(api2.autoProcIntegrationId).label("imageSweepCount")
-        )
-        .filter(api2.autoProcProgramId == models.AutoProcProgram.autoProcProgramId)
-        .subquery()
-    )
+    # api2 = aliased(models.AutoProcIntegration)
+    # subquery = (
+    #     db.session.query(
+    #         func.count(api2.autoProcIntegrationId).label("imageSweepCount")
+    #     )
+    #     .filter(api2.autoProcProgramId == models.AutoProcProgram.autoProcProgramId)
+    #     .subquery()
+    # )
     metadata = {
-        "imageSweepCount": subquery.c.imageSweepCount,
+        # "imageSweepCount": subquery.c.imageSweepCount,
         "attachments": func.count(
-            models.AutoProcProgramAttachment.autoProcProgramAttachmentId
+            distinct(models.AutoProcProgramAttachment.autoProcProgramAttachmentId)
         ),
     }
     query = (

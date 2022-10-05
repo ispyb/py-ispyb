@@ -37,47 +37,50 @@ class ProcessingStatusesList(BaseModel):
 
 
 class ScreeningStrategySubWedge(BaseModel):
-    subWedgeNumber = int
-    rotationAxis = str
-    axisStart: float
-    axisEnd: float
-    exposureTime: float
-    transmission: float
-    oscillationRange: float
-    completeness: float
-    multiplicity: float
-    RESOLUTION: float
-    doseTotal: float
-    numberOfImages: int
-    comments: float
+    screeningStrategySubWedgeId: int
+    subWedgeNumber: Optional[int]
+    rotationAxis: Optional[str]
+    axisStart: Optional[float]
+    axisEnd: Optional[float]
+    exposureTime: Optional[float]
+    transmission: Optional[float]
+    oscillationRange: Optional[float]
+    completeness: Optional[float]
+    multiplicity: Optional[float]
+    RESOLUTION: Optional[float]
+    doseTotal: Optional[float]
+    numberOfImages: Optional[int]
+    comments: Optional[str]
 
     class Config:
         orm_mode = True
 
 
 class ScreeningStrategyWedge(BaseModel):
-    wedgeNumber: int
-    resolution: float
-    completeness: float
-    multiplicity: float
-    doseTotal: float
-    numberOfImages: int
-    phi: float
-    kappa: float
-    chi: float
-    comments: float
-    wavelength: float
+    screeningStrategyWedgeId: int
+    wedgeNumber: Optional[int]
+    resolution: Optional[float]
+    completeness: Optional[float]
+    multiplicity: Optional[float]
+    doseTotal: Optional[float]
+    numberOfImages: Optional[int]
+    phi: Optional[float]
+    kappa: Optional[float]
+    chi: Optional[float]
+    comments: Optional[str]
+    wavelength: Optional[float]
 
-    ScreeningStrategySubWedge: Optional[ScreeningStrategySubWedge]
+    ScreeningStrategySubWedge: Optional[list[ScreeningStrategySubWedge]]
 
     class Config:
         orm_mode = True
 
 
 class ScreeningStrategy(BaseModel):
-    rankingResolution: float
+    screeningStrategyId: int
+    rankingResolution: Optional[float]
 
-    ScreeningStrategyWedge: Optional[ScreeningStrategyWedge]
+    ScreeningStrategyWedge: Optional[list[ScreeningStrategyWedge]]
 
     class Config:
         orm_mode = True
@@ -90,15 +93,21 @@ class ScreeningOutputLattice(BaseModel):
     unitCell_alpha: float
     unitCell_beta: float
     unitCell_gamma: float
+    spaceGroup: Optional[str]
+    pointGroup: Optional[str]
 
     class Config:
         orm_mode = True
 
 
 class ScreeningOutput(BaseModel):
+    screeningOutputId: int
+    indexingSuccess: int
+    strategySuccess: int
+    alignmentSuccess: int
 
-    ScreeningStrategy: Optional[ScreeningStrategy]
-    ScreeningOutputLattice: Optional[ScreeningOutputLattice]
+    ScreeningStrategy: Optional[list[ScreeningStrategy]]
+    ScreeningOutputLattice: Optional[list[ScreeningOutputLattice]]
 
     class Config:
         orm_mode = True
@@ -107,10 +116,10 @@ class ScreeningOutput(BaseModel):
 class Screening(BaseModel):
     screeningId: int
     programVersion: str
-    comments: str
-    shortComments: str
+    comments: Optional[str]
+    shortComments: Optional[str]
 
-    ScreeningOutput: Optional[ScreeningOutput]
+    ScreeningOutput: Optional[list[ScreeningOutput]]
 
     class Config:
         orm_mode = True
@@ -190,6 +199,9 @@ class AutoProc(BaseModel):
     refinedCell_beta: float
     refinedCell_gamma: float
 
+    class Config:
+        orm_mode = True
+
 
 class ScalingStatisticsType(str, enum.Enum):
     overall = "overall"
@@ -198,51 +210,66 @@ class ScalingStatisticsType(str, enum.Enum):
 
 
 class AutoProcScalingStatistics(BaseModel):
-    comments: float
-    scalingStatisticsType: ScalingStatisticsType
-    resolutionLimitLow: float
-    resolutionLimitHigh: float
-    rMerge: float
-    rMeasAllIPlusIMinus: float
-    rPimAllIPlusIMinus: float
-    fractionalPartialBias: float
-    nTotalObservations: int
-    nTotalUniqueObservations: int
-    meanIOverSigI: float
-    completeness: float
-    multiplicity: float
-    anomalousCompleteness: float
-    anomalousMultiplicity: float
-    anomalous: bool
-    ccHalf: float
-    ccAnomalous: float
-    resIOverSigI2: float
+    comments: Optional[str]
+    scalingStatisticsType: Optional[ScalingStatisticsType]
+    resolutionLimitLow: Optional[float]
+    resolutionLimitHigh: Optional[float]
+    rMerge: Optional[float]
+    rMeasAllIPlusIMinus: Optional[float]
+    rPimAllIPlusIMinus: Optional[float]
+    fractionalPartialBias: Optional[float]
+    nTotalObservations: Optional[int]
+    nTotalUniqueObservations: Optional[int]
+    meanIOverSigI: Optional[float]
+    completeness: Optional[float]
+    multiplicity: Optional[float]
+    anomalousCompleteness: Optional[float]
+    anomalousMultiplicity: Optional[float]
+    anomalous: Optional[bool]
+    ccHalf: Optional[float]
+    ccAnomalous: Optional[float]
+    resIOverSigI2: Optional[float]
+
+    class Config:
+        orm_mode = True
 
 
 class AutoProcScaling(BaseModel):
     AutoProc: Optional[AutoProc]
-    AutoProcScalingStatistics: Optional[AutoProcScalingStatistics]
+    AutoProcScalingStatistics: Optional[list[AutoProcScalingStatistics]]
+
+    class Config:
+        orm_mode = True
 
 
 class AutoProcScalingHasInt(BaseModel):
     AutoProcScaling: Optional[AutoProcScaling]
 
+    class Config:
+        orm_mode = True
+
 
 class AutoProcIntegrationDataCollection(BaseModel):
-    xBeam: float
-    yBeam: float
+    xBeam: Optional[float]
+    yBeam: Optional[float]
+
+    class Config:
+        orm_mode = True
 
 
 class AutoProcIntegration(BaseModel):
-    refinedXBeam: float
-    refinedYBeam: float
+    refinedXBeam: Optional[float]
+    refinedYBeam: Optional[float]
 
-    AutoProcScalingHasInt: Optional[AutoProcScalingHasInt]
+    AutoProcScalingHasInt: Optional[list[AutoProcScalingHasInt]]
     DataCollection: Optional[AutoProcIntegrationDataCollection]
+
+    class Config:
+        orm_mode = True
 
 
 class AutoProcProgramIntegration(AutoProcProgram):
-    AutoProcIntegration: Optional[AutoProcIntegration]
+    AutoProcIntegration: Optional[list[AutoProcIntegration]]
 
 
 class AutoProcProgramMessageStatus(BaseModel):
