@@ -1,7 +1,8 @@
+from operator import and_
 from typing import Any, Optional
 
 from sqlalchemy.orm import contains_eager, aliased, joinedload
-from sqlalchemy.sql.expression import func, distinct
+from sqlalchemy.sql.expression import func, distinct, and_
 from ispyb import models
 
 from ...config import settings
@@ -21,6 +22,7 @@ SAMPLE_ORDER_BY_MAP = {
 def get_samples(
     skip: int,
     limit: int,
+    search: Optional[str] = None,
     blSampleId: Optional[int] = None,
     proteinId: Optional[int] = None,
     proposal: Optional[str] = None,
@@ -32,6 +34,10 @@ def get_samples(
         "subsamples": func.count(distinct(models.BLSubSample.blSubSampleId)),
         "datacollections": func.count(distinct(models.DataCollection.dataCollectionId)),
         "types": func.group_concat(distinct(models.DataCollectionGroup.experimentType)),
+        "strategies": func.count(distinct(models.ScreeningOutput.screeningOutputId)),
+        "autoIntegrations": func.count(
+            distinct(models.AutoProcIntegration.autoProcIntegrationId)
+        ),
     }
 
     query = (
@@ -66,6 +72,15 @@ def get_samples(
             models.DataCollectionGroup.dataCollectionGroupId
             == models.DataCollection.dataCollectionGroupId,
         )
+        .outerjoin(models.Screening)
+        .outerjoin(
+            models.ScreeningOutput,
+            and_(
+                models.Screening.screeningId == models.ScreeningOutput.screeningId,
+                models.ScreeningOutput.strategySuccess == 1,
+            ),
+        )
+        .outerjoin(models.AutoProcIntegration)
         .join(
             models.Container,
             models.BLSample.containerId == models.Container.containerId,
@@ -96,6 +111,17 @@ def get_samples(
         .group_by(models.BLSample.blSampleId)
     )
 
+    if hasattr(models, "ProcessingJob"):
+        metadata["processings"] = func.count(
+            distinct(models.ProcessingJob.processingJobId)
+        )
+        query = query.outerjoin(
+            models.ProcessingJob,
+            models.ProcessingJob.dataCollectionId
+            == models.DataCollection.dataCollectionId,
+        )
+        query.add_column(metadata["processings"])
+
     if hasattr(models.ContainerQueueSample, "dataCollectionPlanId") and hasattr(
         models.ContainerQueueSample, "blSampleId"
     ):
@@ -117,6 +143,11 @@ def get_samples(
         )
 
         query.add_columns(metadata["queued"])
+
+    if search:
+        query = query.filter(
+            models.BLSample.name.like(f"%{search}%"),
+        )
 
     if beamLineGroups:
         query = with_authorization(query, beamLineGroups)

@@ -113,6 +113,7 @@ def get_sample_image(
 def get_samples(
     request: Request,
     page: dict[str, int] = Depends(pagination),
+    search: str = Depends(filters.search),
     proteinId: int = Depends(filters.proteinId),
     proposal: str = Depends(filters.proposal),
     containerId: int = Depends(filters.containerId),
@@ -122,6 +123,7 @@ def get_samples(
 ) -> Paged[models.BLSample]:
     """Get a list of samples"""
     return crud.get_samples(
+        search=search,
         proteinId=proteinId,
         proposal=proposal,
         containerId=containerId,

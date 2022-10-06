@@ -26,6 +26,11 @@ class SampleMetaData(BaseModel):
     queued: Optional[bool] = Field(
         description="Whether this sample is queued for data collection"
     )
+    strategies: Optional[int] = Field(description="Number of successful strategies")
+    autoIntegrations: Optional[int] = Field(
+        description="Number of successful auto-integrations"
+    )
+    processings: Optional[int] = Field(description="Number of processings")
 
 
 class SampleBase(BaseModel):
@@ -39,10 +44,22 @@ class SampleBase(BaseModel):
     metadata: Optional[SampleMetaData] = Field(alias="_metadata")
 
 
+class SampleProtein(BaseModel):
+    name: str
+    acronym: str
+
+    class Config:
+        orm_mode = True
+
+
+class SampleCrystal(Crystal):
+    Protein: SampleProtein
+
+
 class Sample(SampleBase):
     blSampleId: int
 
-    Crystal: Crystal
+    Crystal: SampleCrystal
     Container: Container
 
     class Config:

@@ -110,3 +110,23 @@ def get_datacollection_attachment(
         raise HTTPException(
             status_code=404, detail="Data collection attachment not found"
         )
+
+
+@router.get(
+    "/quality",
+    response_model=paginated(schema.PerImageAnalysis),
+    responses={404: {"description": "A list of per image/point analysis"}},
+)
+def get_per_image_analysis(
+    request: Request,
+    page: dict[str, int] = Depends(pagination),
+    dataCollectionId: int = Depends(filters.dataCollectionId),
+    dataCollectionGroupId: int = Depends(filters.dataCollectionGroupId),
+) -> Paged[schema.PerImageAnalysis]:
+    """Get a list of per image/point analysis"""
+    return crud.get_per_image_analysis(
+        dataCollectionId=dataCollectionId,
+        dataCollectionGroupId=dataCollectionGroupId,
+        beamLineGroups=request.app.db_options.beamLineGroups,
+        **page,
+    )

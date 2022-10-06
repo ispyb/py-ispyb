@@ -14,6 +14,27 @@ class DataCollectionGroup(BaseModel):
         orm_mode = True
 
 
+class GridInfo(BaseModel):
+    gridInfoId: int
+
+    xOffset: Optional[float]
+    yOffset: Optional[float]
+    dx_mm: Optional[float]
+    dy_mm: Optional[float]
+    steps_x: Optional[float]
+    steps_y: Optional[float]
+    meshAngle: Optional[float]
+    orientation: Optional[str]
+    pixelsPerMicronX: Optional[float]
+    pixelsPerMicronY: Optional[float]
+    snapshot_offsetXPixel: Optional[float]
+    snapshot_offsetYPixel: Optional[float]
+    snaked: Optional[bool]
+
+    class Config:
+        orm_mode = True
+
+
 class DataCollectionMetaData(BaseModel):
     snapshots: dict[str, bool] = Field(description="Snapshot statuses with ids 1-4")
 
@@ -72,6 +93,7 @@ class DataCollection(DataCollectionBase):
     dataCollectionId: int
 
     DataCollectionGroup: DataCollectionGroup
+    GridInfo: Optional[list[GridInfo]]
 
     metadata: DataCollectionMetaData = Field(alias="_metadata")
 
@@ -93,3 +115,11 @@ class DataCollectionFileAttachment(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class PerImageAnalysis(BaseModel):
+    dataCollectionId: Optional[int]
+    imageNumber: Optional[list[int]] = Field(description="Scan point")
+    totalIntegratedSignal: Optional[list[float]] = Field(description="Total signal")
+    goodBraggCandidates: Optional[list[int]] = Field(description="Number of spots")
+    method2Res: Optional[list[float]] = Field(description="Estimated resolution")

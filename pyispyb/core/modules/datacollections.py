@@ -11,6 +11,7 @@ from ...app.extensions.database.definitions import (
 from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.middleware import db
 from .events import get_events
+from ..schemas import datacollections as schema
 from ...config import settings
 
 logger = logging.getLogger(__name__)
@@ -139,3 +140,54 @@ def get_datacollection_attachments(
         result._metadata["fileName"] = os.path.basename(result.fileFullPath)
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
+
+
+def get_per_image_analysis(
+    skip: int,
+    limit: int,
+    dataCollectionId: Optional[int] = None,
+    dataCollectionGroupId: Optional[int] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
+) -> Paged[schema.PerImageAnalysis]:
+    query = (
+        db.session.query(
+            models.ImageQualityIndicators.imageNumber,
+            models.ImageQualityIndicators.totalIntegratedSignal,
+            models.ImageQualityIndicators.method2Res,
+            models.ImageQualityIndicators.goodBraggCandidates,
+        )
+        .join(
+            models.DataCollection,
+            models.ImageQualityIndicators.dataCollectionId
+            == models.DataCollection.dataCollectionId,
+        )
+        .join(models.DataCollectionGroup)
+        .join(models.BLSession)
+        .join(models.Proposal)
+    )
+
+    if dataCollectionId:
+        query = query.filter(models.DataCollection.dataCollectionId == dataCollectionId)
+
+    if dataCollectionGroupId:
+        query = query.filter(
+            models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
+        )
+
+    query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    query = page(query, skip=skip, limit=limit)
+    total = query.count()
+
+    results = {"dataCollectionId": dataCollectionId}
+    for row in [r._asdict() for r in query.all()]:
+        for key in [
+            "imageNumber",
+            "totalIntegratedSignal",
+            "method2Res",
+            "goodBraggCandidates",
+        ]:
+            if key not in results:
+                results[key] = []
+            results[key].append(row[key])
+
+    return Paged(total=total, results=[results], skip=skip, limit=limit)

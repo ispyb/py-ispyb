@@ -38,9 +38,7 @@ ENTITY_TYPES: dict[str, EntityType] = {
         models.DataCollection,
         models.DataCollectionGroup.blSampleId,
         "dataCollectionId",
-        [
-            models.DataCollection.DataCollectionGroup,
-        ],
+        [models.DataCollection.DataCollectionGroup, models.DataCollection.GridInfo],
     ),
     "robot": EntityType(
         models.RobotAction, models.RobotAction.blsampleId, "robotActionId"
