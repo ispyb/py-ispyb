@@ -59,26 +59,6 @@ def get_datacollection_event_chains(dataCollectionId: int) -> list[models.EventC
     return crud.get_ssx_datacollection_event_chains(dataCollectionId)
 
 
-@router.post(
-    "/datacollection",
-    response_model=schema.SSXDataCollectionResponse,
-)
-def create_datacollection(
-    ssx_datacollection_create: schema.SSXDataCollectionCreate,
-) -> models.SSXDataCollection:
-    return crud.create_ssx_datacollection(ssx_datacollection_create)
-
-
-@router.post(
-    "/datacollectiongroup",
-    response_model=schema.DataCollectionGroupResponse,
-)
-def create_datacollectiongroup(
-    ssx_datacollectiongroup_create: schema.SSXDataCollectionGroupCreate,
-) -> models.DataCollectionGroup:
-    return crud.create_ssx_datacollectiongroup(ssx_datacollectiongroup_create)
-
-
 @router.get(
     "/datacollectiongroup/{dataCollectionGroupId:int}",
     response_model=schema.DataCollectionGroupResponse,
@@ -98,16 +78,6 @@ def get_datacollectiongroup(
 )
 def get_datacollectiongroup_sample(dataCollectionGroupId: int) -> models.BLSample:
     return crud.get_ssx_datacollectiongroup_sample(dataCollectionGroupId)
-
-
-@router.post(
-    "/datacollection/{dataCollectionId:int}/processing",
-    response_model=schema.SSXDataCollectionProcessingResponse,
-)
-def create_ssx_datacollection_processing(
-    ssx_hits_create: schema.SSXDataCollectionProcessingCreate, dataCollectionId: int
-) -> models.SSXDataCollectionProcessing:
-    return crud.create_ssx_datacollection_processing(dataCollectionId, ssx_hits_create)
 
 
 @router.get(

@@ -4,20 +4,24 @@ from ...modules import userportalsync as crud
 from ...schemas import userportalsync as schema
 from ....dependencies import permission
 from ..responses import Message
-from .base import router
+from ....app.base import AuthenticatedAPIRouter
 
+router = AuthenticatedAPIRouter(
+    prefix="/webservices/userportalsync",
+    tags=["Webservices - User portal sync"],
+    dependencies=[Depends(permission("uportal_sync"))],
+)
 
 logger = logging.getLogger("ispyb")
 
 
 @router.post(
-    "/userportalsync/sync_proposal",
+    "/sync_proposal",
     response_model=Message,
     responses={400: {"description": "The input data is not following the schema"}},
 )
 def sync_proposal(
     proposal: schema.UserPortalProposalSync,
-    depends: bool = Depends(permission("uportal_sync")),
 ):
     """Create/Update a proposal from the User Portal and all its related entities"""
     try:
