@@ -2,6 +2,7 @@ import enum
 from typing import Callable, Optional, Any
 
 from fastapi import HTTPException, Query
+from pydantic import conint
 
 from .app.globals import g
 
@@ -12,8 +13,8 @@ class Order(str, enum.Enum):
 
 
 def pagination(
-    skip: Optional[int] = Query(0, description="Results to skip"),
-    limit: Optional[int] = Query(25, description="Number of results to show"),
+    skip: Optional[conint(ge=0)] = Query(0, description="Results to skip"),
+    limit: Optional[conint(gt=0)] = Query(25, description="Number of results to show"),
 ) -> dict[str, int]:
     return {"skip": skip, "limit": limit}
 
