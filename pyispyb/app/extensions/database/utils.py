@@ -36,8 +36,9 @@ def order(
     logger.info(f"Ordering by {order['order_by']} {order['order']}")
 
     if default:
-        order["order_by"] = default["order_by"]
-        order["order"] = default["order"]
+        return query.order_by(
+            getattr(sort_map[default["order_by"]], default["order"])()
+        )
 
     if order["order_by"].value not in sort_map:
         logger.warning(f"Unknown order_by {order['order_by']}")
