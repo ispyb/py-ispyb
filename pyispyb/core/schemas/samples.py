@@ -30,7 +30,9 @@ class SampleMetaData(BaseModel):
     autoIntegrations: Optional[int] = Field(
         description="Number of successful auto-integrations"
     )
-    processings: Optional[int] = Field(description="Number of processings")
+    integratedResolution: Optional[float] = Field(
+        description="Highest integration resolution"
+    )
 
 
 class SampleBase(BaseModel):

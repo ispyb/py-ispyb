@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Optional
 
 from fastapi import Depends, HTTPException, Request
 from fastapi.responses import FileResponse
@@ -117,6 +118,8 @@ def get_samples(
     proteinId: int = Depends(filters.proteinId),
     proposal: str = Depends(filters.proposal),
     containerId: int = Depends(filters.containerId),
+    beamLineName: str = Depends(filters.beamLineName),
+    status: Optional[crud.SAMPLE_STATUS_ENUM] = None,
     sort_order: dict = Depends(
         order_by_factory(crud.SAMPLE_ORDER_BY_MAP, "SampleOrder")
     ),
@@ -127,6 +130,8 @@ def get_samples(
         proteinId=proteinId,
         proposal=proposal,
         containerId=containerId,
+        beamLineName=beamLineName,
+        status=status,
         sort_order=sort_order,
         beamLineGroups=request.app.db_options.beamLineGroups,
         **page,

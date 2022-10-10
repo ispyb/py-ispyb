@@ -1,3 +1,4 @@
+import enum
 from typing import Any, Optional
 
 from sqlalchemy.orm import contains_eager, aliased, joinedload
@@ -18,6 +19,19 @@ SAMPLE_ORDER_BY_MAP = {
 }
 
 
+SAMPLE_STATUS_FILTERS = {
+    "Sample Action": func.count(models.RobotAction.robotActionId),
+    "Data Collected": func.count(models.DataCollection.dataCollectionId),
+    "Strategy": func.count(models.Screening.screeningId),
+    "Auto Integrated": func.count(models.AutoProcIntegration.autoProcIntegrationId),
+    "Processed": func.count(models.ProcessingJob.processingJobId),
+}
+
+SAMPLE_STATUS_ENUM = enum.Enum(
+    "SampleStatus", {k: k for k in SAMPLE_STATUS_FILTERS.keys()}
+)
+
+
 def get_samples(
     skip: int,
     limit: int,
@@ -26,7 +40,9 @@ def get_samples(
     proteinId: Optional[int] = None,
     proposal: Optional[str] = None,
     containerId: Optional[int] = None,
+    beamLineName: Optional[str] = None,
     sort_order: Optional[dict[str, str]] = None,
+    status: Optional[SAMPLE_STATUS_ENUM] = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSample]:
     metadata = {
@@ -36,6 +52,9 @@ def get_samples(
         "strategies": func.count(distinct(models.ScreeningOutput.screeningOutputId)),
         "autoIntegrations": func.count(
             distinct(models.AutoProcIntegration.autoProcIntegrationId)
+        ),
+        "integratedResolution": func.min(
+            models.AutoProcScalingStatistics.resolutionLimitHigh
         ),
     }
 
@@ -80,6 +99,12 @@ def get_samples(
             ),
         )
         .outerjoin(models.AutoProcIntegration)
+        .outerjoin(models.AutoProcScalingHasInt)
+        .outerjoin(
+            models.AutoProcScalingStatistics,
+            models.AutoProcScalingHasInt.autoProcScalingId
+            == models.AutoProcScalingStatistics.autoProcScalingId,
+        )
         .join(
             models.Container,
             models.BLSample.containerId == models.Container.containerId,
@@ -109,17 +134,6 @@ def get_samples(
         .join(models.Proposal, models.Proposal.proposalId == models.Shipping.proposalId)
         .group_by(models.BLSample.blSampleId)
     )
-
-    if hasattr(models, "ProcessingJob"):
-        metadata["processings"] = func.count(
-            distinct(models.ProcessingJob.processingJobId)
-        )
-        query = query.outerjoin(
-            models.ProcessingJob,
-            models.ProcessingJob.dataCollectionId
-            == models.DataCollection.dataCollectionId,
-        )
-        query.add_column(metadata["processings"])
 
     if hasattr(models.ContainerQueueSample, "dataCollectionPlanId") and hasattr(
         models.ContainerQueueSample, "blSampleId"
@@ -161,10 +175,42 @@ def get_samples(
         query = query.filter(models.Container.containerId == containerId)
 
     if proposal:
-        query = query.filter(models.Proposal.proposal == proposal)
+        proposal_row = (
+            db.session.query(models.Proposal)
+            .filter(models.Proposal.proposal == proposal)
+            .first()
+        )
+        if proposal_row:
+            query = query.filter(models.Proposal.proposalId == proposal_row.proposalId)
+
+    if beamLineName:
+        query = query.filter(
+            and_(
+                models.Dewar.dewarStatus == "processing",
+                models.Container.beamlineLocation == beamLineName,
+                models.Container.sampleChangerLocation != None,  # noqa
+            )
+        )
+
+    if status:
+        if status == SAMPLE_STATUS_ENUM.Processed:
+            query = query.join(models.ProcessingJob)
+
+        if status.value == "Sample Action":
+            query = query.join(
+                models.RobotAction,
+                models.RobotAction.blsampleId == models.BLSample.blSampleId,
+            )
+
+        query = query.having(SAMPLE_STATUS_FILTERS[status.value] > 0)
 
     if sort_order:
-        query = order(query, SAMPLE_ORDER_BY_MAP, sort_order)
+        query = order(
+            query,
+            SAMPLE_ORDER_BY_MAP,
+            sort_order,
+            {"order_by": "blSampleId", "order": "desc"},
+        )
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

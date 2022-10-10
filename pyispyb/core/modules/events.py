@@ -2,8 +2,10 @@ from dataclasses import dataclass, field
 import enum
 from typing import Any, List, Optional
 import os
+from fastapi import HTTPException
 
 import sqlalchemy
+from sqlalchemy import or_
 from sqlalchemy.orm import contains_eager
 from sqlalchemy.sql.expression import literal_column
 from ispyb import models
@@ -80,6 +82,8 @@ def with_sample(
 class EventStatus(str, enum.Enum):
     success = "success"
     failed = "failed"
+    processed = "processed"
+    processerror = "processerror"
 
 
 def get_events(
@@ -241,6 +245,21 @@ def get_events(
         .group_by(models.EnergyScan.energyScanId)
     )
 
+    if session:
+        session_row = (
+            db.session.query(models.BLSession)
+            .join(models.Proposal)
+            .filter(models.BLSession.session == session)
+            .first()
+        )
+
+    if proposal:
+        proposal_row = (
+            db.session.query(models.Proposal)
+            .filter(models.Proposal.proposal == proposal)
+            .first()
+        )
+
     # Join sample information
     for key, _query in queries.items():
         queries[key] = with_sample(
@@ -255,11 +274,17 @@ def get_events(
 
         # Filter by session
         if session:
-            queries[key] = queries[key].filter(_session == session)
+            if session_row:
+                queries[key] = queries[key].filter(
+                    models.BLSession.sessionId == session_row.sessionId
+                )
 
         # Filter by proposal
         if proposal:
-            queries[key] = queries[key].filter(_proposal == proposal)
+            if proposal_row:
+                queries[key] = queries[key].filter(
+                    models.Proposal.proposalId == proposal_row.proposalId
+                )
 
         # Filter by beamLineName
         if beamLineName:
@@ -311,12 +336,52 @@ def get_events(
             queries["robot"] = queries["robot"].filter(
                 models.RobotAction.status.like("success%")
             )
-        else:
+        elif status == EventStatus.failed:
             queries["dc"] = queries["dc"].filter(
                 models.DataCollection.runStatus.notlike("success%")
             )
             queries["robot"] = queries["robot"].filter(
                 models.RobotAction.status.notlike("success%")
+            )
+        elif status == EventStatus.processed:
+            queries["dc"] = (
+                queries["dc"]
+                .join(models.AutoProcIntegration)
+                .join(models.AutoProcProgram)
+                .filter(models.AutoProcProgram.processingStatus == 1)
+            )
+            queries["robot"] = queries["robot"].filter(
+                models.RobotAction.robotActionId == 0
+            )
+        elif status == EventStatus.processerror:
+            if not hasattr(models, "AutoProcProgramMessage"):
+                raise HTTPException(
+                    status_code=500,
+                    detail="Database does not have `AutoProcProgramMessage`",
+                )
+            queries["dc"] = (
+                queries["dc"]
+                .join(models.AutoProcIntegration)
+                # .outerjoin(models.ProcessingJob)
+                .join(
+                    models.AutoProcProgram,
+                    or_(
+                        # models.ProcessingJob.processingJobId
+                        # == models.AutoProcProgram.processingJobId,
+                        models.AutoProcIntegration.autoProcProgramId
+                        == models.AutoProcProgram.autoProcProgramId,
+                    ),
+                )
+                .join(models.AutoProcProgramMessage)
+                .filter(
+                    or_(
+                        models.AutoProcProgramMessage.severity == "WARNING",
+                        models.AutoProcProgramMessage.severity == "ERROR",
+                    )
+                )
+            )
+            queries["robot"] = queries["robot"].filter(
+                models.RobotAction.robotActionId == 0
             )
 
         queries["xrf"] = queries["xrf"].filter(
@@ -460,6 +525,14 @@ def get_event_types(
         sqlalchemy.func.count(models.EnergyScan.energyScanId).label("count")
     ).join(models.BLSession, models.BLSession.sessionId == models.EnergyScan.sessionId)
 
+    if session:
+        session_row = (
+            db.session.query(models.BLSession)
+            .join(models.Proposal)
+            .filter(models.BLSession.session == session)
+            .first()
+        )
+
     for key in queries.keys():
         queries[key] = queries[key].join(
             models.Proposal,
@@ -467,7 +540,10 @@ def get_event_types(
         )
 
         if session:
-            queries[key] = queries[key].filter(models.BLSession.session == session)
+            if session_row:
+                queries[key] = queries[key].filter(
+                    models.BLSession.sessionId == session_row.sessionId
+                )
 
         if blSampleId:
             queries[key] = queries[key].filter(
