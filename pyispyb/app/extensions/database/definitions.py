@@ -90,7 +90,7 @@ def with_authorization(
         )
 
     if joinBLSession:
-        query = query.join(
+        query = query.outerjoin(
             models.BLSession, models.BLSession.proposalId == models.Proposal.proposalId
         )
 
@@ -102,23 +102,24 @@ def with_authorization(
 
         conditions.append(models.BLSession.beamLineName.in_(beamLines))
 
-    # logger.info("filtering by `SessionHasPerson`")
-    if joinSessionHasPerson:
-        query = query.outerjoin(
-            models.SessionHasPerson,
-            models.BLSession.sessionId == models.SessionHasPerson.sessionId,
-        )
-    conditions.append(models.SessionHasPerson.personId == g.personId)
+    # Sessions
+    sessions = db.session.query(models.SessionHasPerson.sessionId).filter(
+        models.SessionHasPerson.personId == g.personId
+    )
+    sessions = [r._asdict()["sessionId"] for r in sessions.all()]
+    if sessions:
+        conditions.append(models.BLSession.sessionId.in_(sessions))
 
-    # logger.info("filtering by `ProposalHasPerson`")
-    if joinProposalHasPerson:
-        query = query.outerjoin(
-            models.ProposalHasPerson,
-            models.Proposal.proposalId == models.ProposalHasPerson.proposalId,
-        )
-    conditions.append(models.ProposalHasPerson.personId == g.personId)
+    # Proposals
+    proposals = db.session.query(models.ProposalHasPerson.proposalId).filter(
+        models.ProposalHasPerson.personId == g.personId
+    )
+    proposals = [r._asdict()["proposalId"] for r in proposals.all()]
+    if proposals:
+        conditions.append(models.Proposal.proposalId.in_(proposals))
 
-    return query.filter(sqlalchemy.or_(*conditions))
+    query = query.filter(sqlalchemy.or_(*conditions))
+    return query
 
 
 def groups_from_beamlines(
