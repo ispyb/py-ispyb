@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Any, Optional
 
 from ispyb import models
-from sqlalchemy import func, and_, or_, extract
+from sqlalchemy import func, and_, or_, extract, distinct
 from sqlalchemy.orm import joinedload, contains_eager
 
 from ...app.extensions.database.definitions import (
@@ -51,7 +51,7 @@ def get_sessions(
             True,
             False,
         ),
-        "sessionTypes": func.group_concat(models.SessionType.typeName),
+        "sessionTypes": func.group_concat(distinct(models.SessionType.typeName)),
         "persons": func.count(models.SessionHasPerson.personId),
     }
 
