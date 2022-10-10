@@ -188,6 +188,7 @@ def get_per_image_analysis(
         ]:
             if key not in results:
                 results[key] = []
-            results[key].append(row[key])
+            if row[key] is not None:
+                results[key].append(row[key])
 
     return Paged(total=total, results=[results], skip=skip, limit=limit)
