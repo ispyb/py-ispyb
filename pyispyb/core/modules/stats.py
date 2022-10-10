@@ -19,11 +19,24 @@ from ...app.extensions.database.middleware import db
 from ...core.schemas import stats as schema
 
 
+def get_sessionId(session: Optional[str]) -> Optional[int]:
+    if not session:
+        return
+
+    session_row = (
+        db.session.query(models.BLSession)
+        .join(models.Proposal)
+        .filter(models.BLSession.session == session)
+    ).first()
+    if session_row:
+        return session_row.sessionId
+
+
 def filter_query(
     query: "sqlalchemy.orm.Query[Any]",
     runId: str = None,
     beamLineName: str = None,
-    session: str = None,
+    sessionId: int = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> "sqlalchemy.orm.Query[Any]":
     if runId:
@@ -38,8 +51,8 @@ def filter_query(
     if beamLineName:
         query = query.filter(models.BLSession.beamLineName == beamLineName)
 
-    if session:
-        query = query.filter(models.BLSession.session == session)
+    if sessionId:
+        query = query.filter(models.BLSession.sessionId == sessionId)
 
     if beamLineGroups:
         query = with_authorization(query, beamLineGroups, joinBLSession=False)
@@ -229,6 +242,7 @@ def get_breakdown(
             .group_by(models.BLSession.session)
         )
 
+    sessionId = get_sessionId(session)
     results = {}
     for key in queries.keys():
         if key not in ["fault", "strategy", "centring", "sessions"]:
@@ -248,7 +262,7 @@ def get_breakdown(
         queries[key] = queries[key].join(models.Proposal)
 
         queries[key] = filter_query(
-            queries[key], runId, beamLineName, session, beamLineGroups
+            queries[key], runId, beamLineName, sessionId, beamLineGroups
         )
 
         if key == "centring":
@@ -265,7 +279,8 @@ def get_breakdown(
     for key in ["dc", "robot", "edge", "xrf", "centring", "strategy"]:
         if key in results:
             for row in results[key]:
-                history.append(schema.BreakdownPoint(eventType=key, **row))
+                if row["endTime"]:
+                    history.append(schema.BreakdownPoint(eventType=key, **row))
 
     if "sessions" in results:
         for row in results["sessions"]:
@@ -520,12 +535,22 @@ def get_times(
         .group_by(models.BLSession.session)
     )
 
+    sessionId = get_sessionId(session)
+    proposalId = None
+    if proposal:
+        proposal_row = (
+            db.session.query(models.Proposal).filter(
+                models.Proposal.proposal == proposal
+            )
+        ).first()
+        proposalId = proposal_row.proposalId
+
     for key in queries.keys():
         queries[key] = filter_query(
-            queries[key], runId, beamLineName, session, beamLineGroups
+            queries[key], runId, beamLineName, sessionId, beamLineGroups
         )
-        if proposal:
-            queries[key] = queries[key].filter(models.Proposal.proposal == proposal)
+        if proposalId:
+            queries[key] = queries[key].filter(models.Proposal.proposalId == proposalId)
 
     strategy = queries["strategy"].subquery()
     queries["strategy"] = db.session.query(
@@ -553,7 +578,7 @@ def get_times(
             session_lookup[key] = {}
 
         for row in results[key]:
-            session_lookup[key][row["session"]] = row[key]
+            session_lookup[key][row["session"]] = row[key] if row[key] else 0
 
     sessions = []
     for row in results["dc"]:
@@ -617,9 +642,10 @@ def get_errors(
         .filter(models.DataCollection.runStatus.notlike("%success%"))
     )
 
+    sessionId = get_sessionId(session)
     for key in queries.keys():
         queries[key] = filter_query(
-            queries[key], runId, beamLineName, session, beamLineGroups
+            queries[key], runId, beamLineName, sessionId, beamLineGroups
         )
 
     totals_rows = [r._asdict() for r in queries["total"].all()]
@@ -715,12 +741,13 @@ def get_hourlies(
         )
     )
 
+    sessionId = get_sessionId(session)
     hourlies = {}
     for key in queries.keys():
         queries[key] = queries[key].join(models.BLSession).join(models.Proposal)
 
         queries[key] = filter_query(
-            queries[key], runId, beamLineName, session, beamLineGroups
+            queries[key], runId, beamLineName, sessionId, beamLineGroups
         )
 
         if proposal:
@@ -817,7 +844,8 @@ def get_parameter_histogram(
         .order_by(models.BLSession.beamLineName, text("x"))
     )
 
-    query = filter_query(query, runId, beamLineName, session, beamLineGroups)
+    sessionId = get_sessionId(session())
+    query = filter_query(query, runId, beamLineName, sessionId, beamLineGroups)
 
     if beamLineGroups:
         if beamLineGroup:
