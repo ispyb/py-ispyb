@@ -1,4 +1,3 @@
-from operator import and_
 from typing import Any, Optional
 
 from sqlalchemy.orm import contains_eager, aliased, joinedload
