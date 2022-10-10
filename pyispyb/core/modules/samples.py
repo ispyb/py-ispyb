@@ -1,6 +1,7 @@
 import enum
 from typing import Any, Optional
 
+from fastapi import HTTPException
 from sqlalchemy.orm import contains_eager, aliased, joinedload
 from sqlalchemy.sql.expression import func, distinct, and_
 from ispyb import models
@@ -24,8 +25,12 @@ SAMPLE_STATUS_FILTERS = {
     "Data Collected": func.count(models.DataCollection.dataCollectionId),
     "Strategy": func.count(models.Screening.screeningId),
     "Auto Integrated": func.count(models.AutoProcIntegration.autoProcIntegrationId),
-    "Processed": func.count(models.ProcessingJob.processingJobId),
 }
+
+if hasattr(models, "ProcessingJob"):
+    SAMPLE_STATUS_FILTERS["Processed"] = func.count(
+        models.ProcessingJob.processingJobId
+    )
 
 SAMPLE_STATUS_ENUM = enum.Enum(
     "SampleStatus", {k: k for k in SAMPLE_STATUS_FILTERS.keys()}
@@ -194,6 +199,11 @@ def get_samples(
 
     if status:
         if status == SAMPLE_STATUS_ENUM.Processed:
+            if not hasattr(models, "ProcessingJob"):
+                raise HTTPException(
+                    status_code=500,
+                    detail="Database does not have `ProcessingJob`",
+                )
             query = query.join(models.ProcessingJob)
 
         if status.value == "Sample Action":
