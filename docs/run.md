@@ -40,13 +40,17 @@ Install required packages
 * For Debian and derivatives:
 
 ```bash
-sudo apt-get update && sudo apt-get install -y libldap2-dev libsasl2-dev libmariadb-dev build-essential
+sudo apt-get update && sudo apt-get install -y libldap2-dev libsasl2-dev \
+libmariadb-dev build-essential
 ```
 
 * For Fedora and derivatives (use `yum` if you don't have `dnf`):
+
 ```bash
-sudo dnf update && sudo dnf install -y openldap-devel mariadb-connector-c-devel
+sudo dnf update && sudo dnf install -y openldap-devel mariadb-connector-c-devel \
+python3-devel
 ```
+For Fedora you might also need to create a text file `/usr/lib/libldap_r.so`, adding only the line `INPUT ( libldap.so )`
 
 
 Install python dependencies:
