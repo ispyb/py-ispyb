@@ -2,7 +2,7 @@ import enum
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class StatusEnum(enum.Enum):
@@ -15,6 +15,17 @@ class StatusEnum(enum.Enum):
 class ProcessingStatus(BaseModel):
     status: Optional[StatusEnum]
 
+    @validator("status", pre=True)
+    def check_status(cls, status):
+        if status == "SUCCESS":
+            return 1
+        if status == "FAILED":
+            return 0
+        if status == "RUNNING":
+            return None
+
+        return status
+
 
 class ProcessingProcessingStatus(ProcessingStatus):
     autoProcProgramId: int
@@ -22,7 +33,6 @@ class ProcessingProcessingStatus(ProcessingStatus):
 
 class ScreeningProcesingStatus(ProcessingStatus):
     indexingSuccess: StatusEnum
-    alignmentSuccess: StatusEnum
 
 
 class ProcessingStatuses(BaseModel):
@@ -104,7 +114,6 @@ class ScreeningOutput(BaseModel):
     screeningOutputId: int
     indexingSuccess: int
     strategySuccess: int
-    alignmentSuccess: int
 
     ScreeningStrategy: Optional[list[ScreeningStrategy]]
     ScreeningOutputLattice: Optional[list[ScreeningOutputLattice]]
@@ -185,6 +194,17 @@ class AutoProcProgram(BaseModel):
     ProcessingJob: Optional[ProcessingJob]
 
     metadata: AutoProcProgramMetadata = Field(alias="_metadata")
+
+    @validator("processingStatus", pre=True)
+    def check_status(cls, status):
+        if status == "SUCCESS":
+            return 1
+        if status == "FAILED":
+            return 0
+        if status == "RUNNING":
+            return None
+
+        return status
 
     class Config:
         orm_mode = True

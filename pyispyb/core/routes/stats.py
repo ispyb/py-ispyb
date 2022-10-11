@@ -132,7 +132,7 @@ def get_parameter_histogram(
 @router.get("/runs", response_model=paginated(schema.VRun))
 def get_runs(
     page: dict[str, int] = Depends(pagination),
-) -> Paged[models.VRun]:
+) -> Paged[schema.VRun]:
     """Get a list of runs"""
     return crud.get_runs(
         **page,

@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from sqlalchemy import func, and_, distinct
+from sqlalchemy import func, and_, or_, distinct
 from sqlalchemy.sql.expression import literal_column
 from sqlalchemy.orm import contains_eager
 from ispyb import models
@@ -25,27 +25,41 @@ def get_processing_status(
             models.Screening.programVersion.label("program"),
             models.ScreeningOutput.indexingSuccess,
             models.ScreeningOutput.strategySuccess.label("status"),
-            models.ScreeningOutput.alignmentSuccess,
+        )
+        .select_from(models.DataCollection)
+        .join(
+            models.DataCollectionGroup,
+            models.DataCollection.dataCollectionGroupId
+            == models.DataCollectionGroup.dataCollectionGroupId,
+        )
+        .join(
+            models.Screening,
+            or_(
+                models.Screening.dataCollectionId
+                == models.DataCollection.dataCollectionId,
+                models.Screening.dataCollectionGroupId
+                == models.DataCollection.dataCollectionGroupId,
+            ),
         )
         .join(models.ScreeningOutput)
-        .join(models.DataCollection)
-        .join(models.DataCollectionGroup)
         .group_by(models.DataCollection.dataCollectionId, models.Screening.screeningId)
     )
 
-    queries["xrc"] = (
-        db.session.query(
-            models.DataCollection.dataCollectionId,
-            models.XrayCentringResult.status,
-            literal_column("'xrc'").label("program"),
+    if hasattr(models, "XrayCentringResult"):
+        queries["xrc"] = (
+            db.session.query(
+                models.DataCollection.dataCollectionId,
+                models.XrayCentringResult.status,
+                literal_column("'xrc'").label("program"),
+            )
+            .join(models.DataCollectionGroup)
+            .join(
+                models.GridInfo,
+                models.GridInfo.dataCollectionId
+                == models.DataCollection.dataCollectionId,
+            )
+            .join(models.XrayCentringResult)
         )
-        .join(models.DataCollectionGroup)
-        .join(
-            models.GridInfo,
-            models.GridInfo.dataCollectionId == models.DataCollection.dataCollectionId,
-        )
-        .join(models.XrayCentringResult)
-    )
 
     queries["autoIntegration"] = (
         db.session.query(
@@ -60,25 +74,26 @@ def get_processing_status(
         .join(models.AutoProcProgram)
     )
 
-    queries["processing"] = (
-        db.session.query(
-            models.DataCollection.dataCollectionId,
-            models.AutoProcProgram.autoProcProgramId,
-            models.AutoProcProgram.processingPrograms.label("program"),
-            models.AutoProcProgram.processingStatus.label("status"),
-        )
-        .select_from(models.DataCollection)
-        .join(models.DataCollectionGroup)
-        .join(models.ProcessingJob)
-        .join(models.AutoProcProgram)
-        .outerjoin(models.AutoProcIntegration)
-        .filter(
-            and_(
-                models.AutoProcIntegration.autoProcIntegrationId == None,  # noqa
-                models.ProcessingJob.automatic == 1,
+    if hasattr(models, "ProcessingJob"):
+        queries["processing"] = (
+            db.session.query(
+                models.DataCollection.dataCollectionId,
+                models.AutoProcProgram.autoProcProgramId,
+                models.AutoProcProgram.processingPrograms.label("program"),
+                models.AutoProcProgram.processingStatus.label("status"),
+            )
+            .select_from(models.DataCollection)
+            .join(models.DataCollectionGroup)
+            .join(models.ProcessingJob)
+            .join(models.AutoProcProgram)
+            .outerjoin(models.AutoProcIntegration)
+            .filter(
+                and_(
+                    models.AutoProcIntegration.autoProcIntegrationId == None,  # noqa
+                    models.ProcessingJob.automatic == 1,
+                )
             )
         )
-    )
 
     for key in queries.keys():
         queries[key] = queries[key].filter(
@@ -114,6 +129,10 @@ def get_processing_message_status(
     dataCollectionIds: list[int],
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> schema.AutoProcProgramMessageStatuses:
+    if not hasattr(models, "AutoProcProgramMessage") and not hasattr(
+        models, "ProcessingJob"
+    ):
+        return {"statuses": []}
     queries = {}
     columns = [
         models.DataCollection.dataCollectionId.label("dataCollectionId"),
@@ -195,7 +214,10 @@ def get_processing_messages(
     autoProcProgramId: int = None,
     autoProcProgramMessageId: int = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
-) -> Paged[models.AutoProcProgramMessage]:
+) -> Paged[schema.AutoProcProgramMessage]:
+    if not hasattr(models, "AutoProcProgramMessage"):
+        return Paged(total=0, results=[], skip=skip, limit=limit)
+
     queries = {}
     queries["autoIntegration"] = (
         db.session.query(models.AutoProcProgramMessage)
@@ -290,14 +312,27 @@ def get_screening_results(
                 models.ScreeningOutput.ScreeningOutputLattice,
             )
         )
-        .join(models.DataCollection)
-        .join(models.DataCollectionGroup)
+        # Support linkage via both `dataCollectionId` and `dataCollectionGroupId`
+        .join(
+            models.DataCollection,
+            or_(
+                models.DataCollection.dataCollectionId
+                == models.Screening.dataCollectionId,
+                models.DataCollection.dataCollectionGroupId
+                == models.Screening.dataCollectionGroupId,
+            ),
+        )
+        .join(
+            models.DataCollectionGroup,
+            models.DataCollection.dataCollectionGroupId
+            == models.DataCollectionGroup.dataCollectionGroupId,
+        )
         .join(models.BLSession)
         .join(models.Proposal)
     )
 
     if dataCollectionId:
-        query = query.filter(models.Screening.dataCollectionId == dataCollectionId)
+        query = query.filter(models.DataCollection.dataCollectionId == dataCollectionId)
 
     if screeningId:
         query = query.filter(models.Screening.screeningId == screeningId)
@@ -400,11 +435,13 @@ def get_processing_attachments(
         .join(models.AutoProcProgram)
         .join(models.AutoProcIntegration)
     )
-    queries["pj"] = (
-        db.session.query(models.AutoProcProgramAttachment, *metadata.values())
-        .join(models.AutoProcProgram)
-        .join(models.ProcessingJob)
-    )
+
+    if hasattr(models, "ProcessingJob"):
+        queries["pj"] = (
+            db.session.query(models.AutoProcProgramAttachment, *metadata.values())
+            .join(models.AutoProcProgram)
+            .join(models.ProcessingJob)
+        )
 
     for key in queries.keys():
         queries
@@ -431,7 +468,10 @@ def get_processing_attachments(
         )
         queries[key] = page(queries[key], skip=skip, limit=limit)
 
-    query_all = queries["api"].union_all(queries["pj"])
+    if hasattr(models, "ProcessingJob"):
+        query_all = queries["api"].union_all(queries["pj"])
+    else:
+        query_all = queries["api"]
     total = query_all.count()
     results = with_metadata(query_all.all(), list(metadata.keys()))
 
@@ -446,9 +486,6 @@ def get_autointegration_results(
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.AutoProcProgram]:
     metadata = {
-        "imageSweepCount": func.count(
-            distinct(models.ProcessingJobImageSweep.processingJobImageSweepId)
-        ),
         "attachments": func.count(
             distinct(models.AutoProcProgramAttachment.autoProcProgramAttachmentId)
         ),
@@ -491,12 +528,6 @@ def get_autointegration_results(
                 models.AutoProcScaling.AutoProcScalingStatistics,
             )
         )
-        .outerjoin(
-            models.ProcessingJob,
-            models.ProcessingJob.processingJobId
-            == models.AutoProcProgram.processingJobId,
-        )
-        .outerjoin(models.ProcessingJobImageSweep)
         .join(
             models.DataCollection,
             models.DataCollection.dataCollectionId
@@ -517,8 +548,24 @@ def get_autointegration_results(
         )
     )
 
+    if hasattr(models, "ProcessingJob"):
+        metadata["imageSweepCount"] = func.count(
+            distinct(models.ProcessingJobImageSweep.processingJobImageSweepId)
+        )
+        query = (
+            query.outerjoin(
+                models.ProcessingJob,
+                models.ProcessingJob.processingJobId
+                == models.AutoProcProgram.processingJobId,
+            )
+            .outerjoin(models.ProcessingJobImageSweep)
+            .add_column(metadata["imageSweepCount"])
+        )
+
     if dataCollectionId:
-        query = query.filter(models.ProcessingJob.dataCollectionId == dataCollectionId)
+        query = query.filter(
+            models.AutoProcIntegration.dataCollectionId == dataCollectionId
+        )
 
     if autoProcProgramId:
         query = query.filter(

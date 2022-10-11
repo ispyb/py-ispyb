@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 from ispyb import models
 import sqlalchemy
-from sqlalchemy import func, and_, text, extract, distinct, Date, cast
+from sqlalchemy import func, and_, or_, text, extract, distinct, Date, cast
 
 
 from ...config import settings
@@ -190,7 +190,15 @@ def get_breakdown(
                 models.DataCollection.endTime.label("startTime"),
                 func.max(models.Screening.bltimeStamp).label("endTime"),
             )
-            .join(models.Screening)
+            .join(
+                models.Screening,
+                or_(
+                    models.Screening.dataCollectionId
+                    == models.DataCollection.dataCollectionId,
+                    models.Screening.dataCollectionGroupId
+                    == models.DataCollection.dataCollectionGroupId,
+                ),
+            )
             .join(models.DataCollectionGroup)
             .order_by(models.DataCollection.endTime)
             .group_by(
@@ -271,7 +279,6 @@ def get_breakdown(
                 subquery.c.startTime.label("startTime"),
                 subquery.c.endTime.label("endTime"),
             ).filter(subquery.c.duration < 1000)
-            print(queries[key])
 
         results[key] = [r._asdict() for r in queries[key].all()]
 
@@ -463,11 +470,19 @@ def get_times(
             models.BLSession.session,
         )
         .select_from(models.DataCollection)
-        .join(models.Screening)
         .join(
             models.DataCollectionGroup,
             models.DataCollectionGroup.dataCollectionGroupId
             == models.DataCollection.dataCollectionGroupId,
+        )
+        .join(
+            models.Screening,
+            or_(
+                models.Screening.dataCollectionId
+                == models.DataCollection.dataCollectionId,
+                models.Screening.dataCollectionGroupId
+                == models.DataCollection.dataCollectionGroupId,
+            ),
         )
         .join(models.BLSession)
         .join(models.Proposal)
@@ -626,7 +641,7 @@ def get_errors(
             models.DataCollectionGroup.experimentType,
             models.DataCollectionFileAttachment.fileFullPath.label("logFile"),
         )
-        .join(
+        .outerjoin(
             models.DataCollectionFileAttachment,
             and_(
                 models.DataCollectionFileAttachment.dataCollectionId
@@ -889,7 +904,7 @@ def get_parameter_histogram(
     )
 
 
-def get_runs(skip: int, limit: int) -> Paged[models.VRun]:
+def get_runs(skip: int, limit: int) -> Paged[schema.VRun]:
     query = db.session.query(models.VRun).order_by(models.VRun.startDate.desc())
     total = query.count()
     query = page(query, skip=skip, limit=limit)
