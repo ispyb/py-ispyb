@@ -8,7 +8,6 @@ uvicorn
 SQLAlchemy
 
 pyjwt
-mysqlclient
 pdfkit
 python-barcode
 qrcode
@@ -21,7 +20,6 @@ python_ldap==3.4.0
 
 sqlparse
 
-mysql-connector
 mysql-connector-python==8.0.29
 
 mkdocs
