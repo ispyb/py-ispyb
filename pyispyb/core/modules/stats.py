@@ -597,6 +597,9 @@ def get_times(
 
     sessions = []
     for row in results["dc"]:
+        for key in ["datacollection", "remaining"]:
+            if row[key] is None:
+                row[key] = 0
         session_time = schema.SessionTimeEntry(
             **row,
             robot=session_lookup["robot"].get(row["session"], 0),

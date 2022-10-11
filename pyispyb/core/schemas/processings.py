@@ -34,12 +34,16 @@ class ProcessingProcessingStatus(ProcessingStatus):
 class ScreeningProcesingStatus(ProcessingStatus):
     indexingSuccess: StatusEnum
 
+class EMProcessingStatus(BaseModel):
+    motionCorrection: int
+    ctf: int
 
 class ProcessingStatuses(BaseModel):
     screening: Optional[dict[str, list[ScreeningProcesingStatus]]]
     xrc: Optional[dict[str, list[ProcessingStatus]]]
     processing: Optional[dict[str, list[ProcessingProcessingStatus]]]
     autoIntegration: Optional[dict[str, list[ProcessingProcessingStatus]]]
+    em: Optional[EMProcessingStatus]
 
 
 class ProcessingStatusesList(BaseModel):

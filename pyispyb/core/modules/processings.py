@@ -95,6 +95,25 @@ def get_processing_status(
             )
         )
 
+    queries["em"] = (
+        db.session.query(
+            models.DataCollection.dataCollectionId,
+            func.count(distinct(models.MotionCorrection.motionCorrectionId)).label(
+                "motionCorrection"
+            ),
+            func.count(distinct(models.CTF.CTFid)).label("ctf"),
+        )
+        .select_from(models.DataCollection)
+        .join(models.DataCollectionGroup)
+        .join(models.Movie)
+        .join(models.MotionCorrection)
+        .outerjoin(
+            models.CTF,
+            models.MotionCorrection.motionCorrectionId == models.CTF.motionCorrectionId,
+        )
+        .group_by(models.DataCollection.dataCollectionId)
+    )
+
     for key in queries.keys():
         queries[key] = queries[key].filter(
             models.DataCollection.dataCollectionId.in_(dataCollectionIds)
@@ -117,10 +136,14 @@ def get_processing_status(
             if key not in statuses[row["dataCollectionId"]]:
                 statuses[row["dataCollectionId"]][key] = {}
 
-            if row["program"] not in statuses[row["dataCollectionId"]][key]:
-                statuses[row["dataCollectionId"]][key][row["program"]] = []
+            if key == "em":
+                for em_key in ["motionCorrection", "ctf"]:
+                    statuses[row["dataCollectionId"]][key][em_key] = row[em_key]
+            else:
+                if row["program"] not in statuses[row["dataCollectionId"]][key]:
+                    statuses[row["dataCollectionId"]][key][row["program"]] = []
 
-            statuses[row["dataCollectionId"]][key][row["program"]].append(row)
+                statuses[row["dataCollectionId"]][key][row["program"]].append(row)
 
     return {"statuses": statuses}
 
@@ -542,10 +565,7 @@ def get_autointegration_results(
         .join(models.DataCollectionGroup)
         .join(models.BLSession)
         .join(models.Proposal)
-        .group_by(
-            models.AutoProcProgram.autoProcProgramId,
-            models.AutoProcScalingStatistics.autoProcScalingStatisticsId,
-        )
+        .group_by(models.AutoProcProgram.autoProcProgramId)
     )
 
     if hasattr(models, "ProcessingJob"):
@@ -576,6 +596,7 @@ def get_autointegration_results(
         query = with_authorization(query, beamLineGroups, joinBLSession=False)
 
     query = page(query, skip=skip, limit=limit)
+    query = query.distinct()
     total = query.count()
     results = with_metadata(query.all(), list(metadata.keys()))
 
