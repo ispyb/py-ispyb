@@ -1,7 +1,6 @@
 import enum
 from typing import Any, Optional
 
-from fastapi import HTTPException
 from sqlalchemy.orm import contains_eager, aliased, joinedload
 from sqlalchemy.sql.expression import func, distinct, and_
 from ispyb import models
