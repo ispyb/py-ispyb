@@ -1,5 +1,4 @@
 from fastapi import Depends, Request, HTTPException
-from ispyb import models
 
 from ...app.base import AuthenticatedAPIRouter
 from ...app.extensions.database.utils import Paged

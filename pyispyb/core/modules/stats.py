@@ -905,6 +905,9 @@ def get_parameter_histogram(
 
 
 def get_runs(skip: int, limit: int) -> Paged[schema.VRun]:
+    if not hasattr(models, "VRun"):
+        return Paged(total=0, results=[], skip=skip, limit=limit)
+
     query = db.session.query(models.VRun).order_by(models.VRun.startDate.desc())
     total = query.count()
     query = page(query, skip=skip, limit=limit)
