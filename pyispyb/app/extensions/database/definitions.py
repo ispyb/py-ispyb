@@ -107,16 +107,14 @@ def with_authorization(
         models.SessionHasPerson.personId == g.personId
     )
     sessions = [r._asdict()["sessionId"] for r in sessions.all()]
-    if sessions:
-        conditions.append(models.BLSession.sessionId.in_(sessions))
+    conditions.append(models.BLSession.sessionId.in_(sessions if sessions else []))
 
     # Proposals
     proposals = db.session.query(models.ProposalHasPerson.proposalId).filter(
         models.ProposalHasPerson.personId == g.personId
     )
     proposals = [r._asdict()["proposalId"] for r in proposals.all()]
-    if proposals:
-        conditions.append(models.Proposal.proposalId.in_(proposals))
+    conditions.append(models.Proposal.proposalId.in_(proposals if proposals else []))
 
     query = query.filter(sqlalchemy.or_(*conditions))
     return query
