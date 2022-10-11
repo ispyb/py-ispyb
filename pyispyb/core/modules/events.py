@@ -40,7 +40,14 @@ ENTITY_TYPES: dict[str, EntityType] = {
         models.DataCollection,
         models.DataCollectionGroup.blSampleId,
         "dataCollectionId",
-        [models.DataCollection.DataCollectionGroup, models.DataCollection.GridInfo],
+        [
+            models.DataCollection.DataCollectionGroup,
+            models.DataCollection.GridInfo,
+            [
+                models.DataCollection.DataCollectionGroup,
+                models.DataCollectionGroup.Workflow,
+            ],
+        ],
     ),
     "robot": EntityType(
         models.RobotAction, models.RobotAction.blsampleId, "robotActionId"
@@ -331,17 +338,17 @@ def get_events(
     if status:
         if status == EventStatus.success:
             queries["dc"] = queries["dc"].filter(
-                models.DataCollection.runStatus.like("success%")
+                models.DataCollection.runStatus.like("%success%")
             )
             queries["robot"] = queries["robot"].filter(
-                models.RobotAction.status.like("success%")
+                models.RobotAction.status.like("%success%")
             )
         elif status == EventStatus.failed:
             queries["dc"] = queries["dc"].filter(
-                models.DataCollection.runStatus.notlike("success%")
+                models.DataCollection.runStatus.notlike("%success%")
             )
             queries["robot"] = queries["robot"].filter(
-                models.RobotAction.status.notlike("success%")
+                models.RobotAction.status.notlike("%success%")
             )
         elif status == EventStatus.processed:
             queries["dc"] = (
@@ -447,9 +454,14 @@ def get_events(
             # If there are joined entities load those too
             if entity_type.joined:
                 for joined_entity in entity_type.joined:
-                    query = query.outerjoin(joined_entity).options(
-                        contains_eager(joined_entity)
-                    )
+                    if isinstance(joined_entity, list):
+                        query = query.outerjoin(joined_entity[-1]).options(
+                            contains_eager(*joined_entity)
+                        )
+                    else:
+                        query = query.outerjoin(joined_entity).options(
+                            contains_eager(joined_entity)
+                        )
 
             entity_type_map[name] = {
                 getattr(entity, entity_type.key): entity for entity in query.all()

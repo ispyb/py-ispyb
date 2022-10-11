@@ -6,9 +6,22 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
+class Workflow(BaseModel):
+    workflowId: int
+    comments: Optional[str]
+    status: Optional[str]
+    workflowTitle: Optional[str]
+    workflowType: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
 class DataCollectionGroup(BaseModel):
     dataCollectionGroupId: int
     experimentType: str
+
+    Workflow: Optional[Workflow]
 
     class Config:
         orm_mode = True
