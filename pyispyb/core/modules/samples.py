@@ -198,13 +198,9 @@ def get_samples(
         )
 
     if status:
-        if status == SAMPLE_STATUS_ENUM.Processed:
-            if not hasattr(models, "ProcessingJob"):
-                raise HTTPException(
-                    status_code=500,
-                    detail="Database does not have `ProcessingJob`",
-                )
-            query = query.join(models.ProcessingJob)
+        if hasattr(models, "ProcessingJob"):
+            if status == SAMPLE_STATUS_ENUM.Processed:
+                query = query.join(models.ProcessingJob)
 
         if status.value == "Sample Action":
             query = query.join(

@@ -130,7 +130,7 @@ def get_events(
             )
         )
         # Return the first dataCollectionId in a group
-        _dataCollectionId = sqlalchemy.func.min(models.DataCollection.dataCollectionId)
+        _dataCollectionId = sqlalchemy.func.max(models.DataCollection.dataCollectionId)
         startTime = sqlalchemy.func.min(models.DataCollection.startTime)
         endTime = sqlalchemy.func.max(models.DataCollection.endTime)
         dataCollectionCount = sqlalchemy.func.count(
