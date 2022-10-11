@@ -34,9 +34,11 @@ class ProcessingProcessingStatus(ProcessingStatus):
 class ScreeningProcesingStatus(ProcessingStatus):
     indexingSuccess: StatusEnum
 
+
 class EMProcessingStatus(BaseModel):
     motionCorrection: int
     ctf: int
+
 
 class ProcessingStatuses(BaseModel):
     screening: Optional[dict[str, list[ScreeningProcesingStatus]]]
