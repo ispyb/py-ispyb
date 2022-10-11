@@ -809,13 +809,16 @@ conda activate py-ispyb
 <ul>
 <li>For Debian and derivatives:</li>
 </ul>
-<pre><code class="language-bash">sudo apt-get update &amp;&amp; sudo apt-get install -y libldap2-dev libsasl2-dev libmariadb-dev build-essential
+<pre><code class="language-bash">sudo apt-get update &amp;&amp; sudo apt-get install -y libldap2-dev libsasl2-dev \
+libmariadb-dev build-essential
 </code></pre>
 <ul>
 <li>For Fedora and derivatives (use <code>yum</code> if you don't have <code>dnf</code>):</li>
 </ul>
-<pre><code class="language-bash">sudo dnf update &amp;&amp; sudo dnf install -y openldap-devel mariadb-connector-c-devel
+<pre><code class="language-bash">sudo dnf update &amp;&amp; sudo dnf install -y openldap-devel mariadb-connector-c-devel \
+python3-devel
 </code></pre>
+<p>For Fedora you might also need to create a text file <code>/usr/lib/libldap_r.so</code>, adding only the line <code>INPUT ( libldap.so )</code></p>
 <p>Install python dependencies:</p>
 <pre><code class="language-bash"># For development and production
 pip install -r requirements.txt
