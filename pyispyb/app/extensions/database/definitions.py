@@ -1,13 +1,14 @@
 import logging
-from typing import Optional, Any
+from typing import Any, Optional
 
 import sqlalchemy
-from sqlalchemy.orm import joinedload
 from ispyb import models
 from pyispyb.app.extensions.options.schema import Options
 
 from pyispyb.app.globals import g
 from pyispyb.app.extensions.database.middleware import db
+from sqlalchemy.orm import joinedload
+
 
 logger = logging.getLogger(__name__)
 

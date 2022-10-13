@@ -1,21 +1,20 @@
 import logging
 import traceback
 from typing import Optional
-from pyispyb.app.utils import model_from_json
-
 
 from ispyb import models
+from pyispyb.app.extensions.database.definitions import with_authorization
 from pyispyb.app.extensions.database.middleware import db
-
-from sqlalchemy.orm import joinedload
+from pyispyb.app.utils import model_from_json
 from pyispyb.core.modules.session import get_session
 from pyispyb.core.schemas import ssx as schema
+from sqlalchemy.orm import joinedload
 
 
 def get_ssx_datacollection_event_chains(
     dataCollectionId: int,
 ) -> list[models.EventChain]:
-    res = (
+    q = (
         db.session.query(models.EventChain)
         .filter(models.EventChain.dataCollectionId == dataCollectionId)
         .options(
@@ -24,8 +23,19 @@ def get_ssx_datacollection_event_chains(
                 models.Event.EventType,
             )
         )
-        .all()
+        .join(
+            models.DataCollection,
+            models.EventChain.dataCollectionId
+            == models.DataCollection.dataCollectionId,
+        )
+        .join(
+            models.BLSession,
+            models.DataCollection.sessionId == models.BLSession.sessionId,
+        )
     )
+    res = with_authorization(
+        q, [], proposalColumn=models.BLSession.proposalId, joinBLSession=False
+    ).all()
     return res
 
 

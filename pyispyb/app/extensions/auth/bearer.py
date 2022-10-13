@@ -1,6 +1,6 @@
-from fastapi import HTTPException, Depends, Request
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
+from fastapi import Depends, HTTPException, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from ...globals import g
 from .token import decode_token, set_token_data
@@ -40,6 +40,7 @@ async def JWTBearer(
             )
 
         set_token_data(decoded)
+        # set_options_data(request)
 
         return credentials.credentials
 
