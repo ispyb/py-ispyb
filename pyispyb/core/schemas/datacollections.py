@@ -5,6 +5,10 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
+from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+
+from ispyb import models
+
 
 class Workflow(BaseModel):
     workflowId: int
@@ -42,7 +46,8 @@ class WorkflowStep(BaseModel):
 
 class DataCollectionGroup(BaseModel):
     dataCollectionGroupId: int
-    experimentType: str
+    experimentType: Optional[str]
+    blSampleId: Optional[int]
 
     Workflow: Optional[Workflow]
 
@@ -154,6 +159,7 @@ class DataCollection(DataCollectionBase):
 
     DataCollectionGroup: DataCollectionGroup
     GridInfo: Optional[list[GridInfo]]
+    SSXDataCollection: Optional[sqlalchemy_to_pydantic(models.SSXDataCollection)]
 
     metadata: DataCollectionMetaData = Field(alias="_metadata")
 

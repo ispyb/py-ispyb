@@ -3,7 +3,7 @@ import traceback
 from typing import Optional
 
 from ispyb import models
-from pyispyb.app.extensions.database.definitions import with_authorization
+from pyispyb.app.extensions.database.definitions import with_authorization_session
 from pyispyb.app.extensions.database.middleware import db
 from pyispyb.app.utils import model_from_json
 from pyispyb.core.modules.session import get_session
@@ -33,9 +33,7 @@ def get_ssx_datacollection_event_chains(
             models.DataCollection.sessionId == models.BLSession.sessionId,
         )
     )
-    res = with_authorization(
-        q, [], proposalColumn=models.BLSession.proposalId, joinBLSession=False
-    ).all()
+    res = with_authorization_session(q).all()
     return res
 
 

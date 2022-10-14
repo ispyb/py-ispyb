@@ -53,6 +53,34 @@ def get_options() -> Options:
     return app.db_options
 
 
+def with_authorization_proposal(
+    query: "sqlalchemy.orm.Query[Any]",
+    includeArchived: bool = False,
+):
+    return with_authorization(
+        query=query,
+        includeArchived=includeArchived,
+        proposalColumn=None,
+        joinBLSession=True,
+        joinSessionHasPerson=True,
+        joinProposalHasPerson=True,
+    )
+
+
+def with_authorization_session(
+    query: "sqlalchemy.orm.Query[Any]",
+    includeArchived: bool = False,
+):
+    return with_authorization(
+        query=query,
+        includeArchived=includeArchived,
+        proposalColumn=models.BLSession.proposalId,
+        joinBLSession=False,
+        joinSessionHasPerson=True,
+        joinProposalHasPerson=True,
+    )
+
+
 def with_authorization(
     query: "sqlalchemy.orm.Query[Any]",
     includeArchived: bool = False,
