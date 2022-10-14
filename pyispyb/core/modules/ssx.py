@@ -293,17 +293,17 @@ def find_or_create_component_type(name: str):
     return type
 
 
-def find_or_create_experiment_type(name: str):
-    type = (
-        db.session.query(models.ExperimentType)
-        .filter(models.ComponentType.name == name)
-        .first()
-    )
-    if type is None:
-        type = models.ExperimentType(name=name)
-        db.session.add(type)
-        db.session.flush()
-    return type
+# def find_or_create_experiment_type(name: str):
+#     type = (
+#         db.session.query(models.ExperimentType)
+#         .filter(models.ComponentType.name == name)
+#         .first()
+#     )
+#     if type is None:
+#         type = models.ExperimentType(name=name)
+#         db.session.add(type)
+#         db.session.flush()
+#     return type
 
 
 def create_ssx_datacollectiongroup(
@@ -398,16 +398,16 @@ def create_ssx_datacollectiongroup(
 
         # DATA COLLECTION GROUP
 
-        type = find_or_create_experiment_type(
-            datacollectiongroup_dict.pop("experimentType")
-        )
+        # type = find_or_create_experiment_type(
+        #     datacollectiongroup_dict.pop("experimentType")
+        # )
 
         data_collection_group = model_from_json(
             models.DataCollectionGroup,
             {
                 **datacollectiongroup_dict,
                 "blSampleId": sample.blSampleId,
-                "experimentTypeId": type.experimentTypeId,
+                # "experimentTypeId": type.experimentTypeId,
             },
         )
         db.session.add(data_collection_group)
