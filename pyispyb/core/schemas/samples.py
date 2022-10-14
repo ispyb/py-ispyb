@@ -55,13 +55,13 @@ class SampleProtein(BaseModel):
 
 
 class SampleCrystal(Crystal):
-    Protein: SampleProtein
+    Protein: SampleProtein = Field(title="Protein")
 
 
 class Sample(SampleBase):
     blSampleId: int
 
-    Crystal: SampleCrystal
+    Crystal: SampleCrystal = Field(title="Crystal")
     Container: Container
 
     class Config:

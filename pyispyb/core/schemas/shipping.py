@@ -1,16 +1,16 @@
 # import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Shipping(BaseModel):
-    shippingName: str
+    shippingName: str = Field(title="Name")
 
     class Config:
         orm_mode = True
 
 
 class Dewar(BaseModel):
-    code: str
+    code: str = Field(title="Name")
 
     Shipping: Shipping
 
@@ -19,7 +19,7 @@ class Dewar(BaseModel):
 
 
 class Container(BaseModel):
-    code: str
+    code: str = Field(title="Name")
 
     Dewar: Dewar
 
