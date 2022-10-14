@@ -43,7 +43,6 @@ Then just use it. ;-)
 from contextvars import ContextVar, Token
 from typing import Any, Dict
 
-import starlette.exceptions
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 
