@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Optional
 
 from fastapi import Depends, HTTPException, Request, Query
 from fastapi.responses import FileResponse
@@ -31,6 +32,22 @@ def get_datacollection_diffraction_image(
     path = crud.get_datacollection_diffraction_image_path(
         dataCollectionId,
         snapshot,
+        beamLineGroups=request.app.db_options.beamLineGroups,
+    )
+    if not path:
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    return path
+
+
+@router.get("/images/quality/{dataCollectionId}", response_class=FileResponse)
+def get_datacollection_anaylsis_image(
+    request: Request,
+    dataCollectionId: int,
+) -> str:
+    """Get a data collection per image analysis image"""
+    path = crud.get_datacollection_analysis_image_path(
+        dataCollectionId,
         beamLineGroups=request.app.db_options.beamLineGroups,
     )
     if not path:
@@ -130,3 +147,53 @@ def get_per_image_analysis(
         beamLineGroups=request.app.db_options.beamLineGroups,
         **page,
     )
+
+
+@router.get("/workflows/steps", response_model=paginated(schema.WorkflowStep))
+def get_workflow_steps(
+    request: Request,
+    page: dict[str, int] = Depends(pagination),
+    workflowId: Optional[int] = Query(None, title="Workflow id"),
+    workflowStepId: Optional[int] = Query(None, title="Workflow step id"),
+) -> Paged[models.WorkflowStep]:
+    """Get a list of workflow steps"""
+    return crud.get_workflow_steps(
+        workflowId=workflowId,
+        workflowStepId=workflowStepId,
+        beamLineGroups=request.app.db_options.beamLineGroups,
+        **page,
+    )
+
+
+@router.get(
+    "/workflows/steps/{workflowStepId}",
+    response_class=FileResponse,
+    responses={404: {"description": "No such workflow step attachment"}},
+)
+def get_workflow_step_attachment(
+    request: Request, workflowStepId: int, attachmentType: schema.WorkflowStepAttachment
+):
+    """Get a workflow step attachment"""
+    steps = crud.get_workflow_steps(
+        workflowStepId=workflowStepId,
+        beamLineGroups=request.app.db_options.beamLineGroups,
+        skip=0,
+        limit=1,
+    )
+
+    try:
+        steps: models.WorkflowStep = steps.first
+        file_path = getattr(steps, attachmentType)
+        if settings.path_map:
+            file_path = settings.path_map + file_path
+
+        if not os.path.exists(file_path):
+            logger.warning(
+                f"workflowStep.{attachmentType} `{workflowStepId}` file `{file_path}` does not exist on disk"
+            )
+            raise IndexError
+        return FileResponse(file_path, filename=os.path.basename(file_path))
+    except IndexError:
+        raise HTTPException(
+            status_code=404, detail="Workflow step attachment not found"
+        )

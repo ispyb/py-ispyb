@@ -17,6 +17,29 @@ class Workflow(BaseModel):
         orm_mode = True
 
 
+class WorkflowStepAttachment(str, enum.Enum):
+    imageResultFilePath = "imageResultFilePath"
+    # htmlResultFilePath = "htmlResultFilePath"
+    resultFilePath = "resultFilePath"
+
+
+class WorkflowStepMetaData(BaseModel):
+    attachments: dict[str, bool] = Field(description="Attachment statuses")
+
+
+class WorkflowStep(BaseModel):
+    workflowId: int
+    workflowStepId: int
+    workflowStepType: Optional[str]
+    status: Optional[str]
+    comments: Optional[str]
+
+    metadata: WorkflowStepMetaData = Field(alias="_metadata")
+
+    class Config:
+        orm_mode = True
+
+
 class DataCollectionGroup(BaseModel):
     dataCollectionGroupId: int
     experimentType: str

@@ -89,6 +89,37 @@ def get_datacollection_snapshot_path(
     return image_path
 
 
+def get_datacollection_anaylsis_image(
+    dataCollectionId: int,
+    beamLineGroups: Optional[dict[str, Any]] = None,
+) -> Optional[str]:
+    datacollections = get_events(
+        dataCollectionId=dataCollectionId,
+        beamLineGroups=beamLineGroups,
+        skip=0,
+        limit=1,
+    )
+    try:
+        dc = datacollections.first["Item"]
+    except IndexError:
+        return None
+
+    image_path: str = dc.imageQualityIndicatorsPlotPath
+    if image_path is None:
+        return None
+
+    if settings.path_map:
+        image_path = settings.path_map + image_path
+
+    if not os.path.exists(image_path):
+        logger.warning(
+            f"imageQualityIndicatorsPlotPath [{dc.imageQualityIndicatorsPlotPath}] for dataCollectionId {dataCollectionId} does not exist on disk"
+        )
+        return None
+
+    return image_path
+
+
 def get_datacollection_attachments(
     skip: int,
     limit: int,
@@ -192,3 +223,41 @@ def get_per_image_analysis(
                 results[key].append(row[key])
 
     return Paged(total=total, results=[results], skip=skip, limit=limit)
+
+
+def get_workflow_steps(
+    skip: int,
+    limit: int,
+    workflowId: Optional[int] = None,
+    workflowStepId: Optional[int] = None,
+    beamLineGroups: Optional[dict[str, Any]] = None,
+) -> Paged[models.WorkflowStep]:
+    query = (
+        db.session.query(models.WorkflowStep)
+        .join(models.Workflow)
+        .join(models.DataCollectionGroup)
+        .join(models.BLSession)
+        .join(models.Proposal)
+    )
+
+    if workflowId:
+        query = query.filter(models.WorkflowStep.workflowId == workflowId)
+
+    if workflowStepId:
+        query = query.filter(models.WorkflowStep.workflowStepId == workflowStepId)
+
+    if beamLineGroups:
+        query = with_authorization(query, beamLineGroups, joinBLSession=False)
+
+    total = query.count()
+    query = page(query, skip=skip, limit=limit)
+    results = query.all()
+
+    for result in results:
+        result._metadata["attachments"] = {}
+        for file in ["imageResultFilePath", "resultFilePath", "htmlResultFilePath"]:
+            result._metadata["attachments"][file] = os.path.exists(
+                getattr(result, file)
+            )
+
+    return Paged(total=total, results=results, skip=skip, limit=limit)

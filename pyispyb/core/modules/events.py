@@ -501,6 +501,25 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
             snapshot_statuses[i + 1] = False
 
     datacollection._metadata["snapshots"] = snapshot_statuses
+
+    analysis = False
+    if datacollection.imageQualityIndicatorsPlotPath:
+        analysis = os.path.exists(datacollection.imageQualityIndicatorsPlotPath)
+    datacollection._metadata["snapshots"]["analysis"] = analysis
+
+    # diffraction_row: models.Image = (
+    #     db.session.query(models.Image)
+    #     .filter(models.Image.imageNumber == 1)
+    #     .filter(models.Image.dataCollectionId == datacollection.dataCollectionId)
+    #     .first()
+    # )
+
+    # diffraction = False
+    # if diffraction_row:
+    #     if diffraction_row.jpegThumbnailFileFullPath:
+    #         diffraction = os.path.exists(diffraction_row.jpegThumbnailFileFullPath)
+    # datacollection._metadata["snapshots"]["diffraction"] = diffraction
+
     return datacollection
 
 
