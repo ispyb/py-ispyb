@@ -5,9 +5,7 @@ from pydantic import BaseModel, Field
 
 
 class LaboratoryCreate(BaseModel):
-    name: str = WordDashSpace(
-        title="Laboratory Name", description="The Laboratory name"
-    )
+    name: str = Field(title="Laboratory Name", description="The Laboratory name")
     address: str = Field(title="Address", description="The Laboratory Address")
     city: str = Field(title="City", description="The Laboratory City")
     country: str = Field(title="Country", description="The Laboratory Country")
@@ -22,6 +20,18 @@ class LaboratoryCreate(BaseModel):
 
 class Laboratory(LaboratoryCreate):
     laboratoryId: int
+
+    # Could be missing in db
+    name: Optional[str] = Field(
+        None, title="Laboratory Name", description="The Laboratory name"
+    )
+    address: Optional[str] = Field(
+        None, title="Address", description="The Laboratory Address"
+    )
+    city: Optional[str] = Field(None, title="City", description="The Laboratory City")
+    country: Optional[str] = Field(
+        None, title="Country", description="The Laboratory Country"
+    )
 
     class Config:
         orm_mode = True

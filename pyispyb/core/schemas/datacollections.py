@@ -124,6 +124,30 @@ class DataCollectionBase(BaseModel):
     omegaStart: Optional[float] = Field(title="Omega Start", unit="°")
     chiStart: Optional[float] = Field(title="Chi Start", unit="°")
 
+    xBeamPix: Optional[float] = Field(title="Beam size X", unit="pixels")
+    yBeamPix: Optional[float] = Field(title="Beam size Y", unit="pixels")
+
+    # EM
+    magnification: Optional[int] = Field(title="Magnification", unit="x")
+    binning: Optional[int] = Field(title="Binning")
+    particleDiameter: Optional[float] = Field(title="Particle Diameter", unit="nm")
+    # boxSize_CTF: Optional[float] = Field(unit="pixels")
+    # minResolution: Optional[float] = Field(unit="A")
+    # minDefocus: Optional[float] = Field(unit="A")
+    # maxDefocus: Optional[float] = Field(unit="A")
+    defocusStepSize: Optional[float] = Field(unit="A")
+    amountAstigmatism: Optional[float] = Field(unit="A")
+    # extractSize: Optional[float] = Field(unit="pixels")
+    # bgRadius: Optional[float] = Field(unit="nm")
+    voltage: Optional[float] = Field(unit="kV")
+    objAperture: Optional[float] = Field(unit="um")
+    # c1aperture: Optional[float] = Field(unit="um")
+    # c2aperture: Optional[float] = Field(unit="um")
+    # c3aperture: Optional[float] = Field(unit="um")
+    # c1lens: Optional[float] = Field(unit="%")
+    # c2lens: Optional[float] = Field(unit="%")
+    # c3lens: Optional[float] = Field(unit="%")
+
 
 class DataCollection(DataCollectionBase):
     dataCollectionId: int

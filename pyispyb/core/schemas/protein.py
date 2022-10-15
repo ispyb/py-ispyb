@@ -24,6 +24,7 @@ class ProteinMetaData(BaseModel):
     pdbs: Optional[int] = Field(description="Number of attached pdbs")
     crystals: Optional[int] = Field(description="Number of child crystals")
     samples: Optional[int] = Field(description="Number of child samples")
+    datacollections: Optional[int] = Field(description="Number of data collections")
 
 
 class ProteinBase(BaseModel):

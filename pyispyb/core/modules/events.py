@@ -526,6 +526,7 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
 def get_event_types(
     session: Optional[str] = None,
     blSampleId: Optional[int] = None,
+    proteinId: Optional[int] = None,
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.EventType]:
     queries = {}
@@ -579,6 +580,15 @@ def get_event_types(
         if blSampleId:
             queries[key] = queries[key].filter(
                 models.DataCollectionGroup.blSampleId == blSampleId
+            )
+
+        if proteinId:
+            queries[key] = (
+                queries[key]
+                .join(models.BLSample)
+                .join(models.Crystal)
+                .join(models.Protein)
+                .filter(models.Protein.proteinId == proteinId)
             )
 
         if beamLineGroups:

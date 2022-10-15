@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from sqlalchemy import or_, func
+from sqlalchemy import or_, func, distinct
 from sqlalchemy.orm import joinedload, contains_eager
 from ispyb import models
 
@@ -32,9 +32,9 @@ def get_proteins(
     beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.Protein]:
     metadata = {
-        "pdbs": func.count(models.ProteinHasPDB.proteinid),
-        "samples": func.count(models.BLSample.blSampleId),
-        "crystals": func.count(models.Crystal.crystalId),
+        "pdbs": func.count(distinct(models.ProteinHasPDB.proteinid)),
+        "samples": func.count(distinct(models.BLSample.blSampleId)),
+        "crystals": func.count(distinct(models.Crystal.crystalId)),
     }
 
     query = (
@@ -92,4 +92,32 @@ def get_proteins(
     query = page(query, skip=skip, limit=limit)
 
     results = with_metadata(query.all(), list(metadata.keys()))
+
+    protein_ids = [result.proteinId for result in results]
+    dc_query = (
+        db.session.query(
+            models.Protein.proteinId,
+            func.count(distinct(models.DataCollection.dataCollectionId)).label(
+                "datacollections"
+            ),
+        )
+        .join(models.Crystal)
+        .join(models.BLSample)
+        .join(
+            models.DataCollectionGroup,
+            models.BLSample.blSampleId == models.DataCollectionGroup.blSampleId,
+        )
+        .join(models.DataCollection)
+        .filter(models.Protein.proteinId.in_(protein_ids))
+        .group_by(models.Protein.proteinId)
+    )
+
+    dc_counts = {}
+    for dc in dc_query.all():
+        row = dc._asdict()
+        dc_counts[row["proteinId"]] = row["datacollections"]
+
+    for result in results:
+        result._metadata["datacollections"] = dc_counts.get(result.proteinId, 0)
+
     return Paged(total=total, results=results, skip=skip, limit=limit)
