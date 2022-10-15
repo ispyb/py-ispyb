@@ -36,6 +36,7 @@ class ScreeningProcesingStatus(ProcessingStatus):
 
 
 class EMProcessingStatus(BaseModel):
+    movie: int
     motionCorrection: int
     ctf: int
 

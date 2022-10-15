@@ -98,6 +98,7 @@ def get_processing_status(
     queries["em"] = (
         db.session.query(
             models.DataCollection.dataCollectionId,
+            func.count(distinct(models.Movie.movieId)).label("movie"),
             func.count(distinct(models.MotionCorrection.motionCorrectionId)).label(
                 "motionCorrection"
             ),
@@ -137,7 +138,7 @@ def get_processing_status(
                 statuses[row["dataCollectionId"]][key] = {}
 
             if key == "em":
-                for em_key in ["motionCorrection", "ctf"]:
+                for em_key in ["motionCorrection", "ctf", "movie"]:
                     statuses[row["dataCollectionId"]][key][em_key] = row[em_key]
             else:
                 if row["program"] not in statuses[row["dataCollectionId"]][key]:
