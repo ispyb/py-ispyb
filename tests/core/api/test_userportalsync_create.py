@@ -24,6 +24,7 @@ def test_call_sync_proposal_create(
 def test_proposal_persons_sync(with_db_session):
     # Only one proposal with proposalCode and proposalNumber should have been created in DB
     proposals = get_proposals(
+        withAuthorization=False,
         skip=0,
         limit=10,
         proposalCode=test_data_proposal_userportalsync_create["proposal"][
@@ -114,7 +115,10 @@ def test_session_persons_sync(with_db_session):
         try:
             if json_session["externalId"] is not None:
                 sessions = get_sessions(
-                    skip=0, limit=10, externalId=json_session["externalId"]
+                    withAuthorization=False,
+                    skip=0,
+                    limit=10,
+                    externalId=json_session["externalId"],
                 )
         except KeyError:
             pass
@@ -124,6 +128,7 @@ def test_session_persons_sync(with_db_session):
             # It might be deprecated later
             if json_session["expSessionPk"] is not None:
                 sessions = get_sessions(
+                    withAuthorization=False,
                     skip=0,
                     limit=10,
                     expSessionPk=json_session["expSessionPk"],
@@ -146,6 +151,7 @@ def test_session_persons_sync(with_db_session):
 def test_lab_contacts_sync(with_db_session):
     # Get the proposal from the DB
     proposals = get_proposals(
+        withAuthorization=False,
         skip=0,
         limit=10,
         proposalCode=test_data_proposal_userportalsync_create["proposal"][
@@ -157,6 +163,7 @@ def test_lab_contacts_sync(with_db_session):
     )
     # Get the lab contacts for the proposal in DB
     labcontacts = get_labcontacts(
+        withAuthorization=False,
         skip=0,
         limit=10,
         proposalId=proposals.results[0].proposalId,
@@ -174,6 +181,7 @@ def test_lab_contacts_sync(with_db_session):
 def test_proteins_sync(with_db_session):
     # Get the proposal from the DB
     proposals = get_proposals(
+        withAuthorization=False,
         skip=0,
         limit=10,
         proposalCode=test_data_proposal_userportalsync_create["proposal"][
@@ -190,6 +198,7 @@ def test_proteins_sync(with_db_session):
         try:
             if protein["externalId"] is not None:
                 proteins = get_proteins(
+                    withAuthorization=False,
                     skip=0,
                     limit=10,
                     externalId=protein["externalId"],
@@ -200,6 +209,7 @@ def test_proteins_sync(with_db_session):
 
         try:
             proteins = get_proteins(
+                withAuthorization=False,
                 skip=0,
                 limit=10,
                 acronym=protein["acronym"],

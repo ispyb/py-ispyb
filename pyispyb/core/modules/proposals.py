@@ -20,6 +20,7 @@ def get_proposals(
     proposalNumber: Optional[str] = None,
     proposal: Optional[str] = None,
     search: Optional[str] = None,
+    withAuthorization: bool = True,
 ) -> Paged[models.Proposal]:
     metadata = {
         "persons": func.count(distinct(models.ProposalHasPerson.personId)),
@@ -55,7 +56,8 @@ def get_proposals(
             )
         )
 
-    query = with_authorization(query, joinBLSession=False)
+    if withAuthorization:
+        query = with_authorization(query, joinBLSession=False)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

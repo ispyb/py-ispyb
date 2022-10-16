@@ -32,6 +32,7 @@ def get_sessions(
     sessionType: Optional[str] = None,
     month: Optional[int] = None,
     year: Optional[int] = None,
+    withAuthorization: bool = True,
 ) -> Paged[models.BLSession]:
     metadata = {
         "active": func.IF(
@@ -120,10 +121,8 @@ def get_sessions(
             models.BLSession.beamLineName.in_(beamlines_from_group(beamLineGroup))
         )
 
-    query = with_authorization(
-        query,
-        joinBLSession=False,
-    )
+    if withAuthorization:
+        query = with_authorization(query, joinBLSession=False)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

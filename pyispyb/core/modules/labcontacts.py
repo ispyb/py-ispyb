@@ -15,6 +15,7 @@ def get_labcontacts(
     labContactId: Optional[int] = None,
     proposal: str = None,
     proposalId: Optional[int] = None,
+    withAuthorization: bool = True,
 ) -> Paged[models.LabContact]:
     query = (
         db.session.query(models.LabContact)
@@ -35,7 +36,8 @@ def get_labcontacts(
     if proposalId:
         query = query.filter(models.LabContact.proposalId == proposalId)
 
-    query = with_authorization(query)
+    if withAuthorization:
+        query = with_authorization(query)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

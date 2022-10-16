@@ -29,6 +29,7 @@ def get_proteins(
     acronym: Optional[str] = None,
     search: Optional[str] = None,
     sort_order: Optional[dict[str, str]] = None,
+    withAuthorization: bool = True,
 ) -> Paged[models.Protein]:
     metadata = {
         "pdbs": func.count(distinct(models.ProteinHasPDB.proteinid)),
@@ -54,7 +55,8 @@ def get_proteins(
         .group_by(models.Protein.proteinId)
     )
 
-    query = with_authorization(query)
+    if withAuthorization:
+        query = with_authorization(query)
 
     if proteinId:
         query = query.filter(models.Protein.proteinId == proteinId)
