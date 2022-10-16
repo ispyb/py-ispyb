@@ -10,7 +10,6 @@ from ...app.extensions.database.definitions import (
     groups_from_beamlines,
     with_authorization,
 )
-from ...app.extensions.options.schema import BeamLineGroup
 from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.middleware import db
 from ...core.modules.utils import encode_external_id

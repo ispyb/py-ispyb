@@ -7,7 +7,6 @@ from ispyb import models
 
 from pyispyb.app.globals import g
 from pyispyb.app.extensions.database.middleware import db
-from ...extensions.options.schema import BeamLineGroup
 
 logger = logging.getLogger(__name__)
 
