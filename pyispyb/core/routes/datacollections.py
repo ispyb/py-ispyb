@@ -2,7 +2,7 @@ import logging
 import os
 from typing import Optional
 
-from fastapi import Depends, HTTPException, Request, Query
+from fastapi import Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 from pydantic import conint
 from ispyb import models
@@ -24,7 +24,6 @@ router = AuthenticatedAPIRouter(prefix="/datacollections", tags=["Data Collectio
 
 @router.get("/images/diffraction/{dataCollectionId}", response_class=FileResponse)
 def get_datacollection_diffraction_image(
-    request: Request,
     dataCollectionId: int,
     snapshot: bool = Query(False, description="Get snapshot image"),
 ) -> str:
@@ -32,7 +31,6 @@ def get_datacollection_diffraction_image(
     path = crud.get_datacollection_diffraction_image_path(
         dataCollectionId,
         snapshot,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )
     if not path:
         raise HTTPException(status_code=404, detail="Image not found")
@@ -42,13 +40,11 @@ def get_datacollection_diffraction_image(
 
 @router.get("/images/quality/{dataCollectionId}", response_class=FileResponse)
 def get_datacollection_anaylsis_image(
-    request: Request,
     dataCollectionId: int,
 ) -> str:
     """Get a data collection per image analysis image"""
     path = crud.get_datacollection_analysis_image_path(
         dataCollectionId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )
     if not path:
         raise HTTPException(status_code=404, detail="Image not found")
@@ -58,7 +54,6 @@ def get_datacollection_anaylsis_image(
 
 @router.get("/images/{dataCollectionId}", response_class=FileResponse)
 def get_datacollection_image(
-    request: Request,
     dataCollectionId: int,
     imageId: conint(ge=1, le=4) = Query(1, description="Image 1-4 to return"),
     snapshot: bool = Query(False, description="Get snapshot image"),
@@ -68,7 +63,6 @@ def get_datacollection_image(
         dataCollectionId,
         imageId,
         snapshot,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )
     if not path:
         raise HTTPException(status_code=404, detail="Image not found")
@@ -80,7 +74,6 @@ def get_datacollection_image(
     "/attachments", response_model=paginated(schema.DataCollectionFileAttachment)
 )
 def get_datacollection_attachments(
-    request: Request,
     page: dict[str, int] = Depends(pagination),
     dataCollectionId: int = Depends(filters.dataCollectionId),
     dataCollectionGroupId: int = Depends(filters.dataCollectionGroupId),
@@ -89,7 +82,6 @@ def get_datacollection_attachments(
     return crud.get_datacollection_attachments(
         dataCollectionId=dataCollectionId,
         dataCollectionGroupId=dataCollectionGroupId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
         **page,
     )
 
@@ -100,13 +92,11 @@ def get_datacollection_attachments(
     responses={404: {"description": "No such data collection attachment"}},
 )
 def get_datacollection_attachment(
-    request: Request,
     dataCollectionFileAttachmentId: int,
 ):
     """Get a data collection attachment"""
     attachments = crud.get_datacollection_attachments(
         dataCollectionFileAttachmentId=dataCollectionFileAttachmentId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )
@@ -135,7 +125,6 @@ def get_datacollection_attachment(
     responses={404: {"description": "A list of per image/point analysis"}},
 )
 def get_per_image_analysis(
-    request: Request,
     page: dict[str, int] = Depends(pagination),
     dataCollectionId: int = Depends(filters.dataCollectionId),
     dataCollectionGroupId: int = Depends(filters.dataCollectionGroupId),
@@ -144,14 +133,12 @@ def get_per_image_analysis(
     return crud.get_per_image_analysis(
         dataCollectionId=dataCollectionId,
         dataCollectionGroupId=dataCollectionGroupId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
         **page,
     )
 
 
 @router.get("/workflows/steps", response_model=paginated(schema.WorkflowStep))
 def get_workflow_steps(
-    request: Request,
     page: dict[str, int] = Depends(pagination),
     workflowId: Optional[int] = Query(None, title="Workflow id"),
     workflowStepId: Optional[int] = Query(None, title="Workflow step id"),
@@ -160,7 +147,6 @@ def get_workflow_steps(
     return crud.get_workflow_steps(
         workflowId=workflowId,
         workflowStepId=workflowStepId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
         **page,
     )
 
@@ -171,12 +157,11 @@ def get_workflow_steps(
     responses={404: {"description": "No such workflow step attachment"}},
 )
 def get_workflow_step_attachment(
-    request: Request, workflowStepId: int, attachmentType: schema.WorkflowStepAttachment
+    workflowStepId: int, attachmentType: schema.WorkflowStepAttachment
 ):
     """Get a workflow step attachment"""
     steps = crud.get_workflow_steps(
         workflowStepId=workflowStepId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )

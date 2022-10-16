@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Optional
 
 from sqlalchemy import or_, func, distinct
 from sqlalchemy.orm import joinedload
@@ -20,7 +20,6 @@ def get_proposals(
     proposalNumber: Optional[str] = None,
     proposal: Optional[str] = None,
     search: Optional[str] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.Proposal]:
     metadata = {
         "persons": func.count(distinct(models.ProposalHasPerson.personId)),
@@ -56,10 +55,7 @@ def get_proposals(
             )
         )
 
-    if beamLineGroups:
-        query = with_authorization(
-            query, beamLineGroups, joinBLSession=False, joinProposalHasPerson=False
-        )
+    query = with_authorization(query, joinBLSession=False)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)
@@ -72,10 +68,9 @@ def get_proposals(
             else []
         )
 
-        if beamLineGroups:
-            result._metadata["uiGroups"] = groups_from_beamlines(
-                beamLineGroups, result._metadata["beamLines"]
-            )
+        result._metadata["uiGroups"] = groups_from_beamlines(
+            result._metadata["beamLines"]
+        )
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
 

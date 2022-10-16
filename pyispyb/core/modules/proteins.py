@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Optional
 
 from sqlalchemy import or_, func, distinct
 from sqlalchemy.orm import joinedload, contains_eager
@@ -29,7 +29,6 @@ def get_proteins(
     acronym: Optional[str] = None,
     search: Optional[str] = None,
     sort_order: Optional[dict[str, str]] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.Protein]:
     metadata = {
         "pdbs": func.count(distinct(models.ProteinHasPDB.proteinid)),
@@ -55,8 +54,7 @@ def get_proteins(
         .group_by(models.Protein.proteinId)
     )
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups)
+    query = with_authorization(query)
 
     if proteinId:
         query = query.filter(models.Protein.proteinId == proteinId)

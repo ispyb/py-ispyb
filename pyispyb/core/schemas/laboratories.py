@@ -1,6 +1,7 @@
 import datetime
 from typing import Optional
-from pyispyb.core.schemas.validators import WordDashSpace
+
+# from pyispyb.core.schemas.validators import WordDashSpace
 from pydantic import BaseModel, Field
 
 

@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import Depends, Request
+from fastapi import Depends
 
 from ...app.extensions.database.utils import Paged
 from ...dependencies import pagination
@@ -19,7 +19,6 @@ router = AuthenticatedAPIRouter(prefix="/events", tags=["Events"])
     responses={404: {"description": "Entity not found"}},
 )
 def get_events(
-    request: Request,
     page: dict[str, int] = Depends(pagination),
     session: str = Depends(filters.session),
     proposal: str = Depends(filters.proposal),
@@ -42,7 +41,6 @@ def get_events(
         proteinId=proteinId,
         status=status,
         eventType=eventType,
-        beamLineGroups=request.app.db_options.beamLineGroups,
         **page
     )
 
@@ -52,7 +50,6 @@ def get_events(
     response_model=paginated(schema.EventType),
 )
 def get_event_types(
-    request: Request,
     session: str = Depends(filters.session),
     blSampleId: int = Depends(filters.blSampleId),
     proteinId: int = Depends(filters.proteinId),
@@ -62,5 +59,4 @@ def get_event_types(
         session=session,
         blSampleId=blSampleId,
         proteinId=proteinId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )

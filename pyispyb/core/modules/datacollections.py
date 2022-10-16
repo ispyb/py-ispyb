@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any, Optional
+from typing import Optional
 
 from sqlalchemy import func
 from ispyb import models
@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 def get_datacollection_diffraction_image_path(
     dataCollectionId: int,
     snapshot: bool = False,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Optional[str]:
     query = (
         db.session.query(
@@ -38,7 +37,7 @@ def get_datacollection_diffraction_image_path(
         .join(models.Proposal)
     )
 
-    query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    query = with_authorization(query, joinBLSession=False)
     first_image = query.first()
 
     if first_image:
@@ -49,11 +48,9 @@ def get_datacollection_snapshot_path(
     dataCollectionId: int,
     imageId: int = 1,
     snapshot: bool = False,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Optional[str]:
     datacollections = get_events(
         dataCollectionId=dataCollectionId,
-        beamLineGroups=beamLineGroups,
         skip=0,
         limit=1,
     )
@@ -91,11 +88,9 @@ def get_datacollection_snapshot_path(
 
 def get_datacollection_anaylsis_image(
     dataCollectionId: int,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Optional[str]:
     datacollections = get_events(
         dataCollectionId=dataCollectionId,
-        beamLineGroups=beamLineGroups,
         skip=0,
         limit=1,
     )
@@ -126,7 +121,6 @@ def get_datacollection_attachments(
     dataCollectionId: Optional[int] = None,
     dataCollectionGroupId: Optional[int] = None,
     dataCollectionFileAttachmentId: Optional[int] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.DataCollectionFileAttachment]:
     metadata = {
         "url": func.concat(
@@ -160,8 +154,7 @@ def get_datacollection_attachments(
             == dataCollectionFileAttachmentId
         )
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    query = with_authorization(query, joinBLSession=False)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)
@@ -178,7 +171,6 @@ def get_per_image_analysis(
     limit: int,
     dataCollectionId: Optional[int] = None,
     dataCollectionGroupId: Optional[int] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.PerImageAnalysis]:
     query = (
         db.session.query(
@@ -205,7 +197,7 @@ def get_per_image_analysis(
             models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
         )
 
-    query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    query = with_authorization(query, joinBLSession=False)
     query = page(query, skip=skip, limit=limit)
     total = query.count()
 
@@ -230,7 +222,6 @@ def get_workflow_steps(
     limit: int,
     workflowId: Optional[int] = None,
     workflowStepId: Optional[int] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.WorkflowStep]:
     query = (
         db.session.query(models.WorkflowStep)
@@ -246,8 +237,7 @@ def get_workflow_steps(
     if workflowStepId:
         query = query.filter(models.WorkflowStep.workflowStepId == workflowStepId)
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    query = with_authorization(query, joinBLSession=False)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

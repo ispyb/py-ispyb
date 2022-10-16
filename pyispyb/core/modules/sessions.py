@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
-from typing import Any, Optional
+from typing import Optional
 
 from ispyb import models
 from sqlalchemy import func, and_, or_, extract, distinct
 from sqlalchemy.orm import joinedload, contains_eager
 
 from ...app.extensions.database.definitions import (
+    beamlines_from_group,
     groups_from_beamlines,
     with_authorization,
 )
@@ -32,7 +33,6 @@ def get_sessions(
     sessionType: Optional[str] = None,
     month: Optional[int] = None,
     year: Optional[int] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSession]:
     metadata = {
         "active": func.IF(
@@ -116,22 +116,15 @@ def get_sessions(
             )
         )
 
-    if beamLineGroups:
-        if beamLineGroup:
-            for group in beamLineGroups:
-                if group.groupName == beamLineGroup:
-                    query = query.filter(
-                        models.BLSession.beamLineName.in_(
-                            [beamline.beamLineName for beamline in group.beamLines]
-                        )
-                    )
-
-        query = with_authorization(
-            query,
-            beamLineGroups,
-            joinBLSession=False,
-            joinSessionHasPerson=False,
+    if beamLineGroup:
+        query = query.filter(
+            models.BLSession.beamLineName.in_(beamlines_from_group(beamLineGroup))
         )
+
+    query = with_authorization(
+        query,
+        joinBLSession=False,
+    )
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)
@@ -159,10 +152,7 @@ def get_sessions(
         ]
 
     for result in results:
-        if beamLineGroups:
-            result._metadata["uiGroups"] = groups_from_beamlines(
-                beamLineGroups, [result.beamLineName]
-            )
+        result._metadata["uiGroups"] = groups_from_beamlines([result.beamLineName])
         result._metadata["datacollections"] = dataCollectionCount.get(
             result.sessionId, 0
         )
@@ -180,26 +170,20 @@ def get_sessions_for_beamline_group(
     upcoming: Optional[bool] = None,
     previous: Optional[bool] = None,
     sessionType: Optional[str] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSession]:
-    group: BeamLineGroup = None
-    for groupBeamLine in beamLineGroups:
-        if groupBeamLine.groupName == beamLineGroup:
-            group = groupBeamLine
-
-    if not group:
+    beamLines = beamlines_from_group(beamLineGroup)
+    if not beamLines:
         return Paged(total=0, results=[], skip=0, limit=0)
 
     sessions = []
-    for beamLine in group.beamLines:
+    for beamLine in beamLines:
         beamline_sessions = get_sessions(
             skip=0,
             limit=1,
-            beamLineName=beamLine.beamLineName,
+            beamLineName=beamLine,
             upcoming=upcoming,
             previous=previous,
             sessionType=sessionType,
-            beamLineGroups=beamLineGroups,
         )
 
         sessions.extend(beamline_sessions.results)

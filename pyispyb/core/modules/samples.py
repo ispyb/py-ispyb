@@ -1,5 +1,5 @@
 import enum
-from typing import Any, Optional
+from typing import Optional
 
 from sqlalchemy.orm import contains_eager, aliased, joinedload
 from sqlalchemy.sql.expression import func, distinct, and_
@@ -47,7 +47,6 @@ def get_samples(
     beamLineName: Optional[str] = None,
     sort_order: Optional[dict[str, str]] = None,
     status: Optional[SAMPLE_STATUS_ENUM] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSample]:
     metadata = {
         "subsamples": func.count(distinct(models.BLSubSample.blSubSampleId)),
@@ -166,8 +165,7 @@ def get_samples(
             models.BLSample.name.like(f"%{search}%"),
         )
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups)
+    query = with_authorization(query)
 
     if blSampleId:
         query = query.filter(models.BLSample.blSampleId == blSampleId)
@@ -246,7 +244,6 @@ def get_subsamples(
     proposal: Optional[str] = None,
     containerId: Optional[int] = None,
     sort_order: Optional[dict[str, str]] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSubSample]:
     metadata = {
         "datacollections": func.count(distinct(models.DataCollection.dataCollectionId)),
@@ -321,8 +318,7 @@ def get_subsamples(
         )
         query.add_columns(metadata["queued"])
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups)
+    query = with_authorization(query)
 
     if blSubSampleId:
         query = query.filter(models.BLSubSample.blSubSampleId == blSubSampleId)
@@ -357,7 +353,6 @@ def get_sample_images(
     limit: int,
     blSampleId: Optional[int] = None,
     blSampleImageId: Optional[int] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.BLSampleImage]:
     metadata = {
         "url": func.concat(
@@ -383,10 +378,7 @@ def get_sample_images(
     if blSampleImageId:
         query = query.filter(models.BLSampleImage.blSampleImageId == blSampleImageId)
 
-    if beamLineGroups:
-        query = with_authorization(
-            query, beamLineGroups, proposalColumn=models.Shipping.proposalId
-        )
+    query = with_authorization(query, proposalColumn=models.Shipping.proposalId)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)

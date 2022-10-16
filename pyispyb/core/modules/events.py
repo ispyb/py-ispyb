@@ -105,7 +105,6 @@ def get_events(
     proteinId: Optional[int] = None,
     status: Optional[EventStatus] = None,
     eventType: Optional[str] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.Event]:
     queries = {}
 
@@ -274,10 +273,7 @@ def get_events(
         )
 
         # Apply permissions
-        if beamLineGroups:
-            queries[key] = with_authorization(
-                queries[key], beamLineGroups, joinBLSession=False
-            )
+        queries[key] = with_authorization(queries[key], joinBLSession=False)
 
         # Filter by session
         if session:
@@ -527,7 +523,6 @@ def get_event_types(
     session: Optional[str] = None,
     blSampleId: Optional[int] = None,
     proteinId: Optional[int] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.EventType]:
     queries = {}
     queries["dc"] = db.session.query(
@@ -591,10 +586,7 @@ def get_event_types(
                 .filter(models.Protein.proteinId == proteinId)
             )
 
-        if beamLineGroups:
-            queries[key] = with_authorization(
-                queries[key], beamLineGroups, joinBLSession=False
-            )
+        queries[key] = with_authorization(queries[key], joinBLSession=False)
 
         queries[key] = [result._asdict() for result in queries[key].all()]
 

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import Depends, HTTPException, Request, Query
+from fastapi import Depends, HTTPException, Query
 from ispyb import models
 
 from pyispyb.dependencies import pagination
@@ -19,7 +19,6 @@ PaginatedSession = paginated(schema.Session)
 
 @router.get("", response_model=PaginatedSession)
 def get_sessions(
-    request: Request,
     proposal: str = Depends(filters.proposal),
     beamLineName: str = Depends(filters.beamLineName),
     beamLineGroup: Optional[str] = Query(
@@ -48,14 +47,12 @@ def get_sessions(
         sessionType=sessionType,
         month=month,
         year=year,
-        beamLineGroups=request.app.db_options.beamLineGroups,
         **page
     )
 
 
 @router.get("/group", response_model=PaginatedSession)
 def get_sessions_for_ui_group(
-    request: Request,
     beamLineGroup: Optional[str] = Query(
         None, description="Beamline group to display session for"
     ),
@@ -75,7 +72,6 @@ def get_sessions_for_ui_group(
         upcoming=upcoming,
         previous=previous,
         sessionType=sessionType,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )
 
 
@@ -85,13 +81,11 @@ def get_sessions_for_ui_group(
     responses={404: {"description": "No such session"}},
 )
 def get_session(
-    request: Request,
     session: str = Depends(filters.session),
 ) -> models.BLSession:
     """Get a session"""
     sessions = crud.get_sessions(
         session=session,
-        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )

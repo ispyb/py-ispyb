@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, Request
+from fastapi import Depends, HTTPException
 from ispyb import models
 
 from pyispyb.dependencies import pagination
@@ -16,14 +16,11 @@ router = AuthenticatedAPIRouter(prefix="/proposals", tags=["Proposals"])
 
 @router.get("", response_model=paginated(schema.Proposal))
 def get_proposals(
-    request: Request,
     search: str = Depends(filters.search),
     page: dict[str, int] = Depends(pagination),
 ) -> Paged[models.Proposal]:
     """Get a list of proposals"""
-    return crud.get_proposals(
-        search=search, beamLineGroups=request.app.db_options.beamLineGroups, **page
-    )
+    return crud.get_proposals(search=search, **page)
 
 
 @router.get(
@@ -32,13 +29,11 @@ def get_proposals(
     responses={404: {"description": "No such proposal"}},
 )
 def get_proposal(
-    request: Request,
     proposal: str = Depends(filters.proposal),
 ) -> models.Proposal:
     """Get a proposal"""
     proposals = crud.get_proposals(
         proposal=proposal,
-        beamLineGroups=request.app.db_options.beamLineGroups,
         skip=0,
         limit=1,
     )

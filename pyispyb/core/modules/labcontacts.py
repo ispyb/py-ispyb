@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Optional
 
 from sqlalchemy.orm import joinedload
 from ispyb import models
@@ -15,7 +15,6 @@ def get_labcontacts(
     labContactId: Optional[int] = None,
     proposal: str = None,
     proposalId: Optional[int] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.LabContact]:
     query = (
         db.session.query(models.LabContact)
@@ -36,8 +35,7 @@ def get_labcontacts(
     if proposalId:
         query = query.filter(models.LabContact.proposalId == proposalId)
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups)
+    query = with_authorization(query)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)
