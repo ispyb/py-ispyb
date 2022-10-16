@@ -13,6 +13,7 @@ from ...config import settings
 from ...core.modules.utils import get_last_line, to_energy
 from ...app.extensions.database.utils import Paged, page
 from ...app.extensions.database.definitions import (
+    beamlines_from_group,
     with_authorization,
 )
 from ...app.extensions.database.middleware import db
@@ -37,7 +38,6 @@ def filter_query(
     runId: str = None,
     beamLineName: str = None,
     sessionId: int = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> "sqlalchemy.orm.Query[Any]":
     if runId:
         query = query.join(
@@ -54,8 +54,7 @@ def filter_query(
     if sessionId:
         query = query.filter(models.BLSession.sessionId == sessionId)
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    query = with_authorization(query, joinBLSession=False)
 
     return query
 
@@ -64,7 +63,6 @@ def get_breakdown(
     session: Optional[str] = None,
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> schema.Breakdown:
 
     if session:
@@ -269,9 +267,7 @@ def get_breakdown(
 
         queries[key] = queries[key].join(models.Proposal)
 
-        queries[key] = filter_query(
-            queries[key], runId, beamLineName, sessionId, beamLineGroups
-        )
+        queries[key] = filter_query(queries[key], runId, beamLineName, sessionId)
 
         if key == "centring":
             subquery = queries[key].subquery()
@@ -342,7 +338,6 @@ def get_times(
     proposal: Optional[str] = None,
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> schema.Times:
     """Get proportions of time used in a session"""
     queries = {}
@@ -561,9 +556,7 @@ def get_times(
         proposalId = proposal_row.proposalId
 
     for key in queries.keys():
-        queries[key] = filter_query(
-            queries[key], runId, beamLineName, sessionId, beamLineGroups
-        )
+        queries[key] = filter_query(queries[key], runId, beamLineName, sessionId)
         if proposalId:
             queries[key] = queries[key].filter(models.Proposal.proposalId == proposalId)
 
@@ -621,7 +614,6 @@ def get_errors(
     session: Optional[str] = None,
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> schema.Errors:
     """Get proportion of success and errors for data collection types
     along with their error message frequency"""
@@ -662,9 +654,7 @@ def get_errors(
 
     sessionId = get_sessionId(session)
     for key in queries.keys():
-        queries[key] = filter_query(
-            queries[key], runId, beamLineName, sessionId, beamLineGroups
-        )
+        queries[key] = filter_query(queries[key], runId, beamLineName, sessionId)
 
     totals_rows = [r._asdict() for r in queries["total"].all()]
     totals: dict[str, schema.ExperimentTypeGroup] = {}
@@ -726,7 +716,6 @@ def get_hourlies(
     proposal: Optional[str] = None,
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> schema.Hourlies:
     """Get hourly statistics"""
     queries = {}
@@ -764,9 +753,7 @@ def get_hourlies(
     for key in queries.keys():
         queries[key] = queries[key].join(models.BLSession).join(models.Proposal)
 
-        queries[key] = filter_query(
-            queries[key], runId, beamLineName, sessionId, beamLineGroups
-        )
+        queries[key] = filter_query(queries[key], runId, beamLineName, sessionId)
 
         if proposal:
             queries[key] = queries[key].filter(models.Proposal.proposal == proposal)
@@ -804,7 +791,6 @@ def get_parameter_histogram(
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
     beamLineGroup: Optional[str] = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
     parameter: str = "energy",
 ) -> schema.ParameterHistograms:
     """Get a parameter histogram"""
@@ -863,17 +849,11 @@ def get_parameter_histogram(
     )
 
     sessionId = get_sessionId(session())
-    query = filter_query(query, runId, beamLineName, sessionId, beamLineGroups)
+    query = filter_query(query, runId, beamLineName, sessionId)
 
-    if beamLineGroups:
-        if beamLineGroup:
-            for group in beamLineGroups:
-                if group == beamLineGroup:
-                    query = query.filter(
-                        models.BLSession.beamLineName.in_(
-                            [bl["beamLineName"] for bl in group.beamlines]
-                        )
-                    )
+    if beamLineGroup:
+        beamLines = beamlines_from_group(beamLineGroup)
+        query = query.filter(models.BLSession.beamLineName.in_(beamLines))
 
     results = [r._asdict() for r in query.all()]
     histogram_lookup = {}

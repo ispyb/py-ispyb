@@ -1,4 +1,4 @@
-from fastapi import Depends, Request, HTTPException
+from fastapi import Depends, HTTPException
 
 from ...app.base import AuthenticatedAPIRouter
 from ...app.extensions.database.utils import Paged
@@ -15,7 +15,6 @@ router = AuthenticatedAPIRouter(prefix="/stats", tags=["Stats"])
 
 @router.get("/breakdown", response_model=schema.Breakdown)
 def get_breakdown(
-    request: Request,
     beamLineName: str = Depends(filters.beamLineName),
     session: str = Depends(filters.session),
     runId: str = Depends(filters.runId),
@@ -31,13 +30,11 @@ def get_breakdown(
         session=session,
         beamLineName=beamLineName,
         runId=runId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )
 
 
 @router.get("/times", response_model=schema.Times)
 def get_times(
-    request: Request,
     beamLineName: str = Depends(filters.beamLineName),
     session: str = Depends(filters.session),
     proposal: str = Depends(filters.proposal),
@@ -55,13 +52,11 @@ def get_times(
         proposal=proposal,
         beamLineName=beamLineName,
         runId=runId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )
 
 
 @router.get("/errors", response_model=schema.Errors)
 def get_errors(
-    request: Request,
     beamLineName: str = Depends(filters.beamLineName),
     session: str = Depends(filters.session),
     runId: str = Depends(filters.runId),
@@ -77,13 +72,11 @@ def get_errors(
         session=session,
         beamLineName=beamLineName,
         runId=runId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )
 
 
 @router.get("/hourlies", response_model=schema.Hourlies)
 def get_hourlies(
-    request: Request,
     beamLineName: str = Depends(filters.beamLineName),
     session: str = Depends(filters.session),
     proposal: str = Depends(filters.proposal),
@@ -101,15 +94,12 @@ def get_hourlies(
         proposal=proposal,
         beamLineName=beamLineName,
         runId=runId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )
 
 
 @router.get("/parameters/histogram", response_model=schema.ParameterHistograms)
 def get_parameter_histogram(
-    request: Request,
     beamLineName: str = Depends(filters.beamLineName),
-    beamLineGroup: str = None,
     session: str = Depends(filters.session),
     runId: str = Depends(filters.runId),
 ) -> schema.ParameterHistograms:
@@ -122,9 +112,7 @@ def get_parameter_histogram(
     return crud.get_parameter_histogram(
         session=session,
         beamLineName=beamLineName,
-        beamLineGroup=beamLineGroup,
         runId=runId,
-        beamLineGroups=request.app.db_options.beamLineGroups,
     )
 
 

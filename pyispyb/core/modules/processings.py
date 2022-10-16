@@ -1,5 +1,3 @@
-from typing import Any, Optional
-
 from sqlalchemy import func, and_, or_, distinct
 from sqlalchemy.sql.expression import literal_column
 from sqlalchemy.orm import contains_eager
@@ -16,7 +14,6 @@ from ..schemas import processings as schema
 
 def get_processing_status(
     dataCollectionIds: list[int],
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> schema.ProcessingStatusesList:
     queries = {}
     queries["screening"] = (
@@ -120,9 +117,7 @@ def get_processing_status(
             models.DataCollection.dataCollectionId.in_(dataCollectionIds)
         )
         queries[key] = queries[key].join(models.BLSession).join(models.Proposal)
-        queries[key] = with_authorization(
-            queries[key], beamLineGroups, joinBLSession=False
-        )
+        queries[key] = with_authorization(queries[key], joinBLSession=False)
 
     results = {}
     for key in queries.keys():
@@ -151,7 +146,6 @@ def get_processing_status(
 
 def get_processing_message_status(
     dataCollectionIds: list[int],
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> schema.AutoProcProgramMessageStatuses:
     if not hasattr(models, "AutoProcProgramMessage") and not hasattr(
         models, "ProcessingJob"
@@ -215,9 +209,7 @@ def get_processing_message_status(
             models.DataCollection.dataCollectionId.in_(dataCollectionIds)
         )
         queries[key] = queries[key].join(models.BLSession).join(models.Proposal)
-        queries[key] = with_authorization(
-            queries[key], beamLineGroups, joinBLSession=False
-        )
+        queries[key] = with_authorization(queries[key], joinBLSession=False)
 
     subquery = queries["autoIntegration"].union_all(queries["processing"]).subquery()
     query = db.session.query(
@@ -237,7 +229,6 @@ def get_processing_messages(
     dataCollectionId: int = None,
     autoProcProgramId: int = None,
     autoProcProgramMessageId: int = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[schema.AutoProcProgramMessage]:
     if not hasattr(models, "AutoProcProgramMessage"):
         return Paged(total=0, results=[], skip=skip, limit=limit)
@@ -261,9 +252,7 @@ def get_processing_messages(
 
     for key in queries.keys():
         queries[key] = queries[key].join(models.BLSession).join(models.Proposal)
-        queries[key] = with_authorization(
-            queries[key], beamLineGroups, joinBLSession=False
-        )
+        queries[key] = with_authorization(queries[key], joinBLSession=False)
 
         if autoProcProgramMessageId:
             queries[key] = queries[key].filter(
@@ -297,7 +286,6 @@ def get_screening_results(
     limit: 25,
     dataCollectionId: int = None,
     screeningId: int = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.Screening]:
     query = (
         db.session.query(models.Screening)
@@ -361,8 +349,7 @@ def get_screening_results(
     if screeningId:
         query = query.filter(models.Screening.screeningId == screeningId)
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    query = with_authorization(query, joinBLSession=False)
 
     total = query.count()
     results = query.all()
@@ -374,7 +361,6 @@ def get_processing_results(
     limit: 25,
     dataCollectionId: int = None,
     autoProcProgramId: int = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.AutoProcProgram]:
     metadata = {
         "attachments": func.count(
@@ -415,8 +401,7 @@ def get_processing_results(
             models.AutoProcProgram.autoProcProgramId == autoProcProgramId
         )
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    query = with_authorization(query, joinBLSession=False)
 
     query = page(query, skip=skip, limit=limit)
     total = query.count()
@@ -426,7 +411,6 @@ def get_processing_results(
         skip=0,
         limit=9999,
         dataCollectionId=dataCollectionId,
-        beamLineGroups=beamLineGroups,
     )
 
     for result in results:
@@ -444,7 +428,6 @@ def get_processing_attachments(
     limit: 25,
     autoProcProgramId: int = None,
     autoProcProgramAttachmentId: int = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.AutoProcProgramAttachment]:
     metadata = {
         "url": func.concat(
@@ -487,9 +470,7 @@ def get_processing_attachments(
             .join(models.BLSession)
             .join(models.Proposal)
         )
-        queries[key] = with_authorization(
-            queries[key], beamLineGroups, joinBLSession=False
-        )
+        queries[key] = with_authorization(queries[key], joinBLSession=False)
         queries[key] = page(queries[key], skip=skip, limit=limit)
 
     if hasattr(models, "ProcessingJob"):
@@ -507,7 +488,6 @@ def get_autointegration_results(
     limit: 25,
     dataCollectionId: int = None,
     autoProcProgramId: int = None,
-    beamLineGroups: Optional[dict[str, Any]] = None,
 ) -> Paged[models.AutoProcProgram]:
     metadata = {
         "attachments": func.count(
@@ -593,8 +573,7 @@ def get_autointegration_results(
             models.AutoProcProgram.autoProcProgramId == autoProcProgramId
         )
 
-    if beamLineGroups:
-        query = with_authorization(query, beamLineGroups, joinBLSession=False)
+    query = with_authorization(query, joinBLSession=False)
 
     query = page(query, skip=skip, limit=limit)
     query = query.distinct()
@@ -605,7 +584,6 @@ def get_autointegration_results(
         skip=0,
         limit=9999,
         dataCollectionId=dataCollectionId,
-        beamLineGroups=beamLineGroups,
     )
 
     for result in results:
