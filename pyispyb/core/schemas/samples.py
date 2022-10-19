@@ -33,6 +33,7 @@ class SampleMetaData(BaseModel):
     integratedResolution: Optional[float] = Field(
         description="Highest integration resolution"
     )
+    proposal: Optional[str] = Field(description="The associated proposal")
 
 
 class SampleBase(BaseModel):
@@ -47,6 +48,7 @@ class SampleBase(BaseModel):
 
 
 class SampleProtein(BaseModel):
+    proposalId: str
     name: str
     acronym: str
 

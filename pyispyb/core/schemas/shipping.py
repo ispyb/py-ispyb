@@ -1,4 +1,4 @@
-# import datetime
+from typing import Optional
 from pydantic import BaseModel, Field
 
 
@@ -20,6 +20,13 @@ class Dewar(BaseModel):
 
 class Container(BaseModel):
     code: str = Field(title="Name")
+
+    sampleChangerLocation: Optional[str] = Field(
+        description="Position in sample change"
+    )
+    beamlineLocation: Optional[str] = Field(
+        description="Beamline if container is assigned"
+    )
 
     Dewar: Dewar
 

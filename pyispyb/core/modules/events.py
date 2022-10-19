@@ -97,7 +97,9 @@ def get_events(
     skip: int,
     limit: int,
     session: Optional[str] = None,
+    sessionId: Optional[int] = None,
     proposal: Optional[str] = None,
+    proposalId: Optional[int] = None,
     beamLineName: Optional[str] = None,
     dataCollectionId: Optional[int] = None,
     dataCollectionGroupId: Optional[int] = None,
@@ -282,12 +284,18 @@ def get_events(
                     models.BLSession.sessionId == session_row.sessionId
                 )
 
+        if sessionId:
+            queries[key] = queries[key].filter(models.BLSession.sessionId == sessionId)
+
         # Filter by proposal
         if proposal:
             if proposal_row:
                 queries[key] = queries[key].filter(
                     models.Proposal.proposalId == proposal_row.proposalId
                 )
+
+        if proposalId:
+            queries[key] = queries[key].filter(models.Proposal.proposalId == proposalId)
 
         # Filter by beamLineName
         if beamLineName:
@@ -521,6 +529,7 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
 
 def get_event_types(
     session: Optional[str] = None,
+    sessionId: Optional[int] = None,
     blSampleId: Optional[int] = None,
     proteinId: Optional[int] = None,
 ) -> Paged[schema.EventType]:
@@ -571,6 +580,9 @@ def get_event_types(
                 queries[key] = queries[key].filter(
                     models.BLSession.sessionId == session_row.sessionId
                 )
+
+        if sessionId:
+            queries[key] = queries[key].filter(models.BLSession.sessionId == sessionId)
 
         if blSampleId:
             queries[key] = queries[key].filter(

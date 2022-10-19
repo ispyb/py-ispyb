@@ -21,7 +21,9 @@ router = AuthenticatedAPIRouter(prefix="/events", tags=["Events"])
 def get_events(
     page: dict[str, int] = Depends(pagination),
     session: str = Depends(filters.session),
+    sessionId: int = Depends(filters.sessionId),
     proposal: str = Depends(filters.proposal),
+    proposalId: str = Depends(filters.proposalId),
     beamLineName: str = Depends(filters.beamLineName),
     dataCollectionId: int = Depends(filters.dataCollectionId),
     dataCollectionGroupId: int = Depends(filters.dataCollectionGroupId),
@@ -33,7 +35,9 @@ def get_events(
     """Get a list of events"""
     return crud.get_events(
         session=session,
+        sessionId=sessionId,
         proposal=proposal,
+        proposalId=proposalId,
         beamLineName=beamLineName,
         dataCollectionId=dataCollectionId,
         dataCollectionGroupId=dataCollectionGroupId,
@@ -51,12 +55,14 @@ def get_events(
 )
 def get_event_types(
     session: str = Depends(filters.session),
+    sessionId: int = Depends(filters.sessionId),
     blSampleId: int = Depends(filters.blSampleId),
     proteinId: int = Depends(filters.proteinId),
 ) -> Paged[schema.EventType]:
     """Get a list of event types"""
     return crud.get_event_types(
         session=session,
+        sessionId=sessionId,
         blSampleId=blSampleId,
         proteinId=proteinId,
     )

@@ -76,16 +76,16 @@ def get_sessions_for_ui_group(
 
 
 @router.get(
-    "/{session}",
+    "/{sessionId}",
     response_model=schema.Session,
     responses={404: {"description": "No such session"}},
 )
 def get_session(
-    session: str = Depends(filters.session),
+    sessionId: str = Depends(filters.sessionId),
 ) -> models.BLSession:
     """Get a session"""
     sessions = crud.get_sessions(
-        session=session,
+        sessionId=sessionId,
         skip=0,
         limit=1,
     )

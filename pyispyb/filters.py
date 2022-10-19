@@ -10,12 +10,24 @@ def session(
     return session
 
 
+def sessionId(
+    sessionId: Optional[int] = Query(None, description="Session id to filter by")
+) -> Optional[int]:
+    return sessionId
+
+
 def proposal(
     proposal: Optional[str] = Query(
         None, description="Proposal name to filter by", regex=r"^\w+\d+$"
     )
 ) -> Optional[str]:
     return proposal
+
+
+def proposalId(
+    proposalId: Optional[int] = Query(None, description="Proposal id to filter by")
+) -> Optional[int]:
+    return proposalId
 
 
 def beamLineName(

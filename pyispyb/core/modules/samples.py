@@ -2,7 +2,7 @@ import enum
 from typing import Optional
 
 from sqlalchemy.orm import contains_eager, aliased, joinedload
-from sqlalchemy.sql.expression import func, distinct, and_
+from sqlalchemy.sql.expression import func, distinct, and_, literal_column
 from ispyb import models
 
 from ...config import settings
@@ -59,6 +59,7 @@ def get_samples(
         "integratedResolution": func.min(
             models.AutoProcScalingStatistics.resolutionLimitHigh
         ),
+        "proposal": models.Proposal.proposal,
     }
 
     query = (
@@ -158,7 +159,10 @@ def get_samples(
             False,
         )
 
-        query.add_columns(metadata["queued"])
+        query = query.add_columns(metadata["queued"])
+    else:
+        metadata["queued"] = literal_column("0")
+        query = query.add_columns(metadata["queued"])
 
     if search:
         query = query.filter(
@@ -316,7 +320,10 @@ def get_subsamples(
             True,
             False,
         )
-        query.add_columns(metadata["queued"])
+        query = query.add_columns(metadata["queued"])
+    else:
+        metadata["queued"] = literal_column("0")
+        query = query.add_columns(metadata["queued"])
 
     query = with_authorization(query)
 
