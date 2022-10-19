@@ -16,7 +16,7 @@ test_data_sessions_list = [
         name="abcd / blc00001-1 / 200",
         input=ApiTestInput(
             login="abcd",
-            route="/sessions/blc00001-1",
+            route="/sessions/1",
         ),
         expected=ApiTestExpected(
             code=200,
@@ -42,7 +42,7 @@ test_data_sessions_list = [
             permissions=[
                 "bl_admin",
             ],
-            route="/sessions/blc00001-1",
+            route="/sessions/1",
         ),
         expected=ApiTestExpected(
             code=404,
