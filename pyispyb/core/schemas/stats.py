@@ -18,6 +18,7 @@ class BreakdownOverviewSession(BaseModel):
     endDate: datetime
     duration: float
     beamLineName: str
+    sessionId: str
     session: Optional[str]
     counts: BreakdownOverviewCounts
 
@@ -43,6 +44,7 @@ class BreakdownPoint(BaseModel):
 
     title: Optional[str]
     session: Optional[str]
+    sessionId: Optional[str]
 
 
 class BreakdownPlottable(BaseModel):
@@ -105,7 +107,7 @@ class AverageTimeEntry(TimeEntry):
 
 
 class SessionTimeEntry(TimeEntry):
-    session: str = Field(title="The session")
+    sessionId: int = Field(title="The session id")
 
 
 class Times(BaseModel):

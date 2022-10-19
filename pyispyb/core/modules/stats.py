@@ -61,30 +61,34 @@ def filter_query(
 
 def get_breakdown(
     session: Optional[str] = None,
+    sessionId: Optional[int] = None,
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
 ) -> schema.Breakdown:
 
-    if session:
-        info = (
-            db.session.query(
-                models.BLSession.startDate,
-                models.BLSession.endDate,
-                models.BLSession.beamLineName,
-                models.BLSession.session,
-                (
-                    func.timestampdiff(
-                        text("SECOND"),
-                        models.BLSession.startDate,
-                        models.BLSession.endDate,
-                    )
-                    / 3600
-                ).label("duration"),
-            )
-            .join(models.Proposal)
-            .filter(models.BLSession.session == session)
-            .first()
-        )
+    if session or sessionId:
+        info = db.session.query(
+            models.BLSession.startDate,
+            models.BLSession.endDate,
+            models.BLSession.beamLineName,
+            models.BLSession.session,
+            models.BLSession.sessionId,
+            (
+                func.timestampdiff(
+                    text("SECOND"),
+                    models.BLSession.startDate,
+                    models.BLSession.endDate,
+                )
+                / 3600
+            ).label("duration"),
+        ).join(models.Proposal)
+
+        if session:
+            info = info.filter(models.BLSession.session == session)
+        else:
+            info = info.filter(models.BLSession.sessionId == sessionId)
+
+        info = info.first()
     else:
         info = (
             db.session.query(
@@ -182,7 +186,7 @@ def get_breakdown(
         .group_by(models.BFFault.faultId)
     )
 
-    if session:
+    if session or sessionId:
         queries["strategy"] = (
             db.session.query(
                 models.DataCollection.endTime.label("startTime"),
@@ -239,16 +243,18 @@ def get_breakdown(
         queries["sessions"] = (
             db.session.query(
                 models.BLSession.session,
+                models.BLSession.sessionId,
                 models.BLSession.startDate.label("startTime"),
                 models.BLSession.endDate.label("endTime"),
                 models.BLSession.scheduled,
                 models.Proposal.title,
             )
             .order_by(models.BLSession.startDate)
-            .group_by(models.BLSession.session)
+            .group_by(models.BLSession.sessionId)
         )
 
-    sessionId = get_sessionId(session)
+    if not sessionId:
+        sessionId = get_sessionId(session)
     results = {}
     for key in queries.keys():
         if key not in ["fault", "strategy", "centring", "sessions"]:
@@ -312,7 +318,9 @@ def get_breakdown(
         )
 
     overview = (
-        schema.BreakdownOverviewSession if session else schema.BreakdownOverviewRun
+        schema.BreakdownOverviewSession
+        if (session or sessionId)
+        else schema.BreakdownOverviewRun
     )
     return {
         "overview": overview(
@@ -335,6 +343,7 @@ def get_breakdown(
 
 def get_times(
     session: Optional[str] = None,
+    sessionId: Optional[int] = None,
     proposal: Optional[str] = None,
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
@@ -345,7 +354,7 @@ def get_times(
         db.session.query(
             func.min(models.BLSession.startDate).label("start"),
             func.max(models.BLSession.endDate).label("end"),
-            models.BLSession.session,
+            models.BLSession.sessionId,
             (
                 func.timestampdiff(
                     text("SECOND"),
@@ -394,7 +403,7 @@ def get_times(
         .join(models.DataCollectionGroup)
         .join(models.BLSession)
         .join(models.Proposal)
-        .group_by(models.BLSession.session)
+        .group_by(models.BLSession.sessionId)
         .order_by(models.BLSession.startDate.desc())
     )
 
@@ -408,12 +417,12 @@ def get_times(
                 )
                 / 3600
             ).label("robot"),
-            models.BLSession.session,
+            models.BLSession.sessionId,
         )
         .select_from(models.RobotAction)
         .join(models.BLSession)
         .join(models.Proposal)
-        .group_by(models.BLSession.session)
+        .group_by(models.BLSession.sessionId)
     )
 
     queries["edge"] = (
@@ -426,12 +435,12 @@ def get_times(
                 )
                 / 3600
             ).label("edge"),
-            models.BLSession.session,
+            models.BLSession.sessionId,
         )
         .select_from(models.EnergyScan)
         .join(models.BLSession)
         .join(models.Proposal)
-        .group_by(models.BLSession.session)
+        .group_by(models.BLSession.sessionId)
     )
 
     queries["xrf"] = (
@@ -444,12 +453,12 @@ def get_times(
                 )
                 / 3600
             ).label("xrf"),
-            models.BLSession.session,
+            models.BLSession.sessionId,
         )
         .select_from(models.XFEFluorescenceSpectrum)
         .join(models.BLSession)
         .join(models.Proposal)
-        .group_by(models.BLSession.session)
+        .group_by(models.BLSession.sessionId)
     )
 
     queries["strategy"] = (
@@ -462,7 +471,7 @@ def get_times(
                 )
                 / 3600
             ).label("strategy"),
-            models.BLSession.session,
+            models.BLSession.sessionId,
         )
         .select_from(models.DataCollection)
         .join(
@@ -483,7 +492,7 @@ def get_times(
         .join(models.Proposal)
         .group_by(
             models.DataCollection.dataCollectionId,
-            models.BLSession.session,
+            models.BLSession.sessionId,
             models.DataCollection.endTime,
         )
     )
@@ -498,7 +507,7 @@ def get_times(
                 )
                 / 3600
             ).label("centring"),
-            models.BLSession.session,
+            models.BLSession.sessionId,
         )
         .select_from(models.RobotAction)
         .join(
@@ -522,7 +531,7 @@ def get_times(
         )
         .group_by(
             models.DataCollection.dataCollectionId,
-            models.BLSession.session,
+            models.BLSession.sessionId,
             models.DataCollection.endTime,
         )
     )
@@ -537,15 +546,15 @@ def get_times(
                 )
                 / 3600
             ).label("fault"),
-            models.BLSession.session,
+            models.BLSession.sessionId,
         )
         .select_from(models.BFFault)
         .join(models.BLSession)
         .join(models.Proposal)
-        .group_by(models.BLSession.session)
+        .group_by(models.BLSession.sessionId)
     )
-
-    sessionId = get_sessionId(session)
+    if not sessionId:
+        sessionId = get_sessionId(session)
     proposalId = None
     if proposal:
         proposal_row = (
@@ -563,17 +572,17 @@ def get_times(
     strategy = queries["strategy"].subquery()
     queries["strategy"] = db.session.query(
         func.sum(strategy.c.strategy).label("strategy"),
-        strategy.c.session.label("session"),
-    ).group_by(strategy.c.session)
+        strategy.c.sessionId.label("sessionId"),
+    ).group_by(strategy.c.sessionId)
 
     centring = queries["centring"].subquery()
     queries["centring"] = (
         db.session.query(
             func.sum(centring.c.centring).label("centring"),
-            centring.c.session.label("session"),
+            centring.c.sessionId.label("sessionId"),
         )
         .filter(centring.c.centring < 0.25)
-        .group_by(centring.c.session)
+        .group_by(centring.c.sessionId)
     )
 
     results = {}
@@ -586,7 +595,7 @@ def get_times(
             session_lookup[key] = {}
 
         for row in results[key]:
-            session_lookup[key][row["session"]] = row[key] if row[key] else 0
+            session_lookup[key][row["sessionId"]] = row[key] if row[key] else 0
 
     sessions = []
     for row in results["dc"]:
@@ -595,12 +604,12 @@ def get_times(
                 row[key] = 0
         session_time = schema.SessionTimeEntry(
             **row,
-            robot=session_lookup["robot"].get(row["session"], 0),
-            strategy=session_lookup["strategy"].get(row["session"], 0),
-            edge=session_lookup["edge"].get(row["session"], 0),
-            xrf=session_lookup["xrf"].get(row["session"], 0),
-            centring=session_lookup["centring"].get(row["session"], 0),
-            fault=session_lookup["fault"].get(row["session"], 0),
+            robot=session_lookup["robot"].get(row["sessionId"], 0),
+            strategy=session_lookup["strategy"].get(row["sessionId"], 0),
+            edge=session_lookup["edge"].get(row["sessionId"], 0),
+            xrf=session_lookup["xrf"].get(row["sessionId"], 0),
+            centring=session_lookup["centring"].get(row["sessionId"], 0),
+            fault=session_lookup["fault"].get(row["sessionId"], 0),
         )
         session_time.thinking = session_time.calc_thinking()
         sessions.append(session_time)
@@ -612,6 +621,7 @@ def get_times(
 
 def get_errors(
     session: Optional[str] = None,
+    sessionId: Optional[int] = None,
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
 ) -> schema.Errors:
@@ -652,7 +662,8 @@ def get_errors(
         .filter(models.DataCollection.runStatus.notlike("%success%"))
     )
 
-    sessionId = get_sessionId(session)
+    if not sessionId:
+        sessionId = get_sessionId(session)
     for key in queries.keys():
         queries[key] = filter_query(queries[key], runId, beamLineName, sessionId)
 
@@ -713,6 +724,7 @@ def get_errors(
 
 def get_hourlies(
     session: Optional[str] = None,
+    sessionId: Optional[int] = None,
     proposal: Optional[str] = None,
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
@@ -747,8 +759,8 @@ def get_hourlies(
             )
         )
     )
-
-    sessionId = get_sessionId(session)
+    if not sessionId:
+        sessionId = get_sessionId(session)
     hourlies = {}
     for key in queries.keys():
         queries[key] = queries[key].join(models.BLSession).join(models.Proposal)
@@ -788,6 +800,7 @@ class HistogramParameter:
 
 def get_parameter_histogram(
     session: Optional[str] = None,
+    sessionId: Optional[int] = None,
     beamLineName: Optional[str] = None,
     runId: Optional[str] = None,
     beamLineGroup: Optional[str] = None,
@@ -848,7 +861,8 @@ def get_parameter_histogram(
         .order_by(models.BLSession.beamLineName, text("x"))
     )
 
-    sessionId = get_sessionId(session())
+    if not sessionId:
+        sessionId = get_sessionId(session)
     query = filter_query(query, runId, beamLineName, sessionId)
 
     if beamLineGroup:

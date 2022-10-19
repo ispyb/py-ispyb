@@ -17,10 +17,11 @@ router = AuthenticatedAPIRouter(prefix="/stats", tags=["Stats"])
 def get_breakdown(
     beamLineName: str = Depends(filters.beamLineName),
     session: str = Depends(filters.session),
+    sessionId: str = Depends(filters.sessionId),
     runId: str = Depends(filters.runId),
 ) -> schema.Breakdown:
     """Get stats breakdown for a session or run"""
-    if not (session or (beamLineName and runId)):
+    if not (sessionId or session or (beamLineName and runId)):
         raise HTTPException(
             status_code=422,
             detail="Please provide either `session` or (`beamLineName` and `runId`)",
@@ -28,6 +29,7 @@ def get_breakdown(
 
     return crud.get_breakdown(
         session=session,
+        sessionId=sessionId,
         beamLineName=beamLineName,
         runId=runId,
     )
@@ -37,11 +39,12 @@ def get_breakdown(
 def get_times(
     beamLineName: str = Depends(filters.beamLineName),
     session: str = Depends(filters.session),
+    sessionId: str = Depends(filters.sessionId),
     proposal: str = Depends(filters.proposal),
     runId: str = Depends(filters.runId),
 ) -> schema.Times:
     """Get total times for a session, proposal, or run"""
-    if not (proposal or session or (beamLineName and runId)):
+    if not (proposal or sessionId or session or (beamLineName and runId)):
         raise HTTPException(
             status_code=422,
             detail="Please provide either `proposal` or `session` or (`beamLineName` and `runId`)",
@@ -49,6 +52,7 @@ def get_times(
 
     return crud.get_times(
         session=session,
+        sessionId=sessionId,
         proposal=proposal,
         beamLineName=beamLineName,
         runId=runId,
@@ -59,10 +63,11 @@ def get_times(
 def get_errors(
     beamLineName: str = Depends(filters.beamLineName),
     session: str = Depends(filters.session),
+    sessionId: str = Depends(filters.sessionId),
     runId: str = Depends(filters.runId),
 ) -> schema.Errors:
     """Get the errors for a session or run"""
-    if not (session or (beamLineName and runId)):
+    if not (sessionId or session or (beamLineName and runId)):
         raise HTTPException(
             status_code=422,
             detail="Please provide either `session` or (`beamLineName` and `runId`)",
@@ -70,6 +75,7 @@ def get_errors(
 
     return crud.get_errors(
         session=session,
+        sessionId=sessionId,
         beamLineName=beamLineName,
         runId=runId,
     )
@@ -79,11 +85,12 @@ def get_errors(
 def get_hourlies(
     beamLineName: str = Depends(filters.beamLineName),
     session: str = Depends(filters.session),
+    sessionId: str = Depends(filters.sessionId),
     proposal: str = Depends(filters.proposal),
     runId: str = Depends(filters.runId),
 ) -> schema.Hourlies:
     """Get the hourly stats for a session or run"""
-    if not (proposal or session or (beamLineName and runId)):
+    if not (proposal or sessionId or session or (beamLineName and runId)):
         raise HTTPException(
             status_code=422,
             detail="Please provide either `proposal` or `session` or (`beamLineName` and `runId`)",
@@ -91,6 +98,7 @@ def get_hourlies(
 
     return crud.get_hourlies(
         session=session,
+        sessionId=sessionId,
         proposal=proposal,
         beamLineName=beamLineName,
         runId=runId,
@@ -101,16 +109,18 @@ def get_hourlies(
 def get_parameter_histogram(
     beamLineName: str = Depends(filters.beamLineName),
     session: str = Depends(filters.session),
+    sessionId: str = Depends(filters.sessionId),
     runId: str = Depends(filters.runId),
 ) -> schema.ParameterHistograms:
     """Get histogram of parameters for a session or run"""
-    if not (session or (beamLineName and runId)):
+    if not (sessionId or session or (beamLineName and runId)):
         raise HTTPException(
             status_code=422, detail="Please provide either `session` or `runId`"
         )
 
     return crud.get_parameter_histogram(
         session=session,
+        sessionId=sessionId,
         beamLineName=beamLineName,
         runId=runId,
     )
