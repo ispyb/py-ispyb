@@ -560,7 +560,7 @@ def get_autointegration_results(
                 == models.AutoProcProgram.processingJobId,
             )
             .outerjoin(models.ProcessingJobImageSweep)
-            .add_column(metadata["imageSweepCount"])
+            .add_columns(metadata["imageSweepCount"])
         )
 
     if dataCollectionId:
