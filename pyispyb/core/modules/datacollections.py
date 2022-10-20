@@ -41,6 +41,12 @@ def get_datacollection_diffraction_image_path(
     first_image = query.first()
 
     if first_image:
+        if not os.path.exists(first_image.imagePath):
+            logger.warning(
+                f"Diffraction image {first_image.imagePath} for dataCollectionId {dataCollectionId} does not exist on disk"
+            )
+            return None
+
         return first_image.imagePath
 
 

@@ -21,7 +21,7 @@ class Dewar(BaseModel):
 class Container(BaseModel):
     code: str = Field(title="Name")
 
-    sampleChangerLocation: Optional[int] = Field(
+    sampleChangerLocation: Optional[str] = Field(
         description="Position in sample change"
     )
     beamlineLocation: Optional[str] = Field(
