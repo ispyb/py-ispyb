@@ -151,8 +151,6 @@ def get_events(
                     models.DataCollectionFileAttachment.dataCollectionFileAttachmentId
                 )
             ).label("attachments"),
-            _session,
-            _proposal,
         )
         .join(
             models.DataCollectionGroup,
@@ -185,8 +183,6 @@ def get_events(
             literal_column("'robot'").label("type"),
             literal_column("1").label("count"),
             literal_column("0").label("attachments"),
-            _session,
-            _proposal,
         )
         .join(
             models.BLSession,
@@ -213,8 +209,6 @@ def get_events(
             literal_column("'xrf'").label("type"),
             literal_column("1").label("count"),
             literal_column("0").label("attachments"),
-            _session,
-            _proposal,
         )
         .join(
             models.BLSession,
@@ -241,8 +235,6 @@ def get_events(
             literal_column("'es'").label("type"),
             literal_column("1").label("count"),
             literal_column("0").label("attachments"),
-            _session,
-            _proposal,
         )
         .join(
             models.BLSession, models.BLSession.sessionId == models.EnergyScan.sessionId
@@ -269,9 +261,15 @@ def get_events(
         )
 
     # Join sample information
-    for key, _query in queries.items():
+    for key in queries.keys():
+        # Add proposal, session
+        queries[key] = queries[key].add_columns(
+            _proposal, _session, models.BLSession.sessionId.label("sessionId")
+        )
+
+        # Add sample
         queries[key] = with_sample(
-            _query, ENTITY_TYPES[key].sampleId, blSampleId, proteinId
+            queries[key], ENTITY_TYPES[key].sampleId, blSampleId, proteinId
         )
 
         # Apply permissions

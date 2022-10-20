@@ -17,6 +17,7 @@ class EventBase(BaseModel):
     duration: Optional[float] = Field(title="Duration", unit="min")
     count: int
     session: Optional[str]
+    sessionId: int
     proposal: str
     blSample: Optional[str] = Field(description="Sample Name")
     blSampleId: Optional[int] = Field(description="Sample Id")

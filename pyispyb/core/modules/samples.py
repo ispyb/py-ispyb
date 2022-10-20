@@ -194,7 +194,7 @@ def get_samples(
             and_(
                 models.Dewar.dewarStatus == "processing",
                 models.Container.beamlineLocation == beamLineName,
-                models.Container.sampleChangerLocation != None,  # noqa
+                models.Container.sampleChangerLocation != "",
             )
         )
 

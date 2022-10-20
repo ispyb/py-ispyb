@@ -70,12 +70,16 @@ def get_datacollection_snapshot_path(
     if image_path is None:
         return None
 
-    if snapshot:
-        ext = os.path.splitext(image_path)[1][1:].strip()
-        image_path = image_path.replace(f".{ext}", f"t.{ext}")
-
     if settings.path_map:
         image_path = settings.path_map + image_path
+
+    if snapshot:
+        ext = os.path.splitext(image_path)[1][1:].strip()
+        image_path_tmp = image_path.replace(f".{ext}", f"t.{ext}")
+
+        # fallback incase snapshot doesnt exist
+        if os.path.exists(image_path_tmp):
+            image_path = image_path_tmp
 
     if not os.path.exists(image_path):
         logger.warning(
