@@ -90,7 +90,7 @@ def get_datacollection_snapshot_path(
     return image_path
 
 
-def get_datacollection_anaylsis_image(
+def get_datacollection_analysis_image_path(
     dataCollectionId: int,
 ) -> Optional[str]:
     datacollections = get_events(
