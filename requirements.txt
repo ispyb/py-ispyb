@@ -23,5 +23,10 @@ sqlparse
 
 mysql-connector-python==8.0.29
 
+fabio
+h5py
+h5grove
+numpy
+
 mkdocs
 mkdocs-material
