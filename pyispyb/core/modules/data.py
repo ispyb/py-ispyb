@@ -44,14 +44,9 @@ def get_image(
         if not os.path.exists(file_path):
             return None
 
-        with h5py.File(file_path, "r") as h5file:
-            h5path = (
-                dc.imageContainerSubPath
-                if dc.imageContainerSubPath
-                else "/entry/data/data"
-            )
-            data: np.ndarray = _get_dataset_data(h5file, h5path, imageNumber)
-            return data.astype(np.float32)
+        _header, data = HDF5FormatHandler.preload(
+            path=file_path, imageNumber=imageNumber
+        )
 
     elif ext in ["cbf", "CBF"]:
         file_path = file_path % imageNumber
@@ -65,10 +60,11 @@ def get_image(
             return None
 
         _header, data = CBFFormatHandler.preload(path=file_path)
-        if header:
-            return _header
 
-        return data
+    if header:
+        return _header
+
+    return data
 
 
 def get_image_histogram(
@@ -168,31 +164,25 @@ class CBFFormatHandler:
 
 class HDF5FormatHandler:
     @staticmethod
-    def preload(path: str) -> Tuple[dict, np.ndarray, bytes]:
-        h5path, img_num = HDF5FormatHandler._interpret_path(path)
+    def preload(
+        path: str,
+        imageNumber: int,
+    ) -> Tuple[dict, np.ndarray, bytes]:
+        h5path, image_index = HDF5FormatHandler._find_path(path, imageNumber)
+        if not h5path:
+            return None, None
 
-        with h5py.File(h5path, "r") as h5file:
-            image_nr_low = _get_dataset_attr(h5file, "/entry/data/data")["image_nr_low"]
-            assert isinstance(image_nr_low, np.generic)  # nosec
-
-            idx = img_num - image_nr_low.item()
-            data = _get_dataset_data(h5file, "/entry/data/data", str(idx))
-            assert isinstance(data, np.ndarray)  # nosec
+        with h5py.File(path, "r") as h5file:
+            data = _get_dataset_data(h5file, h5path, str(image_index))
 
         np_array = data.astype(np.float32)
-        preview_data = data.clip(0).astype(np.uint8).tobytes()
-
         img_hdr = HDF5FormatHandler._get_hdr(path, np_array)
 
-        return img_hdr, np_array, preview_data
+        return img_hdr, np_array
 
     @staticmethod
     def _get_hdr(path: str, np_array: np.ndarray) -> dict[str, dict]:
-        _, ext = os.path.splitext(path.rstrip(".dataset"))
-        prefix, _ = path.split("_data")
-        mfpath = prefix + "_master" + ext
-
-        with h5py.File(mfpath, "r") as h5file:
+        with h5py.File(path, "r") as h5file:
             wavelength = _get_instrument_param(h5file, "beam/incident_wavelength")
             detector = _get_instrument_param(h5file, "detector/detector_distance")
 
@@ -231,12 +221,27 @@ class HDF5FormatHandler:
         return {"braggy_hdr": braggy_hdr}
 
     @staticmethod
-    def _interpret_path(path: str) -> Tuple[str, int]:
-        h5path, dataset_path = os.path.split(path)
-        _, imgnum_suffix = dataset_path.rstrip(".dataset").split("image_")
-        imgnum, _ = imgnum_suffix.split(".")
+    def _find_path(path: str, imageNumber: int) -> Tuple[str, int]:
+        """Lookup correct entry for requested imageNumber"""
+        with h5py.File(path, "r") as h5file:
+            dset_content = h5grove.create_content(h5file, "/entry/data")
+            for child in dset_content.metadata()["children"]:
+                child_path = "/entry/data/" + child["name"]
+                image_nr_low = _get_dataset_attr(h5file, child_path)["image_nr_low"]
+                image_nr_high = _get_dataset_attr(h5file, child_path)["image_nr_high"]
 
-        return h5path, int(imgnum)
+                if imageNumber >= image_nr_low and imageNumber <= image_nr_high:
+                    image_index = imageNumber - image_nr_low.item()
+                    logger.info(
+                        f"Found imageNumber `{imageNumber}` in `{path}` with path `{child_path}` index `{image_index}`"
+                    )
+
+                    return child_path, image_index
+
+        logger.warning(
+            f"Could not find requested imageNumber `{imageNumber}` in `{path}` (max imageNumber `{image_nr_high}`)"
+        )
+        return None, None
 
 
 def _get_dataset_attr(h5file: h5py.File, dset_path: str):

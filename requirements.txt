@@ -25,6 +25,7 @@ mysql-connector-python==8.0.29
 
 fabio
 h5py
+hdf5plugin
 h5grove
 numpy
 
