@@ -505,8 +505,9 @@ def _check_snapshots(datacollection: models.DataCollection) -> models.DataCollec
     datacollection._metadata["snapshots"] = snapshot_statuses
 
     analysis = False
-    if datacollection.imageQualityIndicatorsPlotPath:
-        analysis = os.path.exists(datacollection.imageQualityIndicatorsPlotPath)
+    if hasattr(datacollection, "imageQualityIndicatorsPlotPath"):
+        if datacollection.imageQualityIndicatorsPlotPath:
+            analysis = os.path.exists(datacollection.imageQualityIndicatorsPlotPath)
     datacollection._metadata["snapshots"]["analysis"] = analysis
 
     # diffraction_row: models.Image = (

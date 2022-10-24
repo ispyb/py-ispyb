@@ -42,7 +42,7 @@ class SampleBase(BaseModel):
     location: Optional[int] = Field(
         title="Location", description="Location in container"
     )
-    containerId: int
+    containerId: Optional[int]
 
     metadata: Optional[SampleMetaData] = Field(alias="_metadata")
 
@@ -64,7 +64,7 @@ class Sample(SampleBase):
     blSampleId: int
 
     Crystal: SampleCrystal = Field(title="Crystal")
-    Container: Container
+    Container: Optional[Container]
 
     class Config:
         orm_mode = True

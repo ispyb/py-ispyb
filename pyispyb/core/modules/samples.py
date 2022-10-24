@@ -298,7 +298,7 @@ def get_subsamples(
         )
         .join(models.Dewar, models.Container.dewarId == models.Dewar.dewarId)
         .join(models.Shipping, models.Dewar.shippingId == models.Shipping.shippingId)
-        .join(models.Proposal, models.Proposal.proposalId == models.Shipping.proposalId)
+        .join(models.Proposal, models.Proposal.proposalId == models.Protein.proposalId)
         .group_by(models.BLSubSample.blSubSampleId)
     )
 
