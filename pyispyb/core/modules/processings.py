@@ -92,6 +92,11 @@ def get_processing_status(
             )
         )
 
+    if hasattr(models.CTF, "CTFid"):
+        ctf_column = models.CTF.CTFid
+    else:
+        ctf_column = models.CTF.ctfId
+
     queries["em"] = (
         db.session.query(
             models.DataCollection.dataCollectionId,
@@ -99,7 +104,7 @@ def get_processing_status(
             func.count(distinct(models.MotionCorrection.motionCorrectionId)).label(
                 "motionCorrection"
             ),
-            func.count(distinct(models.CTF.CTFid)).label("ctf"),
+            func.count(distinct(ctf_column)).label("ctf"),
         )
         .select_from(models.DataCollection)
         .join(models.DataCollectionGroup)
