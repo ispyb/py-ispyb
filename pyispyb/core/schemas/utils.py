@@ -35,17 +35,19 @@ def make_optional(baseclass: BaseModel, *, exclude: dict[str, any] = {}) -> Base
     # https://stackoverflow.com/questions/67699451/make-every-fields-as-optional-with-pydantic
     fields = baseclass.__fields__
 
-    # Deal with nested models
-    for key, item in baseclass.__fields__.items():
-        if item.is_complex():
-            item.type_ = make_optional(item.type_, exclude=exclude.get(key, {}))
-
     validators = {"__validators__": baseclass.__validators__}
     optional_fields = {
         key: (Optional[item.type_], None)
         for key, item in fields.items()
         if exclude.get(key, None) is not True
     }
-    return create_model(
+    new_model = create_model(
         f"{baseclass.__name__}Optional", **optional_fields, __validators__=validators
     )
+
+    # Deal with nested models
+    for key, item in new_model.__fields__.items():
+        if item.is_complex():
+            item.type_ = make_optional(item.type_, exclude=exclude.get(key, {}))
+
+    return new_model
