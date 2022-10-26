@@ -102,6 +102,15 @@ def with_metadata(
     return parsed
 
 
+def update_model(model: any, values: dict[str, any]):
+    """Update a model with new values including nested models"""
+    for key, value in values.items():
+        if isinstance(value, dict):
+            update_model(getattr(model, key), value)
+        else:
+            setattr(model, key, value)
+
+
 ENABLE_DEBUG_LOGGING = False
 
 
