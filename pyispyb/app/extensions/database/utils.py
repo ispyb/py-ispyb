@@ -1,3 +1,4 @@
+import enum
 import os
 import time
 import logging
@@ -108,6 +109,8 @@ def update_model(model: any, values: dict[str, any]):
         if isinstance(value, dict):
             update_model(getattr(model, key), value)
         else:
+            if isinstance(value, enum.Enum):
+                value = value.value
             setattr(model, key, value)
 
 
