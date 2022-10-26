@@ -62,10 +62,10 @@ class SampleContainer(BaseModel):
     code: str
 
     sampleChangerLocation: Optional[str] = Field(
-        description="Position in sample change"
+        title="Sample Changer Location", description="Position in sample change"
     )
     beamlineLocation: Optional[str] = Field(
-        description="Beamline if container is assigned"
+        title="Beamline Location", description="Beamline if container is assigned"
     )
 
     class Config:
