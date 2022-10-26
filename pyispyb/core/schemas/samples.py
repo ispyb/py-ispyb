@@ -3,12 +3,8 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
-from ispyb import models
 
 from .crystal import Crystal
-from .shipping import Container
-
-s = models.BLSample
 
 
 class Position(BaseModel):
