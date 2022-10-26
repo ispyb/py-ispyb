@@ -8,7 +8,7 @@ from pyispyb import filters
 
 from ..modules import labcontacts as crud
 from ..schemas import labcontacts as schema
-from ..schemas.utils import paginated
+from ..schemas.utils import paginated, make_optional
 
 
 router = AuthenticatedAPIRouter(prefix="/labcontacts", tags=["Lab Contacts"])
@@ -42,7 +42,7 @@ def get_lab_contact(labContactId: int) -> models.LabContact:
 
 
 @router.post(
-    "/",
+    "",
     response_model=schema.LabContact,
     status_code=status.HTTP_201_CREATED,
 )
@@ -51,3 +51,35 @@ def create_lab_contact(labcontact: schema.LabContactCreate) -> models.LabContact
     return crud.create_labcontact(
         labcontact=labcontact,
     )
+
+
+LABCONTACT_UPDATE_EXCLUDED = {
+    "proposalId": True,
+    "Person": {
+        "givenName": True,
+        "familyname": True,
+        "Laboratory": {"laboratoryExtPk": True},
+    },
+}
+
+
+@router.patch(
+    "/{labContactId}",
+    response_model=schema.LabContact,
+    responses={
+        404: {"description": "No such group"},
+        400: {"description": "Could not update group"},
+    },
+)
+def update_lab_contact(
+    labContactId: int,
+    labContact: make_optional(
+        schema.LabContactCreate,
+        exclude=LABCONTACT_UPDATE_EXCLUDED,
+    ),
+):
+    """Update a Lab Contact"""
+    try:
+        return crud.update_labcontact(labContactId, labContact)
+    except IndexError:
+        raise HTTPException(status_code=404, detail="Lab contact not found")

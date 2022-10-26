@@ -15,7 +15,7 @@ class PersonBase(BaseModel):
 
 
 class PersonCreate(PersonBase):
-    Laboratory: Optional[LaboratoryCreate]
+    Laboratory: Optional[LaboratoryCreate] = Field(title="Laboratory")
 
 
 class Person(PersonBase):
@@ -45,7 +45,7 @@ class LabContactBase(BaseModel):
 
 
 class LabContactCreate(LabContactBase):
-    Person: PersonCreate
+    Person: PersonCreate = Field(title="Person")
 
 
 class LabContact(LabContactBase):
@@ -57,3 +57,4 @@ class LabContact(LabContactBase):
 
     class Config:
         orm_mode = True
+        json_encoders = {datetime.datetime: lambda obj: obj.isoformat() + "+00:00"}

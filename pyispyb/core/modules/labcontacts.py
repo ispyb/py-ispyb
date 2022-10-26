@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload
 from ispyb import models
 
 from ...app.extensions.database.definitions import with_authorization
-from ...app.extensions.database.utils import Paged, page
+from ...app.extensions.database.utils import Paged, page, update_model
 from ...app.extensions.database.middleware import db
 from ..schemas import labcontacts as schema
 
@@ -66,3 +66,15 @@ def create_labcontact(labcontact: schema.LabContactCreate) -> models.LabContact:
         labContactId=int(contact.labContactId), skip=0, limit=1
     )
     return new_labcontact.first
+
+
+def update_labcontact(
+    labContactId: int, labContact: schema.LabContactCreate
+) -> models.LabContact:
+    labcontact_dict = labContact.dict(exclude_unset=True)
+    labconcat = get_labcontacts(labContactId=labContactId, skip=0, limit=1).first
+
+    update_model(labconcat, labcontact_dict)
+    db.session.commit()
+
+    return get_labcontacts(labContactId=labContactId, skip=0, limit=1).first

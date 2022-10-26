@@ -10,12 +10,13 @@ class LaboratoryCreate(BaseModel):
     address: str = Field(title="Address", description="The Laboratory Address")
     city: str = Field(title="City", description="The Laboratory City")
     country: str = Field(title="Country", description="The Laboratory Country")
-    url: Optional[str] = Field(title="URL", description="The Laboratory optional URL")
-    laboratoryExtPk: Optional[int] = Field(
-        title="laboratoryExtPk", description="External Id from the User Portal"
+    url: Optional[str] = Field(
+        title="URL", description="The Laboratory optional URL", nullable=True
     )
-    recordTimeStamp: Optional[datetime.datetime] = Field(
-        title="recordTimeStamp", description="Time Laboratory was created"
+    laboratoryExtPk: Optional[int] = Field(
+        title="laboratoryExtPk",
+        description="External Id from the User Portal",
+        nullable=True,
     )
 
 
@@ -32,6 +33,10 @@ class Laboratory(LaboratoryCreate):
     city: Optional[str] = Field(None, title="City", description="The Laboratory City")
     country: Optional[str] = Field(
         None, title="Country", description="The Laboratory Country"
+    )
+    recordTimeStamp: Optional[datetime.datetime] = Field(
+        title="recordTimeStamp",
+        description="Time Laboratory was created",
     )
 
     class Config:
