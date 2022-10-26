@@ -22,7 +22,9 @@ class Position(BaseModel):
 class SampleMetaData(BaseModel):
     subsamples: int = Field(description="Number of sub samples")
     datacollections: int = Field(description="Number of data collections")
-    types: Optional[list[str]] = Field(description="Types of data collections")
+    types: Optional[list[str]] = Field(
+        description="Types of data collections", nullable=True
+    )
     queued: Optional[bool] = Field(
         description="Whether this sample is queued for data collection"
     )
@@ -31,7 +33,7 @@ class SampleMetaData(BaseModel):
         description="Number of successful auto-integrations"
     )
     integratedResolution: Optional[float] = Field(
-        description="Highest integration resolution"
+        description="Highest integration resolution", nullable=True
     )
     proposal: Optional[str] = Field(description="The associated proposal")
 
@@ -60,11 +62,25 @@ class SampleCrystal(Crystal):
     Protein: SampleProtein = Field(title="Protein")
 
 
+class SampleContainer(BaseModel):
+    code: str
+
+    sampleChangerLocation: Optional[str] = Field(
+        description="Position in sample change"
+    )
+    beamlineLocation: Optional[str] = Field(
+        description="Beamline if container is assigned"
+    )
+
+    class Config:
+        orm_mode = True
+
+
 class Sample(SampleBase):
     blSampleId: int
 
     Crystal: SampleCrystal = Field(title="Crystal")
-    Container: Optional[Container]
+    Container: Optional[SampleContainer] = Field(title="Container")
 
     class Config:
         orm_mode = True
