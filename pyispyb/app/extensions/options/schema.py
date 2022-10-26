@@ -15,7 +15,9 @@ class BeamLineGroupBeamLine(BaseModel):
         nullable=True,
     )
     archived: bool = Field(
-        False, title="Archived", description="Whether this beamline is archived (no longer displayed on landing page)"
+        False,
+        title="Archived",
+        description="Whether this beamline is archived (no longer displayed on landing page)",
     )
 
 
