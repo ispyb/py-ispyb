@@ -1,4 +1,3 @@
-from fastapi import Request
 from pydantic import BaseModel
 
 from pyispyb.app.extensions.options.schema import BeamLineGroup
@@ -23,10 +22,11 @@ class CurrentUser(BaseModel):
     "/current",
     response_model=CurrentUser,
 )
-def current_user(request: Request) -> CurrentUser:
-    person = get_current_person(g.login)
+def current_user() -> CurrentUser:
+    from pyispyb.app.main import app
 
-    beamLineGroups: list[BeamLineGroup] = request.app.db_options.beamLineGroups
+    person = get_current_person(g.login)
+    beamLineGroups: list[BeamLineGroup] = app.db_options.beamLineGroups
     groups = []
     beamLines = []
     for beamLineGroup in beamLineGroups:
