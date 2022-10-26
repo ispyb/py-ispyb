@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import Depends, HTTPException, status
 from ispyb import models
 
@@ -11,6 +13,7 @@ from ..schemas import labcontacts as schema
 from ..schemas.utils import paginated, make_optional
 
 
+logger = logging.getLogger(__name__)
 router = AuthenticatedAPIRouter(prefix="/labcontacts", tags=["Lab Contacts"])
 
 
@@ -67,8 +70,8 @@ LABCONTACT_UPDATE_EXCLUDED = {
     "/{labContactId}",
     response_model=schema.LabContact,
     responses={
-        404: {"description": "No such group"},
-        400: {"description": "Could not update group"},
+        404: {"description": "No such lab contat"},
+        400: {"description": "Could not update lab contact"},
     },
 )
 def update_lab_contact(
@@ -83,3 +86,8 @@ def update_lab_contact(
         return crud.update_labcontact(labContactId, labContact)
     except IndexError:
         raise HTTPException(status_code=404, detail="Lab contact not found")
+    except Exception:
+        logger.exception(
+            f"Could not update labcontact `{labContactId}` with payload `{labContact}`"
+        )
+        raise HTTPException(status_code=400, detail="Could not update lab contact")
