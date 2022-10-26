@@ -1,10 +1,21 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
 class BeamLineGroupBeamLine(BaseModel):
     beamLineName: str = Field(title="Beamline Name")
+    sampleChangerType: Optional[str] = Field(
+        None, title="Sample Changer Type", nullable=True
+    )
+    sampleChangerCapacity: Optional[int] = Field(
+        None,
+        title="Sample Changer Capacity",
+        description="If no specific type is available a capacity can be defined for the generic view",
+        nullable=True,
+    )
     archived: bool = Field(
-        False, title="Archived", description="Whether this beamline is archived"
+        False, title="Archived", description="Whether this beamline is archived (no longer displayed on landing page)"
     )
 
 
@@ -24,6 +35,7 @@ class UIOptions(BaseModel):
     motd: str = Field(
         "", title="Message of the Day", description="Displayed at the top of the UI"
     )
+    beamLineGroups: list[BeamLineGroup] = Field([], title="Beamline Groups")
 
 
 class Options(UIOptions):
@@ -45,4 +57,3 @@ class Options(UIOptions):
         title="Create Missing Login",
         description="Automatically create a `Person` entry if the `login` is missing from the database. (!) Warning modifies the database",
     )
-    beamLineGroups: list[BeamLineGroup] = Field([], title="Beamline Groups")
