@@ -13,6 +13,16 @@ test_data_samples_list = [
         ),
     ),
     ApiTestElem(
+        name="Get a samples",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples/1",
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+    ApiTestElem(
         name="List samples (admin)",
         input=ApiTestInput(
             permissions=[
@@ -33,6 +43,16 @@ test_data_subsamples_list = [
         input=ApiTestInput(
             login="abcd",
             route="/samples/sub",
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+    ApiTestElem(
+        name="Get a sub sample",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples/sub/2",
         ),
         expected=ApiTestExpected(
             code=200,
@@ -63,6 +83,16 @@ test_data_sampleimages_list = [
         ),
         expected=ApiTestExpected(
             code=200,
+        ),
+    ),
+    ApiTestElem(
+        name="Get sample image",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples/images/1",
+        ),
+        expected=ApiTestExpected(
+            code=404,
         ),
     ),
     ApiTestElem(

@@ -31,7 +31,7 @@ def order(
     Returns
         query (sqlalchemy.orm.Query): The ordered query
     """
-    if not (order["order_by"] and order["order"]) and not default:
+    if not (order and order["order_by"] and order["order"]) and not default:
         return query
 
     logger.info(f"Ordering by {order['order_by']} {order['order']}")

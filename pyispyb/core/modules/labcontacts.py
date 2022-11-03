@@ -7,6 +7,7 @@ from ...app.extensions.database.definitions import with_authorization
 from ...app.extensions.database.utils import Paged, page, update_model
 from ...app.extensions.database.middleware import db
 from ..schemas import labcontacts as schema
+from .proposals import get_proposals
 
 
 def get_labcontacts(
@@ -49,6 +50,9 @@ def create_labcontact(labcontact: schema.LabContactCreate) -> models.LabContact:
     labcontact_dict = labcontact.dict()
     person_dict = labcontact_dict.pop("Person")
     laboratory_dict = person_dict.pop("Laboratory")
+
+    proposals = get_proposals(proposalId=labcontact.proposalId, skip=0, limit=1)
+    proposals.first
 
     laboratory = models.Laboratory(**laboratory_dict)
     db.session.add(laboratory)

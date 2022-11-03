@@ -35,3 +35,9 @@ def test_no_permission(auth_client_abcd: AuthClient):
 
     assert len(json["results"]) == 1
     assert json["results"][0]["_metadata"]["beamLines"] == ["bl"]
+
+
+def test_sessions_for_group(auth_client_abcd: AuthClient, with_beamline_groups):
+    """Browse sessions for beamline group"""
+    resp = auth_client_abcd.get("/sessions/group?beamLineGroup=BL0x")
+    assert resp.status_code == 200

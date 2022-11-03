@@ -4,6 +4,7 @@ from typing import Optional, Any
 import sqlalchemy
 from sqlalchemy.orm import joinedload
 from ispyb import models
+from pyispyb.app.extensions.options.schema import Options
 
 from pyispyb.app.globals import g
 from pyispyb.app.extensions.database.middleware import db
@@ -43,6 +44,14 @@ def get_current_person(login: str) -> Optional[models.Person]:
     return person
 
 
+def get_options() -> Options:
+    """Get db_options from app"""
+    # Avoid circular import
+    from pyispyb.app.main import app
+
+    return app.db_options
+
+
 def with_authorization(
     query: "sqlalchemy.orm.Query[Any]",
     includeArchived: bool = False,
@@ -64,9 +73,6 @@ def with_authorization(
         joinBLSession: whether to join `models.BLSession`
         joinSessionHasPerson: whether to join `models.SessionHasPerson`
     """
-    # Avoid circular import
-    from pyispyb.app.main import app
-
     # `all_proposals`` can access all sessions
     if "all_proposals" in g.permissions:
         logger.info("user has `all_proposals`")
@@ -75,7 +81,8 @@ def with_authorization(
     # Iterate through users permissions and match them to the relevant groups
     beamLines = []
     permissions_applied = []
-    for group in app.db_options.beamLineGroups:
+    db_options = get_options()
+    for group in db_options.beamLineGroups:
         if group.permission in g.permissions:
             permissions_applied.append(group.permission)
             for beamLine in group.beamLines:
@@ -120,11 +127,10 @@ def with_authorization(
 
 def groups_from_beamlines(beamLines: list[str]) -> list[list]:
     """Get uiGroups from a list of beamlines"""
-    from pyispyb.app.main import app
-
+    db_options = get_options()
     groups = []
     for beamline in beamLines:
-        for group in app.db_options.beamLineGroups:
+        for group in db_options.beamLineGroups:
             for groupBeamline in group.beamLines:
                 if beamline == groupBeamline.beamLineName:
                     groups.append(group.uiGroup)
@@ -134,9 +140,8 @@ def groups_from_beamlines(beamLines: list[str]) -> list[list]:
 
 def beamlines_from_group(beamLineGroup: str) -> list[str]:
     """Get a list of beamlines from a groupName"""
-    from pyispyb.app.main import app
-
-    for group in app.db_options.beamLineGroups:
+    db_options = get_options()
+    for group in db_options.beamLineGroups:
         if group.groupName == beamLineGroup:
             return [beamline.beamLineName for beamline in group.beamLines]
 

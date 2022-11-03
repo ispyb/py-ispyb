@@ -51,9 +51,12 @@ def get_lab_contact(labContactId: int) -> models.LabContact:
 )
 def create_lab_contact(labcontact: schema.LabContactCreate) -> models.LabContact:
     """Create a new lab contact"""
-    return crud.create_labcontact(
-        labcontact=labcontact,
-    )
+    try:
+        return crud.create_labcontact(
+            labcontact=labcontact,
+        )
+    except IndexError:
+        raise HTTPException(status_code=404, detail="No such proposal")
 
 
 LABCONTACT_UPDATE_EXCLUDED = {
