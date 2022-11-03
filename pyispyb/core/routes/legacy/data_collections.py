@@ -27,7 +27,8 @@ from pyispyb.core.routes.legacy.dependencies import session_authorisation
 from .base import router as legacy_router
 
 router = AuthenticatedAPIRouter(
-    prefix="/data_collections", tags=["Data collections - legacy with header token"]
+    prefix="/legacy/data_collections",
+    tags=["Data collections - legacy with header token"],
 )
 
 

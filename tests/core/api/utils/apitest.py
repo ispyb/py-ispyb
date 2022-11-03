@@ -11,9 +11,10 @@ from tests.core.api.utils.permissions import mock_permissions
 class ApiTestInput:
     def __init__(
         self,
+        *,
         login: str,
-        permissions: list[str],
         route: str,
+        permissions: list[str] = [],
         method: str = "get",
         payload: str | None = None,
     ) -> None:

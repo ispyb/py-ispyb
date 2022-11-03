@@ -14,6 +14,6 @@ def test_get_options(auth_client: AuthClient, test_elem: ApiTestElem, app: ASGIA
 
 
 def test_post_option(auth_client_abcd: AuthClient):
-    response = auth_client_abcd.post("/options")
+    response = auth_client_abcd.patch("/options")
 
     assert response.status_code == 403

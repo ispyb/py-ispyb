@@ -24,6 +24,7 @@ def test_call_sync_proposal_create(
 def test_proposal_persons_sync(with_db_session):
     # Only one proposal with proposalCode and proposalNumber should have been created in DB
     proposals = get_proposals(
+        withAuthorization=False,
         skip=0,
         limit=10,
         proposalCode=test_data_proposal_userportalsync_create["proposal"][
@@ -32,7 +33,6 @@ def test_proposal_persons_sync(with_db_session):
         proposalNumber=test_data_proposal_userportalsync_create["proposal"][
             "proposalNumber"
         ],
-        proposalHasPerson=True,
     )
 
     assert proposals.total == 1
@@ -66,8 +66,9 @@ def test_proposal_persons_sync(with_db_session):
     assert first_person_id == proposals.results[0].personId
 
     # Check the number of persons within the ProposalHasPerson table
-    assert len(test_data_proposal_userportalsync_create["proposal"]["persons"]) == len(
-        proposals.results[0].ProposalHasPerson
+    assert (
+        len(test_data_proposal_userportalsync_create["proposal"]["persons"])
+        == proposals.results[0]._metadata["persons"]
     )
 
 
@@ -114,10 +115,10 @@ def test_session_persons_sync(with_db_session):
         try:
             if json_session["externalId"] is not None:
                 sessions = get_sessions(
+                    withAuthorization=False,
                     skip=0,
                     limit=10,
                     externalId=json_session["externalId"],
-                    sessionHasPerson=True,
                 )
         except KeyError:
             pass
@@ -127,6 +128,7 @@ def test_session_persons_sync(with_db_session):
             # It might be deprecated later
             if json_session["expSessionPk"] is not None:
                 sessions = get_sessions(
+                    withAuthorization=False,
                     skip=0,
                     limit=10,
                     expSessionPk=json_session["expSessionPk"],
@@ -138,8 +140,8 @@ def test_session_persons_sync(with_db_session):
             sessions_in_db += 1
 
             # Check the number of persons within the Session_has_Person table
-            assert len(json_session["persons"]) == len(
-                sessions.results[0].SessionHasPerson
+            assert (
+                len(json_session["persons"]) == sessions.results[0]._metadata["persons"]
             )
 
     # Check the amount of sessions corresponds with the entries in the DB
@@ -149,6 +151,7 @@ def test_session_persons_sync(with_db_session):
 def test_lab_contacts_sync(with_db_session):
     # Get the proposal from the DB
     proposals = get_proposals(
+        withAuthorization=False,
         skip=0,
         limit=10,
         proposalCode=test_data_proposal_userportalsync_create["proposal"][
@@ -160,6 +163,7 @@ def test_lab_contacts_sync(with_db_session):
     )
     # Get the lab contacts for the proposal in DB
     labcontacts = get_labcontacts(
+        withAuthorization=False,
         skip=0,
         limit=10,
         proposalId=proposals.results[0].proposalId,
@@ -177,6 +181,7 @@ def test_lab_contacts_sync(with_db_session):
 def test_proteins_sync(with_db_session):
     # Get the proposal from the DB
     proposals = get_proposals(
+        withAuthorization=False,
         skip=0,
         limit=10,
         proposalCode=test_data_proposal_userportalsync_create["proposal"][
@@ -193,6 +198,7 @@ def test_proteins_sync(with_db_session):
         try:
             if protein["externalId"] is not None:
                 proteins = get_proteins(
+                    withAuthorization=False,
                     skip=0,
                     limit=10,
                     externalId=protein["externalId"],
@@ -203,6 +209,7 @@ def test_proteins_sync(with_db_session):
 
         try:
             proteins = get_proteins(
+                withAuthorization=False,
                 skip=0,
                 limit=10,
                 acronym=protein["acronym"],

@@ -2,7 +2,7 @@ from typing import Optional
 import datetime
 
 from pydantic import BaseModel, Field
-from pyispyb.core.schemas.laboratories import Laboratory
+from pyispyb.core.schemas.laboratories import Laboratory, LaboratoryCreate
 
 
 class PersonBase(BaseModel):
@@ -12,6 +12,10 @@ class PersonBase(BaseModel):
     phoneNumber: Optional[str] = Field(title="Phone Number", nullable=True)
 
     Laboratory: Optional[Laboratory]
+
+
+class PersonCreate(PersonBase):
+    Laboratory: Optional[LaboratoryCreate] = Field(title="Laboratory")
 
 
 class Person(PersonBase):
@@ -41,7 +45,7 @@ class LabContactBase(BaseModel):
 
 
 class LabContactCreate(LabContactBase):
-    pass
+    Person: PersonCreate = Field(title="Person")
 
 
 class LabContact(LabContactBase):
@@ -53,3 +57,4 @@ class LabContact(LabContactBase):
 
     class Config:
         orm_mode = True
+        json_encoders = {datetime.datetime: lambda obj: obj.isoformat() + "+00:00"}

@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 
-from ...app.extensions.database.definitions import get_current_person
+from pyispyb.app.extensions.options.schema import BeamLineGroup
+
+from ...app.extensions.database.definitions import get_current_person, get_options
 from ...app.base import AuthenticatedAPIRouter
 from ...app.globals import g
 
@@ -12,6 +14,8 @@ class CurrentUser(BaseModel):
     familyName: str
     Permissions: list[str]
     personId: int
+    beamLineGroups: list[str]
+    beamLines: list[str]
 
 
 @router.get(
@@ -20,10 +24,22 @@ class CurrentUser(BaseModel):
 )
 def current_user() -> CurrentUser:
     person = get_current_person(g.login)
+    db_options = get_options()
+    beamLineGroups: list[BeamLineGroup] = db_options.beamLineGroups
+    groups = []
+    beamLines = []
+    for beamLineGroup in beamLineGroups:
+        if beamLineGroup.permission in g.permissions:
+            groups.append(beamLineGroup.groupName)
+            beamLines.extend(
+                [beamLine.beamLineName for beamLine in beamLineGroup.beamLines]
+            )
 
     return {
         "personId": person.personId,
         "givenName": person.givenName,
         "familyName": person.familyName,
         "Permissions": g.permissions,
+        "beamLineGroups": groups,
+        "beamLines": list(set(beamLines)),
     }

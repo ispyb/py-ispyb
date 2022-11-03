@@ -1,70 +1,36 @@
-# import datetime
-
-from typing import Union, Optional
 from datetime import datetime
+from typing import Union, Optional
 
 from pydantic import BaseModel, Field
-from ispyb import models
 
-d = models.DataCollection
-g = models.DataCollectionGroup
-x = models.XFEFluorescenceSpectrum
-r = models.RobotAction
-
-
-class DataCollectionGroup(BaseModel):
-    dataCollectionGroupId: int
-    experimentType: str
-
-    class Config:
-        orm_mode = True
-
-
-class DataCollectionMetaData(BaseModel):
-    snapshots: dict[str, bool] = Field(description="Snapshot statuses with ids 1-4")
-
-
-class DataCollection(BaseModel):
-    runStatus: Optional[str]
-    wavelength: Optional[float]
-    exposureTime: Optional[float]
-    numberOfImages: Optional[int]
-    imageDirectory: Optional[str]
-    fileTemplate: Optional[str]
-    imageContainerSubPath: Optional[str]
-    beamSizeAtSampleX: Optional[float]
-    beamSizeAtSampleY: Optional[float]
-
-    DataCollectionGroup: DataCollectionGroup
-
-    metadata: DataCollectionMetaData = Field(alias="_metadata")
-
-    class Config:
-        orm_mode = True
-
-
-class RobotAction(BaseModel):
-    actionType: str
-    status: Optional[str]
-    message: Optional[str]
-
-    class Config:
-        orm_mode = True
+from .datacollections import DataCollection
+from .robotactions import RobotAction
+from .energyscan import EnergyScan
+from .xfefluorescencespectrum import XFEFluorescenceSpectrum
 
 
 class EventBase(BaseModel):
     id: int
     type: str
-    startTime: datetime
-    endTime: Optional[datetime]
+    startTime: Optional[datetime] = Field(title="Start Time")
+    endTime: Optional[datetime] = Field(title="End Time")
+    duration: Optional[float] = Field(title="Duration", unit="min")
     count: int
-    blSample: Optional[str] = Field(description="Sample name")
-    blSampleId: Optional[int] = Field(description="Sample id")
+    session: Optional[str]
+    sessionId: int
+    proposal: str
+    blSample: Optional[str] = Field(description="Sample Name")
+    blSampleId: Optional[int] = Field(description="Sample Id")
+    attachments: Optional[int] = Field(description="No. of attachments")
 
-    Item: Union[DataCollection, RobotAction]
+    Item: Union[DataCollection, RobotAction, XFEFluorescenceSpectrum, EnergyScan]
 
 
 class Event(EventBase):
     class Config:
         orm_mode = True
-        # extra = 'forbid'
+
+
+class EventType(BaseModel):
+    eventTypeName: str
+    eventType: str

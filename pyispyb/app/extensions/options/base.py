@@ -10,7 +10,7 @@ from ispyb import models
 from ...globals import g
 from ..database.middleware import db
 from ..database.session import get_session
-from .schema import Options, UIOptions
+from .schema import Options, UIOptions, BeamLineGroup
 
 
 logger = logging.getLogger(__file__)
@@ -20,6 +20,17 @@ def setup_options(app: ASGIApp):
     """Add the db_options to the current app global"""
     with get_session() as session:
         app.db_options = get_options(get_all=True, session=session)
+
+        if not app.db_options.beamLineGroups:
+            logger.warning("`beamLineGroups` are not configured, setting default empty")
+            app.db_options.beamLineGroups = [
+                BeamLineGroup(
+                    groupName="Empty",
+                    uiGroup="empty",
+                    permission="bl_admin",
+                    beamLines=[],
+                )
+            ]
 
 
 def get_options(get_all: bool = False, session=None) -> Options:
