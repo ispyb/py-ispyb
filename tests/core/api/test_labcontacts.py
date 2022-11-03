@@ -33,6 +33,10 @@ def test_create_labcontact(auth_client_abcd: AuthClient, app: ASGIApp):
 
     resp = auth_client_abcd.post("/labcontacts", payload=LABCONTACT)
     assert resp.status_code == 201
+    json = resp.json()
+
+    resp = auth_client_abcd.get(f"/labcontacts/{json['labContactId']}")
+    assert resp.status_code == 200
 
 
 def test_create_labcontact_invalid_proposal(auth_client_efgh: AuthClient, app: ASGIApp):
