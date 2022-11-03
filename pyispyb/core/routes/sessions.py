@@ -52,10 +52,8 @@ def get_sessions(
 
 
 @router.get("/group", response_model=PaginatedSession)
-def get_sessions_for_ui_group(
-    beamLineGroup: Optional[str] = Query(
-        None, description="Beamline group to display session for"
-    ),
+def get_sessions_for_beamline_group(
+    beamLineGroup: str = Query(description="Beamline group to display session for"),
     upcoming: Optional[bool] = Query(False, description="Get the upcoming sessions"),
     previous: Optional[bool] = Query(
         False, description="Get the recently finished sessions"

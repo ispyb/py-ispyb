@@ -13,6 +13,16 @@ test_data_samples_list = [
         ),
     ),
     ApiTestElem(
+        name="Get a samples",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples/1",
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+    ApiTestElem(
         name="List samples (admin)",
         input=ApiTestInput(
             permissions=[
