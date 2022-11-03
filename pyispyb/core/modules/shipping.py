@@ -37,7 +37,7 @@ def get_shippings(
         query = query.filter(models.Proposal.proposal == proposal)
 
     if proposalId:
-        query = query.filter(models.LabContact.proposalId == proposalId)
+        query = query.filter(models.Proposal.proposalId == proposalId)
 
     if withAuthorization:
         query = with_authorization(query)
