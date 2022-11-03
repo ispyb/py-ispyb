@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 from pyispyb.app.extensions.options.schema import BeamLineGroup
 
-from ...app.extensions.database.definitions import get_current_person
+from ...app.extensions.database.definitions import get_current_person, get_options
 from ...app.base import AuthenticatedAPIRouter
 from ...app.globals import g
 
@@ -23,10 +23,9 @@ class CurrentUser(BaseModel):
     response_model=CurrentUser,
 )
 def current_user() -> CurrentUser:
-    from pyispyb.app.main import app
-
     person = get_current_person(g.login)
-    beamLineGroups: list[BeamLineGroup] = app.db_options.beamLineGroups
+    db_options = get_options()
+    beamLineGroups: list[BeamLineGroup] = db_options.beamLineGroups
     groups = []
     beamLines = []
     for beamLineGroup in beamLineGroups:
