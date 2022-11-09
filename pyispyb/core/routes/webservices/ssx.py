@@ -3,6 +3,8 @@ from fastapi import Depends
 from ....dependencies import permission
 from ....app.base import AuthenticatedAPIRouter
 from pyispyb.core.schemas import ssx as schema
+from pyispyb.core.schemas import events as schema_events
+
 import pyispyb.core.modules.ssx as crud
 from ispyb import models
 
@@ -18,7 +20,7 @@ logger = logging.getLogger("ispyb")
 
 @router.post(
     "/datacollection",
-    response_model=schema.SSXDataCollectionResponse,
+    response_model=schema_events.Event,
 )
 def create_datacollection(
     ssx_datacollection_create: schema.SSXDataCollectionCreate,
@@ -28,7 +30,7 @@ def create_datacollection(
 
 @router.post(
     "/datacollectiongroup",
-    response_model=schema.DataCollectionGroupResponse,
+    response_model=int,
 )
 def create_datacollectiongroup(
     ssx_datacollectiongroup_create: schema.SSXDataCollectionGroupCreate,
@@ -36,11 +38,11 @@ def create_datacollectiongroup(
     return crud.create_ssx_datacollectiongroup(ssx_datacollectiongroup_create)
 
 
-@router.post(
-    "/datacollection/{dataCollectionId:int}/processing",
-    response_model=schema.SSXDataCollectionProcessingResponse,
-)
-def create_ssx_datacollection_processing(
-    ssx_hits_create: schema.SSXDataCollectionProcessingCreate, dataCollectionId: int
-) -> models.SSXDataCollectionProcessing:
-    return crud.create_ssx_datacollection_processing(dataCollectionId, ssx_hits_create)
+# @router.post(
+#     "/datacollection/{dataCollectionId:int}/processing",
+#     response_model=schema.SSXDataCollectionProcessingResponse,
+# )
+# def create_ssx_datacollection_processing(
+#     ssx_hits_create: schema.SSXDataCollectionProcessingCreate, dataCollectionId: int
+# ) -> models.SSXDataCollectionProcessing:
+#     return crud.create_ssx_datacollection_processing(dataCollectionId, ssx_hits_create)

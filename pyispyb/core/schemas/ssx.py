@@ -1,110 +1,80 @@
 from datetime import datetime
-from typing import Any, Dict, Literal, Optional
-from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+from typing import Literal, Optional
+from .eventchain import EventChainCreate
 
-from ispyb import models
+# from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+
+# from ispyb import models
 
 from pydantic import BaseModel
 
 
-class DataCollectionResponse(sqlalchemy_to_pydantic(models.DataCollection)):
-    DataCollectionGroup: sqlalchemy_to_pydantic(models.DataCollectionGroup)
-    Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
+# class DataCollectionResponse(sqlalchemy_to_pydantic(models.DataCollection)):
+#     DataCollectionGroup: sqlalchemy_to_pydantic(models.DataCollectionGroup)
+#     Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
 
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
-
-
-class ComponentResponse(sqlalchemy_to_pydantic(models.Component)):
-    ComponentType: sqlalchemy_to_pydantic(models.ComponentType)
-
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
+#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
+#         kwargs.pop("exclude_none")
+#         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class CrystalCompositionResponse(sqlalchemy_to_pydantic(models.CrystalComposition)):
-    Component: ComponentResponse
+# class ComponentResponse(sqlalchemy_to_pydantic(models.Component)):
+#     ComponentType: sqlalchemy_to_pydantic(models.ComponentType)
 
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
-
-
-class CrystalResponse(sqlalchemy_to_pydantic(models.Crystal)):
-    Protein: sqlalchemy_to_pydantic(models.Protein)
-    crystal_compositions: list[CrystalCompositionResponse]
-
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
+#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
+#         kwargs.pop("exclude_none")
+#         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class SampleCompositionResponse(sqlalchemy_to_pydantic(models.SampleComposition)):
-    Component: ComponentResponse
+# class CrystalCompositionResponse(sqlalchemy_to_pydantic(models.CrystalComposition)):
+#     Component: ComponentResponse
 
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
-
-
-class SSXSampleResponse(sqlalchemy_to_pydantic(models.BLSample)):
-    Crystal: CrystalResponse
-    sample_compositions: list[SampleCompositionResponse]
-
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
+#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
+#         kwargs.pop("exclude_none")
+#         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)):
-    DataCollection: DataCollectionResponse
+# class CrystalResponse(sqlalchemy_to_pydantic(models.Crystal)):
+#     Protein: sqlalchemy_to_pydantic(models.Protein)
+#     crystal_compositions: list[CrystalCompositionResponse]
 
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
-
-
-class DataCollectionGroupResponse(sqlalchemy_to_pydantic(models.DataCollectionGroup)):
-    nbDataCollection: Optional[int]
-    ExperimentType: sqlalchemy_to_pydantic(models.ExperimentType)
-
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
+#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
+#         kwargs.pop("exclude_none")
+#         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class SSXDataCollectionProcessingResponse(
-    sqlalchemy_to_pydantic(models.SSXDataCollectionProcessing)
-):
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
+# class SampleCompositionResponse(sqlalchemy_to_pydantic(models.SampleComposition)):
+#     Component: ComponentResponse
+
+#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
+#         kwargs.pop("exclude_none")
+#         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class SSXDataCollectionProcessingCreate(BaseModel):
-    nbHits: int
-    nbIndexed: int
-    laticeType: Optional[str]
-    estimatedResolution: Optional[float]
-    unit_cells: Optional[list[list[float]]]
+# class SSXSampleResponse(sqlalchemy_to_pydantic(models.BLSample)):
+#     Crystal: CrystalResponse
+#     sample_compositions: list[SampleCompositionResponse]
+
+#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
+#         kwargs.pop("exclude_none")
+#         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class EventResponse(sqlalchemy_to_pydantic(models.Event)):
-    EventType: sqlalchemy_to_pydantic(models.EventType)
+# class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)):
+#     DataCollection: DataCollectionResponse
 
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
+#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
+#         kwargs.pop("exclude_none")
+#         return super().dict(*args, exclude_none=True, **kwargs)
 
 
-class EventChainResponse(sqlalchemy_to_pydantic(models.EventChain)):
-    events: list[EventResponse]
+# class DataCollectionGroupResponse(sqlalchemy_to_pydantic(models.DataCollectionGroup)):
+#     nbDataCollection: Optional[int]
+#     ExperimentType: sqlalchemy_to_pydantic(models.ExperimentType)
 
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
-        kwargs.pop("exclude_none")
-        return super().dict(*args, exclude_none=True, **kwargs)
+#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
+#         kwargs.pop("exclude_none")
+#         return super().dict(*args, exclude_none=True, **kwargs)
 
 
 class SSXProteinCreate(BaseModel):
@@ -133,20 +103,6 @@ class SSXSampleCreate(BaseModel):
     support: Optional[str]
     crystal: SSXCrystalCreate
     components: list[SSXSampleComponentCreate]
-
-
-class SSXSequenceEventCreate(BaseModel):
-    type: Literal["XrayDetection", "XrayExposure", "LaserExcitation", "ReactionTrigger"]
-    name: Optional[str]
-    time: datetime
-    duration: Optional[float]
-    period: Optional[float]
-    repetition: Optional[float]
-
-
-class SSXSequenceCreate(BaseModel):
-    name: Optional[str]
-    events: list[SSXSequenceEventCreate]
 
 
 class SSXDataCollectionCreate(BaseModel):
@@ -182,8 +138,9 @@ class SSXDataCollectionCreate(BaseModel):
     repetitionRate: Optional[float]
     energyBandwidth: Optional[float]
     monoStripe: Optional[str]
+    experimentName: Optional[str]
 
-    event_chains: list[SSXSequenceCreate]
+    event_chains: list[EventChainCreate]
 
 
 class SSXDataCollectionGroupCreate(BaseModel):
@@ -191,7 +148,7 @@ class SSXDataCollectionGroupCreate(BaseModel):
     sessionId: int
     startTime: datetime
     endTime: Optional[datetime]
-    experimentType: Optional[Literal["SSXChip", "SSXInjector"]]
+    experimentType: Optional[Literal["SSX-Chip", "SSX-Jet"]]
     comments: Optional[str]
 
     sample: SSXSampleCreate
