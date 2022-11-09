@@ -117,7 +117,7 @@ def get_samples(
             models.AutoProcScalingHasInt.autoProcScalingId
             == models.AutoProcScalingStatistics.autoProcScalingId,
         )
-        .join(
+        .outerjoin(
             models.Container,
             models.BLSample.containerId == models.Container.containerId,
         )
@@ -126,7 +126,7 @@ def get_samples(
                 models.Container.code,
             )
         )
-        .join(models.Dewar, models.Container.dewarId == models.Dewar.dewarId)
+        .outerjoin(models.Dewar, models.Container.dewarId == models.Dewar.dewarId)
         .options(
             contains_eager(
                 models.BLSample.Container,
@@ -135,7 +135,9 @@ def get_samples(
                 models.Dewar.code,
             )
         )
-        .join(models.Shipping, models.Dewar.shippingId == models.Shipping.shippingId)
+        .outerjoin(
+            models.Shipping, models.Dewar.shippingId == models.Shipping.shippingId
+        )
         .options(
             contains_eager(
                 models.BLSample.Container, models.Container.Dewar, models.Dewar.Shipping
@@ -143,7 +145,9 @@ def get_samples(
                 models.Shipping.shippingName,
             )
         )
-        .join(models.Proposal, models.Proposal.proposalId == models.Shipping.proposalId)
+        .outerjoin(
+            models.Proposal, models.Proposal.proposalId == models.Shipping.proposalId
+        )
         .group_by(models.BLSample.blSampleId)
     )
 
@@ -180,6 +184,7 @@ def get_samples(
     query = with_authorization(query)
 
     if blSampleId:
+        print(blSampleId)
         query = query.filter(models.BLSample.blSampleId == blSampleId)
 
     if proteinId:

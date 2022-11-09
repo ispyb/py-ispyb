@@ -57,8 +57,28 @@ class SampleProtein(BaseModel):
         orm_mode = True
 
 
+class Component(BaseModel):
+    name: str
+    composition: Optional[str]
+    concentration: Optional[float]
+
+    class Config:
+        orm_mode = True
+
+
+class Composition(BaseModel):
+    Component: Component
+    abundance: Optional[float]
+    ratio: Optional[float]
+    ph: Optional[float]
+
+    class Config:
+        orm_mode = True
+
+
 class SampleCrystal(Crystal):
     Protein: SampleProtein = Field(title="Protein")
+    crystal_compositions: Optional[list[Composition]]
 
 
 class SampleContainer(BaseModel):
@@ -82,6 +102,7 @@ class Sample(SampleCreate):
     Container: Optional[SampleContainer] = Field(title="Container")
 
     metadata: Optional[SampleMetaData] = Field(alias="_metadata")
+    sample_compositions: Optional[list[Composition]]
 
     class Config:
         orm_mode = True
