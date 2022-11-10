@@ -38,11 +38,11 @@ def create_datacollectiongroup(
     return crud.create_ssx_datacollectiongroup(ssx_datacollectiongroup_create)
 
 
-# @router.post(
-#     "/datacollection/{dataCollectionId:int}/processing",
-#     response_model=schema.SSXDataCollectionProcessingResponse,
-# )
-# def create_ssx_datacollection_processing(
-#     ssx_hits_create: schema.SSXDataCollectionProcessingCreate, dataCollectionId: int
-# ) -> models.SSXDataCollectionProcessing:
-#     return crud.create_ssx_datacollection_processing(dataCollectionId, ssx_hits_create)
+@router.post(
+    "/datacollection/{dataCollectionId:int}/processing",
+    response_model=int,
+)
+def create_ssx_datacollection_processing(
+    data: schema.SSXDataCollectionProcessingCreate, dataCollectionId: int
+) -> int:
+    return crud.create_ssx_datacollection_processing(dataCollectionId, data)

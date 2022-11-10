@@ -145,8 +145,8 @@ def get_samples(
                 models.Shipping.shippingName,
             )
         )
-        .outerjoin(
-            models.Proposal, models.Proposal.proposalId == models.Shipping.proposalId
+        .join(
+            models.Proposal, models.Proposal.proposalId == models.Protein.proposalId
         )
         .group_by(models.BLSample.blSampleId)
     )

@@ -1,12 +1,17 @@
 import logging
+import os
 import traceback
 from typing import Optional
 
 from ispyb import models
+import pydantic
+from pyispyb.app.extensions.database.definitions import with_authorization
+from sqlalchemy.orm import joinedload
 
 # from pyispyb.app.extensions.database.definitions import with_authorization_session
 from pyispyb.app.extensions.database.middleware import db
 from pyispyb.app.utils import model_from_json
+from pyispyb.config import settings
 from pyispyb.core.modules.events import get_events
 from pyispyb.core.modules.session import get_session
 from pyispyb.core.schemas import events, ssx as schema
@@ -495,3 +500,106 @@ def create_ssx_datacollectiongroup(
 #         logging.error(traceback.format_exc())
 #         db.session.rollback()
 #         raise e
+
+
+def create_ssx_datacollection_processing(
+    dataCollectionId: int, data: schema.SSXDataCollectionProcessingCreate
+) -> int:
+
+    program = models.AutoProcProgram(
+        dataCollectionId=dataCollectionId,
+        processingCommandLine=data.processingCommandLine,
+        processingPrograms=data.processingPrograms,
+        processingStatus="SUCCESS",
+        processingMessage=data.processingMessage,
+        processingStartTime=data.processingStartTime,
+        processingEndTime=data.processingEndTime,
+        processingEnvironment=data.processingEnvironment,
+    )
+    db.session.add(program)
+    db.session.flush()
+
+    autoProcProgramId = program.autoProcProgramId
+
+    [filePath, fileName] = os.path.split(data.resultPath)
+    attachment = models.AutoProcProgramAttachment(
+        filePath=filePath,
+        fileName=fileName,
+        fileType="Result",
+        autoProcProgramId=autoProcProgramId,
+    )
+    db.session.add(attachment)
+    db.session.flush()
+    db.session.commit()
+    return autoProcProgramId
+
+
+def get_ssx_datacollection_processings(
+    dataCollectionIds: list[int], includeCells: bool
+) -> list[schema.SSXDataCollectionProcessing]:
+    query = (
+        db.session.query(models.AutoProcProgramAttachment)
+        .filter(models.AutoProcProgramAttachment.fileType == "Result")
+        .options(joinedload(models.AutoProcProgramAttachment.AutoProcProgram))
+        .options(
+            joinedload(
+                models.AutoProcProgramAttachment.AutoProcProgram,
+                models.AutoProcProgram.DataCollection,
+            )
+        )
+        .join(
+            models.AutoProcProgram,
+            models.AutoProcProgramAttachment.autoProcProgramId
+            == models.AutoProcProgram.autoProcProgramId,
+        )
+        .join(
+            models.DataCollection,
+            models.AutoProcProgram.dataCollectionId
+            == models.DataCollection.dataCollectionId,
+        )
+        .filter(models.DataCollection.dataCollectionId.in_(dataCollectionIds))
+        .join(
+            models.BLSession,
+            models.DataCollection.sessionId == models.BLSession.sessionId,
+        )
+        .join(
+            models.Proposal, models.BLSession.proposalId == models.Proposal.proposalId
+        )
+    )
+
+    query = with_authorization(query, joinBLSession=False)
+
+    attachments: list[models.AutoProcProgramAttachment] = query.all()
+
+    res: list[schema.SSXDataCollectionProcessing] = []
+
+    for attachment in attachments:
+        path = os.path.join(attachment.filePath, attachment.fileName)
+        if settings.path_map:
+            path = os.path.join(settings.path_map, path)
+        try:
+            print("start read")
+            parsed = pydantic.parse_file_as(
+                schema.SSXDataCollectionProcessingBase, path
+            )
+            print("end read")
+            if includeCells:
+                res.append(
+                    {
+                        "dataCollectionId": attachment.AutoProcProgram.DataCollection.dataCollectionId,
+                        **parsed.dict(),
+                    }
+                )
+            else:
+                res.append(
+                    {
+                        "dataCollectionId": attachment.AutoProcProgram.DataCollection.dataCollectionId,
+                        **parsed.dict(),
+                        "unit_cells": [],
+                    }
+                )
+        except pydantic.error_wrappers.ValidationError:
+            pass
+        except FileNotFoundError:
+            pass
+    return res

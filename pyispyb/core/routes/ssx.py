@@ -1,4 +1,7 @@
+from pydantic import constr
 from pyispyb.app.base import AuthenticatedAPIRouter
+import pyispyb.core.modules.ssx as crud
+import pyispyb.core.schemas.ssx as schema
 
 # from ispyb import models
 # import pyispyb.core.modules.ssx as crud
@@ -80,12 +83,16 @@ router = AuthenticatedAPIRouter(prefix="/ssx", tags=["Serial crystallography"])
 # def get_datacollectiongroup_sample(dataCollectionGroupId: int) -> models.BLSample:
 #     return crud.get_ssx_datacollectiongroup_sample(dataCollectionGroupId)
 
+IdList = constr(regex=r"^\d+(,\d+)*$")
 
-# @router.get(
-#     "/datacollection/{dataCollectionId:int}/processing",
-#     response_model=schema.SSXDataCollectionProcessingResponse,
-# )
-# def get_ssx_datacollection_processing(
-#     dataCollectionId: int,
-# ) -> models.SSXDataCollectionProcessing:
-#     return crud.get_ssx_datacollection_processing(dataCollectionId)
+
+@router.get(
+    "/datacollection/processings",
+    response_model=list[schema.SSXDataCollectionProcessing],
+)
+def get_ssx_datacollection_processings(
+    dataCollectionIds: IdList, includeCells: bool = False
+) -> list[schema.SSXDataCollectionProcessing]:
+    return crud.get_ssx_datacollection_processings(
+        dataCollectionIds.split(","), includeCells
+    )

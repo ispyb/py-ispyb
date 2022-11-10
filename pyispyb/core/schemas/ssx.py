@@ -77,6 +77,28 @@ from pydantic import BaseModel
 #         return super().dict(*args, exclude_none=True, **kwargs)
 
 
+class SSXDataCollectionProcessingBase(BaseModel):
+    nbHits: int
+    nbIndexed: int
+    laticeType: str
+    estimatedResolution: float
+    unit_cells: list[list[float]]
+
+
+class SSXDataCollectionProcessing(SSXDataCollectionProcessingBase):
+    dataCollectionId: int
+
+
+class SSXDataCollectionProcessingCreate(BaseModel):
+    processingCommandLine: Optional[str]
+    processingPrograms: Optional[str]
+    processingMessage: Optional[str]
+    processingStartTime: Optional[datetime]
+    processingEndTime: Optional[datetime]
+    processingEnvironment: Optional[str]
+    resultPath: str
+
+
 class SSXProteinCreate(BaseModel):
     name: Optional[str]
     acronym: Optional[str]
