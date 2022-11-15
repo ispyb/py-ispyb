@@ -104,7 +104,7 @@ def with_authorization(
     """
     # `all_proposals`` can access all sessions
     if "all_proposals" in g.permissions:
-        logger.info("user has `all_proposals`")
+        logger.debug("user has `all_proposals`")
         return query
 
     # Iterate through users permissions and match them to the relevant groups
@@ -130,7 +130,7 @@ def with_authorization(
 
     conditions = []
     if beamLines:
-        logger.info(
+        logger.debug(
             f"filtered to beamlines `{beamLines}` with permissions `{permissions_applied}`"
         )
 

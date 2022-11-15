@@ -145,9 +145,7 @@ def get_samples(
                 models.Shipping.shippingName,
             )
         )
-        .join(
-            models.Proposal, models.Proposal.proposalId == models.Protein.proposalId
-        )
+        .join(models.Proposal, models.Proposal.proposalId == models.Protein.proposalId)
         .group_by(models.BLSample.blSampleId)
     )
 
@@ -184,7 +182,6 @@ def get_samples(
     query = with_authorization(query)
 
     if blSampleId:
-        print(blSampleId)
         query = query.filter(models.BLSample.blSampleId == blSampleId)
 
     if proteinId:

@@ -1,219 +1,21 @@
+from datetime import datetime
 import logging
 import os
 import traceback
-from typing import Optional
+from typing import Optional, Type, TypeVar
 
 from ispyb import models
 import pydantic
 from pyispyb.app.extensions.database.definitions import with_authorization
 from sqlalchemy.orm import joinedload
 
-# from pyispyb.app.extensions.database.definitions import with_authorization_session
 from pyispyb.app.extensions.database.middleware import db
 from pyispyb.app.utils import model_from_json
 from pyispyb.config import settings
 from pyispyb.core.modules.events import get_events
 from pyispyb.core.modules.session import get_session
 from pyispyb.core.schemas import events, ssx as schema
-
-# from sqlalchemy.orm import joinedload
-
-
-# def get_ssx_datacollection_event_chains(
-#     dataCollectionId: int,
-# ) -> list[models.EventChain]:
-#     q = (
-#         db.session.query(models.EventChain)
-#         .filter(models.EventChain.dataCollectionId == dataCollectionId)
-#         .options(
-#             joinedload(
-#                 models.EventChain.events,
-#                 models.Event.EventType,
-#             )
-#         )
-#         .join(
-#             models.DataCollection,
-#             models.EventChain.dataCollectionId
-#             == models.DataCollection.dataCollectionId,
-#         )
-#         .join(
-#             models.BLSession,
-#             models.DataCollection.sessionId == models.BLSession.sessionId,
-#         )
-#     )
-#     res = with_authorization_session(q).all()
-#     return res
-
-
-# def get_ssx_datacollection_sample(
-#     dataCollectionId: int,
-# ) -> Optional[models.BLSample]:
-#     res = (
-#         db.session.query(models.BLSample)
-#         .join(
-#             models.DataCollectionGroup,
-#             models.DataCollectionGroup.blSampleId == models.BLSample.blSampleId,
-#         )
-#         .join(
-#             models.DataCollection,
-#             models.DataCollection.dataCollectionGroupId
-#             == models.DataCollectionGroup.dataCollectionGroupId,
-#         )
-#         .filter(models.DataCollection.dataCollectionId == dataCollectionId)
-#         .options(
-#             joinedload(
-#                 models.BLSample.sample_compositions,
-#                 models.SampleComposition.Component,
-#                 models.Component.ComponentType,
-#             )
-#         )
-#         .options(
-#             joinedload(
-#                 models.BLSample.Crystal,
-#                 models.Crystal.Protein,
-#             )
-#         )
-#         .options(
-#             joinedload(
-#                 models.BLSample.Crystal,
-#                 models.Crystal.crystal_compositions,
-#                 models.CrystalComposition.Component,
-#                 models.Component.ComponentType,
-#             )
-#         )
-#         .first()
-#     )
-#     return res
-
-
-# def get_ssx_datacollectiongroup_sample(
-#     dataCollectionGroupId: int,
-# ) -> Optional[models.BLSample]:
-#     res = (
-#         db.session.query(models.BLSample)
-#         .join(
-#             models.DataCollectionGroup,
-#             models.DataCollectionGroup.blSampleId == models.BLSample.blSampleId,
-#         )
-#         .filter(
-#             models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
-#         )
-#         .options(
-#             joinedload(
-#                 models.BLSample.sample_compositions,
-#                 models.SampleComposition.Component,
-#                 models.Component.ComponentType,
-#             )
-#         )
-#         .options(
-#             joinedload(
-#                 models.BLSample.Crystal,
-#                 models.Crystal.Protein,
-#             )
-#         )
-#         .options(
-#             joinedload(
-#                 models.BLSample.Crystal,
-#                 models.Crystal.crystal_compositions,
-#                 models.CrystalComposition.Component,
-#                 models.Component.ComponentType,
-#             )
-#         )
-#         .first()
-#     )
-#     return res
-
-
-# def _ssx_datacollection_query():
-#     return db.session.query(models.SSXDataCollection).options(
-#         joinedload(
-#             models.SSXDataCollection.DataCollection,
-#             models.DataCollection.DataCollectionGroup,
-#         ),
-#         joinedload(
-#             models.SSXDataCollection.DataCollection,
-#             models.DataCollection.Detector,
-#         ),
-#     )
-
-
-# def get_ssx_datacollection(
-#     dataCollectionId: int,
-# ) -> Optional[models.SSXDataCollection]:
-#     dc = (
-#         _ssx_datacollection_query()
-#         .filter(models.SSXDataCollection.dataCollectionId == dataCollectionId)
-#         .first()
-#     )
-
-#     return dc
-
-
-# def get_ssx_datacollectiongroup(
-#     dataCollectionGroupId: int,
-# ) -> Optional[models.DataCollectionGroup]:
-#     return (
-#         db.session.query(models.DataCollectionGroup)
-#         .filter(
-#             models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
-#         )
-#         .first()
-#     )
-
-
-# def count_datacollections(dataCollectionGroupId: int) -> int:
-#     dc = (
-#         db.session.query(models.DataCollection)
-#         .join(
-#             models.DataCollectionGroup,
-#             models.DataCollectionGroup.dataCollectionGroupId
-#             == models.DataCollection.dataCollectionGroupId,
-#         )
-#         .filter(
-#             models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
-#         )
-#         .count()
-#     )
-
-#     return dc
-
-
-# def get_ssx_datacollections(
-#     sessionId: int, dataCollectionGroupId: int
-# ) -> list[models.SSXDataCollection]:
-#     dc = (
-#         _ssx_datacollection_query()
-#         .join(
-#             models.DataCollection,
-#             models.DataCollection.dataCollectionId
-#             == models.SSXDataCollection.dataCollectionId,
-#         )
-#         .join(
-#             models.DataCollectionGroup,
-#             models.DataCollectionGroup.dataCollectionGroupId
-#             == models.DataCollection.dataCollectionGroupId,
-#         )
-#         .filter(models.DataCollectionGroup.sessionId == sessionId)
-#         .filter(
-#             models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
-#         )
-#         .all()
-#     )
-
-#     return dc
-
-
-# def get_ssx_datacollectiongroups(
-#     sessionId: int,
-# ) -> list[models.DataCollectionGroup]:
-#     dc = (
-#         db.session.query(models.DataCollectionGroup)
-#         .filter(models.DataCollectionGroup.sessionId == sessionId)
-#         .options(joinedload(models.DataCollectionGroup.ExperimentType))
-#         .all()
-#     )
-
-#     return dc
+from fastapi.concurrency import run_in_threadpool
 
 
 def find_or_create_event_type(name: str):
@@ -301,19 +103,6 @@ def find_or_create_component_type(name: str):
         db.session.add(type)
         db.session.flush()
     return type
-
-
-# def find_or_create_experiment_type(name: str):
-#     type = (
-#         db.session.query(models.ExperimentType)
-#         .filter(models.ComponentType.name == name)
-#         .first()
-#     )
-#     if type is None:
-#         type = models.ExperimentType(name=name)
-#         db.session.add(type)
-#         db.session.flush()
-#     return type
 
 
 def create_ssx_datacollectiongroup(
@@ -427,81 +216,6 @@ def create_ssx_datacollectiongroup(
         raise e
 
 
-# def get_ssx_datacollection_processing(
-#     dataCollectionId: int,
-# ) -> Optional[models.SSXDataCollectionProcessing]:
-#     return (
-#         db.session.query(models.SSXDataCollectionProcessing)
-#         .filter(models.SSXDataCollectionProcessing.dataCollectionId == dataCollectionId)
-#         .first()
-#     )
-
-
-# def create_ssx_datacollection_processing(
-#     dataCollectionId: int,
-#     ssx_hits_create: schema.SSXDataCollectionProcessingCreate,
-# ) -> Optional[models.SSXDataCollectionProcessing]:
-#     hits_dict = ssx_hits_create.dict()
-#     # unit_cells_array = hits_dict.pop("unit_cells")
-
-#     try:
-
-#         # AUTO PROC PROGRAM
-
-#         prog = models.AutoProcProgram(
-#             dataCollectionId=dataCollectionId,
-#             processingPrograms="ssxDataCollectionProcessing",
-#             processingStatus="SUCCESS",
-#         )
-#         db.session.add(prog)
-#         db.session.flush()
-
-#         ## SSX DC PROCESSING
-
-#         hits = model_from_json(
-#             models.SSXDataCollectionProcessing,
-#             {
-#                 **hits_dict,
-#                 "dataCollectionId": dataCollectionId,
-#                 "autoProcProgramId": prog.autoProcProgramId,
-#             },
-#         )
-#         db.session.add(hits)
-#         db.session.flush()
-
-#         # UNIT CELLS
-
-#         # if hits_dict["nbIndexed"] >= 1000:
-
-#         #     names = ["a", "b", "c", "alpha", "beta", "gamma"]
-
-#         #     for i in range(0, 6):
-#         #         d = list(map(lambda a: a[i], unit_cells_array))
-
-#         #         hist, bins = np.histogram(d, bins=100)
-
-#         #         graph = models.Graph(name=names[i], dataCollectionId=dataCollectionId)
-#         #         db.session.add(graph)
-#         #         db.session.flush()
-
-#         #         for n in range(0, hist.size):
-#         #             y = hist[n]
-#         #             x = round((bins[n] + bins[n + 1]) / 2, 2)
-#         #             graphData = models.GraphData(
-#         #                 graphId=graph.graphId, x=float(x), y=float(y)
-#         #             )
-#         #             db.session.add(graphData)
-#         #             db.session.flush()
-
-#         db.session.commit()
-#         return get_ssx_datacollection_processing(dataCollectionId)
-
-#     except Exception as e:
-#         logging.error(traceback.format_exc())
-#         db.session.rollback()
-#         raise e
-
-
 def create_ssx_datacollection_processing(
     dataCollectionId: int, data: schema.SSXDataCollectionProcessingCreate
 ) -> int:
@@ -521,22 +235,24 @@ def create_ssx_datacollection_processing(
 
     autoProcProgramId = program.autoProcProgramId
 
-    [filePath, fileName] = os.path.split(data.resultPath)
-    attachment = models.AutoProcProgramAttachment(
-        filePath=filePath,
-        fileName=fileName,
-        fileType="Result",
-        autoProcProgramId=autoProcProgramId,
-    )
-    db.session.add(attachment)
-    db.session.flush()
+    for resultPath in data.results:
+        [filePath, fileName] = os.path.split(resultPath)
+        attachment = models.AutoProcProgramAttachment(
+            filePath=filePath,
+            fileName=fileName,
+            fileType="Result",
+            autoProcProgramId=autoProcProgramId,
+        )
+        db.session.add(attachment)
+        db.session.flush()
+
     db.session.commit()
     return autoProcProgramId
 
 
-def get_ssx_datacollection_processings(
-    dataCollectionIds: list[int], includeCells: bool
-) -> list[schema.SSXDataCollectionProcessing]:
+def get_ssx_datacollection_processing_attachments_results(
+    dataCollectionIds: list[int],
+) -> list[models.AutoProcProgramAttachment]:
     query = (
         db.session.query(models.AutoProcProgramAttachment)
         .filter(models.AutoProcProgramAttachment.fileType == "Result")
@@ -569,37 +285,74 @@ def get_ssx_datacollection_processings(
 
     query = with_authorization(query, joinBLSession=False)
 
-    attachments: list[models.AutoProcProgramAttachment] = query.all()
+    return query.all()
 
-    res: list[schema.SSXDataCollectionProcessing] = []
+
+T = TypeVar("T")
+
+
+def parse_file_as_sync(type_: Type[T], path: str) -> T | None:
+    try:
+        # print(f"read ${path} ${datetime.now()}")
+        with open(path, mode="r") as f:
+            contents = f.read()
+        # print(f"parse ${path} ${datetime.now()}")
+        parsed = pydantic.parse_raw_as(type_, contents)
+        # print(f"parsed ${path} ${datetime.now()}")
+        return parsed
+    except pydantic.error_wrappers.ValidationError:
+        return None
+    except FileNotFoundError:
+        return None
+
+
+async def get_ssx_datacollection_processing_stats(
+    dataCollectionIds: list[int],
+) -> list[schema.SSXDataCollectionProcessingStats]:
+    print(f"start ${dataCollectionIds} ${datetime.now()}")
+    attachments: list[
+        models.AutoProcProgramAttachment
+    ] = get_ssx_datacollection_processing_attachments_results(dataCollectionIds)
+
+    res: list[schema.SSXDataCollectionProcessingStats] = []
 
     for attachment in attachments:
-        path = os.path.join(attachment.filePath, attachment.fileName)
-        if settings.path_map:
-            path = os.path.join(settings.path_map, path)
-        try:
-            print("start read")
-            parsed = pydantic.parse_file_as(
-                schema.SSXDataCollectionProcessingBase, path
+        if attachment.fileName == "ssx_stats.json":
+            path = os.path.join(attachment.filePath, attachment.fileName)
+            if settings.path_map:
+                path = os.path.join(settings.path_map, path)
+            parsed = await run_in_threadpool(
+                parse_file_as_sync, schema.SSXDataCollectionProcessingStatsBase, path
             )
-            print("end read")
-            if includeCells:
+            if parsed is not None:
                 res.append(
                     {
                         "dataCollectionId": attachment.AutoProcProgram.DataCollection.dataCollectionId,
                         **parsed.dict(),
                     }
                 )
-            else:
-                res.append(
-                    {
-                        "dataCollectionId": attachment.AutoProcProgram.DataCollection.dataCollectionId,
-                        **parsed.dict(),
-                        "unit_cells": [],
-                    }
-                )
-        except pydantic.error_wrappers.ValidationError:
-            pass
-        except FileNotFoundError:
-            pass
+    print(f"end ${dataCollectionIds} ${datetime.now()}")
+
     return res
+
+
+def get_ssx_datacollection_processing_cells(
+    dataCollectionId: int,
+) -> str:
+
+    attachments: list[
+        models.AutoProcProgramAttachment
+    ] = get_ssx_datacollection_processing_attachments_results([dataCollectionId])
+    print(f"start cell {dataCollectionId} {datetime.now()}")
+
+    for attachment in attachments:
+        if attachment.fileName == "ssx_cells.json":
+            path = os.path.join(attachment.filePath, attachment.fileName)
+            if settings.path_map:
+                path = os.path.join(settings.path_map, path)
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    res = f"{f.read()}"
+                    print(f"end cell {dataCollectionId} {datetime.now()}")
+                    return res
+    return None

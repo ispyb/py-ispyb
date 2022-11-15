@@ -132,6 +132,13 @@ class DataCollectionBase(BaseModel):
     xBeamPix: Optional[float] = Field(title="Beam size X", unit="pixels")
     yBeamPix: Optional[float] = Field(title="Beam size Y", unit="pixels")
 
+    undulatorGap1: Optional[float]
+    undulatorGap2: Optional[float]
+    undulatorGap3: Optional[float]
+    beamShape: Optional[str]
+    polarisation: Optional[float]
+    imagePrefix: Optional[str]
+
     # EM
     magnification: Optional[int] = Field(title="Magnification", unit="x")
     binning: Optional[int] = Field(title="Binning")
@@ -160,6 +167,7 @@ class DataCollection(DataCollectionBase):
     DataCollectionGroup: DataCollectionGroup
     GridInfo: Optional[list[GridInfo]]
     SSXDataCollection: Optional[sqlalchemy_to_pydantic(models.SSXDataCollection)]
+    Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
 
     metadata: DataCollectionMetaData = Field(alias="_metadata")
 

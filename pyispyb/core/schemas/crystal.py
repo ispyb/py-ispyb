@@ -40,6 +40,10 @@ class CrystalBase(BaseModel):
     cell_beta: Optional[float] = Field(title="Cell Beta", nullable=True)
     cell_gamma: Optional[float] = Field(title="Cell Gamma", nullable=True)
     Protein: Protein
+    size_X: Optional[float]
+    size_Y: Optional[float]
+    size_Z: Optional[float]
+    abundance: Optional[float]
 
 
 class Crystal(CrystalBase):

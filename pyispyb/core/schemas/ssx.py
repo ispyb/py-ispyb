@@ -2,91 +2,22 @@ from datetime import datetime
 from typing import Literal, Optional
 from .eventchain import EventChainCreate
 
-# from pydantic_sqlalchemy import sqlalchemy_to_pydantic
-
-# from ispyb import models
-
 from pydantic import BaseModel
 
 
-# class DataCollectionResponse(sqlalchemy_to_pydantic(models.DataCollection)):
-#     DataCollectionGroup: sqlalchemy_to_pydantic(models.DataCollectionGroup)
-#     Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
-
-#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
-#         kwargs.pop("exclude_none")
-#         return super().dict(*args, exclude_none=True, **kwargs)
-
-
-# class ComponentResponse(sqlalchemy_to_pydantic(models.Component)):
-#     ComponentType: sqlalchemy_to_pydantic(models.ComponentType)
-
-#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
-#         kwargs.pop("exclude_none")
-#         return super().dict(*args, exclude_none=True, **kwargs)
-
-
-# class CrystalCompositionResponse(sqlalchemy_to_pydantic(models.CrystalComposition)):
-#     Component: ComponentResponse
-
-#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
-#         kwargs.pop("exclude_none")
-#         return super().dict(*args, exclude_none=True, **kwargs)
-
-
-# class CrystalResponse(sqlalchemy_to_pydantic(models.Crystal)):
-#     Protein: sqlalchemy_to_pydantic(models.Protein)
-#     crystal_compositions: list[CrystalCompositionResponse]
-
-#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
-#         kwargs.pop("exclude_none")
-#         return super().dict(*args, exclude_none=True, **kwargs)
-
-
-# class SampleCompositionResponse(sqlalchemy_to_pydantic(models.SampleComposition)):
-#     Component: ComponentResponse
-
-#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
-#         kwargs.pop("exclude_none")
-#         return super().dict(*args, exclude_none=True, **kwargs)
-
-
-# class SSXSampleResponse(sqlalchemy_to_pydantic(models.BLSample)):
-#     Crystal: CrystalResponse
-#     sample_compositions: list[SampleCompositionResponse]
-
-#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
-#         kwargs.pop("exclude_none")
-#         return super().dict(*args, exclude_none=True, **kwargs)
-
-
-# class SSXDataCollectionResponse(sqlalchemy_to_pydantic(models.SSXDataCollection)):
-#     DataCollection: DataCollectionResponse
-
-#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
-#         kwargs.pop("exclude_none")
-#         return super().dict(*args, exclude_none=True, **kwargs)
-
-
-# class DataCollectionGroupResponse(sqlalchemy_to_pydantic(models.DataCollectionGroup)):
-#     nbDataCollection: Optional[int]
-#     ExperimentType: sqlalchemy_to_pydantic(models.ExperimentType)
-
-#     def dict(self, *args, **kwargs) -> Dict[str, Any]:
-#         kwargs.pop("exclude_none")
-#         return super().dict(*args, exclude_none=True, **kwargs)
-
-
-class SSXDataCollectionProcessingBase(BaseModel):
+class SSXDataCollectionProcessingStatsBase(BaseModel):
     nbHits: int
     nbIndexed: int
     laticeType: str
     estimatedResolution: float
-    unit_cells: list[list[float]]
 
 
-class SSXDataCollectionProcessing(SSXDataCollectionProcessingBase):
+class SSXDataCollectionProcessingStats(SSXDataCollectionProcessingStatsBase):
     dataCollectionId: int
+
+
+class SSXDataCollectionProcessingCells(BaseModel):
+    unit_cells: list[list[float]]
 
 
 class SSXDataCollectionProcessingCreate(BaseModel):
@@ -96,7 +27,7 @@ class SSXDataCollectionProcessingCreate(BaseModel):
     processingStartTime: Optional[datetime]
     processingEndTime: Optional[datetime]
     processingEnvironment: Optional[str]
-    resultPath: str
+    results: list[str]
 
 
 class SSXProteinCreate(BaseModel):
@@ -155,12 +86,20 @@ class SSXDataCollectionCreate(BaseModel):
     detectorId: Optional[int]
     startTime: datetime
     endTime: Optional[datetime]
+    beamShape: Optional[str]
+    polarisation: Optional[float]
+    undulatorGap1: Optional[float]
 
     # Table SSXDataCollection
     repetitionRate: Optional[float]
     energyBandwidth: Optional[float]
     monoStripe: Optional[str]
     experimentName: Optional[str]
+    jetSize: Optional[float]
+    jetSpeed: Optional[float]
+    laserEnergy: Optional[float]
+    chipModel: Optional[str]
+    chipPattern: Optional[str]
 
     event_chains: list[EventChainCreate]
 

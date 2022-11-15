@@ -57,10 +57,18 @@ class SampleProtein(BaseModel):
         orm_mode = True
 
 
+class ComponentType(BaseModel):
+    name: str
+
+    class Config:
+        orm_mode = True
+
+
 class Component(BaseModel):
     name: str
     composition: Optional[str]
     concentration: Optional[float]
+    ComponentType: ComponentType
 
     class Config:
         orm_mode = True

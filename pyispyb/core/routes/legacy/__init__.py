@@ -17,7 +17,7 @@ def init_app(app: FastAPI, prefix: str = None, **kwargs):
     for module_name in os.listdir(os.path.dirname(__file__)):
         if not module_name.startswith("__") and module_name.endswith(".py"):
             try:
-                logger.info(f"importing {module_name}")
+                logger.debug(f"importing {module_name}")
                 module = import_module(".%s" % module_name[:-3], package=__name__)
                 if hasattr(module, "router"):
                     app.include_router(module.router, prefix=prefix)
