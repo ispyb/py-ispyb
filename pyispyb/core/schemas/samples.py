@@ -34,15 +34,18 @@ class SampleMetaData(BaseModel):
     proposal: Optional[str] = Field(description="The associated proposal")
 
 
-class SampleBase(BaseModel):
+class SampleCrystalCreate(BaseModel):
+    proteinId: int
+
+
+class SampleCreate(BaseModel):
     name: str
     comments: Optional[str] = Field(title="Comments", nullable=True)
     location: Optional[int] = Field(
         title="Location", description="Location in container"
     )
     containerId: Optional[int]
-
-    metadata: Optional[SampleMetaData] = Field(alias="_metadata")
+    Crystal: SampleCrystalCreate
 
 
 class SampleProtein(BaseModel):
@@ -72,11 +75,13 @@ class SampleContainer(BaseModel):
         orm_mode = True
 
 
-class Sample(SampleBase):
+class Sample(SampleCreate):
     blSampleId: int
 
     Crystal: SampleCrystal = Field(title="Crystal")
     Container: Optional[SampleContainer] = Field(title="Container")
+
+    metadata: Optional[SampleMetaData] = Field(alias="_metadata")
 
     class Config:
         orm_mode = True

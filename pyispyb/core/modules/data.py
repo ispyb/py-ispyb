@@ -13,6 +13,7 @@ import numpy as np
 
 from ...config import settings
 from ...core.modules.events import get_events
+from ...core.modules.processings import get_processing_attachments
 from ..schemas import data as schema
 
 logger = logging.getLogger(__name__)
@@ -284,3 +285,42 @@ def _compute_histogram(data: np.ndarray) -> Tuple[np.ndarray, list]:
 def get_file_ext(file_name: str):
     _, ext = os.path.splitext(file_name)
     return ext[1:]  # Remove leading dot
+
+
+def get_h5_file(
+    dataCollectionId: Optional[int] = None,
+    autoProcProgramAttachmentId: Optional[int] = None,
+    robotActionId: Optional[int] = None,
+):
+    """Find the relevant hdf5 file from the parameters"""
+
+    # Direct datacollection hdf5
+    if dataCollectionId is not None:
+        datacollections = get_events(dataCollectionId=dataCollectionId, skip=0, limit=1)
+        dc = datacollections.first["Item"]
+        return os.path.join(dc.imageDirectory, dc.fileTemplate)
+
+    #  Directly from autoprocprogramattachmentid
+    elif autoProcProgramAttachmentId is not None:
+        attachments = get_processing_attachments(
+            autoProcProgramAttachmentId=autoProcProgramAttachmentId, skip=0, limit=1
+        )
+        attachment = attachments.first
+        ext = get_file_ext(attachment.fileName).lower()
+        if attachment.fileType == "Result" and ext in ["h5", "hdf5"]:
+            return attachment.fileFullPath
+
+    # From a sample action
+    elif robotActionId is not None:
+        sampleactions = get_events(robotActionId, skip=0, limit=1)
+        sampleaction = sampleactions.first
+        return sampleaction.resultFilePath
+
+    return None
+
+
+def get_h5_path_mapped(**kwargs) -> str:
+    file_path = get_h5_file(**kwargs)
+    if file_path:
+        if settings.path_map:
+            return settings.path_map + file_path
