@@ -20,6 +20,21 @@ class SSXDataCollectionProcessingCells(BaseModel):
     unit_cells: list[list[float]]
 
 
+class Histogram(BaseModel):
+    x: list[float]
+    y: list[int]
+    median: float
+
+
+class SSXDataCollectionProcessingCellsHistogram(BaseModel):
+    a: Histogram
+    b: Histogram
+    c: Histogram
+    alpha: Histogram
+    beta: Histogram
+    gamma: Histogram
+
+
 class SSXDataCollectionProcessingCreate(BaseModel):
     processingCommandLine: Optional[str]
     processingPrograms: Optional[str]

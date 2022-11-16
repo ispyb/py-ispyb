@@ -1,4 +1,4 @@
-from datetime import datetime
+import json
 import logging
 import os
 import traceback
@@ -16,6 +16,7 @@ from pyispyb.core.modules.events import get_events
 from pyispyb.core.modules.session import get_session
 from pyispyb.core.schemas import events, ssx as schema
 from fastapi.concurrency import run_in_threadpool
+import numpy as np
 
 
 def find_or_create_event_type(name: str):
@@ -291,14 +292,14 @@ def get_ssx_datacollection_processing_attachments_results(
 T = TypeVar("T")
 
 
-def parse_file_as_sync(type_: Type[T], path: str) -> T | None:
+def parse_file_as_sync(type_: Type[T], path: str, validate: bool = True) -> T | None:
     try:
-        # print(f"read ${path} ${datetime.now()}")
         with open(path, mode="r") as f:
             contents = f.read()
-        # print(f"parse ${path} ${datetime.now()}")
-        parsed = pydantic.parse_raw_as(type_, contents)
-        # print(f"parsed ${path} ${datetime.now()}")
+        if validate:
+            parsed = pydantic.parse_raw_as(type_, contents)
+        else:
+            parsed = json.loads(contents)
         return parsed
     except pydantic.error_wrappers.ValidationError:
         return None
@@ -309,7 +310,6 @@ def parse_file_as_sync(type_: Type[T], path: str) -> T | None:
 async def get_ssx_datacollection_processing_stats(
     dataCollectionIds: list[int],
 ) -> list[schema.SSXDataCollectionProcessingStats]:
-    print(f"start ${dataCollectionIds} ${datetime.now()}")
     attachments: list[
         models.AutoProcProgramAttachment
     ] = get_ssx_datacollection_processing_attachments_results(dataCollectionIds)
@@ -331,28 +331,73 @@ async def get_ssx_datacollection_processing_stats(
                         **parsed.dict(),
                     }
                 )
-    print(f"end ${dataCollectionIds} ${datetime.now()}")
-
     return res
 
 
-def get_ssx_datacollection_processing_cells(
+async def get_ssx_datacollection_processing_cells(
     dataCollectionId: int,
-) -> str:
+) -> schema.SSXDataCollectionProcessingCells | None:
 
     attachments: list[
         models.AutoProcProgramAttachment
     ] = get_ssx_datacollection_processing_attachments_results([dataCollectionId])
-    print(f"start cell {dataCollectionId} {datetime.now()}")
 
     for attachment in attachments:
         if attachment.fileName == "ssx_cells.json":
             path = os.path.join(attachment.filePath, attachment.fileName)
             if settings.path_map:
                 path = os.path.join(settings.path_map, path)
-            if os.path.exists(path):
-                with open(path, "r") as f:
-                    res = f"{f.read()}"
-                    print(f"end cell {dataCollectionId} {datetime.now()}")
-                    return res
+            parsed = await run_in_threadpool(
+                parse_file_as_sync,
+                schema.SSXDataCollectionProcessingCells,
+                path,
+                validate=False,
+            )
+            if parsed is not None:
+                return parsed
     return None
+
+
+async def get_ssx_datacollection_processing_cells_histogram(
+    dataCollectionIds: list[int],
+) -> schema.SSXDataCollectionProcessingCellsHistogram:
+    cells = []
+    for dataCollectionId in dataCollectionIds:
+        cells_json = await get_ssx_datacollection_processing_cells(dataCollectionId)
+        if cells_json is not None:
+            cells = cells + cells_json["unit_cells"]
+    if len(cells) == 0:
+        return None
+    bins = to_bins(cells)
+    return {
+        "a": bins[0],
+        "b": bins[1],
+        "c": bins[2],
+        "alpha": bins[3],
+        "beta": bins[4],
+        "gamma": bins[5],
+    }
+
+
+def to_bins(data: list[list[float]], nb_bins: int = 50):
+    unzipped = list(zip(*data))
+    res = []
+    for cell in unzipped:
+        hist, bin_edges = np.histogram(filter_outliers(cell), nb_bins)
+        median = np.median(cell)
+        res = res + [{"y": list(hist), "x": list(bin_edges), "median": median}]
+    return res
+
+
+def filter_outliers(data: list[float]):
+    # FROM https://gist.github.com/vishalkuo/f4aec300cf6252ed28d3
+    a = np.array(data)
+    upper_quartile = np.percentile(a, 75)
+    lower_quartile = np.percentile(a, 25)
+    IQR = (upper_quartile - lower_quartile) * 1.5
+    quartileSet = (lower_quartile - IQR, upper_quartile + IQR)
+    resultList = []
+    for y in a.tolist():
+        if y >= quartileSet[0] and y <= quartileSet[1]:
+            resultList.append(y)
+    return resultList

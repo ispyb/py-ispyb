@@ -1,4 +1,3 @@
-import json
 from fastapi import HTTPException
 from pydantic import constr
 from pyispyb.app.base import AuthenticatedAPIRouter
@@ -26,12 +25,28 @@ async def get_ssx_datacollection_processing_stats(
 
 @router.get(
     "/datacollection/processing/cells",
+    response_model=schema.SSXDataCollectionProcessingCells,
 )
 async def get_ssx_datacollection_processing_cells(
     dataCollectionId: int,
 ):
-    result = crud.get_ssx_datacollection_processing_cells(dataCollectionId)
+    result = await crud.get_ssx_datacollection_processing_cells(dataCollectionId)
     if result is not None:
-        res = json.loads(result)
-        return res
+        return result
+    raise HTTPException(status_code=404, detail="Item not found")
+
+
+@router.get(
+    "/datacollection/processing/cells/histogram",
+    response_model=schema.SSXDataCollectionProcessingCellsHistogram,
+)
+async def get_ssx_datacollection_processing_cells_histogram(
+    dataCollectionIds: IdList,
+):
+    result = await crud.get_ssx_datacollection_processing_cells_histogram(
+        dataCollectionIds.split(",")
+    )
+    if result is not None:
+        return result
+
     raise HTTPException(status_code=404, detail="Item not found")
