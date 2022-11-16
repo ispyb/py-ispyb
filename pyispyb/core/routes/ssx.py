@@ -46,7 +46,4 @@ async def get_ssx_datacollection_processing_cells_histogram(
     result = await crud.get_ssx_datacollection_processing_cells_histogram(
         dataCollectionIds.split(",")
     )
-    if result is not None:
-        return result
-
-    raise HTTPException(status_code=404, detail="Item not found")
+    return result

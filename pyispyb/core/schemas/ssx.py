@@ -27,12 +27,12 @@ class Histogram(BaseModel):
 
 
 class SSXDataCollectionProcessingCellsHistogram(BaseModel):
-    a: Histogram
-    b: Histogram
-    c: Histogram
-    alpha: Histogram
-    beta: Histogram
-    gamma: Histogram
+    a: Histogram | None
+    b: Histogram | None
+    c: Histogram | None
+    alpha: Histogram | None
+    beta: Histogram | None
+    gamma: Histogram | None
 
 
 class SSXDataCollectionProcessingCreate(BaseModel):

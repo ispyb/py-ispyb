@@ -367,7 +367,14 @@ async def get_ssx_datacollection_processing_cells_histogram(
         if cells_json is not None:
             cells = cells + cells_json["unit_cells"]
     if len(cells) == 0:
-        return None
+        return {
+            "a": None,
+            "b": None,
+            "c": None,
+            "alpha": None,
+            "beta": None,
+            "gamma": None,
+        }
     bins = to_bins(cells)
     return {
         "a": bins[0],

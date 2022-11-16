@@ -33,13 +33,19 @@ class LdapAuthentication(AbstractAuthentication):
                 f"(uid={login})",
                 ["*"],
             )[0][1]
+
+            def get_value(v: str):
+                if v in res:
+                    return res[v][0]
+                return None
+
             return models.Person(
                 login=login,
-                emailAddress=res["mail"][0],
-                siteId=res["uidNumber"][0],
-                familyName=res["sn"][0],
-                givenName=res["givenName"][0],
-                phoneNumber=res["telephoneNumber"][0],
+                emailAddress=get_value("mail"),
+                siteId=get_value("uidNumber"),
+                familyName=get_value("sn"),
+                givenName=get_value("givenName"),
+                phoneNumber=get_value("telephoneNumber"),
             )
         except ldap.INVALID_CREDENTIALS:
             logger.exception(f"LDAP login: unable to authenticate user {login}")
