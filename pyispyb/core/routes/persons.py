@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from fastapi import Depends
 from ispyb import models
@@ -21,9 +22,14 @@ router = AuthenticatedAPIRouter(prefix="/persons", tags=["People"])
 def get_persons(
     proposal: str = Depends(filters.proposal),
     sessionId: int = Depends(filters.sessionId),
+    showAll: Optional[bool] = False,
     page: dict[str, int] = Depends(pagination),
 ) -> Paged[models.Person]:
     """Get a list of people"""
     return crud.get_persons(
-        proposal=proposal, sessionId=sessionId, withAuthorization=True, **page
+        proposal=proposal,
+        sessionId=sessionId,
+        showAll=showAll,
+        withAuthorization=True,
+        **page
     )

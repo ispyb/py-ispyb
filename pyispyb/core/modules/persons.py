@@ -1,8 +1,10 @@
 from typing import Optional
 
-from sqlalchemy import and_, func
+from sqlalchemy import and_, or_, func
 from sqlalchemy.orm import contains_eager, aliased
 from ispyb import models
+
+from pyispyb.dependencies import has_permission
 
 from ...app.extensions.database.utils import Paged, page, with_metadata
 from ...app.extensions.database.middleware import db
@@ -23,15 +25,14 @@ def get_persons(
     emailAddress: Optional[str] = None,
     withLaboratory: Optional[bool] = False,
     withAuthorization: bool = False,
+    showAll: bool = False,
 ) -> Paged[models.Person]:
     metadata = {}
 
     query = (
         db.session.query(models.Person)
-        .outerjoin(models.LabContact)
-        .outerjoin(
-            models.Proposal, models.LabContact.proposalId == models.Proposal.proposalId
-        )
+        .select_from(models.Person)
+        .filter(models.Person.login != None)  # noqa
         .group_by(models.Person.personId)
     )
 
@@ -60,8 +61,10 @@ def get_persons(
         )
         query = query.populate_existing()
 
-    if sessionId:
+    if proposal:
+        query = query.filter(models.Proposal.propsal == proposal)
 
+    if sessionId:
         metadata["sessions"] = func.count(models.BLSession.sessionId)
         metadata["lastSession"] = func.max(models.BLSession.startDate)
         metadata["remote"] = models.SessionHasPerson.remote
@@ -72,6 +75,7 @@ def get_persons(
         query = (
             query.join(models.SessionHasPerson)
             .join(models.BLSession)
+            .join(models.Proposal)
             .outerjoin(shp2, shp2.personId == models.Person.personId)
             .outerjoin(
                 bls2,
@@ -88,12 +92,25 @@ def get_persons(
             )
         )
 
-    # if withAuthorization:
-    #     query = with_authorization(query)
+    if withAuthorization:
+        if not (has_permission("manage_persons") and showAll):
+            if sessionId:
+                query = with_authorization(query, joinBLSession=False)
+            else:
+                query = query.outerjoin(models.ProposalHasPerson)
+                query = query.outerjoin(models.LabContact)
+                query = query.outerjoin(
+                    models.Proposal,
+                    or_(
+                        models.LabContact.proposalId == models.Proposal.proposalId,
+                        models.ProposalHasPerson.proposalId
+                        == models.Proposal.proposalId,
+                    ),
+                )
+                query = with_authorization(query)
 
     total = query.count()
     query = page(query, skip=skip, limit=limit)
-    # print(query)
     results = with_metadata(query.all(), list(metadata.keys()))
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
