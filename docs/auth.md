@@ -85,7 +85,7 @@ Configuration
 AUTH:
   ENABLED: true
   AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
-  AUTH_CLASS: "KeycloakDBGroupsAuthentication"
+  AUTH_CLASS: "KeycloakAuthentication"
   CONFIG:
     KEYCLOAK_SERVER_URL: "your_server"
     KEYCLOAK_CLIENT_ID: "your_client"
