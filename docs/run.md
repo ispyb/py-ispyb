@@ -56,18 +56,19 @@ For Fedora you might also need to create a text file `/usr/lib/libldap_r.so`, ad
 
 ### Setup Python
 
-Virtual environments allows to install and manage different versions of python easily.
+Virtual environments allows to install and manage different versions of python and dependencies from the system easily.
 
 #### Conda virtual environment
 
-Conda is an open source package management system and environment management system. [Intallation instructions](https://docs.anaconda.com/anaconda/install/linux/)
+Conda is an open source package management system and environment management system. [Installation instructions](https://docs.conda.io/en/latest/miniconda.html)
 
 Then set up the environment:
 
 ```bash
 conda create -n py-ispyb python=3.10
 conda activate py-ispyb
-pip install -r requirements # or pip install -r requirements-dev.txt
+pip install -r requirements.txt
+pip install -r requirements-dev.txt # For development
 ```
 
 #### pyenv
@@ -79,7 +80,8 @@ Then set up the environment
 ```bash
 pyenv install 3.10
 pyenv global 3.10
-pip install -r requirements # or pip install -r requirements-dev.txt
+pip install -r requirements.txt
+pip install -r requirements-dev.txt  # For development
 ```
 
 ---
