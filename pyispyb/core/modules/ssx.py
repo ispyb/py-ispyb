@@ -118,15 +118,21 @@ def create_ssx_datacollectiongroup(
 
     try:
 
+        sessionId = datacollectiongroup_dict["sessionId"]
+        session = get_session(sessionId)
+
+        if session is None:
+            raise ValueError(
+                f"Tried to create datacollectiongroup for unknown session {sessionId}"
+            )
+
         ## SAMPLE
 
         protein = model_from_json(
             models.Protein,
             {
                 **protein_dict,
-                "proposalId": get_session(
-                    datacollectiongroup_dict["sessionId"]
-                ).proposalId,
+                "proposalId": session.proposalId,
             },
         )
         db.session.add(protein)
