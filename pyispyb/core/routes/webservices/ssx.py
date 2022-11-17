@@ -3,7 +3,6 @@ from fastapi import Depends
 from ....dependencies import permission
 from ....app.base import AuthenticatedAPIRouter
 from pyispyb.core.schemas import ssx as schema
-from pyispyb.core.schemas import events as schema_events
 
 import pyispyb.core.modules.ssx as crud
 from ispyb import models
@@ -20,7 +19,7 @@ logger = logging.getLogger("ispyb")
 
 @router.post(
     "/datacollection",
-    response_model=schema_events.Event,
+    response_model=int,
 )
 def create_datacollection(
     ssx_datacollection_create: schema.SSXDataCollectionCreate,
