@@ -75,6 +75,12 @@ pip install -r requirements-dev.txt # For development
 
 [pyenv](https://github.com/pyenv/pyenv) lets you easily switch between multiple versions of Python. [Installation instrucctions](https://github.com/pyenv/pyenv#installation)
 
+If you are using Ubuntu/Debian, you [need](https://github.com/pyenv/pyenv/wiki/common-build-problems) the following packages:
+
+```
+sudo apt install zlib1g zlib1g-dev libssl-dev libbz2-dev libsqlite3-dev
+```
+
 Then set up the environment
 
 ```bash
