@@ -71,8 +71,8 @@ def get_map_histogram(
 @router.get("/pixel/{xrfFluorescenceMappingId}", response_model=schema.MapPixelValue)
 def get_map_pixel_value(
     xrfFluorescenceMappingId: int,
-    x: int = Query(title="Y position"),
-    y: int = Query(title="Y position"),
+    x: int = Query(None, title="Y position"),
+    y: int = Query(None, title="Y position"),
 ):
     """Get a map histogram"""
     maps = crud.get_maps(
