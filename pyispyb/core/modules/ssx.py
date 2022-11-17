@@ -279,8 +279,13 @@ def get_ssx_datacollection_processing_attachments_results(
         )
         .filter(models.DataCollection.dataCollectionId.in_(dataCollectionIds))
         .join(
+            models.DataCollectionGroup,
+            models.DataCollection.dataCollectionGroupId
+            == models.DataCollectionGroup.dataCollectionGroupId,
+        )
+        .join(
             models.BLSession,
-            models.DataCollection.sessionId == models.BLSession.sessionId,
+            models.DataCollectionGroup.sessionId == models.BLSession.sessionId,
         )
         .join(
             models.Proposal, models.BLSession.proposalId == models.Proposal.proposalId

@@ -74,7 +74,6 @@ class SSXSampleCreate(BaseModel):
 
 
 class SSXDataCollectionCreate(BaseModel):
-    sessionId: int
     dataCollectionGroupId: int
 
     # Table DataCollection
