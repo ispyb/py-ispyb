@@ -108,7 +108,7 @@ AUTH:
       CONFIG:
         LDAP_URI: "ldap://your_ldap"
         LDAP_BASE_INTERNAL: "ou=People,dc=test,dc=fr"
-        LDAP_BASE_EXTERNAL: "ou=Pxwebgroups,dc=test,dc=fr"
+        LDAP_BASE_GROUPS: "ou=Pxwebgroups,dc=test,dc=fr"
 ```
 
 ## Implementing new plugins
