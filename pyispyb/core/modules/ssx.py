@@ -12,7 +12,6 @@ from sqlalchemy.orm import joinedload
 from pyispyb.app.extensions.database.middleware import db
 from pyispyb.app.utils import model_from_json
 from pyispyb.config import settings
-from pyispyb.core.modules.events import get_events
 from pyispyb.core.modules.session import get_session
 from pyispyb.core.schemas import events, ssx as schema
 from fastapi.concurrency import run_in_threadpool
@@ -83,9 +82,7 @@ def create_ssx_datacollection(
             db.session.flush()
 
         db.session.commit()
-        return get_events(
-            skip=0, limit=1, dataCollectionId=data_collection.dataCollectionId
-        ).first
+        return data_collection.dataCollectionId
 
     except Exception as e:
         logging.error(traceback.format_exc())
