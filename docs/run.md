@@ -4,7 +4,7 @@
 
 ### Get project code
 
-Clone [py-ISPyB repository](https://github.com/ispyb/py-ispyb)
+Clone the [repository](https://github.com/ispyb/py-ispyb)
 
 ```bash
 # SSH (recommended)
@@ -18,42 +18,13 @@ Recommended IDE is [Visual Studio Code](https://code.visualstudio.com/), which w
 
 ---
 
-### Setup Python
+### Installation
 
-You need to have `python >= 3.10`
+`python >= 3.10` and `pip` are required
 
-To achieve this easily, you can use a conda virtual environment:
-See [installation instuctions](https://docs.anaconda.com/anaconda/install/linux/).
-Then set up the environment:
+If you need to manage multiple versions of python in your system go to [Setup Python](#setup-python)
 
-```bash
-conda create -n py-ispyb python=3.10
-conda activate py-ispyb
-```
-
----
-
-### Install requirements
-
-Install required packages
-
-* For Debian and derivatives:
-
-```bash
-sudo apt-get update && sudo apt-get install -y libldap2-dev libsasl2-dev \
-libmariadb-dev build-essential
-```
-
-* For Fedora and derivatives (use `yum` if you don't have `dnf`):
-
-```bash
-sudo dnf update && sudo dnf install -y openldap-devel mariadb-connector-c-devel \
-python3-devel
-```
-For Fedora you might also need to create a text file `/usr/lib/libldap_r.so`, adding only the line `INPUT ( libldap.so )`
-
-
-Install python dependencies:
+Install dependencies:
 
 ```bash
 # For development and production
@@ -61,6 +32,54 @@ pip install -r requirements.txt
 
 # For development only
 pip install -r requirements-dev.txt
+```
+
+#### System requirements
+
+For development purposes some packages need to be present on your system. These packages are needed for SALS (Simple Authentication and Security Layer) support, LDAP and MariaDB database development files
+
+- For Debian and derivatives:
+
+```bash
+sudo apt-get update && sudo apt-get install -y libldap2-dev libsasl2-dev \
+libmariadb-dev build-essential
+```
+
+- For Fedora and derivatives (use `yum` if you don't have `dnf`):
+
+```bash
+sudo dnf update && sudo dnf install -y openldap-devel mariadb-connector-c-devel \
+python3-devel
+```
+
+For Fedora you might also need to create a text file `/usr/lib/libldap_r.so`, adding only the line `INPUT ( libldap.so )`
+
+### Setup Python
+
+Virtual environments allows to install and manage different versions of python easily.
+
+#### Conda virtual environment
+
+Conda is an open source package management system and environment management system. [Intallation instructions](https://docs.anaconda.com/anaconda/install/linux/)
+
+Then set up the environment:
+
+```bash
+conda create -n py-ispyb python=3.10
+conda activate py-ispyb
+pip install -r requirements # or pip install -r requirements-dev.txt
+```
+
+#### pyenv
+
+[pyenv](https://github.com/pyenv/pyenv) lets you easily switch between multiple versions of Python. [Installation instrucctions](https://github.com/pyenv/pyenv#installation)
+
+Then set up the environment
+
+```bash
+pyenv install 3.10
+pyenv global 3.10
+pip install -r requirements # or pip install -r requirements-dev.txt
 ```
 
 ---
