@@ -747,7 +747,7 @@
       CONFIG:
         LDAP_URI: &quot;ldap://your_ldap&quot;
         LDAP_BASE_INTERNAL: &quot;ou=People,dc=test,dc=fr&quot;
-        LDAP_BASE_EXTERNAL: &quot;ou=Pxwebgroups,dc=test,dc=fr&quot;
+        LDAP_BASE_GROUPS: &quot;ou=Pxwebgroups,dc=test,dc=fr&quot;
 </code></pre>
 <h2 id="implementing-new-plugins">Implementing new plugins<a class="headerlink" href="#implementing-new-plugins" title="Permanent link">#</a></h2>
 <p>New plugins should inherit from <code>AbstractAuthentication</code> and override either <code>authenticate_by_login</code> or <code>authenticate_by_token</code> dependning on whether they accept a login / password combination or an authorisation token. Both functions return <code>Person</code> on success. This can be prepopulated with <code>familyName</code>, <code>givenName</code>, and <code>emailAddress</code>, which can be used to auto-create a new <code>Person</code> entry if the option is enabled (disabled by default)</p>
