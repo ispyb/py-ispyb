@@ -19,8 +19,13 @@ def get_ssx_datacollection_eventchains(
             == models.DataCollection.dataCollectionId,
         )
         .join(
+            models.DataCollectionGroup,
+            models.DataCollection.dataCollectionGroupId
+            == models.DataCollectionGroup.dataCollectionGroupId,
+        )
+        .join(
             models.BLSession,
-            models.DataCollection.sessionId == models.BLSession.sessionId,
+            models.DataCollectionGroup.sessionId == models.BLSession.sessionId,
         )
         .join(
             models.Proposal, models.BLSession.proposalId == models.Proposal.proposalId
