@@ -12,7 +12,7 @@ class ApiTestInput:
     def __init__(
         self,
         *,
-        login: str,
+        login: str = "abcd",
         route: str,
         permissions: list[str] = [],
         method: str = "get",
