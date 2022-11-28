@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 from pyispyb.app.extensions.options.schema import BeamLineGroup
@@ -10,8 +11,9 @@ router = AuthenticatedAPIRouter(prefix="/user", tags=["Current User"])
 
 
 class CurrentUser(BaseModel):
-    givenName: str
-    familyName: str
+    givenName: Optional[str]
+    familyName: Optional[str]
+    login: str
     Permissions: list[str]
     personId: int
     beamLineGroups: list[str]
@@ -39,6 +41,7 @@ def current_user() -> CurrentUser:
         "personId": person.personId,
         "givenName": person.givenName,
         "familyName": person.familyName,
+        "login": person.login,
         "Permissions": g.permissions,
         "beamLineGroups": groups,
         "beamLines": list(set(beamLines)),
