@@ -267,16 +267,49 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-requirements" class="md-nav__link">
+    System requirements
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#setup-python" class="md-nav__link">
     Setup Python
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup Python">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conda-virtual-environment" class="md-nav__link">
+    Conda virtual environment
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#install-requirements" class="md-nav__link">
-    Install requirements
+  <a href="#pyenv" class="md-nav__link">
+    pyenv
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -668,16 +701,49 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-requirements" class="md-nav__link">
+    System requirements
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#setup-python" class="md-nav__link">
     Setup Python
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup Python">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conda-virtual-environment" class="md-nav__link">
+    Conda virtual environment
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#install-requirements" class="md-nav__link">
-    Install requirements
+  <a href="#pyenv" class="md-nav__link">
+    pyenv
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -800,7 +866,7 @@
 <h2 id="how-to-run-py-ispyb">How to run py-ispyb<a class="headerlink" href="#how-to-run-py-ispyb" title="Permanent link">#</a></h2>
 <hr />
 <h3 id="get-project-code">Get project code<a class="headerlink" href="#get-project-code" title="Permanent link">#</a></h3>
-<p>Clone <a href="https://github.com/ispyb/py-ispyb">py-ISPyB repository</a></p>
+<p>Clone the <a href="https://github.com/ispyb/py-ispyb">repository</a></p>
 <pre><code class="language-bash"># SSH (recommended)
 git clone git@github.com:ispyb/py-ispyb.git
 
@@ -809,17 +875,18 @@ git clone https://github.com/ispyb/py-ispyb.git
 </code></pre>
 <p>Recommended IDE is <a href="https://code.visualstudio.com/">Visual Studio Code</a>, which will automatically get configured when opening the project.</p>
 <hr />
-<h3 id="setup-python">Setup Python<a class="headerlink" href="#setup-python" title="Permanent link">#</a></h3>
-<p>You need to have <code>python &gt;= 3.10</code></p>
-<p>To achieve this easily, you can use a conda virtual environment:
-See <a href="https://docs.anaconda.com/anaconda/install/linux/">installation instuctions</a>.
-Then set up the environment:</p>
-<pre><code class="language-bash">conda create -n py-ispyb python=3.10
-conda activate py-ispyb
+<h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h3>
+<p><code>python &gt;= 3.10</code> and <code>pip</code> are required</p>
+<p>If you need to manage multiple versions of python in your system go to <a href="#setup-python">Setup Python</a></p>
+<p>Install dependencies:</p>
+<pre><code class="language-bash"># For development and production
+pip install -r requirements.txt
+
+# For development only
+pip install -r requirements-dev.txt
 </code></pre>
-<hr />
-<h3 id="install-requirements">Install requirements<a class="headerlink" href="#install-requirements" title="Permanent link">#</a></h3>
-<p>Install required packages</p>
+<h4 id="system-requirements">System requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h4>
+<p>For development purposes some packages need to be present on your system. These packages are needed for SALS (Simple Authentication and Security Layer) support, LDAP and MariaDB database development files</p>
 <ul>
 <li>For Debian and derivatives:</li>
 </ul>
@@ -833,12 +900,26 @@ libmariadb-dev build-essential
 python3-devel
 </code></pre>
 <p>For Fedora you might also need to create a text file <code>/usr/lib/libldap_r.so</code>, adding only the line <code>INPUT ( libldap.so )</code></p>
-<p>Install python dependencies:</p>
-<pre><code class="language-bash"># For development and production
+<h3 id="setup-python">Setup Python<a class="headerlink" href="#setup-python" title="Permanent link">#</a></h3>
+<p>Virtual environments allows to install and manage different versions of python and dependencies from the system easily.</p>
+<h4 id="conda-virtual-environment">Conda virtual environment<a class="headerlink" href="#conda-virtual-environment" title="Permanent link">#</a></h4>
+<p>Conda is an open source package management system and environment management system. <a href="https://docs.conda.io/en/latest/miniconda.html">Installation instructions</a></p>
+<p>Then set up the environment:</p>
+<pre><code class="language-bash">conda create -n py-ispyb python=3.10
+conda activate py-ispyb
 pip install -r requirements.txt
-
-# For development only
-pip install -r requirements-dev.txt
+pip install -r requirements-dev.txt # For development
+</code></pre>
+<h4 id="pyenv">pyenv<a class="headerlink" href="#pyenv" title="Permanent link">#</a></h4>
+<p><a href="https://github.com/pyenv/pyenv">pyenv</a> lets you easily switch between multiple versions of Python. <a href="https://github.com/pyenv/pyenv#installation">Installation instrucctions</a></p>
+<p>If you are using Ubuntu/Debian, you <a href="https://github.com/pyenv/pyenv/wiki/common-build-problems">need</a> the following packages:</p>
+<pre><code>sudo apt install zlib1g zlib1g-dev libssl-dev libbz2-dev libsqlite3-dev
+</code></pre>
+<p>Then set up the environment</p>
+<pre><code class="language-bash">pyenv install 3.10
+pyenv global 3.10
+pip install -r requirements.txt
+pip install -r requirements-dev.txt  # For development
 </code></pre>
 <hr />
 <h3 id="configure-py-ispyb">Configure py-ISPyB<a class="headerlink" href="#configure-py-ispyb" title="Permanent link">#</a></h3>
