@@ -101,7 +101,8 @@ async def get_attr(
         raise HTTPException(status_code=404, detail="File not found")
 
     with get_content_from_file(file, path, create_error) as content:
-        assert isinstance(content, ResolvedEntityContent)
+        if not isinstance(content, ResolvedEntityContent):
+            raise HTTPException(status_code=500, detail="Wrong file type")
         h5grove_response = encode(content.attributes(attr_keys), "json")
         return Response(
             content=h5grove_response.content, headers=h5grove_response.headers
@@ -131,7 +132,8 @@ async def get_data(
         raise HTTPException(status_code=404, detail="File not found")
 
     with get_content_from_file(file, path, create_error) as content:
-        assert isinstance(content, DatasetContent)
+        if not isinstance(content, DatasetContent):
+            raise HTTPException(status_code=500, detail="Wrong file type")
         data = content.data(selection, flatten, dtype)
         h5grove_response = encode(data, format)
         return Response(
@@ -189,7 +191,8 @@ async def get_stats(
         raise HTTPException(status_code=404, detail="File not found")
 
     with get_content_from_file(file, path, create_error) as content:
-        assert isinstance(content, DatasetContent)
+        if not isinstance(content, DatasetContent):
+            raise HTTPException(status_code=500, detail="Wrong file type")
         h5grove_response = encode(content.data_stats(selection), "json")
         return Response(
             content=h5grove_response.content, headers=h5grove_response.headers
