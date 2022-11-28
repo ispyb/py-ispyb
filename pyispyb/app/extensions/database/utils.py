@@ -94,6 +94,9 @@ def with_metadata(
     results: list[sqlalchemy.engine.row.Row], metadata: list[str]
 ) -> list[sqlalchemy.engine.row.Row]:
     """Add metadata to rows base _metadata attribute"""
+    if not metadata:
+        return results
+
     parsed = []
     for result in results:
         for meta_id, meta_value in enumerate(result[1:]):

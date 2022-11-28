@@ -8,7 +8,15 @@ from ispyb import models
 from ...config import settings
 from ...app.extensions.database.definitions import with_authorization
 from ...app.extensions.database.middleware import db
-from ...app.extensions.database.utils import Paged, page, with_metadata, order
+from ...app.extensions.database.utils import (
+    Paged,
+    page,
+    with_metadata,
+    order,
+    update_model,
+)
+
+from ..schemas import samples as schema
 
 
 SAMPLE_ORDER_BY_MAP = {
@@ -228,6 +236,26 @@ def get_samples(
             result._metadata["types"] = result._metadata["types"].split(",")
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
+
+
+def create_sample(sample: schema.SampleCreate) -> models.BLSample:
+    sample_dict = sample.dict()
+    sample = models.BLSample(**sample_dict)
+    db.session.add(sample)
+    db.session.commit()
+
+    new_sample = get_samples(sampleId=sample.sampleId, skip=0, limit=1)
+    return new_sample.first
+
+
+def update_sample(sampleId: int, sample: schema.SampleCreate) -> models.BLSample:
+    sample_dict = sample.dict(exclude_unset=True)
+    new_sample = get_samples(sampleId=sampleId, skip=0, limit=1).first
+
+    update_model(new_sample, sample_dict)
+    db.session.commit()
+
+    return get_samples(sampleId=sampleId, skip=0, limit=1).first
 
 
 SUBSAMPLE_ORDER_BY_MAP = {

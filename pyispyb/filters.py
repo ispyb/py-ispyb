@@ -82,6 +82,18 @@ def containerId(
     return containerId
 
 
+def dewarId(
+    dewarId: Optional[int] = Query(None, description="Dewar id to filter by")
+) -> Optional[int]:
+    return dewarId
+
+
+def shippingId(
+    shippingId: Optional[int] = Query(None, description="Shipping id to filter by")
+) -> Optional[int]:
+    return shippingId
+
+
 def month(
     month: Optional[str] = Query(None, description="Month filter by", regex=r"^\d\d?$")
 ) -> Optional[str]:
@@ -92,3 +104,9 @@ def year(
     year: Optional[str] = Query(None, description="Year filter by", regex=r"^\d\d\d\d$")
 ) -> Optional[str]:
     return year
+
+
+def runId(
+    runId: Optional[str] = Query(None, description="Run id filter by")
+) -> Optional[str]:
+    return runId

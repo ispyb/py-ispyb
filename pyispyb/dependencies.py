@@ -50,3 +50,7 @@ def permission(permission: str):
         return True
 
     return with_permission
+
+
+def has_permission(permission: str):
+    return permission in g.permissions
