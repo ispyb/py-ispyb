@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class LdapAuthentication(AbstractAuthentication):
     def configure(self, config: dict[str, Any]) -> None:
-        self.ldap_conn = ldap.initialize(config["LDAP_URI"])
+        self.ldap_url = config["LDAP_URI"]
         self.ldap_base_internal = config["LDAP_BASE_INTERNAL"]
         self.ldap_base_groups = config["LDAP_BASE_GROUPS"]
 
@@ -23,6 +23,7 @@ class LdapAuthentication(AbstractAuthentication):
             logger.debug(
                 f"LDAP login: try to authenticate user `{login}` as internal user"
             )
+            self.ldap_conn = ldap.initialize(self.ldap_url)
             self.ldap_conn.simple_bind_s(
                 f"uid={login},{self.ldap_base_internal}", password
             )

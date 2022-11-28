@@ -11,7 +11,7 @@ def test_all_proposals(auth_client_efgh: AuthClient, app: ASGIApp):
         assert resp.status_code == 200
         json = resp.json()
 
-        assert len(json["results"]) == 2
+        assert len(json["results"]) >= 2
 
 
 def test_bl_admin(auth_client_efgh: AuthClient, app: ASGIApp, with_beamline_groups):

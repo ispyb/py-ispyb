@@ -85,7 +85,7 @@ Configuration
 AUTH:
   ENABLED: true
   AUTH_MODULE: "pyispyb.app.extensions.auth.KeycloakDBGroupsAuthentication"
-  AUTH_CLASS: "KeycloakDBGroupsAuthentication"
+  AUTH_CLASS: "KeycloakAuthentication"
   CONFIG:
     KEYCLOAK_SERVER_URL: "your_server"
     KEYCLOAK_CLIENT_ID: "your_client"
@@ -108,7 +108,7 @@ AUTH:
       CONFIG:
         LDAP_URI: "ldap://your_ldap"
         LDAP_BASE_INTERNAL: "ou=People,dc=test,dc=fr"
-        LDAP_BASE_EXTERNAL: "ou=Pxwebgroups,dc=test,dc=fr"
+        LDAP_BASE_GROUPS: "ou=Pxwebgroups,dc=test,dc=fr"
 ```
 
 ## Implementing new plugins
