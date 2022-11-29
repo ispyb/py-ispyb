@@ -4,7 +4,7 @@ from fastapi import Query
 
 def session(
     session: Optional[str] = Query(
-        None, description="Session name to filter by", regex=r"^\w+\d+-\d+$"
+        None, description="Session name to filter by", regex=r"^(\w|-)+\d+-\d+$"
     )
 ) -> Optional[str]:
     return session
@@ -18,7 +18,7 @@ def sessionId(
 
 def proposal(
     proposal: Optional[str] = Query(
-        None, description="Proposal name to filter by", regex=r"^\w+\d+$"
+        None, description="Proposal name to filter by", regex=r"^(\w|-)+\d+$"
     )
 ) -> Optional[str]:
     return proposal
