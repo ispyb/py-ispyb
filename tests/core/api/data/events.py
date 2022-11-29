@@ -13,4 +13,15 @@ test_data_events = [
             code=200,
         ),
     ),
+    ApiTestElem(
+        name="get event types",
+        input=ApiTestInput(
+            permissions=[],
+            login="abcd",
+            route="/events/types",
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
 ]

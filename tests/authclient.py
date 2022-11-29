@@ -25,9 +25,13 @@ class AuthClient:
         full_url = url
         if use_base_url:
             full_url = self._base_url + url
-        return getattr(self._client, method)(
-            full_url, json=kwargs.get("payload"), headers=headers
-        )
+        payload = kwargs.pop("payload", None)
+        if payload is not None:
+            return getattr(self._client, method)(
+                full_url, json=payload, headers=headers
+            )
+        else:
+            return getattr(self._client, method)(full_url, headers=headers)
 
     @property
     def token(self):

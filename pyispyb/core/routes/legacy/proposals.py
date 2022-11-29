@@ -32,7 +32,7 @@ from pyispyb.core.routes.legacy.dependencies import proposal_authorisation
 from .base import router as legacy_router
 
 router = AuthenticatedAPIRouter(
-    prefix="/proposals", tags=["Proposals - legacy with header token"]
+    prefix="/legacy/proposals", tags=["Proposals - legacy with header token"]
 )
 
 

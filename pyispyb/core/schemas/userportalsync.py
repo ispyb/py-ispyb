@@ -32,7 +32,7 @@ PydanticLabContact = sqlalchemy_to_pydantic(
 )
 
 
-class Person(PydanticPerson):
+class UPPerson(PydanticPerson):
     # At least login or externalId required to be able to check for existing Person in DB (to update or create)
     login: Optional[str] = None
     externalId: Optional[int] = None
@@ -64,17 +64,17 @@ class PersonSessionOptions(PydanticSessionHasPerson):
     ]
 
 
-class PersonProposalLaboratory(Person):
+class PersonProposalLaboratory(UPPerson):
     laboratory: Optional[LaboratoryCreate]
 
 
-class PersonSessionLaboratory(Person):
+class PersonSessionLaboratory(UPPerson):
     laboratory: Optional[LaboratoryCreate]
     # Optional section to be used in Session_has_Person
     session_options: Optional[PersonSessionOptions]
 
 
-class LabContact(PydanticLabContact):
+class UPLabContact(PydanticLabContact):
     # Person is required for a LabContact
     person: PersonProposalLaboratory
     # Make dewarAvgCustomsValue and dewarAvgTransportValue optional fields
@@ -86,7 +86,7 @@ class LabContact(PydanticLabContact):
         orm_mode = True
 
 
-class Proposal(PydanticProposal):
+class UPProposal(PydanticProposal):
     # proposalCode and proposalNumber required
     proposalCode: str
     proposalNumber: str
@@ -95,13 +95,13 @@ class Proposal(PydanticProposal):
     # Here we need minimum 1 Person to be related to the Proposal (foreign key constraint)
     persons: conlist(PersonProposalLaboratory, min_items=1)
     # LabContacts are always related to a proposal
-    labcontacts: Optional[List[LabContact]]
+    labcontacts: Optional[List[UPLabContact]]
 
     class Config:
         orm_mode = True
 
 
-class Protein(PydanticProtein):
+class UPProtein(PydanticProtein):
     # It may sync by checking protein acronym and proposalId in DB
     acronym: str
     # Can also use externalId to be able to check for existing protein in DB (to update or create)
@@ -112,7 +112,7 @@ class Protein(PydanticProtein):
         orm_mode = True
 
 
-class Session(PydanticSession):
+class UPSession(PydanticSession):
     # expSessionPk or externalId to be able to check for existing session in DB (to update or create)
     # The expSessionPk field might be deprecated later
     expSessionPk: Optional[int]
@@ -134,9 +134,9 @@ class Session(PydanticSession):
 
 
 class PydanticProposal(BaseModel):
-    proposal: Proposal
-    sessions: Optional[List[Session]]
-    proteins: Optional[List[Protein]]
+    proposal: UPProposal
+    sessions: Optional[List[UPSession]]
+    proteins: Optional[List[UPProtein]]
 
 
 class UserPortalProposalSync(PydanticProposal):

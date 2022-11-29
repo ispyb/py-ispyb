@@ -21,6 +21,7 @@ def test_call_sync_proposal_create(
 def test_proposal_title_update(with_db_session):
     # Get the proposal from the DB
     proposals = get_proposals(
+        withAuthorization=False,
         skip=0,
         limit=10,
         proposalCode=test_data_proposal_userportalsync_update["proposal"][
@@ -77,6 +78,7 @@ def test_person_laboratory_name_update(with_db_session):
 def test_session_beamline_name_update(with_db_session):
     # Get the session from the DB
     sessions = get_sessions(
+        withAuthorization=False,
         skip=0,
         limit=10,
         externalId=test_data_proposal_userportalsync_update["sessions"][0][

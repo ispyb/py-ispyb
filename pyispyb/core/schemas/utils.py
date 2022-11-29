@@ -18,13 +18,36 @@ def paginated(model: ModelMetaclass) -> ModelMetaclass:
     return PaginatedModel
 
 
-def make_optional(baseclass):
+def make_optional(baseclass: BaseModel, *, exclude: dict[str, any] = {}) -> BaseModel:
+    """Make a pydantic models fields optional (for patch requests)
+
+    Optionally exclude some fields (with nesting):
+    ```
+    exclude={
+        "proposalId": True,
+        "Person": {
+            "givenName": True,
+            "Laboratory": {"laboratoryExtPk": True},
+        },
+    }
+    ```
+    """
     # https://stackoverflow.com/questions/67699451/make-every-fields-as-optional-with-pydantic
     fields = baseclass.__fields__
+
     validators = {"__validators__": baseclass.__validators__}
     optional_fields = {
-        key: (Optional[item.type_], None) for key, item in fields.items()
+        key: (Optional[item.type_], None)
+        for key, item in fields.items()
+        if exclude.get(key, None) is not True
     }
-    return create_model(
+    new_model = create_model(
         f"{baseclass.__name__}Optional", **optional_fields, __validators__=validators
     )
+
+    # Deal with nested models
+    for key, item in new_model.__fields__.items():
+        if item.is_complex():
+            item.type_ = make_optional(item.type_, exclude=exclude.get(key, {}))
+
+    return new_model

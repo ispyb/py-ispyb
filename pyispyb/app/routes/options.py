@@ -1,4 +1,4 @@
-from fastapi import Depends, Request
+from fastapi import Depends
 
 from ...dependencies import permission
 from ..base import AuthenticatedAPIRouter
@@ -26,15 +26,17 @@ def get_options(depends: bool = Depends(permission("manage_options"))) -> Option
     return crud.get_options(get_all=True)
 
 
-@router.post(
+@router.patch(
     "",
     response_model=Options,
 )
 def update_options(
-    options: Options, request: Request, depends=Depends(permission("manage_options"))
+    options: Options, depends=Depends(permission("manage_options"))
 ) -> Options:
     """Update the database options"""
+    from pyispyb.app.main import app
+
     crud.update_options(options)
     options = crud.get_options(get_all=True)
-    request.app.db_options = options
+    app.db_options = options
     return options

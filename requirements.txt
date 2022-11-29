@@ -1,4 +1,4 @@
-ispyb-models==1.0.2
+ispyb-models==1.0.6
 
 fastapi
 pydantic[dotenv]
@@ -8,21 +8,25 @@ uvicorn
 SQLAlchemy
 
 pyjwt
-mysqlclient
 pdfkit
 python-barcode
 qrcode
 
-python-keycloak==0.26.1
-keycloak==3.1.3
-keycloak-client
+python-keycloak>=2.6.0
 
+pint
 python_ldap==3.4.0
 
 sqlparse
 
-mysql-connector
 mysql-connector-python==8.0.29
+
+fabio
+h5py
+hdf5plugin
+h5grove
+numpy
+matplotlib
 
 mkdocs
 mkdocs-material

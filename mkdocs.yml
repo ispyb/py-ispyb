@@ -1,17 +1,20 @@
 site_name: py-ISPyB
 nav:
   - Home: index.md
-  - Get started: run.md
+  - Get Started: run.md
   - Tests: tests.md
   - Configuration: conf.md
-  - Authentication and authorization:
-      - Basics: auth.md
+  - Authentication and Authorization:
+      - Authentication: auth.md
+      - Authorization: authorization.md
       - Permissions: permissions.md
   - Routes:
       - About: routes.md
       - ⧉ Endpoint documentation: https://ispyb.github.io/py-ispyb/api/
   - Simulator: simulator.md
+  - User Portal Sync: upsync.md
   - Developers:
+      - Notes: developers.md
       - ⧉ Test coverage: https://app.codecov.io/gh/ispyb/py-ispyb/
 
 theme:

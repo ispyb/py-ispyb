@@ -67,6 +67,9 @@ class Settings(BaseSettings):
 
     simulation_config: str = None
 
+    # Map file paths in the database to a different root directory
+    path_map: str = None
+
     class Config:
         env_file = get_env_file()
 

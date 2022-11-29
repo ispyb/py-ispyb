@@ -44,6 +44,7 @@ class CrystalBase(BaseModel):
 
 class Crystal(CrystalBase):
     crystalId: int
+    proteinId: int = Field(title="Protein")
 
     Protein: Protein
 
