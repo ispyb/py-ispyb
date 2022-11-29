@@ -1,19 +1,21 @@
-from typing import Any
 import logging
 from logging.config import dictConfig
+from typing import Any
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 
-from pyispyb.app.extensions.database.utils import enable_debug_logging
-from pyispyb.app.extensions.database.middleware import get_session
-from pyispyb.app.extensions.options.base import setup_options
-from pyispyb.app.globals import GlobalsMiddleware
+from ..app.extensions.auth.onetime import expire_ontime_tokens_periodically
+from ..app.extensions.database.utils import enable_debug_logging
+from ..app.extensions.database.middleware import get_session
+from ..app.extensions.options.base import setup_options
+from ..app.globals import GlobalsMiddleware
 
 from ..config import settings, LogConfig
-from pyispyb.app import routes as base_routes
-from pyispyb.core import routes as core_routes
-from pyispyb.app.extensions.auth import auth_provider
+from ..app import routes as base_routes
+from ..core import routes as core_routes
+from ..app.extensions.auth import auth_provider
 
 dictConfig(LogConfig().dict())
 logger = logging.getLogger("ispyb")
@@ -30,6 +32,11 @@ async def get_session_as_middleware(request, call_next):
 
 
 setup_options(app)
+
+
+@app.on_event("startup")
+async def expire_onetime_tokens() -> None:
+    await expire_ontime_tokens_periodically()
 
 
 def enable_cors() -> None:

@@ -1,11 +1,14 @@
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
 
 from ...globals import g
 from .token import decode_token, set_token_data
+from .onetime import onetime, validate_onetime_token
 
-security = HTTPBearer()
+# auto_error=False to correct 403 -> 401
+# https://github.com/tiangolo/fastapi/issues/2026
+security = HTTPBearer(auto_error=False)
 
 
 def verify_jwt(token: str):
@@ -20,8 +23,11 @@ def verify_jwt(token: str):
 
 
 async def JWTBearer(
+    request: Request,
+    onetime: str = Depends(onetime),
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
+    # JWT authentication
     if credentials:
         if not credentials.scheme == "Bearer":
             raise HTTPException(
@@ -36,6 +42,11 @@ async def JWTBearer(
         set_token_data(decoded)
 
         return credentials.credentials
+
+    # One time token authentication
+    elif onetime:
+        person_dict = validate_onetime_token(onetime, request.url.components.path)
+        set_token_data(person_dict)
     else:
         raise HTTPException(status_code=401, detail="No token provided.")
 
