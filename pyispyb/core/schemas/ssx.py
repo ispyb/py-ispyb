@@ -33,6 +33,7 @@ class SSXDataCollectionProcessingCellsHistogram(BaseModel):
     alpha: Histogram | None
     beta: Histogram | None
     gamma: Histogram | None
+    dataCollectionIds: list[int]
 
 
 class SSXDataCollectionProcessingCreate(BaseModel):

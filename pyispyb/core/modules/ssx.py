@@ -382,6 +382,7 @@ async def get_ssx_datacollection_processing_cells_histogram(
             "alpha": None,
             "beta": None,
             "gamma": None,
+            "dataCollectionIds": dataCollectionIds,
         }
     bins = to_bins(cells)
     return {
@@ -391,6 +392,7 @@ async def get_ssx_datacollection_processing_cells_histogram(
         "alpha": bins[3],
         "beta": bins[4],
         "gamma": bins[5],
+        "dataCollectionIds": dataCollectionIds,
     }
 
 
