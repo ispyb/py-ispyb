@@ -3,7 +3,6 @@ ispyb-models==1.0.6
 fastapi
 pydantic[dotenv]
 pydantic-sqlalchemy
-uvicorn
 
 SQLAlchemy
 
@@ -30,3 +29,6 @@ matplotlib
 
 mkdocs
 mkdocs-material
+
+uvicorn
+gunicorn

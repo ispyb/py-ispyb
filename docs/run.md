@@ -153,8 +153,22 @@ Make sure to set the `SQLALCHEMY_DATABASE_URI` environment variable.
 
 #### Production
 
+To simplify production deployment, you can use the docker image built from the `Dockerfile`:
+
 ```bash
-uvicorn pyispyb.app.main:app
+sudo docker build . -t py-ispyb
+```
+
+To run it, you will need to provide two elements:
+
+- A set of configuration variables (at least `SECRET_KEY` and `SQLALCHEMY_DATABASE_URI`, defaults are provided for others). This can be set through a `.env` file (see `config/test.env` for example) and the `--env-file` docker option.
+
+- An authentication configuration file (see `examples/auth.yml` for example). This should be made available inside the container at the path indicated by the `AUTH_CONFIG` environment variable (default `/config/auth.yml`).
+
+Docker run command example:
+
+```bash
+sudo docker run -p 80:80 --env-file ispyb.env --mount type=bind,source=/my_ispyb_auth_config_dir,target=/config --name py-ispyb-prod py-ispyb
 ```
 
 ---
