@@ -30,6 +30,12 @@ def proposalId(
     return proposalId
 
 
+def movieId(
+    movieId: Optional[int] = Query(None, description="Movie id to filter by")
+) -> Optional[int]:
+    return movieId
+
+
 def beamLineName(
     beamLineName: Optional[str] = Query(None, description="Beamline name to filter by")
 ) -> Optional[str]:
