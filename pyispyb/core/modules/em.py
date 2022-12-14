@@ -62,20 +62,23 @@ def get_fft_thumbnail_path(movieId: int) -> str:
 def get_movies(skip: int, limit: int, dataCollectionId: int) -> Paged[schema.FullMovie]:
     query = (
         db.session.query(models.MotionCorrection, models.CTF, models.Movie)
+        .select_from(models.Movie)
         .join(
             models.MotionCorrection,
             models.MotionCorrection.movieId == models.Movie.movieId,
         )
-        .join(models.CTF)
+        .join(
+            models.CTF,
+            models.CTF.motionCorrectionId == models.MotionCorrection.motionCorrectionId,
+        )
         .join(
             models.DataCollection,
-            models.DataCollection.dataCollectionId
-            == models.MotionCorrection.dataCollectionId,
+            models.DataCollection.dataCollectionId == models.Movie.dataCollectionId,
         )
         .join(models.DataCollectionGroup)
         .join(models.BLSession)
         .join(models.Proposal)
-        .order_by(models.MotionCorrection.imageNumber)
+        .order_by(models.MotionCorrection.motionCorrectionId)
         .group_by(models.Movie.movieId)
     )
 
@@ -86,5 +89,7 @@ def get_movies(skip: int, limit: int, dataCollectionId: int) -> Paged[schema.Ful
     query = with_authorization(query, joinBLSession=False)
     query = page(query, skip=skip, limit=limit)
     results = query.all()
+
+    print(results)
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
