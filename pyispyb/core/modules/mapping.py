@@ -29,7 +29,9 @@ def get_maps(
         "url": func.concat(
             f"{settings.api_root}/mapping/",
             models.XRFFluorescenceMapping.xrfFluorescenceMappingId,
-        )
+        ),
+        "blSubSampleId": models.DataCollection.blSubSampleId,
+        "blSampleId": models.DataCollectionGroup.blSampleId,
     }
 
     query = (

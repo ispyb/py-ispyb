@@ -27,11 +27,14 @@ class MapGridInfo(BaseModel):
 
 class MapMetaData(BaseModel):
     url: str = Field(description="Url to map image")
+    blSubSampleId: Optional[int]
+    blSampleId: Optional[int]
 
 
 class Map(BaseModel):
     xrfFluorescenceMappingId: int
     colourMap: Optional[str]
+    opacity: Optional[float]
     points: Optional[int]
     dataFormat: str
 
