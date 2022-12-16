@@ -39,12 +39,14 @@ def get_map_rois(
 def get_maps(
     dataCollectionId: int = Depends(filters.dataCollectionId),
     blSampleId: int = Depends(filters.blSampleId),
+    blSubSampleId: int = Depends(filters.blSubSampleId),
     xrfFluorescenceMappingId: int = Query(None, title="XrfFluorescenceMapping id"),
     page: dict[str, int] = Depends(pagination),
 ) -> Paged[models.XRFFluorescenceMapping]:
     """Get a list of maps"""
     return crud.get_maps(
         blSampleId=blSampleId,
+        blSubSampleId=blSubSampleId,
         dataCollectionId=dataCollectionId,
         xrfFluorescenceMappingId=xrfFluorescenceMappingId,
         **page

@@ -23,6 +23,7 @@ def get_maps(
     xrfFluorescenceMappingId: int = None,
     dataCollectionId: int = None,
     blSampleId: int = None,
+    blSubSampleId: int = None,
     withAuthorization: bool = True,
 ) -> Paged[models.XRFFluorescenceMapping]:
     metadata = {
@@ -59,6 +60,9 @@ def get_maps(
 
     if blSampleId:
         query = query.filter(models.DataCollectionGroup.blSampleId == blSampleId)
+
+    if blSubSampleId:
+        query = query.filter(models.DataCollection.blSubSampleId == blSubSampleId)
 
     if withAuthorization:
         query = with_authorization(query, joinBLSession=False)
