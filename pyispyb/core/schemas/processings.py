@@ -142,8 +142,8 @@ class Screening(BaseModel):
 
 
 class ProcessingJobParameter(BaseModel):
-    parameterKey: str
-    parameterValue: str
+    parameterKey: Optional[str]
+    parameterValue: Optional[str]
 
     class Config:
         orm_mode = True
