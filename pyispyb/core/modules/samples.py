@@ -303,6 +303,11 @@ def get_subsamples(
             models.DataCollection,
             models.DataCollection.blSubSampleId == models.BLSubSample.blSubSampleId,
         )
+        .outerjoin(
+            models.DataCollectionGroup,
+            models.DataCollectionGroup.dataCollectionGroupId
+            == models.DataCollection.dataCollectionGroupId,
+        )
         .options(
             joinedload(models.BLSubSample.Position1).load_only(
                 models.Position.posX,
