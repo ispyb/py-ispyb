@@ -19,7 +19,7 @@ def order(
     query: "sqlalchemy.orm.Query[Any]",
     sort_map: dict[str, "sqlalchemy.Column[Any]"],
     order: Optional[dict[str]],
-    default: Optional[dict[str]] = {},
+    default: Optional[dict[str]] = None,
 ) -> "sqlalchemy.orm.Query[Any]":
     """Sort a result set by a column
 
@@ -31,15 +31,14 @@ def order(
     Returns
         query (sqlalchemy.orm.Query): The ordered query
     """
-    print("Order", order, "default", default)
-    order_by = order.get("order_by")
+    order_by = order.get("order_by") if order else None
     if order_by is None:
         order_by = default.get("order_by")
     else:
         # Defaults are strings for convenience
         # API (mashalled) values are an enum so need their value extracting
         order_by = order_by.value
-    order_direction = order.get("order")
+    order_direction = order.get("order") if order else None
     if order_direction is None:
         order_direction = default.get("order")
     else:
