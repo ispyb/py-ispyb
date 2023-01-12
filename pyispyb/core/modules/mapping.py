@@ -158,7 +158,7 @@ def generate_map_image(map_: schema.Map, image_format: str = "PNG") -> io.BytesI
     cmap = getattr(cm, colourmap or "viridis")
 
     m = cm.ScalarMappable(norm=norm, cmap=cmap)
-    img_data = m.to_rgba(data, bytes=True, alpha=map_.opacity)
+    img_data = m.to_rgba(data, bytes=True)
 
     mask = data == -1
     img_data[mask, :] = [255, 255, 255, 0]
