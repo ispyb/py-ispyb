@@ -32,15 +32,17 @@ def order(
         query (sqlalchemy.orm.Query): The ordered query
     """
     order_by = order.get("order_by") if order else None
-    if order_by is None and default:
-        order_by = default.get("order_by")
+    if order_by is None:
+        if default:
+            order_by = default.get("order_by")
     else:
         # Defaults are strings for convenience
         # API (mashalled) values are an enum so need their value extracting
         order_by = order_by.value
     order_direction = order.get("order") if order else None
-    if order_direction is None and default:
-        order_direction = default.get("order")
+    if order_direction is None:
+        if default:
+            order_direction = default.get("order")
     else:
         order_direction = order_direction.value
 
