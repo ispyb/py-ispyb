@@ -128,6 +128,24 @@ def get_samples(
     )
 
 
+@router.get("/components", response_model=paginated(schema.Component))
+def get_components(
+    page: dict[str, int] = Depends(pagination),
+    proposal: str = Depends(filters.proposal),
+) -> Paged[models.BLSample]:
+    """Get a list of available components"""
+    return crud.get_components(
+        proposal=proposal,
+        **page,
+    )
+
+
+@router.get("/concentration/types", response_model=list[schema.ConcentrationType])
+def get_concentration_types() -> list[models.ConcentrationType]:
+    """Get a list of available concentration types"""
+    return crud.get_concentration_types()
+
+
 @router.get(
     "/{blSampleId}",
     response_model=schema.Sample,
@@ -145,5 +163,48 @@ def get_sample(
 
     try:
         return samples.first
+    except IndexError:
+        raise HTTPException(status_code=404, detail="Sample not found")
+
+
+@router.patch(
+    "/{blSampleId}",
+    response_model=schema.Sample,
+    responses={404: {"description": "No such sample"}},
+)
+def update_sample(
+    sample: schema.SampleUpdate,
+    blSampleId: int = Depends(filters.blSampleId),
+) -> models.BLSample:
+    """update a sample"""
+    try:
+        sample = crud.update_sample(blSampleId=blSampleId, sample=sample)
+        return sample
+    except IndexError:
+        raise HTTPException(status_code=404, detail="Sample not found")
+
+
+@router.post(
+    "",
+    response_model=schema.Sample,
+)
+def create_sample(
+    sample: schema.SampleCreate,
+) -> models.BLSample:
+    """create a sample"""
+    sample = crud.create_sample(sample=sample)
+    return sample
+
+
+@router.delete(
+    "/{blSampleId}",
+    responses={404: {"description": "No such sample"}},
+)
+def delete_sample(
+    blSampleId: int = Depends(filters.blSampleId),
+) -> models.BLSample:
+    """delete a sample"""
+    try:
+        crud.delete_sample(blSampleId=blSampleId)
     except IndexError:
         raise HTTPException(status_code=404, detail="Sample not found")

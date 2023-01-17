@@ -106,11 +106,15 @@ def with_metadata(
     return parsed
 
 
-def update_model(model: any, values: dict[str, any]):
+def update_model(model: any, values: dict[str, any], nested=True):
     """Update a model with new values including nested models"""
     for key, value in values.items():
         if isinstance(value, dict):
-            update_model(getattr(model, key), value)
+            if nested:
+                update_model(getattr(model, key), value)
+        elif isinstance(value, list):
+            if nested:
+                raise NotImplementedError("Need to implement nested list update")
         else:
             if isinstance(value, enum.Enum):
                 value = value.value

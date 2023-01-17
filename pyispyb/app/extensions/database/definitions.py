@@ -1,5 +1,6 @@
 import logging
 from typing import Any, Optional
+from fastapi import HTTPException
 
 import sqlalchemy
 from ispyb import models
@@ -53,6 +54,18 @@ def get_options() -> Options:
     return app.db_options
 
 
+def authorize_for_proposal(proposalId: int) -> True:
+    query = db.session.query(models.Proposal).filter(
+        models.Proposal.proposalId == proposalId
+    )
+    query = with_authorization_proposal(query)
+    res = query.count()
+    if res == 0:
+        raise HTTPException(
+            status_code=403, detail="User is not authorized for proposal"
+        )
+
+
 def with_authorization_proposal(
     query: "sqlalchemy.orm.Query[Any]",
     includeArchived: bool = False,
@@ -62,8 +75,6 @@ def with_authorization_proposal(
         includeArchived=includeArchived,
         proposalColumn=None,
         joinBLSession=True,
-        joinSessionHasPerson=True,
-        joinProposalHasPerson=True,
     )
 
 
@@ -76,8 +87,6 @@ def with_authorization_session(
         includeArchived=includeArchived,
         proposalColumn=models.BLSession.proposalId,
         joinBLSession=False,
-        joinSessionHasPerson=True,
-        joinProposalHasPerson=True,
     )
 
 
