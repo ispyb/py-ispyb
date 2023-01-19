@@ -56,6 +56,7 @@ test_data_ssx_histogram = [
                 "alpha": None,
                 "beta": None,
                 "gamma": None,
+                "dataCollectionIds": [1, 2],
             },
         ),
     ),
