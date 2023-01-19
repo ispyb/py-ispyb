@@ -29,6 +29,7 @@ class MapMetaData(BaseModel):
     url: str = Field(description="Url to map image")
     blSubSampleId: Optional[int]
     blSampleId: Optional[int]
+    dataCollectionId: Optional[int]
 
 
 class Map(BaseModel):

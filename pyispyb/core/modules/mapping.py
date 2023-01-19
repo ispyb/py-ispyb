@@ -6,7 +6,7 @@ import matplotlib as mpl
 import matplotlib.cm as cm
 import numpy as np
 from PIL import Image
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import joinedload
 from ispyb import models
 
@@ -33,6 +33,7 @@ def get_maps(
         ),
         "blSubSampleId": models.DataCollection.blSubSampleId,
         "blSampleId": models.DataCollectionGroup.blSampleId,
+        "dataCollectionId": models.DataCollection.dataCollectionId,
     }
 
     query = (
@@ -59,7 +60,13 @@ def get_maps(
         query = query.filter(models.DataCollection.dataCollectionId == dataCollectionId)
 
     if blSampleId:
-        query = query.filter(models.DataCollectionGroup.blSampleId == blSampleId)
+        query = query.filter(
+            or_(
+                models.DataCollectionGroup.blSampleId == blSampleId,
+                # Hacky legacy support
+                models.DataCollection.BLSAMPLEID == blSampleId,
+            )
+        )
 
     if blSubSampleId:
         query = query.filter(models.DataCollection.blSubSampleId == blSubSampleId)
