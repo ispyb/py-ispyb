@@ -22,6 +22,7 @@ def get_maps(
     limit: int,
     xrfFluorescenceMappingId: int = None,
     dataCollectionId: int = None,
+    dataCollectionGroupId: int = None,
     blSampleId: int = None,
     blSubSampleId: int = None,
     withAuthorization: bool = True,
@@ -58,6 +59,11 @@ def get_maps(
 
     if dataCollectionId:
         query = query.filter(models.DataCollection.dataCollectionId == dataCollectionId)
+
+    if dataCollectionGroupId:
+        query = query.filter(
+            models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
+        )
 
     if blSampleId:
         query = query.filter(
