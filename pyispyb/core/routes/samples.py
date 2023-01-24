@@ -202,7 +202,7 @@ def create_sample(
 )
 def delete_sample(
     blSampleId: int = Depends(filters.blSampleId),
-) -> models.BLSample:
+) -> None:
     """delete a sample"""
     try:
         crud.delete_sample(blSampleId=blSampleId)
