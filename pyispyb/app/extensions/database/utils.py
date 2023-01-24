@@ -49,11 +49,10 @@ def order(
     if not (order_by and order_direction):
         return query
 
-    logger.info(f"Ordering by {order_by} {order_direction}")
+    logger.debug(f"Ordering by {order_by} {order_direction}")
 
     if order_by not in sort_map:
-        logger.warning(f"Unknown order_by {order_by}")
-        return query
+        raise RuntimeError(f"Unknown order_by {order_by}")
 
     return query.order_by(getattr(sort_map[order_by], order_direction)())
 
