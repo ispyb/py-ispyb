@@ -63,11 +63,11 @@ def create_ssx_datacollection(
                 )
                 .count()
             )
-        if count_detector != 1:
-            raise HTTPException(
-                status_code=422,
-                detail=f"Could not find Detector with id {ssx_datacollection_create.detectorId}",
-            )
+            if count_detector != 1:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Could not find Detector with id {ssx_datacollection_create.detectorId}",
+                )
 
         # DATA COLLECTION
 
