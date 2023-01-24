@@ -379,6 +379,8 @@ def get_subsamples(
     for result in results:
         if result._metadata["types"]:
             result._metadata["types"] = result._metadata["types"].split(",")
+        else:
+            result._metadata["types"] = []
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
 
