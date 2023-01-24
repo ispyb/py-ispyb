@@ -3,6 +3,7 @@ import logging
 import os
 import traceback
 from typing import Optional, Type, TypeVar
+from fastapi import HTTPException
 
 from ispyb import models
 import pydantic
@@ -12,6 +13,7 @@ from sqlalchemy.orm import joinedload
 from pyispyb.app.extensions.database.middleware import db
 from pyispyb.app.utils import model_from_json
 from pyispyb.config import settings
+from pyispyb.core.modules.samples import get_samples
 from pyispyb.core.modules.session import get_session
 from pyispyb.core.schemas import events, ssx as schema
 from fastapi.concurrency import run_in_threadpool
@@ -36,6 +38,37 @@ def create_ssx_datacollection(
     event_chains_list = data_collection_dict.pop("event_chains")
 
     try:
+
+        # Check that DCG exists
+        count_dcg = (
+            db.session.query(models.DataCollectionGroup)
+            .filter(
+                models.DataCollectionGroup.dataCollectionGroupId
+                == ssx_datacollection_create.dataCollectionGroupId
+            )
+            .count()
+        )
+        if count_dcg != 1:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Could not find DataCollectionGroup with id {ssx_datacollection_create.dataCollectionGroupId}",
+            )
+
+        # Check that Detector exists:
+        if ssx_datacollection_create.detectorId is not None:
+            count_detector = (
+                db.session.query(models.Detector)
+                .filter(
+                    models.Detector.detectorId == ssx_datacollection_create.detectorId
+                )
+                .count()
+            )
+        if count_detector != 1:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Could not find Detector with id {ssx_datacollection_create.detectorId}",
+            )
+
         # DATA COLLECTION
 
         data_collection = model_from_json(
@@ -108,96 +141,113 @@ def create_ssx_datacollectiongroup(
 ) -> Optional[int]:
     datacollectiongroup_dict = ssx_datacollectiongroup_create.dict()
     sample_dict = datacollectiongroup_dict.pop("sample")
-    crystal_dict = sample_dict.pop("crystal")
-    protein_dict = crystal_dict.pop("protein")
-    crystal_components_list = crystal_dict.pop("components")
-    sample_components_list = sample_dict.pop("components")
+    sampleId = datacollectiongroup_dict.pop("sampleId")
 
     try:
 
         sessionId = datacollectiongroup_dict["sessionId"]
         session = get_session(sessionId)
-
         if session is None:
-            raise ValueError(
-                f"Tried to create datacollectiongroup for unknown session {sessionId}"
+            raise HTTPException(
+                status_code=422, detail=f"Could not find session with id {sessionId}"
             )
 
         ## SAMPLE
 
-        protein = model_from_json(
-            models.Protein,
-            {
-                **protein_dict,
-                "proposalId": session.proposalId,
-            },
-        )
-        db.session.add(protein)
-        db.session.flush()
-
-        crystal = model_from_json(
-            models.Crystal,
-            {
-                **crystal_dict,
-                "proteinId": protein.proteinId,
-            },
-        )
-        db.session.add(crystal)
-        db.session.flush()
-
-        sample = model_from_json(
-            models.BLSample,
-            {
-                **sample_dict,
-                "crystalId": crystal.crystalId,
-            },
-        )
-        db.session.add(sample)
-        db.session.flush()
-
-        for component_dict in crystal_components_list:
-            type = find_or_create_component_type(component_dict["componentType"])
-            component = model_from_json(
-                models.Component,
+        if sample_dict is None and sampleId is None:
+            raise HTTPException(
+                status_code=422,
+                detail="You have to provide sampleId or sample create object",
+            )
+        if sample_dict is not None and sampleId is not None:
+            raise HTTPException(
+                status_code=422,
+                detail="You have to provide only one of sampleId or sample create object",
+            )
+        elif sampleId is not None:
+            sample = get_samples(skip=0, limit=1, blSampleId=sampleId).first
+            if sample is None:
+                raise HTTPException(
+                    status_code=422, detail=f"Could not find sample with id {sampleId}"
+                )
+        else:
+            crystal_dict = sample_dict.pop("crystal")
+            protein_dict = crystal_dict.pop("protein")
+            crystal_components_list = crystal_dict.pop("components")
+            sample_components_list = sample_dict.pop("components")
+            protein = model_from_json(
+                models.Protein,
                 {
-                    **component_dict,
-                    "componentTypeId": type.componentTypeId,
+                    **protein_dict,
+                    "proposalId": session.proposalId,
                 },
             )
-            db.session.add(component)
+            db.session.add(protein)
             db.session.flush()
-            composition = model_from_json(
-                models.CrystalComposition,
+
+            crystal = model_from_json(
+                models.Crystal,
                 {
-                    **component_dict,
-                    "componentId": component.componentId,
+                    **crystal_dict,
+                    "proteinId": protein.proteinId,
+                },
+            )
+            db.session.add(crystal)
+            db.session.flush()
+
+            sample = model_from_json(
+                models.BLSample,
+                {
+                    **sample_dict,
                     "crystalId": crystal.crystalId,
                 },
             )
-            db.session.add(composition)
+            db.session.add(sample)
             db.session.flush()
 
-        for component_dict in sample_components_list:
-            type = find_or_create_component_type(component_dict["componentType"])
-            component = model_from_json(
-                models.Component,
-                {
-                    **component_dict,
-                    "componentTypeId": type.componentTypeId,
-                },
-            )
-            db.session.add(component)
-            db.session.flush()
-            composition = model_from_json(
-                models.SampleComposition,
-                {
-                    **component_dict,
-                    "componentId": component.componentId,
-                    "blSampleId": sample.blSampleId,
-                },
-            )
-            db.session.add(composition)
-            db.session.flush()
+            for component_dict in crystal_components_list:
+                type = find_or_create_component_type(component_dict["componentType"])
+                component = model_from_json(
+                    models.Component,
+                    {
+                        **component_dict,
+                        "componentTypeId": type.componentTypeId,
+                    },
+                )
+                db.session.add(component)
+                db.session.flush()
+                composition = model_from_json(
+                    models.CrystalComposition,
+                    {
+                        **component_dict,
+                        "componentId": component.componentId,
+                        "crystalId": crystal.crystalId,
+                    },
+                )
+                db.session.add(composition)
+                db.session.flush()
+
+            for component_dict in sample_components_list:
+                type = find_or_create_component_type(component_dict["componentType"])
+                component = model_from_json(
+                    models.Component,
+                    {
+                        **component_dict,
+                        "componentTypeId": type.componentTypeId,
+                    },
+                )
+                db.session.add(component)
+                db.session.flush()
+                composition = model_from_json(
+                    models.SampleComposition,
+                    {
+                        **component_dict,
+                        "componentId": component.componentId,
+                        "blSampleId": sample.blSampleId,
+                    },
+                )
+                db.session.add(composition)
+                db.session.flush()
 
         # DATA COLLECTION GROUP
 

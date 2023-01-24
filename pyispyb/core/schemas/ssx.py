@@ -127,4 +127,5 @@ class SSXDataCollectionGroupCreate(BaseModel):
     experimentType: Optional[Literal["SSX-Chip", "SSX-Jet"]]
     comments: Optional[str]
 
-    sample: SSXSampleCreate
+    sample: Optional[SSXSampleCreate]
+    sampleId: Optional[int]
