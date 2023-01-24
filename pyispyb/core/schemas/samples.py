@@ -134,7 +134,7 @@ class SampleCrystal(SampleCrystalCreate):
 
 class SampleCrystalUpdate(make_optional(SampleCrystal)):
     crystalId: int = Field(name="id")
-    Protein: SampleCrystalProteinCreate = Field(title="Protein")
+    Protein: Optional[SampleCrystalProteinCreate] = Field(title="Protein")
     crystal_compositions: Optional[list[CompositionCreate | None]]
 
 

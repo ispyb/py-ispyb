@@ -140,6 +140,12 @@ def get_components(
     )
 
 
+@router.get("/components/types", response_model=list[schema.ComponentType])
+def get_components_types() -> Paged[models.BLSample]:
+    """Get a list of available component types"""
+    return crud.get_component_types()
+
+
 @router.get("/concentration/types", response_model=list[schema.ConcentrationType])
 def get_concentration_types() -> list[models.ConcentrationType]:
     """Get a list of available concentration types"""

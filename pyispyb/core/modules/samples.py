@@ -10,6 +10,7 @@ from ...config import settings
 from ...app.extensions.database.definitions import (
     authorize_for_proposal,
     with_authorization,
+    with_authorization_proposal,
 )
 from ...app.extensions.database.middleware import db
 from ...app.extensions.database.utils import (
@@ -257,11 +258,17 @@ def build_compositions(
             component: models.Component = None
             # Try to find component in DB
             if isinstance(c.Component, schema.Component):
-                component = (
+                component = with_authorization_proposal(
                     db.session.query(models.Component)
                     .filter(models.Component.componentId == c.Component.componentId)
-                    .first()
-                )
+                    .join(models.Proposal)
+                    .filter(models.Proposal.proposalId == proposal.proposalId)
+                ).first()
+                if component is None:
+                    raise HTTPException(
+                        status_code=422,
+                        detail=f"Could not find component with id {c.Component.componentId}",
+                    )
             # If c.Component is ComponentCreate, try to find same component to avoid duplicate
             else:
                 # Try to find component type in DB
@@ -307,6 +314,11 @@ def build_compositions(
                     )
                     .first()
                 )
+                if concentration_type is None:
+                    raise HTTPException(
+                        status_code=422,
+                        detail=f"Could not find concentration_type with id {c.ConcentrationType.concentrationTypeId}",
+                    )
 
             # create final composition object
             composition = composition_model(
@@ -323,19 +335,30 @@ def build_compositions(
 def build_crystal(sample: schema.SampleCreate | schema.SampleUpdate) -> models.Crystal:
     crystal: models.Crystal = None
     if isinstance(sample.Crystal, schema.SampleCrystalUpdate):
-        crystal = (
+        crystal = with_authorization_proposal(
             db.session.query(models.Crystal)
             .filter(models.Crystal.crystalId == sample.Crystal.crystalId)
-            .first()
-        )
+            .join(models.Protein)
+            .join(models.Proposal)
+        ).first()
+        if crystal is None:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Could not find Crystal with id {sample.Crystal.crystalId}",
+            )
         update_model(crystal, sample.Crystal.dict(exclude_unset=True), nested=False)
     else:
         # Create new crystal
-        protein = (
+        protein = with_authorization_proposal(
             db.session.query(models.Protein)
             .filter(models.Protein.proteinId == sample.Crystal.Protein.proteinId)
-            .first()
-        )
+            .join(models.Proposal)
+        ).first()
+        if protein is None:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Could not find protein with id {sample.Crystal.Protein.proteinId}",
+            )
         crystal = models.Crystal(
             **{**sample.Crystal.dict(), "Protein": protein, "crystal_compositions": []}
         )
@@ -612,7 +635,15 @@ def get_components(
     return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
-def get_concentration_types() -> Paged[models.ConcentrationType]:
+def get_component_types() -> list[models.ComponentType]:
+
+    query = db.session.query(models.ComponentType)
+    results = query.all()
+
+    return results
+
+
+def get_concentration_types() -> list[models.ConcentrationType]:
     query = db.session.query(models.ConcentrationType)
     results = query.all()
     return results

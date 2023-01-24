@@ -109,3 +109,202 @@ test_data_sampleimages_list = [
         ),
     ),
 ]
+
+test_data_create_sample = [
+    ApiTestElem(
+        name="Create minimal sample",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples",
+            method="post",
+            payload={
+                "name": "test sample",
+                "Crystal": {
+                    "crystalId": 1,
+                },
+                "sample_compositions": [],
+                "loopType": "Injector",
+            },
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+    ApiTestElem(
+        name="Create sample with new crystal basic",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples",
+            method="post",
+            payload={
+                "name": "test sample",
+                "Crystal": {
+                    "Protein": {"proteinId": 1},
+                    "crystal_compositions": [],
+                },
+                "sample_compositions": [],
+                "loopType": "Injector",
+            },
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+    ApiTestElem(
+        name="Create sample with new crystal with composition",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples",
+            method="post",
+            payload={
+                "name": "test sample",
+                "Crystal": {
+                    "Protein": {"proteinId": 1},
+                    "crystal_compositions": [
+                        {
+                            "Component": {
+                                "name": "a",
+                                "composition": "test",
+                                "ComponentType": {
+                                    "name": "Buffer",
+                                },
+                            },
+                            "abundance": "1",
+                        }
+                    ],
+                },
+                "sample_compositions": [],
+                "loopType": "Injector",
+            },
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+    ApiTestElem(
+        name="Create sample unknown crystal",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples",
+            method="post",
+            payload={
+                "name": "test sample",
+                "Crystal": {
+                    "crystalId": -1,
+                },
+                "sample_compositions": [],
+                "loopType": "Injector",
+            },
+        ),
+        expected=ApiTestExpected(
+            code=422,
+        ),
+    ),
+    ApiTestElem(
+        name="Create sample unknown protein",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples",
+            method="post",
+            payload={
+                "name": "test sample",
+                "Crystal": {
+                    "Protein": {"proteinId": -1},
+                    "crystal_compositions": [],
+                },
+                "sample_compositions": [],
+                "loopType": "Injector",
+            },
+        ),
+        expected=ApiTestExpected(
+            code=422,
+        ),
+    ),
+    ApiTestElem(
+        name="Create sample with composition",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples",
+            method="post",
+            payload={
+                "name": "test sample",
+                "Crystal": {
+                    "crystalId": 1,
+                },
+                "sample_compositions": [
+                    {
+                        "Component": {
+                            "name": "a",
+                            "composition": "test",
+                            "ComponentType": {
+                                "name": "Buffer",
+                            },
+                        },
+                        "abundance": "1",
+                    }
+                ],
+                "loopType": "Injector",
+            },
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+    ApiTestElem(
+        name="Create sample with unknown component",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples",
+            method="post",
+            payload={
+                "name": "test sample",
+                "Crystal": {
+                    "crystalId": 1,
+                },
+                "sample_compositions": [
+                    {
+                        "Component": {"componentId": -1},
+                        "abundance": "1",
+                    }
+                ],
+                "loopType": "Injector",
+            },
+        ),
+        expected=ApiTestExpected(
+            code=422,
+        ),
+    ),
+]
+
+test_data_components = [
+    ApiTestElem(
+        name="List components",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples/components",
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+    ApiTestElem(
+        name="List component types",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples/components/types",
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+    ApiTestElem(
+        name="List component types",
+        input=ApiTestInput(
+            login="abcd",
+            route="/samples/concentration/types",
+        ),
+        expected=ApiTestExpected(
+            code=200,
+        ),
+    ),
+]
