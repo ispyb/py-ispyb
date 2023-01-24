@@ -1,5 +1,6 @@
 import logging
 from typing import Optional, Any
+from fastapi import HTTPException
 
 import sqlalchemy
 from sqlalchemy.orm import joinedload
@@ -8,6 +9,8 @@ from pyispyb.app.extensions.options.schema import Options
 
 from pyispyb.app.globals import g
 from pyispyb.app.extensions.database.middleware import db
+from sqlalchemy.orm import joinedload
+
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +53,42 @@ def get_options() -> Options:
     from pyispyb.app.main import app
 
     return app.db_options
+
+
+def authorize_for_proposal(proposalId: int) -> True:
+    query = db.session.query(models.Proposal).filter(
+        models.Proposal.proposalId == proposalId
+    )
+    query = with_authorization_proposal(query)
+    res = query.count()
+    if res == 0:
+        raise HTTPException(
+            status_code=403, detail="User is not authorized for proposal"
+        )
+
+
+def with_authorization_proposal(
+    query: "sqlalchemy.orm.Query[Any]",
+    includeArchived: bool = False,
+):
+    return with_authorization(
+        query=query,
+        includeArchived=includeArchived,
+        proposalColumn=None,
+        joinBLSession=True,
+    )
+
+
+def with_authorization_session(
+    query: "sqlalchemy.orm.Query[Any]",
+    includeArchived: bool = False,
+):
+    return with_authorization(
+        query=query,
+        includeArchived=includeArchived,
+        proposalColumn=models.BLSession.proposalId,
+        joinBLSession=False,
+    )
 
 
 def with_authorization(
