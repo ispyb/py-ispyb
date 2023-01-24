@@ -9,7 +9,6 @@ from pyispyb.app.extensions.options.schema import Options
 
 from pyispyb.app.globals import g
 from pyispyb.app.extensions.database.middleware import db
-from sqlalchemy.orm import joinedload
 
 
 logger = logging.getLogger(__name__)
