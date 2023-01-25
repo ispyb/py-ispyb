@@ -98,6 +98,6 @@ def permission_required(operator, permissions):
                 )
             )
             msg += " to execute method."
-            raise HTTPException(status_code=401, detail=msg)
+            raise HTTPException(status_code=403, detail=msg)
 
     return res
