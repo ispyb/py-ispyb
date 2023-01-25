@@ -26,7 +26,7 @@ def order_by_factory(columns: dict[str], enumName: str) -> Callable:
         order_by: Optional[order_by_enum] = Query(
             None, description="Field to order by"
         ),
-        order: Optional[Order] = Query(Order.asc, description="Order direction"),
+        order: Optional[Order] = Query(None, description="Order direction"),
     ) -> dict[str, Any]:
         order_fields = {"order_by": order_by}
         order_fields["order"] = order

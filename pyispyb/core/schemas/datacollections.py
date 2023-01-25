@@ -95,6 +95,7 @@ class DataCollectionBase(BaseModel):
         title="Image Sub Path", description="For hdf5 files, path to the images"
     )
     numberOfImages: Optional[int] = Field(title="Number of Images / Points")
+    numberOfPasses: Optional[int] = Field(title="Number of Passes / Repeats")
 
     wavelength: Optional[float] = Field(title="Wavelength", unit="Å")
     exposureTime: Optional[float] = Field(title="Exposure Time", unit="s")

@@ -300,11 +300,11 @@ def get_subsamples(
             ).load_only("name", "acronym"),
         )
         .outerjoin(
-            models.DataCollectionGroup,
-            models.DataCollectionGroup.blSampleId == models.BLSample.blSampleId,
+            models.DataCollection,
+            models.DataCollection.blSubSampleId == models.BLSubSample.blSubSampleId,
         )
         .outerjoin(
-            models.DataCollection,
+            models.DataCollectionGroup,
             models.DataCollectionGroup.dataCollectionGroupId
             == models.DataCollection.dataCollectionGroupId,
         )
@@ -379,6 +379,8 @@ def get_subsamples(
     for result in results:
         if result._metadata["types"]:
             result._metadata["types"] = result._metadata["types"].split(",")
+        else:
+            result._metadata["types"] = []
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
 

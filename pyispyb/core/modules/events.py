@@ -428,7 +428,7 @@ def get_events(
     )
 
     total = query.count()
-    query = query.order_by(sqlalchemy.desc("endTime"))
+    query = query.order_by(sqlalchemy.desc("startTime"))
     query = page(query, skip=skip, limit=limit)
 
     # Results contains an index of type / id

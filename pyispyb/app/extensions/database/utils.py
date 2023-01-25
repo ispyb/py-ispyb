@@ -31,23 +31,30 @@ def order(
     Returns
         query (sqlalchemy.orm.Query): The ordered query
     """
-    if not (order and order["order_by"] and order["order"]) and not default:
+    order_by = order.get("order_by") if order else None
+    if order_by is None:
+        if default:
+            order_by = default.get("order_by")
+    else:
+        # Defaults are strings for convenience
+        # API (mashalled) values are an enum so need their value extracting
+        order_by = order_by.value
+    order_direction = order.get("order") if order else None
+    if order_direction is None:
+        if default:
+            order_direction = default.get("order")
+    else:
+        order_direction = order_direction.value
+
+    if not (order_by and order_direction):
         return query
 
-    logger.info(f"Ordering by {order['order_by']} {order['order']}")
+    logger.debug(f"Ordering by {order_by} {order_direction}")
 
-    if default:
-        return query.order_by(
-            getattr(sort_map[default["order_by"]], default["order"])()
-        )
+    if order_by not in sort_map:
+        raise RuntimeError(f"Unknown order_by {order_by}")
 
-    if order["order_by"].value not in sort_map:
-        logger.warning(f"Unknown order_by {order['order_by']}")
-        return query
-
-    return query.order_by(
-        getattr(sort_map[order["order_by"].value], order["order"].value)()
-    )
+    return query.order_by(getattr(sort_map[order_by], order_direction)())
 
 
 def page(

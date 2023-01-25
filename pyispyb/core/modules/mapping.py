@@ -6,7 +6,7 @@ import matplotlib as mpl
 import matplotlib.cm as cm
 import numpy as np
 from PIL import Image
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import joinedload
 from ispyb import models
 
@@ -22,14 +22,19 @@ def get_maps(
     limit: int,
     xrfFluorescenceMappingId: int = None,
     dataCollectionId: int = None,
+    dataCollectionGroupId: int = None,
     blSampleId: int = None,
+    blSubSampleId: int = None,
     withAuthorization: bool = True,
 ) -> Paged[models.XRFFluorescenceMapping]:
     metadata = {
         "url": func.concat(
             f"{settings.api_root}/mapping/",
             models.XRFFluorescenceMapping.xrfFluorescenceMappingId,
-        )
+        ),
+        "blSubSampleId": models.DataCollection.blSubSampleId,
+        "blSampleId": models.DataCollectionGroup.blSampleId,
+        "dataCollectionId": models.DataCollection.dataCollectionId,
     }
 
     query = (
@@ -55,8 +60,22 @@ def get_maps(
     if dataCollectionId:
         query = query.filter(models.DataCollection.dataCollectionId == dataCollectionId)
 
+    if dataCollectionGroupId:
+        query = query.filter(
+            models.DataCollectionGroup.dataCollectionGroupId == dataCollectionGroupId
+        )
+
     if blSampleId:
-        query = query.filter(models.DataCollectionGroup.blSampleId == blSampleId)
+        query = query.filter(
+            or_(
+                models.DataCollectionGroup.blSampleId == blSampleId,
+                # Hacky legacy support
+                models.DataCollection.BLSAMPLEID == blSampleId,
+            )
+        )
+
+    if blSubSampleId:
+        query = query.filter(models.DataCollection.blSubSampleId == blSubSampleId)
 
     if withAuthorization:
         query = with_authorization(query, joinBLSession=False)
@@ -152,7 +171,7 @@ def generate_map_image(map_: schema.Map, image_format: str = "PNG") -> io.BytesI
     cmap = getattr(cm, colourmap or "viridis")
 
     m = cm.ScalarMappable(norm=norm, cmap=cmap)
-    img_data = m.to_rgba(data, bytes=True, alpha=map_.opacity)
+    img_data = m.to_rgba(data, bytes=True)
 
     mask = data == -1
     img_data[mask, :] = [255, 255, 255, 0]

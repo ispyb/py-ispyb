@@ -689,29 +689,30 @@ def get_errors(
                 log_path = row["logFile"]
                 if settings.path_map:
                     log_path = settings.path_map + log_path
-                    if os.path.exists(log_path):
-                        last_line = get_last_line(log_path)
-                        if last_line:
-                            if last_line not in totals[row["experimentType"]].messages:
 
-                                replaced = False
-                                for message in totals[
-                                    row["experimentType"]
-                                ].messages.keys():
-                                    s = SequenceMatcher(None, last_line, message)
-                                    if s.ratio() > 0.8:
-                                        last_line = message
-                                        replaced = True
+                if os.path.exists(log_path):
+                    last_line = get_last_line(log_path)
+                    if last_line:
+                        if last_line not in totals[row["experimentType"]].messages:
 
-                                if not replaced:
-                                    totals[row["experimentType"]].messages[
-                                        last_line
-                                    ] = schema.ExperimentTypeMessages(
-                                        message=last_line,
-                                        count=0,
-                                    )
+                            replaced = False
+                            for message in totals[
+                                row["experimentType"]
+                            ].messages.keys():
+                                s = SequenceMatcher(None, last_line, message)
+                                if s.ratio() > 0.8:
+                                    last_line = message
+                                    replaced = True
 
-                            totals[row["experimentType"]].messages[last_line].count += 1
+                            if not replaced:
+                                totals[row["experimentType"]].messages[
+                                    last_line
+                                ] = schema.ExperimentTypeMessages(
+                                    message=last_line,
+                                    count=0,
+                                )
+
+                        totals[row["experimentType"]].messages[last_line].count += 1
 
     for row in totals.values():
         row.failedPercent = round(row.failed / row.total * 100, 1)

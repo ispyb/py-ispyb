@@ -324,3 +324,4 @@ def get_h5_path_mapped(**kwargs) -> str:
     if file_path:
         if settings.path_map:
             return settings.path_map + file_path
+        return file_path
