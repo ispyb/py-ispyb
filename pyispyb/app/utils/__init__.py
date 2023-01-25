@@ -25,6 +25,8 @@ import logging
 from sqlalchemy import text
 from functools import wraps
 from pyispyb.config import settings
+from sqlalchemy.orm import class_mapper
+from sqlalchemy import inspect
 
 logger = logging.getLogger("ispyb")
 
@@ -87,3 +89,11 @@ def timed(fn):
         return result
 
     return wrapper
+
+
+def model_from_json(model, data):
+    mapper = class_mapper(model)
+    keys = mapper.attrs.keys()
+    relationships = inspect(mapper).relationships
+    args = {k: v for k, v in data.items() if k in keys and k not in relationships}
+    return model(**args)
