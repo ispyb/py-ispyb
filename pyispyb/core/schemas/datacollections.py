@@ -5,6 +5,10 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
+from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+
+from ispyb import models
+
 
 class Workflow(BaseModel):
     workflowId: int
@@ -42,7 +46,8 @@ class WorkflowStep(BaseModel):
 
 class DataCollectionGroup(BaseModel):
     dataCollectionGroupId: int
-    experimentType: str
+    experimentType: Optional[str]
+    blSampleId: Optional[int]
 
     Workflow: Optional[Workflow]
 
@@ -128,6 +133,13 @@ class DataCollectionBase(BaseModel):
     xBeamPix: Optional[float] = Field(title="Beam size X", unit="pixels")
     yBeamPix: Optional[float] = Field(title="Beam size Y", unit="pixels")
 
+    undulatorGap1: Optional[float]
+    undulatorGap2: Optional[float]
+    undulatorGap3: Optional[float]
+    beamShape: Optional[str]
+    polarisation: Optional[float]
+    imagePrefix: Optional[str]
+
     # EM
     magnification: Optional[int] = Field(title="Magnification", unit="x")
     binning: Optional[int] = Field(title="Binning")
@@ -155,6 +167,8 @@ class DataCollection(DataCollectionBase):
 
     DataCollectionGroup: DataCollectionGroup
     GridInfo: Optional[list[GridInfo]]
+    SSXDataCollection: Optional[sqlalchemy_to_pydantic(models.SSXDataCollection)]
+    Detector: Optional[sqlalchemy_to_pydantic(models.Detector)]
 
     metadata: DataCollectionMetaData = Field(alias="_metadata")
 
