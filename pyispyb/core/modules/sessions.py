@@ -58,6 +58,7 @@ def get_sessions(
     query = (
         db.session.query(models.BLSession, *metadata.values())
         .outerjoin(models.SessionType)
+        .options(joinedload(models.BLSession.BeamLineSetup))
         .join(models.Proposal)
         .outerjoin(models.SessionHasPerson)
         .options(contains_eager(models.BLSession.Proposal))
@@ -159,6 +160,8 @@ def get_sessions(
             if result._metadata["sessionTypes"]
             else []
         )
+
+    print(results)
 
     return Paged(total=total, results=results, skip=skip, limit=limit)
 
