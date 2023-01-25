@@ -34,3 +34,7 @@ SQLALCHEMY_DATABASE_URI=mysql+mysqlconnector://test:test@127.0.0.1/test
 AUTH_CONFIG=auth.yml
 
 ```
+
+## ISPYB_DATA_PATH
+
+The env variable `ISPYB_DATA_PATH` allows you to define a path prefix that ISPyB should add to all data files path in the database.
