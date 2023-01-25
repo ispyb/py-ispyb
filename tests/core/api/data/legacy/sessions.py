@@ -767,7 +767,7 @@ test_data_session_proposal_list = [
             route="/legacy/sessions/proposal/MX1",
         ),
         expected=ApiTestExpected(
-            code=401,
+            code=403,
             res={
                 "detail": "User pasteur (permissions assigned: []) has no appropriate permission (any: ['own_sessions', 'all_sessions'])  to execute method."
             },
