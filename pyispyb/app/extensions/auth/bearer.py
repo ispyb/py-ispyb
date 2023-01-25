@@ -103,6 +103,6 @@ def permission_required(operator, permissions):
             )
             msg += " to execute method."
             logger.info(msg)
-            raise HTTPException(status_code=401, detail="Not Authorized")
+            raise HTTPException(status_code=403, detail="Not Authorized")
 
     return res

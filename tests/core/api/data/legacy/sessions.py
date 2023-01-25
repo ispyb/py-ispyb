@@ -767,7 +767,7 @@ test_data_session_proposal_list = [
             route="/legacy/sessions/proposal/MX1",
         ),
         expected=ApiTestExpected(
-            code=401,
+            code=403,
             res={"detail": "Not Authorized"},
         ),
     ),
