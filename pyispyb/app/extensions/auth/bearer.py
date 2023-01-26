@@ -1,3 +1,4 @@
+import logging
 from fastapi import HTTPException, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
@@ -5,6 +6,9 @@ import jwt
 from ...globals import g
 from .token import decode_token, set_token_data
 from .onetime import onetime, validate_onetime_token
+
+
+logger = logging.getLogger(__name__)
 
 # auto_error=False to correct 403 -> 401
 # https://github.com/tiangolo/fastapi/issues/2026
@@ -98,6 +102,7 @@ def permission_required(operator, permissions):
                 )
             )
             msg += " to execute method."
-            raise HTTPException(status_code=403, detail=msg)
+            logger.info(msg)
+            raise HTTPException(status_code=403, detail="Not Authorized")
 
     return res
