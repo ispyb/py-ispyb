@@ -161,8 +161,6 @@ def get_sessions(
             else []
         )
 
-    print(results)
-
     return Paged(total=total, results=results, skip=skip, limit=limit)
 
 
