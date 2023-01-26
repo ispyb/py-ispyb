@@ -47,6 +47,8 @@ ENTITY_TYPES: dict[str, EntityType] = {
                 models.DataCollection.DataCollectionGroup,
                 models.DataCollectionGroup.Workflow,
             ],
+            models.DataCollection.SSXDataCollection,
+            models.DataCollection.Detector,
         ],
     ),
     "robot": EntityType(
