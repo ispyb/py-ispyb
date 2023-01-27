@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 class BreakdownOverviewCounts(BaseModel):
     datacollections: int
     failed: int
-    datacollectionTypes: dict[str, int]
+    datacollectionTypes: dict[str | None, int]
     robot: int
     edge: int
     xrf: int
