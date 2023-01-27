@@ -42,7 +42,7 @@ class WorkflowStep(BaseModel):
 
 class DataCollectionGroup(BaseModel):
     dataCollectionGroupId: int
-    experimentType: str
+    experimentType: Optional[str]
 
     Workflow: Optional[Workflow]
 
