@@ -288,7 +288,7 @@ def get_queued_samples(
             default={"order_by": "containerQueueSampleId", "order": "desc"},
         )
 
-    query = with_authorization(query, proposal)
+    query = with_authorization(query)
     total = query.count()
     query = page(query, skip=skip, limit=limit)
     results = with_metadata(query.all(), list(metadata.keys()))
