@@ -2,57 +2,57 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://ispyb.github.io/py-ispyb/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/auth/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/authorization/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/conf/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/developers/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/permissions/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/routes/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/run/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/simulator/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/tests/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ispyb.github.io/py-ispyb/upsync/</loc>
-         <lastmod>2023-02-07</lastmod>
+         <lastmod>2023-02-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
