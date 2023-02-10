@@ -104,6 +104,7 @@ def get_events(
     dataCollectionId: Optional[int] = None,
     dataCollectionGroupId: Optional[int] = None,
     blSampleId: Optional[int] = None,
+    blSubSampleId: Optional[int] = None,
     proteinId: Optional[int] = None,
     status: Optional[EventStatus] = None,
     eventType: Optional[str] = None,
@@ -335,6 +336,19 @@ def get_events(
         queries["dc"] = queries["dc"].group_by(
             models.DataCollectionGroup.dataCollectionGroupId
         )
+
+    # Filter by blSubSample
+    if blSubSampleId:
+        queries["dc"] = queries["dc"].filter(
+            models.DataCollection.blSubSampleId == blSubSampleId
+        )
+        queries["robot"] = queries["robot"].filter(
+            models.RobotAction.robotActionId == 0
+        )
+        queries["xrf"] = queries["xrf"].filter(
+            models.XFEFluorescenceSpectrum.xfeFluorescenceSpectrumId == 0
+        )
+        queries["es"] = queries["es"].filter(models.EnergyScan.energyScanId == 0)
 
     # Filter by status
     if status:
