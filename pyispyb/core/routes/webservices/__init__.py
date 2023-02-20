@@ -3,7 +3,6 @@ import logging
 from importlib import import_module
 from fastapi import FastAPI
 
-from .base import router
 
 logger = logging.getLogger(__name__)
 
@@ -23,5 +22,3 @@ def init_app(app: FastAPI, prefix: str = None, **kwargs):
                     app.include_router(module.router, prefix=prefix)
             except Exception:
                 logger.exception(f"Could not import module `{module_name}`")
-
-    app.include_router(router, prefix=prefix)
