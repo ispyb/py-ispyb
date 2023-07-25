@@ -1,6 +1,6 @@
 ispyb-models==1.0.6
 
-fastapi
+fastapi<0.95
 pydantic[dotenv]
 pydantic-sqlalchemy
 
