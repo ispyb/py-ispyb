@@ -18,7 +18,7 @@ python_ldap==3.4.0
 
 sqlparse
 
-mysql-connector-python==8.0.29
+mysql-connector-python==9.1.0
 
 fabio
 h5py
